@@ -1,0 +1,346 @@
+# Problem bank — Chapter 2 (Pallet Town, the night before Route 1): the
+# Series & Calculus Toolkit. Geometric & exponential series, differentiation /
+# modes / limits, improper integrals & normalizing / survival, the gamma-integral
+# identity (the "Master Ball"), and double / iterated integrals with order
+# reversal. These are PREREQUISITE (Tier B) skills, not numbered SOA outcomes, so
+# outcomes: ["prereq"] (see syllabus/outcomes.yaml extra_outcomes). Owned solely
+# by Chapter 2. Schema per problems/bank.yaml header. Verify expressions are
+# Python boolean expressions evaluated against the names exposed by
+# sims/verify_examples.py (math, st, abs, round, sum, min, max, ...); never use
+# __import__. Statements / solutions / answers match what ch02 already prints.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C2.1
+    chapter: 2
+    tier: route_trainer
+    archetype: "gamma-integral evaluation (theta = 1)"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Route 1 at dusk: a Caterpie's foraging integral."
+    statement: |
+      Evaluate a Caterpie's foraging integral (\int_0^\infty x^2 e^{-x}\,dx).
+    solution: |
+      Gamma evaluation (Entry No.04). The power on x is 2, so alpha = 3, and the
+      scale is theta = 1: \int_0^\infty x^2 e^{-x}\,dx = Gamma(3)*1^3 = 2! = 2.
+    answer: "2"
+    shortcut_used: ["gamma identity: alpha = power + 1"]
+    verify: "math.factorial(2) * 1**3 == 2"
+
+  - id: C2.2
+    chapter: 2
+    tier: route_trainer
+    archetype: "gamma-integral evaluation with scale theta"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Pewter outskirts: normalizing the Pokedex hunger model."
+    statement: |
+      To normalize the Pokedex hunger model, evaluate
+      (\int_0^\infty x^4 e^{-x/3}\,dx).
+    solution: |
+      Gamma evaluation with scale (Entry No.04). Power 4 => alpha = 5, theta = 3:
+      \int_0^\infty x^4 e^{-x/3}\,dx = Gamma(5)*3^5 = 4!*243 = 24*243 = 5832.
+    answer: "5832"
+    shortcut_used: ["gamma identity with scale: Gamma(alpha)*theta^alpha"]
+    verify: "math.factorial(4) * 3**5 == 5832"
+
+  - id: C2.3
+    chapter: 2
+    tier: route_trainer
+    archetype: "normalizing constant for an exponential density"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Viridian rest stop: making the model a valid density."
+    statement: |
+      Find the constant c making f(x) = c e^{-x/7} (x > 0) a valid density.
+    solution: |
+      Normalizing constant (Entries No.03, No.04). \int_0^\infty c e^{-x/7}\,dx =
+      c*7 = 1 => c = 1/7. (Here alpha = 1, theta = 7, Gamma(1) = 1, so the
+      integral is just the scale theta = 7.)
+    answer: "c = 1/7"
+    shortcut_used: ["normalize: set integral = 1", "int e^{-x/theta} = theta"]
+    verify: "abs((1/7) * 7 - 1) < 1e-12 and abs(1/7 - 0.14285714285714285) < 1e-12"
+
+  - id: C2.4
+    chapter: 2
+    tier: route_trainer
+    archetype: "geometric series in closed form"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Oak's lab, series drill: a swarm of Caterpie."
+    statement: |
+      A swarm of Caterpie contributes total energy (\sum_{k=0}^\infty 3 (0.4)^k).
+      Sum it.
+    solution: |
+      Geometric series (Entry No.01) with a = 3, r = 0.4 (|r| < 1):
+      \sum_{k>=0} 3 (0.4)^k = 3 / (1 - 0.4) = 3 / 0.6 = 5.
+    answer: "5"
+    shortcut_used: ["geometric sum a/(1-r)"]
+    verify: "abs(3/(1 - 0.4) - 5) < 1e-9 and abs(sum(3*0.4**k for k in range(0, 200)) - 5) < 1e-9"
+
+  - id: C2.5
+    chapter: 2
+    tier: route_trainer
+    archetype: "exponential (factorial) series in closed form"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Charging the Pokedex with an endless factorial sum."
+    statement: |
+      Evaluate (\sum_{k=0}^\infty 2^k / k!) in closed form.
+    solution: |
+      Exponential series (Entry No.01): \sum_{k>=0} lambda^k / k! = e^lambda, here
+      lambda = 2, so the sum is e^2 ~= 7.389.
+    answer: "e^2 ~= 7.389"
+    shortcut_used: ["factorial series = e^lambda"]
+    verify: "abs(sum(2**k / math.factorial(k) for k in range(0, 60)) - math.exp(2)) < 1e-9 and abs(math.exp(2) - 7.38905609893065) < 1e-9"
+
+  - id: C2.6
+    chapter: 2
+    tier: route_trainer
+    archetype: "survival tail of an exponential; endpoint check"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Quick tail check on a recovery clock."
+    statement: |
+      Compute the survival probability S(t) = (\int_t^\infty (1/4) e^{-u/4}\,du)
+      as a formula in t, and state S(0).
+    solution: |
+      Survival tail (Entry No.03). S(t) = \int_t^\infty (1/4) e^{-u/4}\,du =
+      [ -e^{-u/4} ]_t^\infty = e^{-t/4}, and S(0) = e^0 = 1 (a survival function
+      starts at 1, distinguishing it from the CDF 1 - e^{-t/4}).
+    answer: "S(t) = e^{-t/4}, S(0) = 1"
+    shortcut_used: ["survival tail integral", "endpoint test S(0)=1"]
+    verify: "abs(math.exp(-0/4) - 1) < 1e-12 and all(abs((1/4)*sum(math.exp(-(t + (j+0.5)*0.0005)/4)*0.0005 for j in range(int(40/0.0005))) - math.exp(-t/4)) < 1e-3 for t in [0.0, 1.0, 3.0])"
+
+  - id: C2.7
+    chapter: 2
+    tier: route_trainer
+    archetype: "take logs to free a variable from an exponent"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Log practice carried over from Toolkit I."
+    statement: |
+      Solve for x: e^{-x/5} = 0.2 (leave the answer in terms of ln).
+    solution: |
+      Take logs to free x (retrieval / Toolkit I). e^{-x/5} = 0.2 =>
+      -x/5 = ln 0.2 => x = -5 ln 0.2 = 5 ln 5 ~= 8.047.
+    answer: "x = 5 ln 5 ~= 8.047"
+    shortcut_used: ["take logs to free a variable from an exponent"]
+    verify: "abs(math.exp(-(5*math.log(5))/5) - 0.2) < 1e-12 and abs(5*math.log(5) - 8.047189562170502) < 1e-9"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C2.8
+    chapter: 2
+    tier: gym_battle
+    archetype: "gamma evaluation; the off-by-one alpha trap"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Calibrating the energy model (Oak's cold-open integral)."
+    statement: |
+      For (\int_0^\infty x^3 e^{-x/theta}\,dx) with scale theta = 2, evaluate the
+      integral.
+    solution: |
+      Gamma evaluation, off-by-one alpha (Entry No.04). Power 3 => alpha = 4,
+      theta = 2: \int_0^\infty x^3 e^{-x/2}\,dx = Gamma(4)*2^4 = 3!*16 = 6*16 = 96.
+      (Same value as Worked Example 2.1 and the Team Rocket trap; Gamma(4) = 3! = 6,
+      not 4!.)
+    answer: "96"
+    shortcut_used: ["gamma identity", "alpha = power + 1 (avoid off-by-one)"]
+    verify: "math.factorial(3) * 2**4 == 96"
+
+  - id: C2.9
+    chapter: 2
+    tier: gym_battle
+    archetype: "mode by optimization (product + chain rule)"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Finding the most likely wild-encounter value."
+    statement: |
+      A wild Pokemon's encounter density is f(x) = (1/4) x e^{-x/2} (x > 0). Find
+      the most likely value (the mode) by optimization.
+    solution: |
+      Mode by optimization (Entry No.02). Product + chain rule:
+      f'(x) = (1/4)( e^{-x/2} + x*(-1/2) e^{-x/2} ) = (1/4) e^{-x/2} (1 - x/2).
+      Set f' = 0: since e^{-x/2} > 0, need 1 - x/2 = 0 => x = 2. The sign of f'
+      flips + -> -, so it is a maximum. Mode = 2.
+    answer: "mode = 2"
+    shortcut_used: ["set f'=0", "product rule", "chain rule"]
+    verify: "abs(1 - 2/2) < 1e-12 and ((1/4)*math.exp(-(2-1e-4)/2)*(1-(2-1e-4)/2) > 0) and ((1/4)*math.exp(-(2+1e-4)/2)*(1-(2+1e-4)/2) < 0)"
+
+  - id: C2.10
+    chapter: 2
+    tier: gym_battle
+    archetype: "expectation via the gamma identity (raise the power by one)"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Expected value of a gamma-shaped density."
+    statement: |
+      For f(x) = (1/9) x e^{-x/3} (x > 0), compute E[X] = (\int_0^\infty x f(x)\,dx).
+    solution: |
+      Gamma expectation (Entry No.04). The extra x raises the power to 2:
+      E[X] = \int_0^\infty x*(1/9) x e^{-x/3}\,dx = (1/9)\int_0^\infty x^2 e^{-x/3}\,dx
+      = (1/9) Gamma(3) 3^3 = (1/9)*2*27 = 6. (Cross-check: gamma mean alpha*theta =
+      2*3 = 6.)
+    answer: "6"
+    shortcut_used: ["E[X] raises power by one", "gamma identity", "mean = alpha*theta"]
+    verify: "abs((1/9) * math.factorial(2) * 3**3 - 6) < 1e-9"
+
+  - id: C2.11
+    chapter: 2
+    tier: gym_battle
+    archetype: "double-integral validity over a triangular region"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Territory overlap between two Pokemon."
+    statement: |
+      For R = {(x,y): 0 <= x <= 2, 0 <= y <= x} with f(x,y) = (3/8) x, verify
+      (\iint_R f\,dA = 1) (either order).
+    solution: |
+      Double-integral validity (Entry No.05). Order dy dx:
+      \int_0^2 \int_0^x (3/8) x\,dy\,dx = \int_0^2 (3/8) x * x\,dx =
+      \int_0^2 (3/8) x^2\,dx = (3/8)*(8/3) = 1.
+    answer: "integrates to 1"
+    shortcut_used: ["iterated integral, inner limit depends on outer", "x integral 0..2 of x^2 = 8/3"]
+    verify: "abs((3/8) * (2**3 / 3) - 1) < 1e-9"
+
+  - id: C2.12
+    chapter: 2
+    tier: gym_battle
+    archetype: "reverse the order of integration + u-substitution"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    narrative_hook: "An inner integral with no elementary antiderivative."
+    statement: |
+      Evaluate (\int_0^1 \int_{\sqrt{x}}^1 e^{y^3}\,dy\,dx) by reversing the order
+      (it is impossible as written).
+    solution: |
+      Reverse order + u-substitution (Entries No.03, No.05). The region
+      0 <= x <= 1, sqrt(x) <= y <= 1 means x <= y^2, i.e. 0 <= y <= 1,
+      0 <= x <= y^2. Reverse:
+      \int_0^1 \int_0^{y^2} e^{y^3}\,dx\,dy = \int_0^1 y^2 e^{y^3}\,dy.
+      With u = y^3, du = 3 y^2 dy: = (1/3)\int_0^1 e^u\,du = (1/3)(e - 1) ~= 0.573.
+    answer: "(1/3)(e - 1) ~= 0.573"
+    shortcut_used: ["reverse order when inner integral is impossible", "u-substitution u = y^3"]
+    verify: "abs((math.e - 1)/3 - 0.5727606094863483) < 1e-9 and abs((math.e - 1)/3 - 0.573) < 1e-3"
+
+  - id: C2.13
+    chapter: 2
+    tier: gym_battle
+    archetype: "exponential-beats-polynomial limit"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Why a power-times-exponential tail has finite area."
+    statement: |
+      Evaluate (\lim_{x\to\infty} x^2 e^{-x/3}), and explain in one line why a tail
+      of this shape integrates to a finite value.
+    solution: |
+      Exponential-beats-polynomial limit (Entry No.02). Written x^2 / e^{x/3} it is
+      infinity/infinity. Two L'Hopital passes: -> 2x/((1/3)e^{x/3}) ->
+      2/((1/9)e^{x/3}) -> 0. Because the integrand decays faster than any polynomial
+      grows, the tail area \int_b^\infty vanishes as b -> infinity, so the total
+      integral is finite. Limit = 0.
+    answer: "0"
+    shortcut_used: ["exponential beats polynomial", "L'Hopital (infinity/infinity)"]
+    verify: "(1e6**2 * math.exp(-1e6/3)) < 1e-9 and (1e4**2 * math.exp(-1e4/3)) < (1e3**2 * math.exp(-1e3/3))"
+
+  - id: C2.14
+    chapter: 2
+    tier: gym_battle
+    archetype: "gamma second moment + variance identity"
+    outcomes: ["prereq"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Second moment and variance of an exponential."
+    statement: |
+      For f(x) = (1/2) e^{-x/2} (x > 0, an exponential with mean 2), compute
+      E[X^2] = (\int_0^\infty x^2 f(x)\,dx) via the gamma identity, then report
+      Var(X) = E[X^2] - (E[X])^2.
+    solution: |
+      Gamma second moment + variance identity (Entry No.04).
+      E[X^2] = \int_0^\infty x^2 (1/2) e^{-x/2}\,dx = (1/2) Gamma(3) 2^3 =
+      (1/2)*2*8 = 8. The mean of this exponential is theta = 2, so
+      Var(X) = 8 - 2^2 = 4 (matching theta^2 = 4 for an exponential).
+    answer: "E[X^2] = 8, Var(X) = 4"
+    shortcut_used: ["E[X^2] raises power by two", "gamma identity", "Var = E[X^2] - (E[X])^2"]
+    verify: "abs(0.5 * math.factorial(2) * 2**3 - 8) < 1e-9 and abs((8 - 2**2) - 4) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =====================
+
+  - id: C2.15
+    chapter: 2
+    tier: elite_challenge
+    archetype: "integrative symbolic gamma: normalize, mean, second moment, variance"
+    outcomes: ["prereq"]
+    distributions: ["gamma"]
+    provenance: original
+    difficulty: 5
+    narrative_hook: "Oak's dawn capstone, kept fully symbolic in theta."
+    statement: |
+      For f(x) = (1/(2 theta^3)) x^2 e^{-x/theta} (x > 0, a Gamma(3, theta)):
+      (a) verify it integrates to 1; (b) show E[X] = 3 theta;
+      (c) show E[X^2] = 12 theta^2 and hence Var(X) = 3 theta^2. Keep theta symbolic.
+    solution: |
+      Integrative symbolic gamma (Entry No.04).
+      (a) \int_0^\infty (1/(2 theta^3)) x^2 e^{-x/theta}\,dx =
+          (1/(2 theta^3)) Gamma(3) theta^3 = (1/(2 theta^3)) * 2 * theta^3 = 1.
+      (b) E[X] = (1/(2 theta^3))\int_0^\infty x^3 e^{-x/theta}\,dx =
+          (1/(2 theta^3)) Gamma(4) theta^4 = (1/(2 theta^3)) * 6 * theta^4 = 3 theta.
+      (c) E[X^2] = (1/(2 theta^3)) Gamma(5) theta^5 = (1/(2 theta^3)) * 24 * theta^5
+          = 12 theta^2, so Var = 12 theta^2 - (3 theta)^2 = 3 theta^2. (These are the
+          Gamma(3, theta) mean alpha*theta and variance alpha*theta^2.)
+    answer: "E[X] = 3 theta, E[X^2] = 12 theta^2, Var(X) = 3 theta^2"
+    shortcut_used: ["gamma identity (symbolic)", "raise power for moments", "Var = E[X^2] - (E[X])^2"]
+    verify: "all(abs((1/(2*t**3)) * math.factorial(2) * t**3 - 1) < 1e-9 and abs((1/(2*t**3)) * math.factorial(3) * t**4 - 3*t) < 1e-9 and abs((1/(2*t**3)) * math.factorial(4) * t**5 - 12*t**2) < 1e-9 and abs((12*t**2 - (3*t)**2) - 3*t**2) < 1e-9 for t in [1.0, 2.0, 3.0, 5.0])"
+
+  - id: C2.16
+    chapter: 2
+    tier: elite_challenge
+    archetype: "half-integer gamma via substitution; Gamma(1/2) = sqrt(pi)"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 5
+    narrative_hook: "The half-integer Master Ball, hidden normalizer of the normal."
+    statement: |
+      Using x = u^2 (dx = 2u\,du) and the known fact (\int_0^\infty e^{-u^2}\,du =
+      sqrt(pi)/2), show that Gamma(1/2) = (\int_0^\infty x^{-1/2} e^{-x}\,dx) =
+      sqrt(pi).
+    solution: |
+      Half-integer gamma via substitution (Entry No.04). By definition
+      Gamma(1/2) = \int_0^\infty x^{-1/2} e^{-x}\,dx. Substitute x = u^2,
+      dx = 2u du, x^{-1/2} = u^{-1} (limits stay 0 -> infinity):
+      Gamma(1/2) = \int_0^\infty u^{-1} e^{-u^2} (2u\,du) = 2\int_0^\infty e^{-u^2}\,du
+      = 2 * (sqrt(pi)/2) = sqrt(pi).
+    answer: "sqrt(pi)"
+    shortcut_used: ["substitution x = u^2", "Gaussian integral int_0^inf e^{-u^2} = sqrt(pi)/2"]
+    verify: "abs(math.gamma(0.5) - math.sqrt(math.pi)) < 1e-9 and abs(2 * (math.sqrt(math.pi)/2) - math.sqrt(math.pi)) < 1e-12"

@@ -1,0 +1,326 @@
+# Problem bank — Chapter 1 (Pallet Town, the night before): The Toolkit I —
+# numbers & intervals, fractions/decimals/percents & proportions, exponents &
+# logarithms, variables & equations, functions, and summation/product notation.
+# Prerequisite ("prereq") language the SOA assumes but never teaches. Schema per
+# problems/bank.yaml header. Owned solely by Chapter 1. Verify expressions are
+# Python boolean expressions evaluated against the names exposed by
+# sims/verify_examples.py (math, st, abs, round, sum, min, max, ...); statements,
+# solutions, and answers reproduce exactly what ch01_toolkit_numbers.md prints.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C1.1
+    chapter: 1
+    tier: route_trainer
+    archetype: "verbal range to interval notation, choosing brackets"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Logging a wild Pokemon's catch rate the night before Route 1."
+    statement: |
+      A wild Pokemon's catch rate is "at least 0.2 and at most 0.55." Write this
+      set of catch rates in interval notation.
+    solution: |
+      "At least 0.2" includes 0.2 (square bracket); "at most 0.55" includes 0.55
+      (square bracket). Both endpoints in: [0.2, 0.55].
+    answer: "[0.2, 0.55]"
+    shortcut_used: ["'at least / at most' -> square brackets"]
+    verify: "(0.2 <= 0.2 <= 0.55) and (0.2 <= 0.55 <= 0.55) and not (0.2 <= 0.19 <= 0.55) and not (0.2 <= 0.56 <= 0.55)"
+
+  - id: C1.2
+    chapter: 1
+    tier: route_trainer
+    archetype: "fraction -> decimal -> percent"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Counting Rattata among the night's Route 1 encounters."
+    statement: |
+      Of 50 encounters on Route 1, 7 are Rattata. Express the Rattata share as a
+      fraction, a decimal, and a percent.
+    solution: |
+      7/50 = 7 / 50 = 0.14 = 14%.
+    answer: "7/50 = 0.14 = 14%"
+    shortcut_used: ["fraction bar means divide", "decimal x 100 = percent"]
+    verify: "abs((7/50) - 0.14) < 1e-9 and abs((7/50)*100 - 14) < 1e-9"
+
+  - id: C1.3
+    chapter: 1
+    tier: route_trainer
+    archetype: "exponent laws to a single power of e"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Simplifying a decay expression off Oak's chalkboard."
+    statement: |
+      Simplify (e^6 * e^-2) / e^3 to a single power of e, and give its decimal
+      value.
+    solution: |
+      Add then subtract exponents: 6 + (-2) - 3 = 1, so (e^6 * e^-2) / e^3
+      = e^1 = e ~= 2.718.
+    answer: "e^1 = e ~= 2.718"
+    shortcut_used: ["same base: add/subtract exponents"]
+    verify: "abs(((math.e**6 * math.e**-2) / math.e**3) - math.e) < 1e-9 and abs(math.e - 2.718) < 1e-3"
+
+  - id: C1.4
+    chapter: 1
+    tier: route_trainer
+    archetype: "rearrange a linear equation to isolate the letter"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Solving for a level value scribbled in Oak's margin."
+    statement: |
+      Solve 2L + 5 = 17 for L.
+    solution: |
+      Subtract 5, then divide by 2: 2L + 5 = 17 => 2L = 12 => L = 6.
+    answer: "L = 6"
+    shortcut_used: ["inverse operations on the whole side"]
+    verify: "abs(((17 - 5)/2) - 6) < 1e-9 and abs((2*6 + 5) - 17) < 1e-9"
+
+  - id: C1.5
+    chapter: 1
+    tier: route_trainer
+    archetype: "evaluate a function by substitution"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Feeding inputs to the Pokedex's input-output machine."
+    statement: |
+      For f(x) = 3x - 4, compute f(2) and f(0).
+    solution: |
+      Substitute the input: f(2) = 3(2) - 4 = 2, and f(0) = 3(0) - 4 = -4.
+    answer: "f(2) = 2, f(0) = -4"
+    shortcut_used: ["substitute input everywhere x appears"]
+    verify: "abs((3*2 - 4) - 2) < 1e-9 and abs((3*0 - 4) - (-4)) < 1e-9"
+
+  - id: C1.6
+    chapter: 1
+    tier: route_trainer
+    archetype: "expand and evaluate a summation"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Reading the sigma symbol that runs through the whole exam."
+    statement: |
+      Expand and evaluate the sum over k = 1 to 4 of (2k + 1).
+    solution: |
+      Walk k = 1,2,3,4 with term 2k+1: sum = 3 + 5 + 7 + 9 = 24.
+    answer: "24"
+    shortcut_used: ["walk the index from start to stop, glue with +"]
+    verify: "abs(sum(2*k + 1 for k in range(1, 5)) - 24) < 1e-9"
+
+  - id: C1.7
+    chapter: 1
+    tier: route_trainer
+    archetype: "percent of a quantity, two ways"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Pricing a marked-down Potion at the Pallet Town stall."
+    statement: |
+      A potion's price is $15, marked down by 40%. Find the sale price two ways:
+      as 15 * (1 - 0.40), and by subtracting "40% of 15."
+    solution: |
+      15(1 - 0.40) = 15(0.60) = 9.00; and 15 - (0.40 * 15) = 15 - 6 = 9.00.
+      Both give a sale price of $9.00.
+    answer: "$9.00"
+    shortcut_used: ["percent as decimal x 100", "two equivalent paths agree"]
+    verify: "abs(15*(1 - 0.40) - 9.00) < 1e-9 and abs((15 - 0.40*15) - 9.00) < 1e-9"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C1.8
+    chapter: 1
+    tier: gym_battle
+    archetype: "solve for a variable trapped in an exponent via logarithm"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Timing an energy-decay model from Oak's worn textbook."
+    statement: |
+      Solve e^(-t/6) = 0.25 for t, leaving the answer in terms of ln, then give
+      a decimal.
+    solution: |
+      Take ln of both sides: e^(-t/6) = 0.25 => -t/6 = ln(0.25) =>
+      t = -6 ln(0.25) = 6 ln 4 ~= 8.318.
+    answer: "6 ln 4 ~= 8.318"
+    shortcut_used: ["take ln of both sides to drop the exponent"]
+    verify: "abs((-6*math.log(0.25)) - 6*math.log(4)) < 1e-9 and abs((-6*math.log(0.25)) - 8.318) < 1e-3"
+
+  - id: C1.9
+    chapter: 1
+    tier: gym_battle
+    archetype: "rearrange a formula containing a fraction for a trapped letter"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Reading the premium rule in Oak's Risk Theory for Trainers."
+    statement: |
+      The relationship between premium P, claim cost C, and expense load e is
+      P = C / (1 - e). Solve for e in terms of P and C.
+    solution: |
+      Multiply by (1 - e), then isolate e: P = C/(1-e) => P(1-e) = C =>
+      1 - e = C/P => e = 1 - C/P.
+    answer: "e = 1 - C/P"
+    shortcut_used: ["clear the denominator, then isolate"]
+    verify: "all(abs((1 - C/P) - e_val) < 1e-9 for (P, C, e_val) in [(100.0, 60.0, 1 - 60.0/100.0), (200.0, 50.0, 1 - 50.0/200.0)])"
+
+  - id: C1.10
+    chapter: 1
+    tier: gym_battle
+    archetype: "piecewise evaluation, condition-first, then sum of outputs"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "A tiered healing fee at the Pallet Town first-aid bench."
+    statement: |
+      For the piecewise fee g(n) = 0 for n <= 2 and g(n) = 25(n - 2) for n > 2,
+      compute g(2), g(5), and the total g(1) + g(3) + g(6).
+    solution: |
+      Check each condition first. g(2) = 0 (since 2 <= 2); g(5) = 25(5-2) = 75.
+      g(1) = 0, g(3) = 25(1) = 25, g(6) = 25(4) = 100, so the total is
+      0 + 25 + 100 = 125.
+    answer: "g(2) = 0; g(5) = 75; total = 125"
+    shortcut_used: ["pick the piece by checking the condition first"]
+    verify: "(lambda g: g(2) == 0 and g(5) == 75 and (g(1) + g(3) + g(6)) == 125)(lambda n: 0 if n <= 2 else 25*(n - 2))"
+
+  - id: C1.11
+    chapter: 1
+    tier: gym_battle
+    archetype: "expand a finite sum term by term (no series shortcut)"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Adding four decaying terms by hand, the way Oak insists."
+    statement: |
+      Evaluate the sum over k = 0 to 3 of 4 * (0.5)^k by expanding all four
+      terms (do not use a series shortcut, just add the terms).
+    solution: |
+      Four terms, k = 0,1,2,3: 4(1) + 4(0.5) + 4(0.25) + 4(0.125)
+      = 4 + 2 + 1 + 0.5 = 7.5.
+    answer: "7.5"
+    shortcut_used: ["count terms top - bottom + 1, then add"]
+    verify: "abs(sum(4*(0.5)**k for k in range(0, 4)) - 7.5) < 1e-9"
+
+  - id: C1.12
+    chapter: 1
+    tier: gym_battle
+    archetype: "product notation as a factorial"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Recognizing the factorial hiding inside the product symbol."
+    statement: |
+      Evaluate the product over k = 1 to 5 of k and state which factorial it
+      equals.
+    solution: |
+      product = 1 * 2 * 3 * 4 * 5 = 120 = 5!.
+    answer: "120 = 5!"
+    shortcut_used: ["product of 1..n is n!"]
+    verify: "math.prod(range(1, 6)) == 120 and math.factorial(5) == 120"
+
+  - id: C1.13
+    chapter: 1
+    tier: gym_battle
+    archetype: "exponent solve via logarithm with inequality flip"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Deciding when a Pokemon's HP fraction crosses below half."
+    statement: |
+      A Pokemon's remaining-HP fraction after t turns is (0.8)^t. After how many
+      whole turns does it first drop below 0.5? Set up (0.8)^t < 0.5 and solve
+      with a logarithm.
+    solution: |
+      Take ln; since ln(0.8) < 0, dividing flips the inequality:
+      (0.8)^t < 0.5 => t ln(0.8) < ln(0.5) => t > ln(0.5)/ln(0.8) ~= 3.106.
+      The smallest whole turn is t = 4. (Check: 0.8^4 = 0.4096 < 0.5;
+      0.8^3 = 0.512 > 0.5.)
+    answer: "t = 4"
+    shortcut_used: ["take ln", "ln(base) < 0 flips the inequality", "round up"]
+    verify: "(0.8**4 < 0.5) and (0.8**3 > 0.5) and (math.ceil(math.log(0.5)/math.log(0.8) + 1e-12) == 4)"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =====================
+
+  - id: C1.14
+    chapter: 1
+    tier: elite_challenge
+    archetype: "index notation: build terms, then sum and product"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Drilling sigma and pi together before leaving Pallet Town."
+    statement: |
+      Define a_k = k(k+1) for k = 1, 2, 3, 4. (a) Write out the four terms.
+      (b) Evaluate the sum over k = 1 to 4 of a_k. (c) Evaluate the product over
+      k = 1 to 2 of a_k.
+    solution: |
+      (a) a_1 = 1*2 = 2, a_2 = 2*3 = 6, a_3 = 3*4 = 12, a_4 = 4*5 = 20.
+      (b) sum_{k=1}^{4} a_k = 2 + 6 + 12 + 20 = 40.
+      (c) prod_{k=1}^{2} a_k = a_1 * a_2 = 2 * 6 = 12.
+    answer: "{2, 6, 12, 20}; 40; 12"
+    shortcut_used: ["substitute the whole term", "sum vs. product over the index"]
+    verify: "[k*(k+1) for k in range(1, 5)] == [2, 6, 12, 20] and sum(k*(k+1) for k in range(1, 5)) == 40 and math.prod(k*(k+1) for k in range(1, 3)) == 12"
+
+  - id: C1.15
+    chapter: 1
+    tier: elite_challenge
+    archetype: "interval membership + count -> percent -> fraction in lowest terms"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "From Kanto to the real world: a policy's paid-loss interval."
+    statement: |
+      A policy pays a loss only on the interval [200, 5000] (a $200 deductible
+      and a $5000 limit). Of 80 recorded losses, 20 fall below $200 (the insurer
+      pays nothing) and 8 exceed $5000 (capped at the limit). (a) What percent of
+      losses fall inside the paid interval [200, 5000]? (b) Write that count as a
+      fraction in lowest terms.
+    solution: |
+      (a) Inside [200, 5000]: total 80 minus the 20 below and 8 above
+      = 80 - 28 = 52. Percent: 52/80 = 0.65 = 65%.
+      (b) 52/80 = 13/20 in lowest terms.
+    answer: "65%; 13/20"
+    shortcut_used: ["interval membership by elimination", "reduce by the gcd"]
+    verify: "((80 - 20 - 8) == 52) and abs((52/80) - 0.65) < 1e-9 and ((52 // math.gcd(52, 80), 80 // math.gcd(52, 80)) == (13, 20))"
+
+  - id: C1.16
+    chapter: 1
+    tier: elite_challenge
+    archetype: "capstone in miniature: exponent solve with log feeding a decision"
+    outcomes: ["prereq"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Choosing when to re-apply a Repel as its effect decays."
+    statement: |
+      A Repel's effectiveness t steps after use is E(t) = (0.95)^t. The trainer
+      re-applies once effectiveness drops below 0.60. (a) Solve (0.95)^t < 0.60
+      for the threshold t with a logarithm. (b) Report the smallest whole number
+      of steps at which they re-apply.
+    solution: |
+      (a) Take ln of both sides; ln(0.95) < 0 flips the inequality:
+      (0.95)^t < 0.60 => t > ln(0.60)/ln(0.95) ~= 9.96.
+      (b) Smallest whole number of steps: t = 10. (Check: 0.95^10 ~= 0.599 < 0.60;
+      0.95^9 ~= 0.630 > 0.60.)
+    answer: "threshold ~= 9.96; t = 10"
+    shortcut_used: ["take ln", "ln(base) < 0 flips the inequality", "round up"]
+    verify: "(0.95**10 < 0.60) and (0.95**9 > 0.60) and abs(math.log(0.60)/math.log(0.95) - 9.96) < 1e-2 and (math.ceil(math.log(0.60)/math.log(0.95)) == 10)"

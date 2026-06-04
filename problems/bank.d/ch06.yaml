@@ -1,0 +1,326 @@
+# Problem bank — Chapter 6 (S.S. Anne / Vermilion City): Random variables — the RV
+# language. Outcome 2a: discrete vs continuous, pmf, pdf, cdf, survival, percentiles.
+# Schema per problems/bank.yaml header. This file is owned by Chapter 6 only.
+# Statements/solutions/answers mirror book/chapters/ch06_random_variables.md exactly.
+# Verify expressions use the names exposed by sims/verify_examples.py (math, st);
+# no __import__.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C6.1
+    chapter: 6
+    tier: route_trainer
+    archetype: "normalize a formula pmf; tail and cdf value"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Counting Pidgey nesting on the S.S. Anne's mast each morning."
+    statement: |
+      The number of Pidgey nesting on the S.S. Anne's mast each morning, X, has
+      pmf p(x)=k*x for x=1,2,3,4 and 0 otherwise. Find k, then state P(X>=3) and
+      F(2)=P(X<=2).
+    solution: |
+      Force the masses to total 1: sum_{x=1}^4 k*x = k(1+2+3+4) = 10k = 1, so
+      k=0.1. Then p(1)=0.1, p(2)=0.2, p(3)=0.3, p(4)=0.4.
+      P(X>=3) = p(3)+p(4) = 0.3+0.4 = 0.7.
+      F(2) = p(1)+p(2) = 0.1+0.2 = 0.3.
+    answer: "k=0.1; P(X>=3)=0.7; F(2)=0.3"
+    shortcut_used: ["normalize masses to 1", "probability = sum of qualifying masses"]
+    verify: "abs(1/(1+2+3+4) - 0.1) < 1e-9 and abs(0.1*(3+4) - 0.7) < 1e-9 and abs(0.1*(1+2) - 0.3) < 1e-9"
+
+  - id: C6.2
+    chapter: 6
+    tier: route_trainer
+    archetype: "normalize a continuous density; range probability"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "A Geodude's nap time in the cargo hold."
+    statement: |
+      A Geodude's nap time X (hours) in the cargo hold has density f(x)=c(1-x)
+      for 0<=x<=1. Find c and P(X<=1/2).
+    solution: |
+      Normalize: integral_0^1 c(1-x) dx = c[x - x^2/2]_0^1 = c/2 = 1, so c=2.
+      Then P(X<=1/2) = integral_0^{1/2} 2(1-x) dx = 2[x - x^2/2]_0^{1/2}
+      = 2(1/2 - 1/8) = 2*(3/8) = 3/4.
+    answer: "c=2; P(X<=1/2)=3/4"
+    shortcut_used: ["total area = 1", "probability = area over range"]
+    verify: "abs(1/(1.0/2) - 2) < 1e-9 and abs(2*(0.5 - 0.5**2/2) - 0.75) < 1e-9"
+
+  - id: C6.3
+    chapter: 6
+    tier: route_trainer
+    archetype: "build a discrete cdf staircase from a pmf"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Reading the flooded-compartment clipboard from Engineering."
+    statement: |
+      The flooded-compartment count X has pmf p(0)=0.1, p(1)=0.4, p(2)=0.3,
+      p(3)=0.2. Write the full cdf F(x) (all four steps) and state P(X>=2).
+    solution: |
+      Accumulate from the bottom:
+      F(x)=0 for x<0; 0.1 for 0<=x<1; 0.5 for 1<=x<2; 0.8 for 2<=x<3; 1.0 for x>=3.
+      P(X>=2) = p(2)+p(3) = 0.3+0.2 = 0.5 (equivalently 1-F(1) = 1-0.5 = 0.5).
+    answer: "staircase 0.1/0.5/0.8/1.0; P(X>=2)=0.5"
+    shortcut_used: ["cdf accumulates masses", "right-continuous staircase"]
+    verify: "abs(0.1 - 0.1) < 1e-9 and abs((0.1+0.4) - 0.5) < 1e-9 and abs((0.1+0.4+0.3) - 0.8) < 1e-9 and abs((0.1+0.4+0.3+0.2) - 1.0) < 1e-9 and abs((0.3+0.2) - 0.5) < 1e-9"
+
+  - id: C6.4
+    chapter: 6
+    tier: route_trainer
+    archetype: "cdf -> density, survival, median (exponential-type)"
+    outcomes: ["2a"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "A continuous lifetime read off its cumulative curve."
+    statement: |
+      A continuous X>=0 has cdf F(x)=1-e^{-x/8}. Find the density f(x), the
+      survival probability P(X>8), and the median.
+    solution: |
+      Differentiate the cdf: f(x)=F'(x)=(1/8)e^{-x/8}.
+      Survival: P(X>8)=S(8)=1-F(8)=e^{-1}~=0.368.
+      Median: 1-e^{-m/8}=1/2 => e^{-m/8}=1/2 => m=8*ln 2 ~= 5.55.
+    answer: "f=(1/8)e^{-x/8}; S(8)=e^{-1}~=0.368; median=8 ln 2~=5.55"
+    shortcut_used: ["f=F'", "S=1-F", "invert cdf for median"]
+    verify: "abs(math.exp(-1) - 0.3679) < 1e-3 and abs(8*math.log(2) - 5.545) < 1e-3"
+
+  - id: C6.5
+    chapter: 6
+    tier: route_trainer
+    archetype: "median from a given cdf (algebraic inversion)"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Finding the half-way loss size for a salvage claim."
+    statement: |
+      A loss X has cdf F(x)=1 - 16/(x+4)^2 for x>=0. Find the median.
+    solution: |
+      Set F(m)=1/2: 16/(m+4)^2 = 1/2 => (m+4)^2 = 32 => m+4 = 4*sqrt(2)
+      => m = 4*sqrt(2) - 4 ~= 1.657.
+    answer: "m = 4 sqrt(2) - 4 ~= 1.657"
+    shortcut_used: ["set F=1/2 and solve"]
+    verify: "abs((4*math.sqrt(2) - 4) - 1.657) < 1e-3 and abs((1 - 16/((4*math.sqrt(2)-4)+4)**2) - 0.5) < 1e-9"
+
+  - id: C6.6
+    chapter: 6
+    tier: route_trainer
+    archetype: "verify a density; tail probability"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Checking a Voltorb's stored-charge density."
+    statement: |
+      A Voltorb's stored charge X has density f(x)=(3/16)(4-x^2) for 0<=x<=2.
+      Verify it integrates to 1 and find P(X>1).
+    solution: |
+      integral_0^2 (3/16)(4-x^2) dx = (3/16)[4x - x^3/3]_0^2
+      = (3/16)(8 - 8/3) = (3/16)*(16/3) = 1. Valid.
+      P(X>1) = (3/16) integral_1^2 (4-x^2) dx = (3/16)(16/3 - 11/3)
+      = (3/16)*(5/3) = 5/16 ~= 0.3125.
+    answer: "valid; P(X>1)=5/16~=0.3125"
+    shortcut_used: ["total area = 1 check", "tail = area over (1,2]"]
+    verify: "abs((3.0/16)*(8 - 8.0/3) - 1) < 1e-9 and abs((3.0/16)*((4*2 - 2**3/3) - (4*1 - 1**3/3)) - 5.0/16) < 1e-9"
+
+  - id: C6.7
+    chapter: 6
+    tier: route_trainer
+    archetype: "normalize an infinite-support pmf via geometric series"
+    outcomes: ["2a"]
+    distributions: [geometric]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "A count that can run on forever with halving chances."
+    statement: |
+      A discrete X has pmf p(x)=c*(1/2)^x for x=1,2,3,.... Find c (using the
+      geometric series), then P(X<=2).
+    solution: |
+      sum_{x=1}^infinity c*(1/2)^x = c * ( (1/2)/(1-1/2) ) = c = 1, so c=1.
+      Then P(X<=2) = p(1)+p(2) = 1/2 + 1/4 = 3/4.
+    answer: "c=1; P(X<=2)=3/4"
+    shortcut_used: ["geometric series sum to 1", "sum first two masses"]
+    verify: "abs((0.5/(1-0.5)) - 1) < 1e-9 and abs((0.5 + 0.25) - 0.75) < 1e-9"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C6.8
+    chapter: 6
+    tier: gym_battle
+    archetype: "continuous cdf (all pieces), survival, median"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Lt. Surge's backup capacitor discharge energy."
+    statement: |
+      Lt. Surge's backup capacitor discharges energy X (hundreds of volts) with
+      density f(x)=(1/2)x for 0<=x<=2. Find the cdf F(x) (all pieces), P(X>1),
+      and the median.
+    solution: |
+      F(x)=integral_0^x (1/2)t dt = x^2/4 on [0,2]; F=0 below 0, F=1 above 2.
+      P(X>1) = S(1) = 1 - F(1) = 1 - 1/4 = 3/4.
+      Median: m^2/4 = 1/2 => m^2 = 2 => m = sqrt(2) ~= 1.414.
+    answer: "F=x^2/4 on [0,2]; P(X>1)=3/4; median=sqrt(2)~=1.414"
+    shortcut_used: ["integrate density for cdf", "S=1-F", "set F=1/2"]
+    verify: "abs((1**2/4) - 0.25) < 1e-9 and abs((1 - 1.0/4) - 0.75) < 1e-9 and abs(math.sqrt(2) - 1.4142) < 1e-3 and abs((math.sqrt(2)**2/4) - 0.5) < 1e-9"
+
+  - id: C6.9
+    chapter: 6
+    tier: gym_battle
+    archetype: "verify density, cdf, tail on [1, infinity) (improper integral)"
+    outcomes: ["2a"]
+    distributions: [pareto]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A salvage drone's repair cost with a heavy tail."
+    statement: |
+      A salvage drone's repair cost X (thousands) has density f(x)=3/x^4 for
+      x>=1. Verify it is a valid density, find the cdf F(x) for x>=1, and find
+      P(X>2).
+    solution: |
+      integral_1^infinity 3 x^{-4} dx = [-x^{-3}]_1^infinity = 0 - (-1) = 1. Valid.
+      F(x) = integral_1^x 3 t^{-4} dt = 1 - x^{-3} for x>=1.
+      P(X>2) = S(2) = 2^{-3} = 1/8 = 0.125.
+    answer: "valid; F=1-x^{-3}; P(X>2)=0.125"
+    shortcut_used: ["improper-integral area = 1", "S(x)=x^{-3}"]
+    verify: "abs((0 - (-1.0)) - 1) < 1e-9 and abs((1 - 2**-3) - (1 - 0.125)) < 1e-9 and abs(2**-3 - 0.125) < 1e-9"
+
+  - id: C6.10
+    chapter: 6
+    tier: gym_battle
+    archetype: "percentile from a survival function (invert; watch the tail)"
+    outcomes: ["2a"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Bracing for the worst-case jolt from Surge's Raichu."
+    statement: |
+      The shock Y (hundreds of volts) of Surge's Raichu is Exponential with
+      survival function S(y)=e^{-y/5} for y>=0. Find the 90th percentile (the
+      value exceeded only 10% of the time).
+    solution: |
+      "Exceeded 10% of the time" => S(pi)=0.10: e^{-pi/5}=0.10
+      => pi = -5*ln 0.10 = 5*ln 10 ~= 11.51. (Check: F(11.51)=0.90.)
+    answer: "pi_{0.90} = 5 ln 10 ~= 11.51"
+    shortcut_used: ["S=0.10 names the 90th percentile", "one ln to invert"]
+    verify: "abs(5*math.log(10) - 11.513) < 1e-3 and abs(math.exp(-(5*math.log(10))/5) - 0.10) < 1e-9"
+
+  - id: C6.11
+    chapter: 6
+    tier: gym_battle
+    archetype: "cdf and interval probability via F(b)-F(a)"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Depth of a flooded compartment between two readings."
+    statement: |
+      The depth X (meters) of a flooded compartment has density
+      f(x)=(3/16)(4-x^2) for 0<=x<=2. Write the cdf F(x) on [0,2] and find
+      P(1<=X<=2).
+    solution: |
+      F(x) = integral_0^x (3/16)(4-t^2) dt = (3/16)(4x - x^3/3) on [0,2].
+      P(1<=X<=2) = F(2)-F(1) = 1 - (3/16)(4 - 1/3) = 1 - (3/16)*(11/3)
+      = 1 - 11/16 = 5/16 ~= 0.3125.
+    answer: "F=(3/16)(4x - x^3/3) on [0,2]; P(1<=X<=2)=5/16~=0.3125"
+    shortcut_used: ["accumulate density for cdf", "interval = F(b)-F(a)"]
+    verify: "abs(((3.0/16)*(4*2 - 2**3/3)) - 1) < 1e-9 and abs(((3.0/16)*(4*2 - 2**3/3)) - ((3.0/16)*(4*1 - 1**3/3)) - 5.0/16) < 1e-9"
+
+  - id: C6.12
+    chapter: 6
+    tier: gym_battle
+    archetype: "survival values -> pmf -> cdf"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Recovering a discrete loss model from tail probabilities."
+    statement: |
+      A discrete loss N in {0,1,2,3} has survival values P(N>0)=0.6, P(N>1)=0.35,
+      P(N>2)=0.15, P(N>3)=0. Recover the full pmf p(0),...,p(3) and the cdf, and
+      find P(N>=2).
+    solution: |
+      Masses are differences of the survival values:
+      p(0)=1-0.6=0.4; p(1)=0.6-0.35=0.25; p(2)=0.35-0.15=0.20; p(3)=0.15-0=0.15.
+      cdf: F(0)=0.4, F(1)=0.65, F(2)=0.85, F(3)=1.
+      P(N>=2) = p(2)+p(3) = 0.20+0.15 = 0.35 (also = S(1) = 0.35).
+    answer: "pmf 0.4/0.25/0.20/0.15; cdf 0.4/0.65/0.85/1; P(N>=2)=0.35"
+    shortcut_used: ["p(k)=S(k-1)-S(k)", "P(N>=2)=S(1)"]
+    verify: "abs((1-0.6) - 0.4) < 1e-9 and abs((0.6-0.35) - 0.25) < 1e-9 and abs((0.35-0.15) - 0.20) < 1e-9 and abs((0.15-0) - 0.15) < 1e-9 and abs((0.20+0.15) - 0.35) < 1e-9"
+
+  - id: C6.13
+    chapter: 6
+    tier: gym_battle
+    archetype: "normalize a parabolic density; range probability; nonnegativity"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A bump-shaped density to normalize and read."
+    statement: |
+      A density is f(x)=c*x(2-x) on 0<=x<=2 and 0 elsewhere. Find c, then
+      P(X<=1), then verify your c keeps f>=0 on the support.
+    solution: |
+      integral_0^2 c*x(2-x) dx = c[x^2 - x^3/3]_0^2 = c(4 - 8/3) = 4c/3 = 1
+      => c = 3/4.
+      P(X<=1) = (3/4) integral_0^1 x(2-x) dx = (3/4)[x^2 - x^3/3]_0^1
+      = (3/4)(1 - 1/3) = (3/4)*(2/3) = 1/2.
+      Since c=3/4>0 and x(2-x)>=0 on [0,2], f>=0.
+    answer: "c=3/4; P(X<=1)=1/2; f>=0 on [0,2]"
+    shortcut_used: ["total area = 1", "symmetry gives median at center"]
+    verify: "abs(1/(4.0/3) - 0.75) < 1e-9 and abs((3.0/4)*((1**2 - 1**3/3) - 0) - 0.5) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =====================
+
+  - id: C6.14
+    chapter: 6
+    tier: elite_challenge
+    archetype: "cdf -> density, verify, interval, percentile"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A power-law cdf to dismantle into all its pieces."
+    statement: |
+      A continuous X has cdf F(x)=0 for x<0, x^2 for 0<=x<=1, and 1 for x>1.
+      Find the density f(x), confirm it integrates to 1, find P(0.25<=X<=0.75),
+      and find the 80th percentile.
+    solution: |
+      f(x)=F'(x)=2x on [0,1] (and 0 elsewhere).
+      Check: integral_0^1 2x dx = x^2|_0^1 = 1. Valid.
+      P(0.25<=X<=0.75) = F(0.75)-F(0.25) = 0.75^2 - 0.25^2 = 0.5625 - 0.0625 = 0.5.
+      80th percentile: F(pi)=pi^2=0.80 => pi = sqrt(0.8) ~= 0.894.
+    answer: "f=2x; integrates to 1; P=0.5; pi_{0.80}=sqrt(0.8)~=0.894"
+    shortcut_used: ["f=F'", "interval = F(b)-F(a)", "invert F for percentile"]
+    verify: "abs((0.75**2 - 0.25**2) - 0.5) < 1e-9 and abs(math.sqrt(0.8) - 0.8944) < 1e-3 and abs(math.sqrt(0.8)**2 - 0.80) < 1e-9"
+
+  - id: C6.15
+    chapter: 6
+    tier: elite_challenge
+    archetype: "survival via substitution, median, tail (Rayleigh-type)"
+    outcomes: ["2a"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Time-to-flood of the lower deck under a Rayleigh-type model."
+    statement: |
+      The time-to-flood T (minutes) has density f(t)=(t/50)e^{-t^2/100} for t>=0
+      (a Rayleigh-type model, given). (i) Find the survival function S(t) using
+      the substitution w=t^2/100. (ii) Find the median time-to-flood. (iii) State
+      P(T>10).
+    solution: |
+      (i) S(t)=integral_t^infinity (u/50)e^{-u^2/100} du; with w=u^2/100,
+      dw=(u/50)du, so S(t)=integral_{t^2/100}^infinity e^{-w} dw = e^{-t^2/100}.
+      (ii) Median: e^{-m^2/100}=1/2 => m^2=100 ln 2 => m=10 sqrt(ln 2) ~= 8.33.
+      (iii) P(T>10)=S(10)=e^{-1} ~= 0.368.
+    answer: "S=e^{-t^2/100}; median=10 sqrt(ln 2)~=8.33; P(T>10)=e^{-1}~=0.368"
+    shortcut_used: ["u-substitution collapses to e^{-w}", "set S=1/2 for median"]
+    verify: "abs(10*math.sqrt(math.log(2)) - 8.326) < 1e-3 and abs(math.exp(-(10*math.sqrt(math.log(2)))**2/100) - 0.5) < 1e-9 and abs(math.exp(-1) - 0.3679) < 1e-3"

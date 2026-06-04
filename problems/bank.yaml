@@ -1,0 +1,42 @@
+# Problem bank — every problem is data, not prose (DESIGN.md 4.5).
+# tools/check_coverage.py reads this + syllabus/outcomes.yaml to prove completeness;
+# Chapter 13 mocks are assembled by sampling to the weight split.
+#
+# Schema per entry:
+#   id:            C{chapter}.{n}
+#   chapter:       int
+#   tier:          route_trainer | gym_battle | elite_challenge
+#   archetype:     short recognition label
+#   outcomes:      [list of outcome ids from syllabus/outcomes.yaml]
+#   distributions: [list of in-scope distribution keys touched]
+#   provenance:    original | adapted-from-SOA-# | inspired-by
+#   difficulty:    1-5 (ADAPT-style)
+#   narrative_hook: in-world reason Ash solves it
+#   statement:     |  ...
+#   solution:      |  ... full worked steps ...
+#   answer:        "E" or numeric
+#   shortcut_used: [optional]
+#   verify:        optional Python expression checked by sims/verify_examples.py
+
+problems:
+  # ---- SEED EXAMPLE (reference shape; replace/extend via the workflow) ----
+  - id: C8.01
+    chapter: 8
+    tier: route_trainer
+    archetype: "expected payment per loss, exponential loss + ordinary deductible"
+    outcomes: ["2e"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "First quote for the Safari Zone warden's flee-cost policy."
+    statement: |
+      A fled Pokemon's replacement cost X (in Poke-dollars, thousands) is
+      Exponential with mean 4. The warden's policy carries an ordinary
+      deductible of 2. Find the expected payment per loss.
+    solution: |
+      For an exponential loss with mean theta and ordinary deductible d, the
+      memoryless property gives the expected payment per loss as
+      E[(X-d)_+] = theta * e^(-d/theta) = 4 * e^(-2/4) = 4 * e^(-0.5) ~= 2.426.
+    answer: 2.426
+    shortcut_used: ["memoryless exponential"]
+    verify: "abs(4*math.exp(-0.5) - 2.426) < 0.001"

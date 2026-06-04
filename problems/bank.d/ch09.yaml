@@ -1,0 +1,434 @@
+# Problem bank — Chapter 9 (Saffron City): Continuous distributions and
+# single-variable transformations — uniform, exponential, gamma, beta, normal,
+# cdf/Jacobian transforms. Outcome 2d3. Schema per problems/bank.yaml header.
+# This file is owned by Chapter 9 only. Statements/solutions/answers mirror the
+# chapter's printed problem set and Answer Key (ch09_continuous.md) exactly.
+# Verify expressions use the names exposed by sims/verify_examples.py (math, st);
+# never __import__, never a literal-answer restatement.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C9.1
+    chapter: 9
+    tier: route_trainer
+    archetype: "continuous uniform: band probability, mean, variance"
+    outcomes: ["2d3"]
+    distributions: ["uniform"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Dodging a glitching Porygon that spawns uniformly on a corridor."
+    statement: |
+      A glitching Porygon spawns at X ~ Uniform(2, 10). Find P(4 < X < 7), and
+      state E[X] and Var(X).
+    solution: |
+      P(4<X<7) = (7-4)/(10-2) = 3/8 = 0.375.
+      E[X] = (a+b)/2 = (2+10)/2 = 6.
+      Var(X) = (b-a)^2/12 = (10-2)^2/12 = 64/12 = 5.3333.
+    answer: "P(4<X<7)=0.375; E[X]=6; Var(X)=64/12=5.3333"
+    shortcut_used: ["uniform band = length ratio", "mean midpoint", "variance (b-a)^2/12"]
+    verify: "abs((7-4)/(10-2) - 0.375) < 1e-9 and abs((2+10)/2 - 6) < 1e-9 and abs((10-2)**2/12 - 5.3333) < 1e-3"
+
+  - id: C9.2
+    chapter: 9
+    tier: route_trainer
+    archetype: "exponential survival and cdf"
+    outcomes: ["2d3"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "A Drowzee's hypnosis whose duration is an exponential wait."
+    statement: |
+      A Drowzee's hypnosis lasts X ~ Exponential(theta = 6) minutes. Find P(X > 6)
+      and P(X <= 3).
+    solution: |
+      S(x) = e^{-x/theta}. P(X>6) = e^{-6/6} = e^{-1} = 0.3679.
+      P(X<=3) = 1 - e^{-3/6} = 1 - e^{-0.5} = 0.3935.
+    answer: "P(X>6)=0.3679; P(X<=3)=0.3935"
+    shortcut_used: ["exponential survival e^{-x/theta}", "cdf 1 - e^{-x/theta}"]
+    verify: "abs(math.exp(-6/6) - 0.3679) < 1e-4 and abs((1 - math.exp(-3/6)) - 0.3935) < 1e-4"
+
+  - id: C9.3
+    chapter: 9
+    tier: route_trainer
+    archetype: "normal standardization: left area and right tail"
+    outcomes: ["2d3"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Reading a Kadabra's idle-energy meter off the Phi table."
+    statement: |
+      A Kadabra's idle-energy reading is X ~ Normal(mu = 70, sigma = 10). Find
+      P(X < 85) and P(X > 60) using Phi(1.5) = 0.9332, Phi(1) = 0.8413.
+    solution: |
+      P(X<85) = Phi((85-70)/10) = Phi(1.5) = 0.9332.
+      P(X>60) = 1 - Phi((60-70)/10) = 1 - Phi(-1) = Phi(1) = 0.8413.
+    answer: "P(X<85)=0.9332; P(X>60)=0.8413"
+    shortcut_used: ["standardize z=(x-mu)/sigma", "symmetry Phi(-z)=1-Phi(z)"]
+    verify: "abs(st.norm.cdf((85-70)/10) - 0.9332) < 1e-3 and abs(st.norm.cdf((70-60)/10) - 0.8413) < 1e-3"
+
+  - id: C9.4
+    chapter: 9
+    tier: route_trainer
+    archetype: "gamma read-off: mean, variance, density"
+    outcomes: ["2d3"]
+    distributions: ["gamma"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Sabrina's spoon-bending duration as a gamma wait."
+    statement: |
+      Sabrina's spoon-bending duration is X ~ Gamma(alpha = 2, theta = 3) seconds.
+      State E[X], Var(X), and write the density f(x).
+    solution: |
+      E[X] = alpha*theta = 2*3 = 6.
+      Var(X) = alpha*theta^2 = 2*9 = 18.
+      f(x) = 1/(Gamma(2) 3^2) x^1 e^{-x/3} = (1/9) x e^{-x/3}, x > 0.
+    answer: "E[X]=6; Var(X)=18; f(x)=(1/9) x e^{-x/3}"
+    shortcut_used: ["gamma mean alpha*theta", "gamma variance alpha*theta^2", "Gamma(2)=1"]
+    verify: "abs(2*3 - 6) < 1e-9 and abs(2*3**2 - 18) < 1e-9 and abs(1/(math.gamma(2)*3**2) - 1/9) < 1e-12"
+
+  - id: C9.5
+    chapter: 9
+    tier: route_trainer
+    archetype: "beta moments and tilt direction"
+    outcomes: ["2d3"]
+    distributions: ["beta"]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "The fraction of a psychic barrier that holds is a beta proportion."
+    statement: |
+      The fraction X of a psychic barrier that holds is X ~ Beta(alpha = 2,
+      beta = 3). Find E[X] and Var(X), and say whether the mean is below or above
+      1/2.
+    solution: |
+      E[X] = alpha/(alpha+beta) = 2/5 = 0.4 (below 1/2, leaning toward 0).
+      Var(X) = alpha*beta / ((alpha+beta)^2 (alpha+beta+1))
+             = 6 / (25*6) = 6/150 = 0.04.
+    answer: "E[X]=0.4 (below 1/2); Var(X)=0.04"
+    shortcut_used: ["beta mean alpha/(alpha+beta)", "beta variance formula"]
+    verify: "abs(2/(2+3) - 0.4) < 1e-9 and abs((2*3)/((2+3)**2*(2+3+1)) - 0.04) < 1e-9 and 2/(2+3) < 0.5"
+
+  - id: C9.6
+    chapter: 9
+    tier: route_trainer
+    archetype: "linear map of a uniform stays uniform"
+    outcomes: ["2d3"]
+    distributions: ["uniform"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Warping a reality coordinate through a linear transform."
+    statement: |
+      A reality coordinate X ~ Uniform(0, 1) is warped to Y = 8X + 2. Find the
+      distribution, mean, and variance of Y.
+    solution: |
+      X ~ Uniform(0,1) => Y = 8X + 2 ~ Uniform(2, 10).
+      E[Y] = 8*(1/2) + 2 = 6.
+      Var(Y) = 8^2 * (1/12) = 64/12 = 5.3333.
+    answer: "Y~Uniform(2,10); E[Y]=6; Var(Y)=64/12=5.3333"
+    shortcut_used: ["linear map of uniform", "E[aX+b]=aE+b", "Var(aX+b)=a^2 Var"]
+    verify: "abs(8*0.5 + 2 - 6) < 1e-9 and abs(8**2*(1/12) - 5.3333) < 1e-3"
+
+  - id: C9.7
+    chapter: 9
+    tier: route_trainer
+    archetype: "normal inverse lookup (percentile)"
+    outcomes: ["2d3"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Finding Mr. Mime's 95th-percentile barrier strength."
+    statement: |
+      Mr. Mime's barrier strength is X ~ Normal(mu = 40, sigma = 5). Find x0 with
+      P(X < x0) = 0.95 (an inverse lookup; use z_0.95 = 1.645).
+    solution: |
+      Phi(z) = 0.95 => z = 1.645. x0 = mu + z*sigma = 40 + 1.645*5 = 48.225 ~= 48.2.
+    answer: "x0=48.225~=48.2"
+    shortcut_used: ["inverse lookup z then x0=mu+z*sigma"]
+    verify: "abs((40 + 1.645*5) - 48.225) < 1e-3 and abs(st.norm.ppf(0.95) - 1.645) < 1e-2"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C9.8
+    chapter: 9
+    tier: gym_battle
+    archetype: "exponential memorylessness: conditional survival and remaining mean"
+    outcomes: ["2d3"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A fainted Hypno whose recovery clock refuses to drop."
+    statement: |
+      A fainted Hypno's recovery time is exponential with mean 20 minutes; it has
+      rested 8 minutes. Find the probability it needs more than 15 additional
+      minutes, and the expected additional time. (Use memorylessness.)
+    solution: |
+      theta = 20. Memoryless: the extra wait is a fresh Exponential(20).
+      P(extra > 15) = e^{-15/20} = e^{-0.75} = 0.4724.
+      Expected additional time = theta = 20 minutes.
+    answer: "P(extra>15)=0.4724; expected additional=20 min"
+    shortcut_used: ["memorylessness collapses elapsed time", "remaining mean = theta"]
+    verify: "abs(math.exp(-15/20) - 0.4724) < 1e-4 and abs(math.exp(-(8+15)/20)/math.exp(-8/20) - math.exp(-15/20)) < 1e-12"
+
+  - id: C9.9
+    chapter: 9
+    tier: gym_battle
+    archetype: "gamma kernel recognition: normalize and read mean"
+    outcomes: ["2d3"]
+    distributions: ["gamma"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Identifying Saffron's interference density from its kernel."
+    statement: |
+      Saffron's psychic interference X has density f(x) = c x e^{-x/4} for x > 0.
+      Find c, identify the named distribution and its parameters, and compute E[X].
+    solution: |
+      f(x) ∝ x^1 e^{-x/4} is the kernel of a Gamma(alpha = 2, theta = 4).
+      Normalize: c = 1/(Gamma(2) 4^2) = 1/16 (since integral_0^inf x e^{-x/4} dx
+      = Gamma(2) 4^2 = 16). E[X] = alpha*theta = 2*4 = 8.
+    answer: "c=1/16; Gamma(2,4); E[X]=8"
+    shortcut_used: ["Master-Ball integral Gamma(alpha)theta^alpha", "gamma mean alpha*theta"]
+    verify: "abs(1/(math.gamma(2)*4**2) - 1/16) < 1e-12 and abs(2*4 - 8) < 1e-9"
+
+  - id: C9.10
+    chapter: 9
+    tier: gym_battle
+    archetype: "normal interval and within-2-sigma (68-95-99.7)"
+    outcomes: ["2d3"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Bracketing Alakazam's surge intensity around its mean."
+    statement: |
+      Alakazam's surge intensity is X ~ Normal(mu = 100, sigma = 15). Find
+      P(85 < X < 130) and the probability the intensity is within 2 standard
+      deviations of the mean. (Use Phi(2) = 0.9772, Phi(1) = 0.8413.)
+    solution: |
+      (85-100)/15 = -1, (130-100)/15 = 2.
+      P(85<X<130) = Phi(2) - Phi(-1) = 0.9772 - (1 - 0.8413) = 0.8185.
+      Within 2 sigma: 2*Phi(2) - 1 = 2*0.9772 - 1 = 0.9544.
+    answer: "P(85<X<130)=0.8185; within 2 sigma=0.9544"
+    shortcut_used: ["band = Phi(z2)-Phi(z1)", "within k sigma = 2*Phi(k)-1"]
+    verify: "abs((st.norm.cdf(2) - (1 - st.norm.cdf(1))) - 0.8185) < 1e-3 and abs((2*0.9772 - 1) - 0.9544) < 1e-9"
+
+  - id: C9.11
+    chapter: 9
+    tier: gym_battle
+    archetype: "transformation Y=X^2 via cdf method (non-monotone handled)"
+    outcomes: ["2d3"]
+    distributions: ["uniform"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A psychic pulse position squared into a new readout."
+    statement: |
+      A psychic pulse arrives at position X ~ Uniform(0, 10). Let Y = X^2. Find
+      the density f_Y(y) for 0 < y < 100 by the cdf method.
+    solution: |
+      For 0<y<100, F_Y(y) = P(X^2 <= y) = P(X <= sqrt(y)) = sqrt(y)/10
+      (since X ~ Uniform(0,10)). Differentiate:
+      f_Y(y) = (1/10)*(1/(2 sqrt(y))) = 1/(20 sqrt(y)), 0 < y < 100.
+    answer: "f_Y(y)=1/(20 sqrt(y)), 0<y<100"
+    shortcut_used: ["cdf method", "F_Y(y)=F_X(sqrt y) then differentiate"]
+    verify: "abs((1/(20*math.sqrt(25))) - (1/10)*(1/(2*math.sqrt(25)))) < 1e-12 and abs((math.sqrt(100)/10 - math.sqrt(0)/10) - 1.0) < 1e-12"
+
+  - id: C9.12
+    chapter: 9
+    tier: gym_battle
+    archetype: "minimum of independent exponentials: rates add"
+    outcomes: ["2d3"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Two Abra racing to recover; the first one wins."
+    statement: |
+      Two independent Abra recoveries are each Exponential(theta = 12). Let T be
+      the time until the first recovers. Identify the distribution of T and find
+      E[T]. (Hint: minimum of independent exponentials.)
+    solution: |
+      Rates add: S_T(t) = e^{-t/12} e^{-t/12} = e^{-2t/12} = e^{-t/6}.
+      So T ~ Exponential(theta = 6) and E[T] = 6 minutes.
+    answer: "T~Exponential(6); E[T]=6 min"
+    shortcut_used: ["min of exponentials: add rates", "1/theta = 1/12 + 1/12"]
+    verify: "abs(1/(1/12 + 1/12) - 6) < 1e-9 and abs((1/6) - (1/12 + 1/12)) < 1e-12"
+
+  - id: C9.13
+    chapter: 9
+    tier: gym_battle
+    archetype: "beta as a pure power: tail probability and mean"
+    outcomes: ["2d3"]
+    distributions: ["beta"]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "The proportion of Silph floors Sabrina controls."
+    statement: |
+      The proportion X of Silph floors Sabrina controls is Beta(alpha = 3,
+      beta = 1), i.e. f(x) = 3x^2 on (0,1). Find P(X > 0.5) and E[X].
+    solution: |
+      P(X>0.5) = integral_0.5^1 3x^2 dx = [x^3]_0.5^1 = 1 - 0.125 = 0.875.
+      E[X] = alpha/(alpha+beta) = 3/4 = 0.75.
+    answer: "P(X>0.5)=0.875; E[X]=0.75"
+    shortcut_used: ["integrate pure-power beta density", "beta mean alpha/(alpha+beta)"]
+    verify: "abs((1 - 0.5**3) - 0.875) < 1e-9 and abs(3/(3+1) - 0.75) < 1e-9"
+
+  - id: C9.14
+    chapter: 9
+    tier: gym_battle
+    archetype: "transformation Y=2X via Jacobian method (scaled exponential)"
+    outcomes: ["2d3"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A teleport delay shown at double scale on the display."
+    statement: |
+      A teleport delay is X ~ Exponential(theta = 4). The display shows Y = 2X.
+      Find the density of Y and its mean by the Jacobian method.
+    solution: |
+      Y = 2X => x = y/2, |dx/dy| = 1/2.
+      f_Y(y) = f_X(y/2)*(1/2) = (1/4) e^{-(y/2)/4} * (1/2) = (1/8) e^{-y/8}.
+      So Y ~ Exponential(theta = 8) and E[Y] = 8 (matches E[2X] = 2*4).
+    answer: "Y~Exponential(8); E[Y]=8"
+    shortcut_used: ["Jacobian f_Y=f_X(g^{-1})|dx/dy|", "scaling exponential by 2 -> theta*2"]
+    verify: "abs((1/4)*math.exp(-(8/2)/4)*(1/2) - (1/8)*math.exp(-8/8)) < 1e-12 and abs(2*4 - 8) < 1e-9"
+
+  - id: C9.15
+    chapter: 9
+    tier: gym_battle
+    archetype: "recover normal mu and sigma from two percentiles"
+    outcomes: ["2d3"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Pinning down Sabrina's peak-power law from two quantiles."
+    statement: |
+      Sabrina's daily peak-power reading is Normal(mu, sigma^2). You observe
+      P(X < 58) = 0.2 and P(X < 82) = 0.9. Solve for mu and sigma. (Use
+      Phi^{-1}(0.2) = -0.84, Phi^{-1}(0.9) = 1.28.)
+    solution: |
+      58 = mu - 0.84 sigma and 82 = mu + 1.28 sigma.
+      Subtract: 24 = 2.12 sigma => sigma = 11.32.
+      Then mu = 58 + 0.84(11.32) = 67.51 ~= 67.5.
+    answer: "mu=67.5; sigma=11.32"
+    shortcut_used: ["x = mu + z*sigma at each percentile", "subtract to isolate sigma"]
+    verify: "abs(24/2.12 - 11.32) < 1e-2 and abs((58 + 0.84*(24/2.12)) - 67.5) < 0.05"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =====================
+
+  - id: C9.16
+    chapter: 9
+    tier: elite_challenge
+    archetype: "integrative: linear map of normal + tail + memorylessness + independence"
+    outcomes: ["2d3"]
+    distributions: ["normal", "exponential"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Timing an action window against Alakazam's amplified surge and a teammate's recovery."
+    statement: |
+      Alakazam's base intensity is X ~ Normal(100, 15^2), and her amplifier
+      outputs Y = 0.8X + 30. A teammate's recovery is T ~ Exponential(theta = 10),
+      already running 4 minutes. (a) Find the distribution of Y and P(Y > 120)
+      (use Phi(0.83) = 0.7967). (b) Find P(T > 10 | T > 4) and the expected
+      remaining recovery. (c) If you may act only when both "Y <= 120" and "T lasts
+      >= 6 more minutes" occur (independently), find the probability you get your
+      window.
+    solution: |
+      (a) Y = 0.8X + 30 ~ Normal(0.8*100+30, 0.8^2*225) = Normal(110, 144),
+          sigma_Y = 12. P(Y>120) = 1 - Phi((120-110)/12) = 1 - Phi(0.83)
+          = 1 - 0.7967 = 0.2033.
+      (b) Memoryless: P(T>10 | T>4) = P(T>6) = e^{-6/10} = e^{-0.6} = 0.5488;
+          expected remaining = theta = 10 minutes.
+      (c) Independent: P(Y<=120)*P(T>10 | T>4) = (1 - 0.2033)(0.5488)
+          = 0.7967*0.5488 = 0.4372.
+    answer: "(a) Y~Normal(110,144), P(Y>120)=0.2033; (b) 0.5488, 10 min; (c) 0.4372"
+    shortcut_used: ["linear rule Normal(a*mu+b, a^2*sigma^2)", "memorylessness", "independence multiplies"]
+    verify: "abs(0.8*100+30 - 110) < 1e-9 and abs(0.8**2*225 - 144) < 1e-9 and abs(math.exp(-6/10) - 0.5488) < 1e-4 and abs((1-0.2033)*0.5488 - 0.4372) < 1e-3"
+
+  - id: C9.17
+    chapter: 9
+    tier: elite_challenge
+    archetype: "Rayleigh-type: density from cdf, median, and X^2 is exponential"
+    outcomes: ["2d3"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "A surge whose squared magnitude turns out memoryless."
+    statement: |
+      A continuous surge X has cdf F(x) = 1 - e^{-(x/3)^2} for x > 0. (a) Find
+      f(x). (b) Find the median m (with F(m) = 0.5). (c) Show W = X^2 is
+      exponential and give its mean.
+    solution: |
+      (a) f(x) = F'(x) = e^{-(x/3)^2} * (2x/9) = (2x/9) e^{-x^2/9}, x > 0.
+      (b) F(m) = 0.5 => e^{-(m/3)^2} = 0.5 => (m/3)^2 = ln 2
+          => m = 3*sqrt(ln 2) = 3(0.8326) = 2.498.
+      (c) W = X^2: P(W<=w) = P(X<=sqrt w) = 1 - e^{-(sqrt w/3)^2} = 1 - e^{-w/9},
+          so W ~ Exponential(theta = 9) and E[W] = 9.
+    answer: "(a) (2x/9)e^{-x^2/9}; (b) m=2.498; (c) W~Exponential(9), E[W]=9"
+    shortcut_used: ["f = F'", "median from F(m)=0.5", "cdf method to identify Exponential"]
+    verify: "abs(3*math.sqrt(math.log(2)) - 2.498) < 1e-3 and abs((1 - math.exp(-9/9)) - (1 - math.exp(-(math.sqrt(9)/3)**2))) < 1e-12"
+
+  - id: C9.18
+    chapter: 9
+    tier: elite_challenge
+    archetype: "gamma as sum of exponentials: moments and integer-shape cdf"
+    outcomes: ["2d3"]
+    distributions: ["gamma", "exponential"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Three teleport ticks stacked into a single gamma wait."
+    statement: |
+      The sum S = T1 + T2 + T3 of three independent Exponential(theta = 2) waits.
+      (a) Name the distribution of S and give E[S], Var(S). (b) Using the gamma
+      cdf, evaluate P(S < 2). (c) Compare E[S] to a single Exponential(2) mean and
+      explain.
+    solution: |
+      (a) S ~ Gamma(alpha = 3, theta = 2). E[S] = alpha*theta = 6;
+          Var(S) = alpha*theta^2 = 12.
+      (b) Integer-shape gamma cdf:
+          P(S<2) = 1 - e^{-2/2}(1 + 2/2 + (2/2)^2/2) = 1 - e^{-1}(1 + 1 + 0.5)
+                 = 1 - 2.5 e^{-1} = 1 - 0.9197 = 0.0803.
+      (c) E[S] = 6 = 3 * E[Exponential(2)]: the mean of a sum of 3 exponentials
+          is 3 times the single-wait mean of 2, since means add.
+    answer: "(a) Gamma(3,2), E=6, Var=12; (b) 0.0803; (c) means add (6 = 3*2)"
+    shortcut_used: ["sum of exponentials is gamma", "means/independent variances add", "integer-shape gamma cdf via Poisson sum"]
+    verify: "abs(3*2 - 6) < 1e-9 and abs(3*2**2 - 12) < 1e-9 and abs((1 - 2.5*math.exp(-1)) - 0.0803) < 1e-4"
+
+  # ===================== TOP-UP: BETA =====================
+
+  - id: C9.19
+    chapter: 9
+    tier: route_trainer
+    archetype: "beta(1,1) is uniform; recognition + probability"
+    outcomes: ["2d3"]
+    distributions: ["beta"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "A randomly tuned dial setting on Bill's PC."
+    statement: |
+      A dial setting X (a proportion in (0,1)) follows Beta(alpha = 1, beta = 1).
+      Identify the equivalent standard distribution, then find E[X] and
+      P(0.25 < X < 0.75).
+    solution: |
+      Beta(1,1) has density f(x) = 1 on (0,1) -- it is the standard Uniform(0,1).
+      Hence E[X] = 1/2 = 0.5 and P(0.25 < X < 0.75) = 0.75 - 0.25 = 0.5.
+    answer: "Uniform(0,1); E[X]=0.5; P=0.5"
+    shortcut_used: ["Beta(1,1)=Uniform(0,1)", "uniform interval probability"]
+    verify: "abs(1/(1+1) - 0.5) < 1e-9 and abs((0.75-0.25) - 0.5) < 1e-9 and abs(st.beta.cdf(0.75,1,1)-st.beta.cdf(0.25,1,1) - 0.5) < 1e-9"
+
+  - id: C9.20
+    chapter: 9
+    tier: gym_battle
+    archetype: "beta mode and a probability via scipy CDF"
+    outcomes: ["2d3", "2b"]
+    distributions: ["beta"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "The share of a Saffron blackout that Sabrina's barrier absorbs."
+    statement: |
+      The absorbed share X is Beta(alpha = 5, beta = 2). Find the mode
+      (alpha-1)/(alpha+beta-2), the mean, and P(X > 0.8).
+    solution: |
+      Mode = (alpha-1)/(alpha+beta-2) = 4/5 = 0.8. Mean = alpha/(alpha+beta)
+      = 5/7 ~= 0.7143. Tail: P(X>0.8) = 1 - F(0.8) where F is the Beta(5,2) CDF;
+      numerically 1 - 0.65536 = 0.34464.
+    answer: "mode=0.8; mean=5/7~=0.7143; P(X>0.8)~=0.3446"
+    shortcut_used: ["beta mode formula", "beta mean", "beta tail via CDF"]
+    verify: "abs((5-1)/(5+2-2) - 0.8) < 1e-9 and abs(5/7 - 0.71429) < 1e-4 and abs((1 - st.beta.cdf(0.8,5,2)) - 0.34464) < 1e-4"

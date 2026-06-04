@@ -1,0 +1,348 @@
+# Problem bank — Chapter 3 (Pallet Town & Route 1): Sample spaces, axioms,
+# set operations & De Morgan, inclusion-exclusion, complement trick, and
+# mutually-exclusive vs. independent. Outcome 1a throughout. Schema per
+# problems/bank.yaml header. Owned solely by Chapter 3. Verify expressions are
+# Python boolean expressions evaluated against the names exposed by
+# sims/verify_examples.py (math, st, abs, round, sum); no __import__ needed.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C3.1
+    chapter: 3
+    tier: route_trainer
+    archetype: "sample space + complement (some vs. none)"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Your first wild encounter in the Route 1 grass."
+    statement: |
+      The next Route 1 encounter is Pidgey (0.45), Rattata (0.30), Spearow
+      (0.15), or "nothing rustles" otherwise. Write the sample space and find
+      P(some Pokemon appears).
+    solution: |
+      S = {Pidgey, Rattata, Spearow, nothing}, with masses 0.45, 0.30, 0.15,
+      0.10 (the last fills to 1). P(some) = 1 - P(nothing) = 1 - 0.10 = 0.90.
+    answer: "0.90"
+    shortcut_used: ["complement: 1 - P(nothing)"]
+    verify: "abs((1 - (1 - (0.45 + 0.30 + 0.15))) - 0.90) < 1e-9"
+
+  - id: C3.2
+    chapter: 3
+    tier: route_trainer
+    archetype: "complement rule from the axioms"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Logging your first wild sighting for Oak."
+    statement: |
+      A = 'the sighting is a bird-type', P(A) = 0.55. Using only the axioms,
+      find P(A^c) and name the rule.
+    solution: |
+      P(A^c) = 1 - P(A) = 1 - 0.55 = 0.45, by the complement rule (from A2 and
+      A3 applied to the disjoint pair A, A^c).
+    answer: "0.45"
+    shortcut_used: ["complement rule"]
+    verify: "abs((1 - 0.55) - 0.45) < 1e-9"
+
+  - id: C3.3
+    chapter: 3
+    tier: route_trainer
+    archetype: "disjoint union; mutually exclusive vs. independent"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "One wild slot, one Pokemon: Pidgey or Spearow."
+    statement: |
+      G = 'it is a Pidgey' (0.45), S = 'it is a Spearow' (0.15). One slot holds
+      one Pokemon, so both cannot appear. Find P(G or S) and classify the pair
+      (mutually exclusive / independent / both).
+    solution: |
+      G and S are mutually exclusive (G n S = empty). By A3, P(G u S) = 0.45 +
+      0.15 = 0.60. Not independent: P(G n S) = 0 != P(G)P(S) = 0.0675. Disjoint
+      positive-probability events are never independent.
+    answer: "0.60; mutually exclusive, not independent"
+    shortcut_used: ["A3 for disjoint events"]
+    verify: "abs((0.45 + 0.15) - 0.60) < 1e-9 and (0.0 != 0.45*0.15)"
+
+  - id: C3.4
+    chapter: 3
+    tier: route_trainer
+    archetype: "independent intersection, then union"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Brock's forecast: rain and berries on Route 1."
+    statement: |
+      P(rain) = 0.40, P(berry) = 0.50, independent. Find P(rain and berry),
+      then P(at least one).
+    solution: |
+      Independence factors the joint: P(rain n berry) = 0.40 * 0.50 = 0.20.
+      Union: P(rain u berry) = 0.40 + 0.50 - 0.20 = 0.70.
+    answer: "0.20; 0.70"
+    shortcut_used: ["independence product", "inclusion-exclusion"]
+    verify: "abs((0.40*0.50) - 0.20) < 1e-9 and abs((0.40 + 0.50 - 0.40*0.50) - 0.70) < 1e-9"
+
+  - id: C3.5
+    chapter: 3
+    tier: route_trainer
+    archetype: "four-cell Venn ledger"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "A trainer's quiz on the four-cell breakdown."
+    statement: |
+      P(A) = 0.6, P(B) = 0.5, P(A n B) = 0.2. Fill the four cells P(A n B^c),
+      P(A^c n B), P(A n B), P(A^c n B^c) and confirm they sum to 1.
+    solution: |
+      P(A n B^c) = 0.6 - 0.2 = 0.4; P(A^c n B) = 0.5 - 0.2 = 0.3; P(A n B) = 0.2;
+      P(A^c n B^c) = 1 - (0.4 + 0.3 + 0.2) = 0.1. Sum = 1.0.
+    answer: "0.4, 0.3, 0.2, 0.1 (sum 1)"
+    shortcut_used: ["Venn cell bookkeeping"]
+    verify: "abs(((0.6-0.2) + (0.5-0.2) + 0.2 + (1-((0.6-0.2)+(0.5-0.2)+0.2))) - 1.0) < 1e-9"
+
+  - id: C3.6
+    chapter: 3
+    tier: route_trainer
+    archetype: "'at least one' complement over independent trials"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Throwing the Poke Ball at Pikachu three times."
+    statement: |
+      Pikachu refuses each independent throw w.p. 0.5. Over three throws, find
+      P(the ball closes at least once).
+    solution: |
+      P(at least once) = 1 - P(refuses all three) = 1 - 0.5^3 = 1 - 0.125
+      = 0.875.
+    answer: "0.875"
+    shortcut_used: ["1 - P(none)"]
+    verify: "abs((1 - 0.5**3) - 0.875) < 1e-9"
+
+  - id: C3.7
+    chapter: 3
+    tier: route_trainer
+    archetype: "De Morgan + complement"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Oak's slogan: 'none means and-not'."
+    statement: |
+      Rewrite P(neither A nor B) via De Morgan, then evaluate given
+      P(A u B) = 0.72.
+    solution: |
+      P(neither) = P(A^c n B^c) = P((A u B)^c) = 1 - P(A u B) = 1 - 0.72 = 0.28.
+    answer: "0.28"
+    shortcut_used: ["De Morgan", "complement"]
+    verify: "abs((1 - 0.72) - 0.28) < 1e-9"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C3.8
+    chapter: 3
+    tier: gym_battle
+    archetype: "two-event inclusion-exclusion: at least one / exactly one / neither"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: adapted-from-SOA-#1
+    difficulty: 3
+    narrative_hook: "Filling in at Nurse Joy's intake desk."
+    statement: |
+      Among Pokemon brought in: 70% need a Potion, 40% a status cure, 25% both.
+      For a random arrival find (a) at least one treatment, (b) exactly one,
+      (c) neither.
+    solution: |
+      (a) 0.70 + 0.40 - 0.25 = 0.85. (b) 0.85 - 0.25 = 0.60. (c) 1 - 0.85 = 0.15.
+    answer: "0.85; 0.60; 0.15"
+    shortcut_used: ["inclusion-exclusion", "complement"]
+    verify: "abs((0.70 + 0.40 - 0.25) - 0.85) < 1e-9 and abs(((0.70+0.40-0.25) - 0.25) - 0.60) < 1e-9"
+
+  - id: C3.9
+    chapter: 3
+    tier: gym_battle
+    archetype: "three-event inclusion-exclusion + complement"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Cataloguing catches across forest, water, and cave."
+    statement: |
+      P(F) = 0.5, P(W) = 0.4, P(C) = 0.3, P(F n W) = 0.2, P(F n C) = 0.15,
+      P(W n C) = 0.1, P(F n W n C) = 0.05. Find P(at least one habitat) and
+      P(none).
+    solution: |
+      P(F u W u C) = (0.5+0.4+0.3) - (0.2+0.15+0.1) + 0.05 = 1.2 - 0.45 + 0.05
+      = 0.80. P(none) = 1 - 0.80 = 0.20.
+    answer: "0.80; none = 0.20"
+    shortcut_used: ["three-event inclusion-exclusion", "complement"]
+    verify: "abs(((0.5+0.4+0.3) - (0.2+0.15+0.1) + 0.05) - 0.80) < 1e-9"
+
+  - id: C3.10
+    chapter: 3
+    tier: gym_battle
+    archetype: "solve for unknown overlap given the union"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Misty's gym challengers and their type choices."
+    statement: |
+      P(Water) = 0.6, P(Electric) = 0.5, P(both) = p, every challenger uses at
+      least one (so union = 1). Find p and P(exactly one type).
+    solution: |
+      1 = 0.6 + 0.5 - p => p = 0.10. Exactly one = union - both = 1 - 0.10
+      = 0.90.
+    answer: "p = 0.10; exactly one = 0.90"
+    shortcut_used: ["inclusion-exclusion solved for the overlap"]
+    verify: "abs((0.6 + 0.5 - 1.0) - 0.10) < 1e-9 and abs((1.0 - (0.6 + 0.5 - 1.0)) - 0.90) < 1e-9"
+
+  - id: C3.11
+    chapter: 3
+    tier: gym_battle
+    archetype: "disjoint union + 'at least once' over two independent trials"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Misty eyeing the Game Corner slots."
+    statement: |
+      One pull: jackpot 0.02, small prize 0.15, mutually exclusive. Find
+      P(win something on one pull) and P(win something at least once over two
+      independent pulls).
+    solution: |
+      Single pull P(win) = 0.02 + 0.15 = 0.17. Two pulls at least once =
+      1 - (1 - 0.17)^2 = 1 - 0.6889 = 0.3111.
+    answer: "0.17; 0.3111"
+    shortcut_used: ["disjoint sum", "1 - P(none)"]
+    verify: "abs((0.02 + 0.15) - 0.17) < 1e-9 and abs((1 - (1 - 0.17)**2) - 0.3111) < 1e-9"
+
+  - id: C3.12
+    chapter: 3
+    tier: gym_battle
+    archetype: "bounding a union and intersection with unknown overlap"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: adapted-from-SOA-#5
+    difficulty: 4
+    narrative_hook: "Oak's threat model with a missing overlap record."
+    statement: |
+      P(T) = 0.40, P(L) = 0.35, overlap unrecorded. Find the range of P(T u L)
+      and of P(T n L).
+    solution: |
+      P(T n L) in [max(0, 0.40+0.35-1), min(0.40, 0.35)] = [0, 0.35].
+      P(T u L) = 0.75 - P(T n L) in [0.75-0.35, 0.75-0] = [0.40, 0.75].
+    answer: "P(union) in [0.40, 0.75]; P(inter) in [0, 0.35]"
+    shortcut_used: ["Frechet bounds", "monotonicity"]
+    verify: "abs(max(0.0, 0.40+0.35-1) - 0.0) < 1e-9 and abs(min(0.40, 0.35) - 0.35) < 1e-9 and abs((0.75 - 0.35) - 0.40) < 1e-9"
+
+  - id: C3.13
+    chapter: 3
+    tier: gym_battle
+    archetype: "single Venn cell + 'at most one' complement"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Viridian Forest survey of Caterpie and Weedle."
+    statement: |
+      P(Caterpie) = 0.55, P(Weedle) = 0.45, P(both) = 0.30. Find
+      P(Caterpie but not Weedle) and P(at most one of the two species).
+    solution: |
+      Caterpie but not Weedle = 0.55 - 0.30 = 0.25. At most one = complement of
+      both = 1 - 0.30 = 0.70.
+    answer: "0.25; 0.70"
+    shortcut_used: ["single Venn cell", "complement of 'both'"]
+    verify: "abs((0.55 - 0.30) - 0.25) < 1e-9 and abs((1 - 0.30) - 0.70) < 1e-9"
+
+  - id: C3.14
+    chapter: 3
+    tier: gym_battle
+    archetype: "independence test via inclusion-exclusion"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: adapted-from-SOA-#12
+    difficulty: 3
+    narrative_hook: "A trainer claims his events are independent."
+    statement: |
+      P(A) = 0.5, P(B) = 0.4, P(A u B) = 0.7. Are A and B independent? Compute
+      P(A n B) and compare to P(A)P(B).
+    solution: |
+      P(A n B) = 0.5 + 0.4 - 0.7 = 0.2. P(A)P(B) = 0.5 * 0.4 = 0.2. Equal, so
+      A and B are independent.
+    answer: "P(A n B) = 0.2 = P(A)P(B) -> independent"
+    shortcut_used: ["inclusion-exclusion to recover the overlap", "product test"]
+    verify: "abs((0.5 + 0.4 - 0.7) - (0.5*0.4)) < 1e-9"
+
+  - id: C3.15
+    chapter: 3
+    tier: gym_battle
+    archetype: "three-event inclusion-exclusion + complement"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: adapted-from-SOA-#34
+    difficulty: 4
+    narrative_hook: "What gear do Route 1 trainers carry?"
+    statement: |
+      P(Pot) = 0.8, P(Anti) = 0.5, P(map) = 0.6; pairs 0.4, 0.5, 0.35;
+      triple 0.3. Find P(at least one item) and P(none).
+    solution: |
+      P(union) = (0.8+0.5+0.6) - (0.4+0.5+0.35) + 0.3 = 1.9 - 1.25 + 0.3 = 0.95.
+      P(none) = 1 - 0.95 = 0.05.
+    answer: "0.95; none = 0.05"
+    shortcut_used: ["three-event inclusion-exclusion", "complement"]
+    verify: "abs(((0.8+0.5+0.6) - (0.4+0.5+0.35) + 0.3) - 0.95) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =====================
+
+  - id: C3.16
+    chapter: 3
+    tier: elite_challenge
+    archetype: "inclusion-exclusion + complement over n trials, integrated"
+    outcomes: ["1a"]
+    distributions: ["binomial"]
+    provenance: original
+    difficulty: 5
+    narrative_hook: "The full 12-bird Spearow flock closes on Pikachu."
+    statement: |
+      n = 12 independent birds. Per bird: P(T) = 0.40, P(L) = 0.35, P(F) = 0.30,
+      P(TL) = 0.18, P(TF) = 0.12, P(LF) = 0.10, P(TLF) = 0.05. Dangerous = at
+      least one of T, L, F. Find (a) q, (b) P(none of 12 dangerous), (c)
+      P(purely fast: F but not T, not L) for one bird.
+    solution: |
+      (a) q = (0.40+0.35+0.30) - (0.18+0.12+0.10) + 0.05 = 1.05 - 0.40 + 0.05
+      = 0.70.
+      (b) (1 - q)^12 = 0.30^12 = 5.31e-7.
+      (c) P(F n T^c n L^c) = 0.30 - 0.12 - 0.10 + 0.05 = 0.13.
+    answer: "q = 0.70; none ~= 5.31e-7; purely fast = 0.13"
+    shortcut_used: ["inclusion-exclusion", "1 - (1-q)^n", "single Venn cell"]
+    verify: "abs(((0.40+0.35+0.30) - (0.18+0.12+0.10) + 0.05) - 0.70) < 1e-9 and abs((0.30 - 0.12 - 0.10 + 0.05) - 0.13) < 1e-9 and abs((1 - 0.70)**12 - 5.314410000000002e-07) < 1e-12"
+
+  - id: C3.17
+    chapter: 3
+    tier: elite_challenge
+    archetype: "solve overlap, independence test, axiom feasibility"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: adapted-from-SOA-#1
+    difficulty: 4
+    narrative_hook: "Ash's two traps and whether they can be disjoint."
+    statement: |
+      P(A) = 0.6, P(B) = 0.5, P(at least one) = 0.8. (a) Find P(both). (b) Are
+      they independent? (c) If instead mutually exclusive, could
+      P(at least one) = 0.8 hold? Explain via the axioms.
+    solution: |
+      (a) P(both) = 0.6 + 0.5 - 0.8 = 0.3. (b) P(A)P(B) = 0.30 = P(A n B), so
+      independent. (c) Mutually exclusive => P(both) = 0 => P(at least one) =
+      0.6 + 0.5 = 1.1 > 1, impossible by A1/A2. So disjoint traps cannot give 0.8
+      with these marginals.
+    answer: "0.3; independent; (c) impossible (would force 1.1)"
+    shortcut_used: ["inclusion-exclusion", "product test", "axiom feasibility"]
+    verify: "abs((0.6 + 0.5 - 0.8) - 0.3) < 1e-9 and abs((0.6*0.5) - (0.6 + 0.5 - 0.8)) < 1e-9 and (0.6 + 0.5) > 1.0"

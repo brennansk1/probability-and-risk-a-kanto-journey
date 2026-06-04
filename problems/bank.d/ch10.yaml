@@ -1,0 +1,370 @@
+# Problem bank — Chapter 10 (Fuchsia City & the Safari Zone): Pricing the risk —
+# ordinary deductibles, policy limits / limited expected value, coinsurance,
+# inflation, per-loss vs per-payment, variance, memoryless shortcut, loss
+# elimination ratio. Outcomes 2e-2f. Schema per problems/bank.yaml header.
+# This file is owned by Chapter 10 only. Verify expressions use only the names
+# exposed by sims/verify_examples.py (math, st); no __import__.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C10.1
+    chapter: 10
+    tier: route_trainer
+    archetype: "expected payment per loss, exponential loss + ordinary deductible"
+    outcomes: ["2e"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Warden's warm-up quote: a fled Rattata's gear cost."
+    statement: |
+      A fled Rattata's gear cost X (thousands of Poke-dollars) is Exponential with
+      mean theta = 4. The trial policy carries an ordinary deductible d = 2.
+      Find the expected payment PER LOSS.
+    solution: |
+      Exponential + deductible -> memoryless shortcut: E[(X-d)+] = theta*e^(-d/theta)
+      = 4*e^(-2/4) = 4*e^(-0.5) ~= 2.426 (thousand). Equivalently, the survival
+      integral: int_2^inf e^(-x/4) dx = [-4 e^(-x/4)]_2^inf = 4 e^(-0.5).
+    answer: 2.426
+    shortcut_used: ["memoryless exponential", "E[(X-d)+] = int_d^inf S(x) dx"]
+    verify: "abs(4*math.exp(-0.5) - 2.426) < 0.001"
+
+  - id: C10.2
+    chapter: 10
+    tier: route_trainer
+    archetype: "expected payment per payment, exponential loss + deductible"
+    outcomes: ["2f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "A trainer asks how big the average actual payout is."
+    statement: |
+      Same loss as C10.1: X ~ Exp(mean 4), ordinary deductible d = 2.
+      Find the expected payment PER PAYMENT.
+    solution: |
+      Per payment, the conditional excess (X-d | X>d) ~ Exp(4) by memorylessness, so
+      E[X-d | X>d] = theta = 4. Equivalently E[(X-d)+]/S(d) = 4e^(-0.5) / e^(-0.5) = 4.
+    answer: 4.0
+    shortcut_used: ["memoryless exponential", "per-payment = per-loss / S(d)"]
+    verify: "abs((4*math.exp(-0.5))/math.exp(-0.5) - 4.0) < 1e-9"
+
+  - id: C10.3
+    chapter: 10
+    tier: route_trainer
+    archetype: "limited expected value E[X^u], uniform loss"
+    outcomes: ["2e"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Capping the common Pokemon's loss at a maximum covered loss."
+    statement: |
+      For common species the warden models loss as X ~ Uniform(0,10) (thousands).
+      The policy pays min(X,8) (maximum covered loss u = 8, no deductible).
+      Compute the limited expected value E[X ^ 8].
+    solution: |
+      S(x) = 1 - x/10 on [0,10]. E[X^8] = integral_0^8 (1 - x/10) dx
+      = 8 - 64/20 = 8 - 3.2 = 4.8 (thousand).
+    answer: 4.8
+    shortcut_used: ["E[X^u] = integral_0^u S(x) dx"]
+    verify: "abs((8 - 8**2/20) - 4.8) < 1e-9"
+
+  - id: C10.4
+    chapter: 10
+    tier: route_trainer
+    archetype: "expected payment per loss with coinsurance, uniform + deductible"
+    outcomes: ["2e"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Misty insists the Zone reimburse only 75% of each excess."
+    statement: |
+      With X ~ Uniform(0,20) (thousands), ordinary deductible d = 4, coinsurance
+      alpha = 0.75, and no limit, find the expected payment per loss
+      alpha * E[(X-4)+].
+    solution: |
+      E[(X-4)+] = integral_4^20 (x-4)/20 dx = (16^2)/(2*20) = 128/20 = 6.4.
+      Apply coinsurance (last): 0.75 * 6.4 = 4.8 (thousand).
+    answer: 4.8
+    shortcut_used: ["coinsurance scales after the deductible"]
+    verify: "abs(0.75*((20-4)**2/(2*20)) - 4.8) < 1e-9"
+
+  - id: C10.5
+    chapter: 10
+    tier: route_trainer
+    archetype: "loss elimination ratio, exponential loss"
+    outcomes: ["2f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "How much does the deductible save the Zone?"
+    statement: |
+      With X ~ Exp(mean theta = 4) and ordinary deductible d = 2, compute the loss
+      elimination ratio LER(2).
+    solution: |
+      LER(d) = E[X^d]/E[X] = 1 - e^(-d/theta) for an exponential loss.
+      LER(2) = 1 - e^(-2/4) = 1 - e^(-0.5) ~= 0.3935.
+    answer: 0.3935
+    shortcut_used: ["LER exp = 1 - e^(-d/theta)", "master identity"]
+    verify: "abs((1-math.exp(-0.5)) - 0.3935) < 0.001"
+
+  - id: C10.6
+    chapter: 10
+    tier: route_trainer
+    archetype: "master identity E[X] = E[X^u] + E[(X-u)+]"
+    outcomes: ["2e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Distribution unknown; use the identity to back out the excess."
+    statement: |
+      The warden tells you E[X] = 10 and, with a maximum covered loss u = 8, that
+      E[X ^ 8] = 6.2 (thousands). Without knowing the distribution, find the expected
+      payment per loss above the cap, E[(X-8)+].
+    solution: |
+      Master identity: E[X] = E[X^u] + E[(X-u)+], so
+      E[(X-8)+] = E[X] - E[X^8] = 10 - 6.2 = 3.8 (thousand).
+    answer: 3.8
+    shortcut_used: ["E[X] = E[X^u] + E[(X-u)+]"]
+    verify: "abs((10 - 6.2) - 3.8) < 1e-9"
+
+  - id: C10.7
+    chapter: 10
+    tier: route_trainer
+    archetype: "expected payment per loss, discrete loss + deductible + limit"
+    outcomes: ["2e"]
+    distributions: [discrete_uniform]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A four-point loss with both a deductible and a cap."
+    statement: |
+      A captured-then-fled Pokemon costs 0, 5, 10, or 20 (thousands) with
+      probabilities 0.5, 0.2, 0.2, 0.1. Policy: ordinary deductible d = 5, maximum
+      covered loss u = 15, no coinsurance. Find the expected payment per loss.
+    solution: |
+      Payment = min(X,15) - min(X,5). At X=0:0; X=5:0; X=10:10-5=5; X=20:15-5=10.
+      E[Y] = 0.5(0) + 0.2(0) + 0.2(5) + 0.1(10) = 1.0 + 1.0 = 2.0 (thousand).
+    answer: 2.0
+    shortcut_used: ["payment = (X^u) - (X^d)"]
+    verify: "abs((0.5*0 + 0.2*0 + 0.2*(min(10,15)-min(10,5)) + 0.1*(min(20,15)-min(20,5))) - 2.0) < 1e-9"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C10.8
+    chapter: 10
+    tier: gym_battle
+    archetype: "expected payment per loss, exponential + deductible + limit"
+    outcomes: ["2e"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Koga's deductible-and-cap policy, no coinsurance."
+    statement: |
+      Loss X ~ Exp(mean theta = 8) (thousands). Policy: ordinary deductible d = 2 and
+      maximum covered loss u = 10, coinsurance alpha = 1. Find the expected payment
+      per loss.
+    solution: |
+      E[X^u] = theta(1 - e^(-u/theta)). E[X^10] = 8(1-e^(-1.25)) ~= 5.708;
+      E[X^2] = 8(1-e^(-0.25)) ~= 1.770. E[Y_L] = 5.708 - 1.770 ~= 3.938 (thousand).
+    answer: 3.938
+    shortcut_used: ["E[X^u] for exponential", "payment = E[X^u]-E[X^d]"]
+    verify: "abs((8*(1-math.exp(-1.25)) - 8*(1-math.exp(-0.25))) - 3.938) < 0.001"
+
+  - id: C10.9
+    chapter: 10
+    tier: gym_battle
+    archetype: "full policy (deductible+limit+coinsurance), per-loss & per-payment"
+    outcomes: ["2e", "2f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "The full Safari Zone quote Koga demands."
+    statement: |
+      Loss X ~ Exp(mean theta = 8), deductible d = 2, maximum covered loss u = 10,
+      coinsurance alpha = 0.80. Find (a) the expected payment per loss and (b) the
+      expected payment per payment.
+    solution: |
+      Uncoinsured layer (C10.8) = 3.938; (a) E[Y_L] = 0.8 * 3.938 = 3.151 (thousand).
+      (b) P(X>2) = e^(-2/8) = e^(-0.25) = 0.7788, so
+      E[Y_P] = 3.151 / 0.7788 = 4.046 (thousand).
+    answer: "(a) 3.151  (b) 4.046"
+    shortcut_used: ["payment = alpha(E[X^u]-E[X^d])", "per-payment = per-loss / S(d)"]
+    verify: "abs(0.8*(8*(1-math.exp(-1.25)) - 8*(1-math.exp(-0.25))) - 3.151) < 0.001 and abs((0.8*(8*(1-math.exp(-1.25))-8*(1-math.exp(-0.25))))/math.exp(-0.25) - 4.046) < 0.001"
+
+  - id: C10.10
+    chapter: 10
+    tier: gym_battle
+    archetype: "inflation eroding a fixed deductible, exponential loss"
+    outcomes: ["2e", "2f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Koga's poison economy inflates rare-Pokemon prices 25%."
+    statement: |
+      This year's losses follow X ~ Exp(mean 4); next year brings 25% inflation while
+      keeping a fixed deductible d = 2. Find next year's expected payment per loss and
+      state the percentage increase over this year's.
+    solution: |
+      Inflated loss X' = 1.25 X ~ Exp(mean 5). Next year per loss = 5*e^(-2/5)
+      = 5*e^(-0.4) ~= 3.352. This year was 4*e^(-0.5) ~= 2.426.
+      Increase = 3.352/2.426 - 1 ~= 0.381 = 38.1% (while losses rose only 25%:
+      deductible erosion).
+    answer: "3.352 thousand; +38.1%"
+    shortcut_used: ["scale exponential mean by (1+r)", "memoryless exponential"]
+    verify: "abs(5*math.exp(-0.4) - 3.352) < 0.001 and abs((5*math.exp(-0.4))/(4*math.exp(-0.5)) - 1 - 0.381) < 0.002"
+
+  - id: C10.11
+    chapter: 10
+    tier: gym_battle
+    archetype: "variance of per-loss deductible payment, exponential"
+    outcomes: ["2e", "2f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "How volatile is the Zone's payout on a pure-deductible policy?"
+    statement: |
+      Loss X ~ Exp(mean theta = 4), ordinary deductible d = 2, no limit, alpha = 1.
+      For the per-loss payment Y_L = (X-2)+, find Var(Y_L).
+    solution: |
+      Y_L = 0 w.p. 1 - e^(-0.5); given Y_L>0, Y_L ~ Exp(4). So
+      E[Y_L] = 4 e^(-0.5) ~= 2.426. E[Y_L^2] = e^(-0.5) * E[W^2] with W~Exp(4),
+      E[W^2] = 2*theta^2 = 32; E[Y_L^2] = 32 e^(-0.5) ~= 19.41.
+      Var(Y_L) = 19.41 - 2.426^2 = 19.41 - 5.89 = 13.52.
+    answer: 13.52
+    shortcut_used: ["mixed mass at 0 + memoryless exponential", "E[W^2]=2 theta^2"]
+    verify: "abs((32*math.exp(-0.5)) - (4*math.exp(-0.5))**2 - 13.52) < 0.01"
+
+  - id: C10.12
+    chapter: 10
+    tier: gym_battle
+    archetype: "franchise deductible vs ordinary deductible, exponential"
+    outcomes: ["2e", "2f"]
+    distributions: [exponential]
+    provenance: inspired-by
+    difficulty: 4
+    narrative_hook: "Big-game policy that pays the whole loss once it clears 250."
+    statement: |
+      Big-game loss X ~ Exp(mean theta = 1000). A FRANCHISE deductible of 250 pays
+      nothing if X <= 250 but the ENTIRE loss X if X > 250. Find the expected payment
+      per loss under this franchise deductible and compare it to the ordinary-deductible
+      per-loss payment E[(X-250)+].
+    solution: |
+      Franchise pays X*1{X>250}. E[X; X>250] = integral_250^inf x*(1/1000)e^(-x/1000) dx
+      = (250 + 1000) e^(-0.25) = 1250 e^(-0.25) ~= 973.5.
+      Ordinary: E[(X-250)+] = 1000 e^(-0.25) ~= 778.8.
+      Franchise pays d*S(d) = 250 e^(-0.25) ~= 194.7 more (it does not subtract d once
+      the loss clears the threshold).
+    answer: "franchise 973.5; ordinary 778.8"
+    shortcut_used: ["E[X;X>d] = (d+theta)e^(-d/theta) for exponential"]
+    verify: "abs(1250*math.exp(-0.25) - 973.5) < 0.1 and abs(1000*math.exp(-0.25) - 778.8) < 0.1"
+
+  - id: C10.13
+    chapter: 10
+    tier: gym_battle
+    archetype: "per-payment with deductible + cap, uniform loss"
+    outcomes: ["2f"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Average size of an actual payout when both a deductible and cap apply."
+    statement: |
+      Loss X ~ Uniform(0,10), ordinary deductible d = 2, maximum covered loss u = 8.
+      Find the expected payment PER PAYMENT.
+    solution: |
+      Per loss: E[Y_L] = E[X^8] - E[X^2] = (8 - 64/20) - (2 - 4/20) = 4.8 - 1.8 = 3.0.
+      P(X>2) = 1 - 2/10 = 0.8. E[Y_P] = 3.0 / 0.8 = 3.75 (thousand).
+    answer: 3.75
+    shortcut_used: ["per-payment = per-loss / S(d)"]
+    verify: "abs((((8-8**2/20) - (2-2**2/20)) / (1-2/10)) - 3.75) < 1e-9"
+
+  - id: C10.14
+    chapter: 10
+    tier: gym_battle
+    archetype: "policy limit (limited expected value), exponential"
+    outcomes: ["2e"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Reading the convention: a cap on what the insurer PAYS."
+    statement: |
+      Loss X ~ Exp(mean theta = 5). The policy has a policy limit (maximum the insurer
+      will pay) of 6, no deductible and no coinsurance; payment is min(X,6). Find the
+      expected payment per loss and the probability the insurer pays the full 6.
+    solution: |
+      Per loss = E[X^6] = 5(1 - e^(-6/5)) = 5(1 - e^(-1.2)) ~= 3.494 (thousand).
+      Full 6 is paid iff X > 6: P(X>6) = e^(-1.2) ~= 0.3012.
+    answer: "3.494 thousand; P = 0.3012"
+    shortcut_used: ["E[X^u] for exponential"]
+    verify: "abs(5*(1-math.exp(-1.2)) - 3.494) < 0.001 and abs(math.exp(-1.2) - 0.3012) < 0.001"
+
+  # ===================== ELITE CHALLENGE (integrative) =====================
+
+  - id: C10.15
+    chapter: 10
+    tier: elite_challenge
+    archetype: "standard deviation of full-policy per-loss payment, exponential"
+    outcomes: ["2e", "2f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 5
+    narrative_hook: "Koga's full gauntlet: the volatility of the Zone's payout."
+    statement: |
+      Loss X ~ Exp(mean theta = 8), deductible d = 2, maximum covered loss u = 10,
+      coinsurance alpha = 0.80. Find the standard deviation of the per-loss payment Y_L.
+    solution: |
+      Y_L = 0.8 Z, Z = (X^10) - (X^2). E[Z] = 3.938 (from C10.8). For E[Z^2], use the
+      memoryless middle slice: given X>2, W = X-2 ~ Exp(8), and Z = min(W,8). Then
+      E[Z^2] = S(2)*E[min(W,8)^2] = e^(-0.25)*[2 theta^2 (1-e^(-c/theta)) - 2 theta c e^(-c/theta)]
+      with c = 8: inner = 128(1-e^-1) - 128 e^-1 = 33.82; times 0.7788 = 26.34.
+      Var(Z) = 26.34 - 3.938^2 = 10.83. Var(Y_L) = 0.64*10.83 = 6.93.
+      SD(Y_L) = sqrt(6.93) ~= 2.633 (thousand).
+    answer: 2.633
+    shortcut_used: ["memoryless middle slice", "E[min(W,c)^2] for exponential"]
+    verify: "abs(math.sqrt(0.64*((math.exp(-0.25)*(2*64*(1-math.exp(-1))-2*8*8*math.exp(-1))) - (8*(1-math.exp(-1.25))-8*(1-math.exp(-0.25)))**2)) - 2.633) < 0.02"
+
+  - id: C10.16
+    chapter: 10
+    tier: elite_challenge
+    archetype: "insurance layer + inflation, exponential"
+    outcomes: ["2e", "2f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 5
+    narrative_hook: "Reinsuring only the middle layer of Safari losses."
+    statement: |
+      The insurer pays the part of X between d = 3 and u = 12 (thousands), i.e.
+      (X^12) - (X^3), with X ~ Exp(mean theta = 10). (a) Find the expected per-loss
+      layer payment. (b) If 20% inflation hits losses next year (attachment 3 and cap 12
+      fixed), find the new expected per-loss layer payment and the percentage change.
+    solution: |
+      (a) Layer = E[X^12] - E[X^3] = 10(1-e^(-1.2)) - 10(1-e^(-0.3))
+          = 10(e^(-0.3) - e^(-1.2)) = 10(0.7408 - 0.3012) = 4.396 (thousand).
+      (b) Inflated X' = 1.2 X ~ Exp(mean 12). Layer = 12(1-e^(-12/12)) - 12(1-e^(-3/12))
+          = 12(e^(-0.25) - e^(-1)) = 12(0.7788 - 0.3679) = 4.931 (thousand).
+          Change = 4.931/4.396 - 1 ~= +12.2%.
+    answer: "(a) 4.396  (b) 4.931, +12.2%"
+    shortcut_used: ["layer = E[X^u]-E[X^d]", "scale exponential mean by (1+r)"]
+    verify: "abs(10*(math.exp(-0.3)-math.exp(-1.2)) - 4.396) < 0.001 and abs(12*(math.exp(-0.25)-math.exp(-1.0)) - 4.931) < 0.001"
+
+  - id: C10.17
+    chapter: 10
+    tier: elite_challenge
+    archetype: "mixture loss + deductible + coinsurance, total expectation"
+    outcomes: ["2e", "2f"]
+    distributions: [uniform, exponential]
+    provenance: original
+    difficulty: 5
+    narrative_hook: "Minor vs major flees mixed; price the blended policy."
+    statement: |
+      With probability 0.7 a flee is minor with loss M ~ Uniform(0,10); with probability
+      0.3 it is major with loss J ~ Exp(mean theta = 10) (thousands). The policy applies
+      ordinary deductible d = 2 and coinsurance alpha = 0.9 (no limit) to whichever loss
+      occurs. Find the overall expected payment per loss.
+    solution: |
+      Condition on type. Minor: E[(M-2)+] = integral_2^10 (x-2)/10 dx = 8^2/(2*10) = 3.2.
+      Major: E[(J-2)+] = 10 e^(-2/10) = 10 e^(-0.2) ~= 8.187.
+      Overall excess = 0.7(3.2) + 0.3(8.187) = 2.24 + 2.456 = 4.696.
+      Apply alpha: E[Y_L] = 0.9 * 4.696 ~= 4.227 (thousand).
+    answer: 4.227
+    shortcut_used: ["law of total expectation over loss type", "memoryless exponential"]
+    verify: "abs(0.9*(0.7*((10-2)**2/(2*10)) + 0.3*(10*math.exp(-0.2))) - 4.227) < 0.001"

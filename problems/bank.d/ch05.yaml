@@ -1,0 +1,459 @@
+# Problem bank — Chapter 5 (Cerulean City): Conditional probability, independence,
+# total probability & Bayes. Outcomes 1c-1g. Schema per problems/bank.yaml header.
+# This file is owned by Chapter 5 only. Verify expressions use the names exposed by
+# sims/verify_examples.py (math, st); no __import__.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C5.1
+    chapter: 5
+    tier: route_trainer
+    archetype: "direct conditional probability from a contingency tally"
+    outcomes: ["1c"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Cataloguing Route 24 Pokemon by type and habitat."
+    statement: |
+      Of 100 Pokemon logged on Route 24: 40 are Water-type, 30 live in tall
+      grass, and 12 are both Water-type and live in tall grass. Given that one
+      lives in tall grass, find the probability it is Water-type.
+    solution: |
+      P(Water | grass) = P(Water and grass)/P(grass) = (12/100)/(30/100)
+      = 12/30 = 0.40.
+    answer: 0.40
+    shortcut_used: ["conditioning shrinks the world to B"]
+    verify: "abs((12/30) - 0.40) < 1e-9"
+
+  - id: C5.2
+    chapter: 5
+    tier: route_trainer
+    archetype: "conditional probability, draw without replacement"
+    outcomes: ["1c", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Drawing balls from Brock's bag for the road."
+    statement: |
+      A bag has 5 Poke Balls and 4 Great Balls. Two are drawn without
+      replacement. Given the first drawn is a Poke Ball, find the probability
+      the second is a Great Ball.
+    solution: |
+      After removing one Poke Ball, 8 balls remain, 4 of them Great:
+      P(2nd Great | 1st Poke) = 4/8 = 0.5.
+    answer: 0.5
+    shortcut_used: ["multiplication rule conditional"]
+    verify: "abs((4/8) - 0.5) < 1e-9"
+
+  - id: C5.3
+    chapter: 5
+    tier: route_trainer
+    archetype: "at-least-one via complement, independent events"
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Will Bill's lighthouse beacon shine tonight?"
+    statement: |
+      Two independent circuits power the beacon: circuit 1 works w.p. 0.9,
+      circuit 2 w.p. 0.8. The beacon shines if at least one works. Find the
+      probability it shines.
+    solution: |
+      P(shines) = 1 - P(both fail) = 1 - (0.1)(0.2) = 1 - 0.02 = 0.98.
+    answer: 0.98
+    shortcut_used: ["1 - P(none)", "independence product"]
+    verify: "abs((1 - 0.1*0.2) - 0.98) < 1e-9"
+
+  - id: C5.4
+    chapter: 5
+    tier: route_trainer
+    archetype: "exactly one of two independent events"
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Ash and Misty independently try to catch a Tentacool."
+    statement: |
+      Ash catches a Tentacool w.p. 0.6, Misty w.p. 0.7, independently. Find the
+      probability that exactly one of them catches it.
+    solution: |
+      P(exactly one) = 0.6*(1-0.7) + (1-0.6)*0.7 = 0.18 + 0.28 = 0.46.
+    answer: 0.46
+    shortcut_used: ["independence"]
+    verify: "abs((0.6*0.3 + 0.4*0.7) - 0.46) < 1e-9"
+
+  - id: C5.5
+    chapter: 5
+    tier: route_trainer
+    archetype: "law of total probability, forward"
+    outcomes: ["1f"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Will Misty's gym flood today?"
+    statement: |
+      30% of days are rainy. The gym floods w.p. 0.5 on rainy days and 0.05 on
+      dry days. Find the probability the gym floods on a random day.
+    solution: |
+      P(flood) = (0.3)(0.5) + (0.7)(0.05) = 0.15 + 0.035 = 0.185.
+    answer: 0.185
+    shortcut_used: ["partition by weather, weighted average"]
+    verify: "abs((0.3*0.5 + 0.7*0.05) - 0.185) < 1e-9"
+
+  - id: C5.6
+    chapter: 5
+    tier: route_trainer
+    archetype: "two-way Bayes on a negative result"
+    outcomes: ["1c", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Reading a negative quick-scan at the Pokemon Center."
+    statement: |
+      Joy's scan flags 90% of sick Pokemon and 20% of healthy ones; 10% are
+      sick. A Pokemon scans negative. Find P(sick | negative).
+    solution: |
+      P(neg|sick)=0.10, P(neg|healthy)=0.80.
+      joint sick = 0.10*0.10 = 0.010; joint healthy = 0.90*0.80 = 0.720;
+      total = 0.730. P(sick|neg) = 0.010/0.730 ~= 0.0137.
+    answer: 0.0137
+    shortcut_used: ["Bayes grid"]
+    verify: "abs((0.10*0.10)/(0.10*0.10 + 0.90*0.80) - 0.0137) < 1e-3"
+
+  - id: C5.7
+    chapter: 5
+    tier: route_trainer
+    archetype: "chained multiplication rule, without replacement"
+    outcomes: ["1c", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Drawing TM discs blind from a shuffled stack."
+    statement: |
+      A stack has 3 Fire TMs and 2 Water TMs. Draw two in order without
+      replacement. Find the probability both are Fire TMs.
+    solution: |
+      P(both Fire) = (3/5)*(2/4) = 6/20 = 0.30.
+    answer: 0.30
+    shortcut_used: ["multiplication rule"]
+    verify: "abs((3/5)*(2/4) - 0.30) < 1e-9"
+
+  - id: C5.8
+    chapter: 5
+    tier: route_trainer
+    archetype: "independence test via the addition rule"
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Checking whether two logged Route-24 traits move together."
+    statement: |
+      For logged Route-24 Pokemon, A = Water-type, B = found near the river, with
+      P(A)=0.4, P(B)=0.5, P(A union B)=0.65. Are A and B independent? Justify.
+    solution: |
+      P(A and B) = P(A)+P(B)-P(A union B) = 0.4+0.5-0.65 = 0.25.
+      P(A)P(B) = 0.4*0.5 = 0.20. Since 0.25 != 0.20, A and B are NOT independent
+      (positively associated).
+    answer: "not independent (0.25 vs 0.20)"
+    shortcut_used: ["inclusion-exclusion for the intersection"]
+    verify: "abs((0.4+0.5-0.65) - 0.25) < 1e-9 and (0.25 != 0.4*0.5)"
+
+  # ===================== GYM BATTLES (SOA difficulty) =====================
+
+  - id: C5.9
+    chapter: 5
+    tier: gym_battle
+    archetype: "n-way Bayes from a 3-way partition"
+    outcomes: ["1c", "1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Identifying the species of a Pokemon that just fled."
+    statement: |
+      A wild Pokemon is Goldeen (0.50), Seaking (0.30), or Horsea (0.20). It
+      flees w.p. 0.2, 0.5, 0.8 respectively. It fled. Find P(Horsea | fled).
+    solution: |
+      joints: Goldeen 0.50*0.2=0.10; Seaking 0.30*0.5=0.15; Horsea 0.20*0.8=0.16.
+      total P(flee)=0.41. P(Horsea|fled)=0.16/0.41 ~= 0.390.
+    answer: 0.390
+    shortcut_used: ["Bayes grid", "law of total probability denominator"]
+    verify: "abs((0.20*0.8)/(0.50*0.2 + 0.30*0.5 + 0.20*0.8) - 0.3902) < 1e-3"
+
+  - id: C5.10
+    chapter: 5
+    tier: gym_battle
+    archetype: "two-way Bayes on a non-event (no explosion)"
+    outcomes: ["1c", "1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A Voltorb hides among Poke Balls; it did not explode."
+    statement: |
+      A tossed ball is a live decoy w.p. 0.20 (explodes w.p. 0.7) or a dud w.p.
+      0.80 (explodes w.p. 0.05). It did NOT explode. Find P(live | no boom).
+    solution: |
+      P(no boom|live)=0.3, P(no boom|dud)=0.95.
+      joint live=0.20*0.30=0.060; joint dud=0.80*0.95=0.760; total=0.820.
+      P(live|no boom)=0.060/0.820 ~= 0.0732.
+    answer: 0.0732
+    shortcut_used: ["Bayes grid on complement event"]
+    verify: "abs((0.20*0.30)/(0.20*0.30 + 0.80*0.95) - 0.0732) < 1e-3"
+
+  - id: C5.11
+    chapter: 5
+    tier: gym_battle
+    archetype: "at-least-one, without replacement, complement"
+    outcomes: ["1c", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Hoping for a Shiny when grabbing two eggs from a box."
+    statement: |
+      A box has 10 eggs, 3 Shiny. Draw 2 without replacement. Find the
+      probability at least one is Shiny.
+    solution: |
+      P(none Shiny) = (7/10)*(6/9) = 42/90 = 7/15.
+      P(at least one) = 1 - 7/15 = 8/15 ~= 0.533.
+    answer: 0.5333
+    shortcut_used: ["1 - P(none)", "without-replacement multiplication"]
+    verify: "abs((1 - (7/10)*(6/9)) - 8/15) < 1e-9"
+
+  - id: C5.12
+    chapter: 5
+    tier: gym_battle
+    archetype: "exactly two of three independent events"
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Pulling all three Game Corner machines once each."
+    statement: |
+      Machines X, Y, Z pay out independently w.p. 0.2, 0.3, 0.25. One pull each.
+      Find the probability exactly two pay out.
+    solution: |
+      Sum the three two-win-one-loss products:
+      (0.2)(0.3)(0.75) + (0.2)(0.7)(0.25) + (0.8)(0.3)(0.25)
+      = 0.045 + 0.035 + 0.060 = 0.140.
+    answer: 0.140
+    shortcut_used: ["independence", "enumerate disjoint cases"]
+    verify: "abs((0.2*0.3*0.75 + 0.2*0.7*0.25 + 0.8*0.3*0.25) - 0.140) < 1e-9"
+
+  - id: C5.13
+    chapter: 5
+    tier: gym_battle
+    archetype: "Bayes inversion of a total-probability setup"
+    outcomes: ["1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Which Pokemon did Misty lead with, given the super-effective hit?"
+    statement: |
+      Misty leads Staryu (0.5), Starmie (0.3), Psyduck (0.2) with super-effective
+      first-move probabilities 0.3, 0.6, 0.1. The opening move was super-effective.
+      Find P(Starmie | super-effective).
+    solution: |
+      P(E) = 0.5*0.3 + 0.3*0.6 + 0.2*0.1 = 0.15+0.18+0.02 = 0.35.
+      joint Starmie = 0.3*0.6 = 0.18. P(Starmie|E) = 0.18/0.35 ~= 0.514.
+    answer: 0.5143
+    shortcut_used: ["Bayes grid"]
+    verify: "abs((0.3*0.6)/(0.5*0.3 + 0.3*0.6 + 0.2*0.1) - 0.5143) < 1e-3"
+
+  - id: C5.14
+    chapter: 5
+    tier: gym_battle
+    archetype: "false-positive classic, extreme base rate"
+    outcomes: ["1c", "1g"]
+    distributions: []
+    provenance: inspired-by
+    difficulty: 4
+    narrative_hook: "Screening for a rare Pokerus strain."
+    statement: |
+      A test for rare Pokerus has sensitivity 0.99 and specificity 0.96;
+      prevalence 0.5%. Find P(infected | positive).
+    solution: |
+      P(+|inf)=0.99, P(+|not)=1-0.96=0.04.
+      joint inf = 0.005*0.99 = 0.004950; joint not = 0.995*0.04 = 0.039800;
+      total = 0.044750. P(inf|+) = 0.004950/0.044750 ~= 0.1106.
+      Small because false positives among the 99.5% healthy dominate the rare
+      true positives.
+    answer: 0.1106
+    shortcut_used: ["Bayes grid", "specificity -> false-positive rate"]
+    verify: "abs((0.005*0.99)/(0.005*0.99 + 0.995*0.04) - 0.1106) < 1e-3"
+
+  - id: C5.15
+    chapter: 5
+    tier: gym_battle
+    archetype: "Bayes with equal priors, failure evidence"
+    outcomes: ["1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "One of three balls is a trick ball; the Pokemon stayed in."
+    statement: |
+      Three balls, one trick (releases 80% of the time) and two normal (release
+      100%). Pick one at random and throw; the Pokemon stays in. Find
+      P(trick | stayed in).
+    solution: |
+      P(stay|trick)=0.20, P(stay|normal)=0. Priors 1/3 each.
+      joint trick = (1/3)*0.20 = 0.0667; normals contribute 0. total = 0.0667.
+      P(trick|stay) = 0.0667/0.0667 = 1. A normal ball never fails, so a
+      stay-in must be the trick ball.
+    answer: 1.0
+    shortcut_used: ["zero likelihood eliminates a cause"]
+    verify: "abs(((1/3)*0.20)/((1/3)*0.20 + (2/3)*0.0) - 1.0) < 1e-9"
+
+  - id: C5.16
+    chapter: 5
+    tier: gym_battle
+    archetype: "2x2 Bayes computed both ways"
+    outcomes: ["1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Reading Lt. Surge's lead type from the turn-one result."
+    statement: |
+      Lt. Surge leads Electric w.p. P(A)=0.3. When he leads Electric he wins turn
+      one w.p. P(B|A)=0.7; otherwise P(B|A^c)=0.4. From the turn-one result alone,
+      find P(A|B) (he won) and P(A|B^c) (he lost turn one).
+    solution: |
+      P(B) = 0.3*0.7 + 0.7*0.4 = 0.21 + 0.28 = 0.49.
+      P(A|B) = 0.21/0.49 ~= 0.4286.
+      P(B^c)=0.51; P(A and B^c)=0.3*0.3=0.09; P(A|B^c)=0.09/0.51 ~= 0.1765.
+    answer: "P(A|B)=0.4286, P(A|B^c)=0.1765"
+    shortcut_used: ["Bayes grid", "total probability for denominator"]
+    verify: "abs((0.3*0.7)/(0.3*0.7+0.7*0.4) - 0.4286) < 1e-3 and abs((0.3*0.3)/(1-(0.3*0.7+0.7*0.4)) - 0.1765) < 1e-3"
+
+  - id: C5.17
+    chapter: 5
+    tier: gym_battle
+    archetype: "classic urn Bayes"
+    outcomes: ["1f", "1g"]
+    distributions: []
+    provenance: inspired-by
+    difficulty: 3
+    narrative_hook: "Three lure urns in Misty's gym; you drew a red lure."
+    statement: |
+      Urn I: 2 red, 3 blue; Urn II: 4 red, 1 blue; Urn III: 1 red, 4 blue.
+      Pick an urn uniformly, draw one lure; it is red. Find P(Urn II | red).
+    solution: |
+      P(red|I)=2/5, P(red|II)=4/5, P(red|III)=1/5; priors 1/3.
+      joints: 2/15, 4/15, 1/15; total = 7/15.
+      P(II|red) = (4/15)/(7/15) = 4/7 ~= 0.571.
+    answer: 0.5714
+    shortcut_used: ["Bayes grid", "common denominator cancels"]
+    verify: "abs(((1/3)*(4/5))/((1/3)*(2/5)+(1/3)*(4/5)+(1/3)*(1/5)) - 4/7) < 1e-9"
+
+  - id: C5.18
+    chapter: 5
+    tier: gym_battle
+    archetype: "pairwise vs mutual independence"
+    outcomes: ["1d"]
+    distributions: []
+    provenance: inspired-by
+    difficulty: 4
+    narrative_hook: "A spinner trick that looks independent but is not, fully."
+    statement: |
+      Events A, B, C each have probability 1/2 with all pairwise intersections
+      equal to 1/4, but P(A and B and C)=1/4. Show A,B,C are pairwise
+      independent but not mutually independent.
+    solution: |
+      Pairwise: P(A and B)=1/4 = (1/2)(1/2)=P(A)P(B); same for the other two
+      pairs -> pairwise independent.
+      Mutual requires P(A and B and C)=P(A)P(B)P(C)=1/8. But it equals 1/4 != 1/8,
+      so mutual independence FAILS. (The triple constraint is independent of the
+      pairwise ones.)
+    answer: "pairwise independent; mutual independence fails (1/4 != 1/8)"
+    shortcut_used: ["check every subcollection for mutual independence"]
+    verify: "abs(0.25 - 0.5*0.5) < 1e-9 and (0.25 != 0.5*0.5*0.5)"
+
+  # ===================== ELITE CHALLENGE (integrative) =====================
+
+  - id: C5.19
+    chapter: 5
+    tier: elite_challenge
+    archetype: "Bayes with a without-replacement likelihood (combinatorics + Bayes)"
+    outcomes: ["1e", "1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Which bag did the two Poke Balls come from?"
+    statement: |
+      Bag 1: 6 Poke, 4 Great. Bag 2: 3 Poke, 7 Great. Pick a bag at random, draw
+      two without replacement; both are Poke Balls. Find P(Bag 1 | two Poke).
+    solution: |
+      P(2 Poke|Bag1) = (6/10)(5/9) = 1/3; P(2 Poke|Bag2) = (3/10)(2/9) = 1/15.
+      priors 1/2. joints: 1/6 and 1/30. total = 1/6 + 1/30 = 6/30 = 1/5.
+      P(Bag1|2 Poke) = (1/6)/(1/5) = 5/6 ~= 0.833.
+    answer: 0.8333
+    shortcut_used: ["multiplication rule likelihood", "Bayes grid"]
+    verify: "abs(((1/2)*(6/10)*(5/9))/((1/2)*(6/10)*(5/9) + (1/2)*(3/10)*(2/9)) - 5/6) < 1e-9"
+
+  - id: C5.20
+    chapter: 5
+    tier: elite_challenge
+    archetype: "sequential Bayesian updating, conditionally independent evidence"
+    outcomes: ["1d", "1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 5
+    narrative_hook: "The phantom thief strikes two nights running, both with wet footprints."
+    statement: |
+      Group shares Traveler 0.60, Local 0.35, Rocket 0.05. Per-night
+      P(steal)*P(clue|steal): Traveler 0.05*0.40, Local 0.01*0.20, Rocket
+      0.30*0.90. Two conditionally independent clue-leaving nights occur. Find
+      P(Rocket | two clue thefts).
+    solution: |
+      per-night likelihood: Traveler 0.02, Local 0.002, Rocket 0.27.
+      two-night likelihood = square: 0.0004, 0.000004, 0.0729.
+      joint weights (share*sq): Traveler 0.60*0.0004=0.000240;
+      Local 0.35*0.000004=0.00000140; Rocket 0.05*0.0729=0.0036450.
+      total = 0.00388640. P(Rocket|two) = 0.0036450/0.00388640 ~= 0.9379.
+      Evidence compounds: 0.515 after one night -> 0.94 after two.
+    answer: 0.9379
+    shortcut_used: ["compound likelihood", "conditional independence of evidence"]
+    verify: "abs((0.05*0.27**2)/(0.60*0.02**2 + 0.35*0.002**2 + 0.05*0.27**2) - 0.9379) < 1e-3"
+
+  - id: C5.21
+    chapter: 5
+    tier: elite_challenge
+    archetype: "false-positive Bayes feeding a decision rule, repeated evidence"
+    outcomes: ["1c", "1d", "1g"]
+    distributions: []
+    provenance: inspired-by
+    difficulty: 4
+    narrative_hook: "Nurse Joy's quarantine rule: act only if posterior > 0.5."
+    statement: |
+      Prevalence 0.04, sensitivity 0.9, false-positive rate 0.05. Quarantine
+      only if posterior of disease exceeds 0.5. (a) After one positive scan,
+      quarantine? (b) After two independent positive scans, quarantine?
+    solution: |
+      (a) joint sick=0.04*0.9=0.036; healthy=0.96*0.05=0.048; total=0.084.
+      P(sick|+)=0.036/0.084 ~= 0.4286 < 0.5 -> no quarantine.
+      (b) square likelihoods: sick 0.04*0.81=0.0324; healthy 0.96*0.0025=0.0024;
+      total=0.0348. P(sick|+,+)=0.0324/0.0348 ~= 0.9310 > 0.5 -> quarantine.
+    answer: "(a) 0.4286 no; (b) 0.9310 yes"
+    shortcut_used: ["Bayes grid", "independent-evidence likelihood product"]
+    verify: "abs((0.04*0.9)/(0.04*0.9+0.96*0.05) - 0.4286) < 1e-3 and abs((0.04*0.9**2)/(0.04*0.9**2+0.96*0.05**2) - 0.9310) < 1e-3"
+
+  - id: C5.22
+    chapter: 5
+    tier: route_trainer
+    archetype: "independence: product rule for two independent successes"
+    outcomes: ["1d"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Two independent Poke Balls thrown at two different wild Pokemon."
+    statement: |
+      You throw a Poke Ball at a wild Pokemon (catches w.p. 0.6) and, separately,
+      a Great Ball at another (catches w.p. 0.75). The two throws are independent.
+      Find the probability BOTH catch, and the probability AT LEAST ONE catches.
+    solution: |
+      Independence means P(both) = P(A)P(B) = 0.6*0.75 = 0.45.
+      P(at least one) = 1 - P(neither) = 1 - (1-0.6)(1-0.75) = 1 - 0.4*0.25
+      = 1 - 0.10 = 0.90.
+    answer: "P(both)=0.45, P(at least one)=0.90"
+    shortcut_used: ["independence multiplies", "1 - P(neither)"]
+    verify: "abs(0.6*0.75 - 0.45) < 1e-9 and abs((1 - (1-0.6)*(1-0.75)) - 0.90) < 1e-9"

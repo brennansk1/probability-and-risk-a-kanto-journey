@@ -1,0 +1,447 @@
+# Problem bank — Chapter 7 (Vermilion City): Center & Spread —
+# expectation, E[g(X)] & linearity, variance/SD/CV, MGF, Darth Vader rule.
+# Outcomes 2b-2d. Schema per problems/bank.yaml header.
+# This file is owned by Chapter 7 only. Verify expressions use the names exposed
+# by sims/verify_examples.py (math, st); no __import__.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C7.1
+    chapter: 7
+    tier: route_trainer
+    archetype: "normalize a pmf, then a tail probability"
+    outcomes: ["2b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Logging the Pidgey headcount on the S.S. Anne mast."
+    statement: |
+      A headcount X of Pidgey on the mast has pmf p(x)=k*x for x=1,2,3,4 and 0
+      otherwise. Find k, then state P(X >= 3).
+    solution: |
+      Require sum_{x=1}^4 k*x = k*(1+2+3+4) = 10k = 1, so k = 0.1.
+      P(X >= 3) = p(3)+p(4) = 0.3 + 0.4 = 0.7.
+    answer: "k=0.1, P(X>=3)=0.7"
+    shortcut_used: ["pmf totals to 1"]
+    verify: "abs(1/(1+2+3+4) - 0.1) < 1e-9 and abs((0.1*3 + 0.1*4) - 0.7) < 1e-9"
+
+  - id: C7.2
+    chapter: 7
+    tier: route_trainer
+    archetype: "normalize a density, then mean"
+    outcomes: ["2b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "How long does a Geodude nap in the cargo hold?"
+    statement: |
+      The nap time X (hours) has density f(x)=c*(1-x) for 0 <= x <= 1. Find c and
+      E[X].
+    solution: |
+      integral_0^1 c(1-x) dx = c*(1 - 1/2) = c/2 = 1, so c = 2.
+      E[X] = integral_0^1 x*2(1-x) dx = 2*(1/2 - 1/3) = 2*(1/6) = 1/3.
+    answer: "c=2, E[X]=1/3"
+    shortcut_used: ["density totals to 1", "value times density"]
+    verify: "abs(2 - 1/(1 - 1/2)) < 1e-9 and abs((2*(1/2 - 1/3)) - 1/3) < 1e-9"
+
+  - id: C7.3
+    chapter: 7
+    tier: route_trainer
+    archetype: "discrete-uniform mean and variance"
+    outcomes: ["2b", "2c"]
+    distributions: [discrete_uniform]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "A promenade vending machine pays a uniform prize 1..6."
+    statement: |
+      A payout X is discrete uniform on {1,2,3,4,5,6}. Compute E[X] and Var(X).
+    solution: |
+      For uniform on 1..n: E[X] = (n+1)/2 = 7/2 = 3.5;
+      Var(X) = (n^2 - 1)/12 = 35/12 ~= 2.917.
+    answer: "E[X]=3.5, Var(X)=35/12~=2.917"
+    shortcut_used: ["discrete-uniform closed forms"]
+    verify: "abs((6+1)/2 - 3.5) < 1e-9 and abs((6**2 - 1)/12 - 35/12) < 1e-9"
+
+  - id: C7.4
+    chapter: 7
+    tier: route_trainer
+    archetype: "Darth Vader rule + survival probability"
+    outcomes: ["2b"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Misty's Staryu recovery time from a survival curve."
+    statement: |
+      Recovery time T has survival function S(t)=e^(-t/8), t>=0. Using the Darth
+      Vader rule, find E[T], then P(T > 8).
+    solution: |
+      E[T] = integral_0^inf e^(-t/8) dt = 8.
+      P(T > 8) = S(8) = e^(-1) ~= 0.368.
+    answer: "E[T]=8, P(T>8)~=0.368"
+    shortcut_used: ["integrate the survival curve"]
+    verify: "abs(8 - 8) < 1e-9 and abs(math.exp(-1) - 0.3679) < 1e-3"
+
+  - id: C7.5
+    chapter: 7
+    tier: route_trainer
+    archetype: "linear rescaling of mean and variance"
+    outcomes: ["2b", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "The S.S. Anne casino converts every prize via Y = 3X - 2."
+    statement: |
+      A prize X has E[X]=10, Var(X)=9. The casino pays Y = 3X - 2. Find E[Y],
+      Var(Y), SD(Y).
+    solution: |
+      E[Y] = 3*10 - 2 = 28. Var(Y) = 3^2 * 9 = 81. SD(Y) = sqrt(81) = 9.
+    answer: "E[Y]=28, Var(Y)=81, SD(Y)=9"
+    shortcut_used: ["E[aX+b]=aE[X]+b", "Var(aX+b)=a^2 Var(X)"]
+    verify: "abs((3*10 - 2) - 28) < 1e-9 and abs((3**2 * 9) - 81) < 1e-9 and abs(math.sqrt(81) - 9) < 1e-9"
+
+  - id: C7.6
+    chapter: 7
+    tier: route_trainer
+    archetype: "MGF kernel recognition, Poisson"
+    outcomes: ["2d"]
+    distributions: [poisson]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Reading a Voltorb's stored-charge MGF."
+    statement: |
+      A Voltorb's stored charge has MGF M_X(t) = e^(4(e^t - 1)). Identify the
+      family and state E[X] and Var(X) from the kernel.
+    solution: |
+      M_X(t) = e^(lambda(e^t - 1)) with lambda = 4 is Poisson; mean = lambda = 4,
+      variance = lambda = 4.
+    answer: "Poisson; E[X]=Var(X)=4"
+    shortcut_used: ["Poisson MGF kernel"]
+    verify: "abs(4 - 4) < 1e-9"
+
+  - id: C7.7
+    chapter: 7
+    tier: route_trainer
+    archetype: "median from a cdf"
+    outcomes: ["2b"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Find the median of a salvage loss from its cdf."
+    statement: |
+      A loss X has cdf F(x) = 1 - 16/(x+4)^2 for x >= 0. Find the median.
+    solution: |
+      Set F(m) = 1 - 16/(m+4)^2 = 1/2 => 16/(m+4)^2 = 1/2 => (m+4)^2 = 32
+      => m+4 = 4*sqrt(2) => m = 4*sqrt(2) - 4 ~= 1.657.
+    answer: "m = 4*sqrt(2) - 4 ~= 1.657"
+    shortcut_used: ["solve F(m)=0.5"]
+    verify: "abs((4*math.sqrt(2) - 4) - 1.6569) < 1e-3 and abs((1 - 16/((4*math.sqrt(2)-4)+4)**2) - 0.5) < 1e-9"
+
+  # ===================== GYM BATTLES (SOA difficulty) =====================
+
+  - id: C7.8
+    chapter: 7
+    tier: gym_battle
+    archetype: "full continuous mean / variance / coefficient of variation"
+    outcomes: ["2b", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Sizing the breaker on Surge's backup capacitor."
+    statement: |
+      The capacitor's energy X (hundreds of volts) has density f(x) = x/2 for
+      0 <= x <= 2. Report (i) E[X], (ii) Var(X), (iii) the coefficient of
+      variation.
+    solution: |
+      E[X] = integral_0^2 x*(x/2) dx = (1/2)*(8/3) = 4/3.
+      E[X^2] = integral_0^2 x^2*(x/2) dx = (1/2)*4 = 2.
+      Var(X) = 2 - (4/3)^2 = 2 - 16/9 = 2/9.
+      CV = sqrt(2/9)/(4/3) = (sqrt(2)/3)/(4/3) = sqrt(2)/4 ~= 0.354.
+    answer: "E[X]=4/3, Var=2/9, CV=sqrt(2)/4~=0.354"
+    shortcut_used: ["E[X^2] - (E[X])^2", "CV = SD/mean"]
+    verify: "abs((1/2)*(8/3) - 4/3) < 1e-9 and abs((2 - (4/3)**2) - 2/9) < 1e-9 and abs(math.sqrt(2/9)/(4/3) - math.sqrt(2)/4) < 1e-9"
+
+  - id: C7.9
+    chapter: 7
+    tier: gym_battle
+    archetype: "moments of a power-law density; finite-variance caveat"
+    outcomes: ["2b", "2c"]
+    distributions: [pareto]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Pricing a salvage drone's repair cost."
+    statement: |
+      Repair cost X (thousands) has density f(x) = 3/x^4 for x >= 1. Find E[X],
+      then E[X^2] and Var(X), and explain why a finite-variance assumption
+      matters here.
+    solution: |
+      E[X] = integral_1^inf x*3x^-4 dx = 3*integral_1^inf x^-3 dx = 3*(1/2) = 3/2.
+      E[X^2] = 3*integral_1^inf x^-2 dx = 3*1 = 3.
+      Var(X) = 3 - (3/2)^2 = 3 - 2.25 = 0.75.
+      The second moment converges only because the tail exponent exceeds the
+      moment order; one degree heavier and Var would be infinite.
+    answer: "E[X]=1.5, E[X^2]=3, Var=0.75"
+    shortcut_used: ["power-law integral", "E[X^2] - (E[X])^2"]
+    verify: "abs(3*(1/2) - 1.5) < 1e-9 and abs((3 - 1.5**2) - 0.75) < 1e-9"
+
+  - id: C7.10
+    chapter: 7
+    tier: gym_battle
+    archetype: "MGF kernel recognition, geometric, mean by differentiation"
+    outcomes: ["2d"]
+    distributions: [geometric]
+    provenance: inspired-by
+    difficulty: 3
+    narrative_hook: "Is the rigged slot machine geometric?"
+    statement: |
+      A rigged slot machine's net payout X has MGF M_X(t) = 0.3 e^t / (1 - 0.7 e^t)
+      for e^t < 1/0.7. Recognize the family, then compute E[X] and confirm against
+      the family's mean.
+    solution: |
+      M_X(t) = p e^t / (1 - (1-p) e^t) with p = 0.3 is geometric (support 1,2,...).
+      Differentiate: M_X'(t) = 0.3 e^t / (1 - 0.7 e^t)^2; at t=0,
+      M_X'(0) = 0.3/(0.3)^2 = 1/0.3 = 10/3 ~= 3.333 = 1/p.
+    answer: "Geometric; E[X]=1/0.3=10/3~=3.333"
+    shortcut_used: ["geometric MGF kernel", "mean = 1/p"]
+    verify: "abs(0.3/(1 - 0.7)**2 - (10/3)) < 1e-9"
+
+  - id: C7.11
+    chapter: 7
+    tier: gym_battle
+    archetype: "verify density, mean, and a tail probability"
+    outcomes: ["2b"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Modeling a flooded compartment's water depth."
+    statement: |
+      Depth X (meters) has density f(x) = (3/16)(4 - x^2) for 0 <= x <= 2. Verify
+      it integrates to 1, then find E[X] and P(X > 1).
+    solution: |
+      integral_0^2 (3/16)(4 - x^2) dx = (3/16)*(8 - 8/3) = (3/16)*(16/3) = 1.
+      E[X] = (3/16)*integral_0^2 x(4 - x^2) dx = (3/16)*(8 - 4) = (3/16)*4 = 3/4.
+      P(X>1) = (3/16)*integral_1^2 (4 - x^2) dx = (3/16)*(16/3 - 11/3)
+             = (3/16)*(5/3) = 5/16 ~= 0.3125.
+    answer: "valid; E[X]=0.75, P(X>1)=5/16~=0.3125"
+    shortcut_used: ["density integrates to 1", "value times density"]
+    verify: "abs((3/16)*(8 - 8/3) - 1) < 1e-9 and abs((3/16)*4 - 0.75) < 1e-9 and abs((3/16)*(5/3) - 5/16) < 1e-9"
+
+  - id: C7.12
+    chapter: 7
+    tier: gym_battle
+    archetype: "E[g(X)] via the gamma identity (LOTUS)"
+    outcomes: ["2b"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "The scoreboard awards sqrt(damage) points."
+    statement: |
+      Thunderbolt damage X is Exponential with mean 6. The scoreboard awards
+      g(X) = sqrt(X). Using E[sqrt(X)] = (1/6) integral_0^inf x^(1/2) e^(-x/6) dx
+      and integral_0^inf x^(1/2) e^(-x/theta) dx = Gamma(3/2) theta^(3/2) with
+      Gamma(3/2) = sqrt(pi)/2, find E[sqrt(X)].
+    solution: |
+      E[sqrt(X)] = (1/6)*Gamma(3/2)*6^(3/2) = (1/6)*(sqrt(pi)/2)*6*sqrt(6)
+                 = (sqrt(pi)/2)*sqrt(6) = sqrt(6*pi)/2 ~= 2.171.
+    answer: "E[sqrt(X)] = sqrt(6*pi)/2 ~= 2.171"
+    shortcut_used: ["LOTUS", "gamma integral identity"]
+    verify: "abs((1/6)*(math.sqrt(math.pi)/2)*6**1.5 - math.sqrt(6*math.pi)/2) < 1e-9 and abs(math.sqrt(6*math.pi)/2 - 2.1708) < 1e-3"
+
+  - id: C7.13
+    chapter: 7
+    tier: gym_battle
+    archetype: "Darth Vader rule on a Pareto tail"
+    outcomes: ["2b"]
+    distributions: [pareto]
+    provenance: inspired-by
+    difficulty: 3
+    narrative_hook: "Expected claim severity straight from a survival function."
+    statement: |
+      A claim severity X has survival function S(x) = (2/(2+x))^3 for x >= 0. Use
+      the Darth Vader rule to find E[X].
+    solution: |
+      E[X] = integral_0^inf (2/(2+x))^3 dx. Let u = 2+x:
+      = integral_2^inf 8 u^-3 du = 8*[-(1/2) u^-2]_2^inf = 8*(1/2)*(1/4) = 1.
+    answer: "E[X] = 1"
+    shortcut_used: ["integrate the survival curve", "u-substitution"]
+    verify: "abs(8*(1/2)*(1/4) - 1) < 1e-9"
+
+  - id: C7.14
+    chapter: 7
+    tier: gym_battle
+    archetype: "discrete Darth Vader sum, then variance from the pmf"
+    outcomes: ["2b", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    narrative_hook: "How many Rocket grunts escape?"
+    statement: |
+      A discrete loss N takes values 0,1,2,3 with P(N>0)=0.6, P(N>1)=0.35,
+      P(N>2)=0.15, P(N>3)=0. Use the discrete survival-sum to find E[N], then
+      find Var(N).
+    solution: |
+      E[N] = sum_{k>=0} P(N>k) = 0.6 + 0.35 + 0.15 + 0 = 1.10.
+      pmf: P(0)=1-0.6=0.4, P(1)=0.6-0.35=0.25, P(2)=0.35-0.15=0.20, P(3)=0.15.
+      E[N^2] = 1*0.25 + 4*0.20 + 9*0.15 = 0.25 + 0.80 + 1.35 = 2.40.
+      Var(N) = 2.40 - 1.10^2 = 2.40 - 1.21 = 1.19.
+    answer: "E[N]=1.1, Var(N)=1.19"
+    shortcut_used: ["sum of survival probabilities", "E[N^2] - (E[N])^2"]
+    verify: "abs((0.6+0.35+0.15) - 1.10) < 1e-9 and abs((1*0.25 + 4*0.20 + 9*0.15) - 1.10**2 - 1.19) < 1e-9"
+
+  - id: C7.15
+    chapter: 7
+    tier: gym_battle
+    archetype: "normalize, mode, mean, skew direction"
+    outcomes: ["2b"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Reading Surge's super-charged Raichu damage."
+    statement: |
+      Damage X has density f(x) = c x^2 (3 - x) on 0 <= x <= 3. Find c, the mode,
+      and the mean, and state whether the distribution is left- or right-skewed
+      using the mean-mode comparison.
+    solution: |
+      Normalize: integral_0^3 c x^2(3-x) dx = c*(27 - 81/4) = c*(27/4) = 1
+      => c = 4/27.
+      Mode: maximize 3x^2 - x^3; 6x - 3x^2 = 3x(2-x) = 0 => x = 2 (interior max).
+      Mean: E[X] = (4/27)*integral_0^3 x^3(3-x) dx
+                 = (4/27)*(243/4 - 243/5) = (4/27)*(243/20) = 1.8.
+      Mean 1.8 < mode 2 => left-skewed.
+    answer: "c=4/27, mode=2, mean=1.8, left-skewed"
+    shortcut_used: ["density totals to 1", "mode via derivative", "mean vs mode skew"]
+    verify: "abs(4/27 - 1/(27 - 81/4)) < 1e-9 and abs((4/27)*(243/4 - 243/5) - 1.8) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative) =====================
+
+  - id: C7.16
+    chapter: 7
+    tier: elite_challenge
+    archetype: "Normal MGF kernel plus a higher (third) moment"
+    outcomes: ["2c", "2d"]
+    distributions: [normal]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Identify a reactor's output from its MGF and get a third moment."
+    statement: |
+      A reactor's output X has MGF M_X(t) = exp(2t + 8 t^2). Identify the
+      distribution via the Normal kernel exp(mu t + sigma^2 t^2 / 2), state mu and
+      sigma^2, then compute E[X^3]. (Hint: E[X^3] = mu^3 + 3 mu sigma^2.)
+    solution: |
+      Match mu t + sigma^2 t^2/2 to 2t + 8 t^2: mu = 2 and sigma^2/2 = 8 =>
+      sigma^2 = 16. Normal(2,16). For a Normal, E[X^3] = mu^3 + 3 mu sigma^2
+      = 8 + 3*2*16 = 8 + 96 = 104.
+    answer: "Normal(2,16); E[X^3]=104"
+    shortcut_used: ["Normal MGF kernel", "central-moment formula for E[X^3]"]
+    verify: "abs((2**3 + 3*2*16) - 104) < 1e-9"
+
+  - id: C7.17
+    chapter: 7
+    tier: elite_challenge
+    archetype: "survival function, Darth Vader with substitution, median vs mean"
+    outcomes: ["2b"]
+    distributions: []
+    provenance: original
+    difficulty: 5
+    narrative_hook: "Time-to-flood of the S.S. Anne hull (Rayleigh-type model)."
+    statement: |
+      Time-to-flood T has density f(t) = (t/50) e^(-t^2/100) for t >= 0. (i) Find
+      S(t). (ii) Use the Darth Vader rule with u = t^2/100 to find E[T] in terms
+      of Gamma(1/2) = sqrt(pi). (iii) Find the median and compare it to the mean.
+    solution: |
+      (i) S(t) = integral_t^inf (u/50) e^(-u^2/100) du; with w = u^2/100,
+          dw = (u/50) du, S(t) = integral_{t^2/100}^inf e^(-w) dw = e^(-t^2/100).
+      (ii) E[T] = integral_0^inf e^(-t^2/100) dt; sub u = t^2/100 => t = 10 sqrt(u),
+           dt = 5 u^(-1/2) du => E[T] = 5 integral_0^inf u^(-1/2) e^(-u) du
+           = 5 Gamma(1/2) = 5 sqrt(pi) ~= 8.862.
+      (iii) Median: e^(-m^2/100) = 1/2 => m^2 = 100 ln 2 => m = 10 sqrt(ln 2)
+            ~= 8.326. Mean 8.862 > median 8.326 => right-skewed.
+    answer: "S=e^(-t^2/100), E[T]=5 sqrt(pi)~=8.86, median=10 sqrt(ln2)~=8.33"
+    shortcut_used: ["survival via substitution", "Gamma(1/2)=sqrt(pi)", "median from S"]
+    verify: "abs(5*math.sqrt(math.pi) - 8.8623) < 1e-3 and abs(10*math.sqrt(math.log(2)) - 8.3255) < 1e-3 and (5*math.sqrt(math.pi) > 10*math.sqrt(math.log(2)))"
+
+  # ===================== MGF TOP-UP (outcome 2d) =====================
+
+  - id: C7.18
+    chapter: 7
+    tier: route_trainer
+    archetype: "MGF kernel recognition, binomial"
+    outcomes: ["2d", "2d2"]
+    distributions: [binomial]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Reading a Magnemite squadron's hit-count MGF."
+    statement: |
+      A Magnemite squadron's number of hits X has MGF
+      M_X(t) = (0.4 e^t + 0.6)^10. Identify the family and state E[X] and Var(X).
+    solution: |
+      M_X(t) = (p e^t + (1-p))^n is the Binomial(n, p) kernel with n = 10,
+      p = 0.4. Hence E[X] = np = 4 and Var(X) = np(1-p) = 10(0.4)(0.6) = 2.4.
+    answer: "Binomial(10,0.4); E[X]=4, Var(X)=2.4"
+    shortcut_used: ["binomial MGF kernel", "E=np, Var=np(1-p)"]
+    verify: "abs(10*0.4 - 4) < 1e-9 and abs(10*0.4*0.6 - 2.4) < 1e-9"
+
+  - id: C7.19
+    chapter: 7
+    tier: gym_battle
+    archetype: "MGF differentiation for E[X] and E[X^2], exponential"
+    outcomes: ["2d", "2c"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A Magmar's cooldown time read off its MGF."
+    statement: |
+      A Magmar's cooldown time X (minutes) has MGF M_X(t) = (1 - 5t)^(-1) for
+      t < 1/5. Without naming the family, differentiate to obtain E[X] and E[X^2],
+      then give Var(X).
+    solution: |
+      M_X'(t) = 5(1-5t)^(-2), so E[X] = M_X'(0) = 5.
+      M_X''(t) = 50(1-5t)^(-3), so E[X^2] = M_X''(0) = 50.
+      Var(X) = 50 - 5^2 = 25. (This is Exponential with mean theta = 5, where
+      Var = theta^2 = 25 — the differentiation confirms the kernel.)
+    answer: "E[X]=5, E[X^2]=50, Var(X)=25"
+    shortcut_used: ["MGF moments via M'(0), M''(0)"]
+    verify: "abs(5 - 5) < 1e-9 and abs(50 - 50) < 1e-9 and abs(50 - 5**2 - 25) < 1e-9"
+
+  - id: C7.20
+    chapter: 7
+    tier: gym_battle
+    archetype: "MGF of a sum of independent RVs (product rule), gamma"
+    outcomes: ["2d", "2d3"]
+    distributions: [gamma]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Stacking three independent Charmander flame bursts."
+    statement: |
+      Three independent flame bursts each have duration X_i ~ Exponential with
+      mean 4, MGF M(t) = (1 - 4t)^(-1). Let S = X_1 + X_2 + X_3. Find M_S(t),
+      identify the family of S, and state E[S] and Var(S).
+    solution: |
+      For independent sums the MGF multiplies: M_S(t) = [(1 - 4t)^(-1)]^3 =
+      (1 - 4t)^(-3), the Gamma(alpha = 3, theta = 4) kernel. Thus
+      E[S] = alpha*theta = 12 and Var(S) = alpha*theta^2 = 3*16 = 48.
+    answer: "M_S=(1-4t)^(-3) Gamma(3,4); E[S]=12, Var(S)=48"
+    shortcut_used: ["MGF of sum = product of MGFs", "gamma kernel"]
+    verify: "abs(3*4 - 12) < 1e-9 and abs(3*4**2 - 48) < 1e-9"
+
+  - id: C7.21
+    chapter: 7
+    tier: elite_challenge
+    archetype: "MGF kernel recognition, negative binomial, with E[X]"
+    outcomes: ["2d", "2d2"]
+    distributions: [negative_binomial]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Counting trials to land a fourth Poke Ball capture."
+    statement: |
+      The number of trials X to land the 4th capture has MGF
+      M_X(t) = [0.25 e^t / (1 - 0.75 e^t)]^4 for e^t < 1/0.75. Recognize the
+      family and parameters, then compute E[X].
+    solution: |
+      The kernel [p e^t / (1 - (1-p) e^t)]^r is the negative binomial counting
+      trials-until-r-successes, with r = 4 and p = 0.25. Its mean is
+      E[X] = r/p = 4/0.25 = 16.
+    answer: "NegBin(r=4,p=0.25); E[X]=16"
+    shortcut_used: ["negative-binomial MGF kernel", "E[X]=r/p (trials form)"]
+    verify: "abs(4/0.25 - 16) < 1e-9"

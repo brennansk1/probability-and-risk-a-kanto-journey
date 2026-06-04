@@ -1,0 +1,304 @@
+# Problem bank — Chapter 11 (Cinnabar Island): Joint distributions — verifying/
+# normalizing joints, marginals, double integrals over general regions,
+# conditional distributions, independence. Outcomes 3a-3b. Schema per
+# problems/bank.yaml header. This file is owned by Chapter 11 only.
+# verify expressions use the names exposed by sims/verify_examples.py
+# (math, st); no __import__ needed.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C11.1
+    chapter: 11
+    tier: route_trainer
+    archetype: "normalize a joint pdf on a rectangle; marginal"
+    outcomes: ["3a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Calibrating a Ponyta research log of speed and temperature."
+    statement: |
+      A Ponyta's joint density of speed X and temperature Y, both on [0,1], is
+      f(x,y) = c*x*y on the unit square 0<x<1, 0<y<1. Find the constant c and the
+      marginal density f_X(x).
+    solution: |
+      double integral of xy over the unit square = (int_0^1 x dx)(int_0^1 y dy)
+      = (1/2)(1/2) = 1/4, so c = 4.
+      f_X(x) = int_0^1 4xy dy = 4x*(1/2) = 2x on 0<x<1.
+      (Independent: 4xy = (2x)(2y) on a rectangle.)
+    answer: "c=4, f_X(x)=2x"
+    shortcut_used: ["rectangle joint splits into a product of single integrals"]
+    verify: "abs(1/((1/2)*(1/2)) - 4) < 1e-9"
+
+  - id: C11.2
+    chapter: 11
+    tier: route_trainer
+    archetype: "verify a discrete joint pmf; marginal"
+    outcomes: ["3a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Reading a Growlithe table of loyalty and bark-volume."
+    statement: |
+      A Growlithe log gives loyalty X in {1,2} and bark-volume Y in {1,2,3} with
+      joint pmf p(x,y) = (1/21)(x+y). Verify it is a pmf and find P(X=1).
+    solution: |
+      sum over x in {1,2}, y in {1,2,3} of (x+y): the six values 2,3,4,3,4,5 sum
+      to 21, so total prob = 21/21 = 1.
+      P(X=1) = (1/21)[(1+1)+(1+2)+(1+3)] = 9/21 = 3/7 ~= 0.4286.
+    answer: "P(X=1)=3/7~=0.4286"
+    shortcut_used: ["row sum of the joint table"]
+    verify: "abs(sum((x+y)/21 for x in [1,2] for y in [1,2,3]) - 1) < 1e-9 and abs(((1+1)+(1+2)+(1+3))/21 - 3/7) < 1e-9"
+
+  - id: C11.3
+    chapter: 11
+    tier: route_trainer
+    archetype: "region probability + marginal, uniform on the unit square"
+    outcomes: ["3a"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Two markers dropped independently and uniformly on the unit square."
+    statement: |
+      (X,Y) has joint density f(x,y) = 1 on [0,1]^2. Find P(Y>X) and state the
+      marginal of X.
+    solution: |
+      P(Y>X) = area above the diagonal of the unit square = 1/2.
+      f_X(x) = int_0^1 1 dy = 1 on 0<x<1, i.e. X ~ Uniform(0,1).
+    answer: "P(Y>X)=1/2, X~Unif(0,1)"
+    shortcut_used: ["area above the diagonal of a unit square"]
+    verify: "abs(0.5 - 1/2) < 1e-9"
+
+  - id: C11.4
+    chapter: 11
+    tier: route_trainer
+    archetype: "marginal over a triangular support"
+    outcomes: ["3a"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "A Vulpix tail-curl ledger recorded only on the triangle x<y."
+    statement: |
+      On the triangle 0<x<y<1, the joint density is f(x,y) = 6(1-y). Find the
+      marginal density f_X(x) of the first attribute.
+    solution: |
+      For fixed x, y runs from x to 1:
+      f_X(x) = int_x^1 6(1-y) dy = 6*(1-x)^2/2 = 3(1-x)^2 on 0<x<1.
+      (Check: int_0^1 3(1-x)^2 dx = 1.)
+    answer: "f_X(x)=3(1-x)^2"
+    shortcut_used: ["inner limit read off the triangle edge x to 1"]
+    verify: "abs((6*(1-0.3)**2/2) - 3*(1-0.3)**2) < 1e-12 and abs((-(1-1)**3 + (1-0)**3) - 1) < 1e-9"
+
+  - id: C11.5
+    chapter: 11
+    tier: route_trainer
+    archetype: "independence by factoring on a rectangular support"
+    outcomes: ["3b"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Two independent ember burn-timers."
+    statement: |
+      Two embers have joint density f(x,y) = 2*e^(-x)*e^(-2y) for x>0, y>0.
+      Confirm X and Y are independent and identify each marginal distribution.
+    solution: |
+      Support is the product set {x>0} x {y>0}; f factors as (e^-x)(2 e^-2y), so
+      X and Y are independent. Marginals: f_X(x)=e^-x => X~Exp(mean 1);
+      f_Y(y)=2 e^-2y => Y~Exp(mean 1/2). Independent.
+    answer: "independent; X~Exp(mean 1), Y~Exp(mean 1/2)"
+    shortcut_used: ["rectangular support + density factors => independent"]
+    verify: "abs(st.expon.cdf(1.0, scale=1.0) - (1 - math.exp(-1.0))) < 1e-9 and abs(st.expon.cdf(1.0, scale=0.5) - (1 - math.exp(-2.0))) < 1e-9"
+
+  - id: C11.6
+    chapter: 11
+    tier: route_trainer
+    archetype: "discrete conditional from a joint table"
+    outcomes: ["3b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Slicing the Growlithe table at X=2."
+    statement: |
+      Using the Growlithe table of C11.2 (p(x,y)=(1/21)(x+y), X in {1,2},
+      Y in {1,2,3}), find P(Y=2 | X=2).
+    solution: |
+      p_X(2) = (1/21)[(2+1)+(2+2)+(2+3)] = 12/21.
+      P(Y=2 | X=2) = p(2,2)/p_X(2) = (4/21)/(12/21) = 1/3 ~= 0.3333.
+    answer: "P(Y=2|X=2)=1/3"
+    shortcut_used: ["joint cell over row sum"]
+    verify: "abs(((2+2)/21)/(((2+1)+(2+2)+(2+3))/21) - 1/3) < 1e-9"
+
+  # ===================== GYM BATTLES (SOA difficulty) =====================
+
+  - id: C11.7
+    chapter: 11
+    tier: gym_battle
+    archetype: "full joint workout on a rectangle: normalize, marginals, independence, mean"
+    outcomes: ["3a", "3b"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A Charmander research log of two twin attributes."
+    statement: |
+      A Charmander log gives f(x,y) = (3/2)*x^2*y on 0<x<1, 0<y<2.
+      (a) Verify it integrates to 1. (b) Find both marginals and decide whether X
+      and Y are independent. (c) Find E[X].
+    solution: |
+      (a) int_0^2 int_0^1 (3/2) x^2 y dx dy = (3/2)*(1/3)*(2^2/2) = (3/2)*(1/3)*2 = 1.
+      (b) f_X(x) = int_0^2 (3/2) x^2 y dy = (3/2) x^2 * 2 = 3 x^2 on 0<x<1;
+          f_Y(y) = int_0^1 (3/2) x^2 y dx = (3/2) y *(1/3) = y/2 on 0<y<2.
+          Product (3x^2)(y/2) = (3/2) x^2 y = f on the rectangle => INDEPENDENT.
+      (c) E[X] = int_0^1 x*3x^2 dx = 3/4 = 0.75.
+    answer: "indep; E[X]=0.75"
+    shortcut_used: ["rectangular support + factoring", "marginal moments"]
+    verify: "abs((3/2)*(1/3)*(2**2/2) - 1) < 1e-9 and abs((3*0.4**2)*(0.5/2) - (3/2)*0.4**2*0.5) < 1e-12 and abs(3/4 - 0.75) < 1e-9"
+
+  - id: C11.8
+    chapter: 11
+    tier: gym_battle
+    archetype: "region probability via a marginal on a rectangle"
+    outcomes: ["3a"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Blaine's rectangular riddle of two flame readings."
+    statement: |
+      The joint density of two flame readings is f(x,y) = (1/3)(x+y) on
+      0<x<2, 0<y<1. Find P(Y < 1/2).
+    solution: |
+      f_Y(y) = int_0^2 (1/3)(x+y) dx = (1/3)[x^2/2 + xy]_0^2 = (1/3)(2+2y)
+      = (2/3)(1+y) on 0<y<1.
+      P(Y<1/2) = int_0^{1/2} (2/3)(1+y) dy = (2/3)[1/2 + 1/8] = (2/3)(5/8)
+      = 5/12 ~= 0.4167.
+    answer: "5/12~=0.4167"
+    shortcut_used: ["marginalize x, then integrate the marginal"]
+    verify: "abs((2/3)*(1/2 + 1/8) - 5/12) < 1e-9"
+
+  - id: C11.9
+    chapter: 11
+    tier: gym_battle
+    archetype: "conditional probability over a triangular support"
+    outcomes: ["3b"]
+    distributions: []
+    provenance: inspired-by
+    difficulty: 4
+    narrative_hook: "Conditioning the Mewtwo log on a known power X=1/4."
+    statement: |
+      For the Mewtwo triangle f(x,y) = 8xy on 0<x<y<1, find P(Y > 1/2 | X = 1/4)
+      from the conditional density.
+    solution: |
+      f_X(x) = int_x^1 8xy dy = 4x(1-x^2).
+      f_{Y|X}(y|1/4) = (8*(1/4)*y)/(4*(1/4)*(1-1/16)) = (2y)/(15/16) = 32y/15,
+      for 1/4 < y < 1.
+      P(Y>1/2 | X=1/4) = int_{1/2}^1 (32y/15) dy = (16/15)(1 - 1/4) = 4/5 = 0.80.
+    answer: "4/5=0.80"
+    shortcut_used: ["conditional density = joint / marginal", "triangle inner limits"]
+    verify: "abs((16/15)*(1 - (1/2)**2) - 4/5) < 1e-9"
+
+  - id: C11.10
+    chapter: 11
+    tier: gym_battle
+    archetype: "P(X<Y) for independent exponentials"
+    outcomes: ["3a", "3b"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Which of two fainted Pokemon recovers first?"
+    statement: |
+      Recovery times are independent exponentials, X with mean 2 minutes and Y
+      with mean 3 minutes. Find P(X<Y), the chance the first recovers first.
+    solution: |
+      Rates lambda_X = 1/2 (mean 2), lambda_Y = 1/3 (mean 3).
+      For independent exponentials, P(X<Y) = lambda_X/(lambda_X+lambda_Y)
+      = (1/2)/(1/2+1/3) = (1/2)/(5/6) = 3/5 = 0.60.
+    answer: "3/5=0.60"
+    shortcut_used: ["P(X<Y)=lambda_X/(lambda_X+lambda_Y) for indep exponentials"]
+    verify: "abs((1/2)/((1/2)+(1/3)) - 3/5) < 1e-9"
+
+  - id: C11.11
+    chapter: 11
+    tier: gym_battle
+    archetype: "marginal and mean over the capped triangle x+y<1"
+    outcomes: ["3a"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    narrative_hook: "A triangle of dual readings capped by x+y<1."
+    statement: |
+      The joint density is f(x,y) = 24xy on x>0, y>0, x+y<1.
+      (a) Find the marginal f_X(x). (b) Find E[X].
+    solution: |
+      (a) For fixed x in (0,1), y runs 0 to 1-x:
+          f_X(x) = int_0^{1-x} 24xy dy = 24x*(1-x)^2/2 = 12x(1-x)^2.
+      (b) E[X] = int_0^1 x*12x(1-x)^2 dx = 12*int_0^1 x^2(1-2x+x^2) dx
+          = 12*(1/3 - 2/4 + 1/5) = 12*(1/30) = 2/5 = 0.40.
+    answer: "f_X=12x(1-x)^2; E[X]=2/5=0.40"
+    shortcut_used: ["cap x+y<1 sets inner limit 0 to 1-x"]
+    verify: "abs(12*(1/3 - 2/4 + 1/5) - 2/5) < 1e-9"
+
+  - id: C11.12
+    chapter: 11
+    tier: gym_battle
+    archetype: "recover the joint density from the joint cdf"
+    outcomes: ["3a"]
+    distributions: []
+    provenance: inspired-by
+    difficulty: 3
+    narrative_hook: "Differentiating a joint cdf back into its density."
+    statement: |
+      A pair has joint cdf F(x,y) = (1/2) x y (x+y) on 0<=x<=1, 0<=y<=1.
+      Find the joint density f(x,y) and verify it integrates to 1.
+    solution: |
+      dF/dx = (1/2) y (2x+y) = xy + y^2/2.
+      d/dy (xy + y^2/2) = x + y. So f(x,y) = x+y on [0,1]^2, and
+      int_0^1 int_0^1 (x+y) dx dy = 1.
+    answer: "f(x,y)=x+y"
+    shortcut_used: ["mixed second partial of F gives f"]
+    verify: "abs((1/2 + 1/2) - 1) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative) =====================
+
+  - id: C11.13
+    chapter: 11
+    tier: elite_challenge
+    archetype: "marginal + uniform conditional over a triangle; E[Y] via E[X/2]"
+    outcomes: ["3a", "3b"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "An asymmetric ledger with density flat in y on each slice."
+    statement: |
+      A log uses f(x,y) = (3/8) x on the triangle 0<y<x<2.
+      (a) Find the marginal f_X(x). (b) Show the conditional of Y given X=x is
+      Uniform(0,x), and use it to find E[Y] via E[Y]=E[X/2].
+    solution: |
+      (a) For fixed x, y runs 0 to x: f_X(x) = int_0^x (3/8) x dy = (3/8) x^2 on
+          0<x<2. (Check: int_0^2 (3/8) x^2 dx = (3/8)(8/3) = 1.)
+      (b) f_{Y|X}(y|x) = ((3/8)x)/((3/8)x^2) = 1/x for 0<y<x => Uniform(0,x),
+          so E[Y|X=x] = x/2. Then E[Y] = E[X/2] = (1/2)E[X]
+          = (1/2) int_0^2 x*(3/8)x^2 dx = (1/2)*(3/8)*(16/4) = (1/2)*(3/2) = 3/4 = 0.75.
+    answer: "f_X=(3/8)x^2; E[Y]=3/4=0.75"
+    shortcut_used: ["density constant in y on each slice => uniform conditional", "double expectation E[Y]=E[X/2]"]
+    verify: "abs((3/8)*(2**3/3) - 1) < 1e-9 and abs((1/2)*((3/8)*(2**4/4)) - 3/4) < 1e-9"
+
+  - id: C11.14
+    chapter: 11
+    tier: elite_challenge
+    archetype: "sum of independent exponentials as a region probability"
+    outcomes: ["3a", "3b"]
+    distributions: [exponential, gamma]
+    provenance: adapted-from-SOA
+    difficulty: 4
+    narrative_hook: "Chance the total of two correlated-looking loss types stays small."
+    statement: |
+      Fire damage X and smoke damage Y (in thousands) are independent exponentials
+      each with mean 1. Find P(X+Y < 2), the chance total damage stays under 2.
+    solution: |
+      f(x,y)=e^-x e^-y. P(X+Y<2) = int_0^2 int_0^{2-x} e^-x e^-y dy dx
+      = int_0^2 e^-x (1 - e^{-(2-x)}) dx = int_0^2 (e^-x - e^-2) dx
+      = (1 - e^-2) - 2 e^-2 = 1 - 3 e^-2 ~= 0.5940.
+      (Equivalently X+Y ~ Gamma(2,1), cdf 1 - e^-2 (1+2).)
+    answer: "1 - 3 e^-2 ~= 0.5940"
+    shortcut_used: ["region integral over x+y<2", "sum of indep Exp(1) is Gamma(2,1)"]
+    verify: "abs((1 - 3*math.exp(-2)) - st.gamma.cdf(2, a=2, scale=1)) < 1e-9 and abs((1 - 3*math.exp(-2)) - 0.5940) < 1e-3"

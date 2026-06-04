@@ -1,0 +1,620 @@
+# Problem bank — Chapter 15 (Champion's Challenge): Exam strategy & three mock
+# exams. This chapter teaches no new mathematics; its problem set is a mixed,
+# weight-matched gauntlet that integrates Topics 1-3 (General Probability,
+# Univariate, Multivariate). Outcomes therefore span the whole syllabus.
+# Schema per problems/bank.yaml header. This file is owned by Chapter 15 only.
+# Verify expressions use the names exposed by sims/verify_examples.py
+# (math, st=scipy.stats); never __import__. Statements/solutions/answers match
+# exactly what ch15_champion.md prints (problem set C15.k + Answer Key).
+
+problems:
+
+  # ===================== ROUTE TRAINERS (recognition-speed mechanics) =====================
+
+  - id: C15.1
+    chapter: 15
+    tier: route_trainer
+    archetype: "Poisson count, 'at least' via complement"
+    outcomes: ["2d2"]
+    distributions: [poisson]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Mock A opening flock: Spearow swoop in on Route 1."
+    statement: |
+      On Route 1, Spearow arrive at an average rate of lambda = 3 per minute
+      (Poisson, independent). In one minute, find P(at least 2).
+    solution: |
+      'Average rate per interval' => Poisson(3); 'at least 2' => complement of
+      the low values {0,1}. P(N>=2) = 1 - P(0) - P(1) = 1 - e^(-3) - 3e^(-3)
+      = 1 - 4e^(-3) ~= 1 - 0.19915 = 0.8009.
+    answer: 0.8009
+    shortcut_used: ["Poisson pmf", "at-least via complement of {0,1}"]
+    verify: "abs((1 - 4*math.exp(-3)) - 0.8009) < 1e-3"
+
+  - id: C15.2
+    chapter: 15
+    tier: route_trainer
+    archetype: "two-way Bayes / false-positive (low base rate)"
+    outcomes: ["1g"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Mock A: the Pokedex flags a Pokemon as a Ghost-type."
+    statement: |
+      A wild Pokemon is Ghost-type with prior 0.02; the Pokedex flags a true
+      Ghost with probability 0.95 and false-flags a non-Ghost with probability
+      0.10. It just flagged one. Find P(Ghost | flagged).
+    solution: |
+      The bar is flipped (want P(Ghost|flag) from P(flag|Ghost)), so this is
+      Bayes. P(G|+) = 0.95(0.02) / [0.95(0.02) + 0.10(0.98)]
+      = 0.0190 / 0.1170 ~= 0.1624. Despite a 95%-accurate detector the
+      posterior is only ~16% — the base-rate effect.
+    answer: 0.1624
+    shortcut_used: ["Bayes grid"]
+    verify: "abs((0.95*0.02)/(0.95*0.02 + 0.10*0.98) - 0.1624) < 1e-3"
+
+  - id: C15.3
+    chapter: 15
+    tier: route_trainer
+    archetype: "gamma-kernel expectation via kernel recognition"
+    outcomes: ["2d3", "2b"]
+    distributions: [gamma]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Mock A: a Charizard's flame burns for X minutes."
+    statement: |
+      A Charizard's flame lasts X minutes with density f(x) = (1/16) x e^(-x/4),
+      x > 0. Find E[X].
+    solution: |
+      The density is proportional to x^(2-1) e^(-x/4), the kernel of a
+      Gamma(alpha=2, theta=4). A gamma's mean is alpha*theta, so
+      E[X] = alpha*theta = 2*4 = 8 (no integration by parts).
+    answer: 8
+    shortcut_used: ["gamma kernel recognition", "E[X]=alpha*theta"]
+    verify: "abs(2*4 - 8) < 1e-9"
+
+  - id: C15.4
+    chapter: 15
+    tier: route_trainer
+    archetype: "hypergeometric, draws without replacement"
+    outcomes: ["2d2"]
+    distributions: [hypergeometric]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Mock B: Misty nets fish from a tank without replacement."
+    statement: |
+      Misty's tank holds 10 Magikarp and 5 Goldeen. She nets 4 fish at once
+      (no replacement). Find P(exactly 2 Goldeen).
+    solution: |
+      'Without replacement from a finite pool' => hypergeometric.
+      P = C(5,2)*C(10,2) / C(15,4) = (10*45)/1365 = 450/1365 ~= 0.3297.
+    answer: 0.3297
+    shortcut_used: ["hypergeometric pmf"]
+    verify: "abs((math.comb(5,2)*math.comb(10,2))/math.comb(15,4) - 0.3297) < 1e-3"
+
+  - id: C15.5
+    chapter: 15
+    tier: route_trainer
+    archetype: "geometric wait-time"
+    outcomes: ["2d2"]
+    distributions: [geometric]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Mock B: the slot streak at the Celadon Game Corner."
+    statement: |
+      At the Celadon Game Corner each pull wins independently with probability
+      0.2. Find P(first win on the 4th pull).
+    solution: |
+      'Number of trials until the first success' => geometric. First success
+      on trial 4: (1-p)^3 * p = (0.8)^3 (0.2) = 0.512(0.2) = 0.1024.
+    answer: 0.1024
+    shortcut_used: ["geometric pmf (1-p)^(k-1) p"]
+    verify: "abs((0.8**3)*0.2 - 0.1024) < 1e-9"
+
+  - id: C15.6
+    chapter: 15
+    tier: route_trainer
+    archetype: "normal standardization"
+    outcomes: ["2d3"]
+    distributions: [normal]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Mock B: Sabrina's psychic-power reading."
+    statement: |
+      A psychic-power reading X is Normal(mu=50, sigma^2=64). Find P(X>62)
+      using the provided Z-table.
+    solution: |
+      Standardize: Z = (62 - 50)/8 = 1.5. P(X>62) = 1 - Phi(1.5)
+      = 1 - 0.9332 = 0.0668.
+    answer: 0.0668
+    shortcut_used: ["standardize then 1 - Phi"]
+    verify: "abs((1 - st.norm.cdf((62-50)/8)) - 0.0668) < 1e-3"
+
+  - id: C15.7
+    chapter: 15
+    tier: route_trainer
+    archetype: "per-loss exponential deductible, memorylessness"
+    outcomes: ["2e", "2f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Mock C warm-up quote: a fled Pokemon's gear cost."
+    statement: |
+      A fled Pokemon's gear cost X ~ Exponential(theta=4) (thousands). With
+      ordinary deductible d=2, find the expected payment per loss.
+    solution: |
+      For an exponential loss with ordinary deductible, the memoryless
+      property gives E[(X-d)_+] = theta * e^(-d/theta) = 4 e^(-2/4)
+      = 4 e^(-0.5) ~= 2.426 thousand.
+    answer: 2.426
+    shortcut_used: ["memoryless exponential: E[(X-d)_+]=theta*e^(-d/theta)"]
+    verify: "abs(4*math.exp(-2/4) - 2.426) < 1e-3"
+
+  - id: C15.8
+    chapter: 15
+    tier: route_trainer
+    archetype: "equally-likely outcomes, mutually-exclusive union"
+    outcomes: ["1a", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Mock C: two dice on the Game Corner table."
+    statement: |
+      Roll two fair six-sided dice. Find P(sum = 7 or sum = 11).
+    solution: |
+      Sum 7: 6 ways; sum 11: 2 ways; the events are disjoint, over 36 equally
+      likely outcomes: P = (6+2)/36 = 8/36 ~= 0.2222.
+    answer: 0.2222
+    shortcut_used: ["count favorable / total; addition rule for disjoint events"]
+    verify: "abs((6+2)/36 - 0.2222) < 1e-3"
+
+  - id: C15.9
+    chapter: 15
+    tier: route_trainer
+    archetype: "uniform variance"
+    outcomes: ["2d3", "2c"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Mock C: a Pokemon's roaming distance is uniform."
+    statement: |
+      A Pokemon's roaming distance X is Uniform(0,10) km. Find Var(X).
+    solution: |
+      For Uniform(a,b), Var(X) = (b-a)^2 / 12 = (10-0)^2 / 12 = 100/12 ~= 8.333.
+    answer: 8.333
+    shortcut_used: ["Var of uniform = (b-a)^2/12"]
+    verify: "abs((10-0)**2/12 - 8.333) < 1e-3"
+
+  - id: C15.10
+    chapter: 15
+    tier: route_trainer
+    archetype: "MGF kernel recognition"
+    outcomes: ["2d"]
+    distributions: [normal]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Mock A: an MGF read-off for a random reward."
+    statement: |
+      A random reward has MGF M(t) = e^(3t + 2t^2). Identify the distribution
+      and find Var.
+    solution: |
+      Match the normal MGF M(t) = e^(mu t + sigma^2 t^2 / 2): mu = 3 and
+      sigma^2/2 = 2 => sigma^2 = 4. The reward is Normal(3, 4), so Var = 4.
+    answer: 4
+    shortcut_used: ["MGF kernel-match to e^(mu t + sigma^2 t^2/2)"]
+    verify: "abs(2*2 - 4) < 1e-9"
+
+  - id: C15.11
+    chapter: 15
+    tier: route_trainer
+    archetype: "exponential memorylessness"
+    outcomes: ["2d3"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Mock B: a fainted Pokemon's memoryless recovery time."
+    statement: |
+      A fainted Pokemon's recovery time is Exponential(theta=10) minutes. Given
+      it has already rested 4 minutes, find P(at least 6 more minutes needed).
+    solution: |
+      Exponential is memoryless, so the past 4 minutes are irrelevant:
+      P(X > 4+6 | X > 4) = P(X > 6) = e^(-6/10) = e^(-0.6) ~= 0.5488.
+    answer: 0.5488
+    shortcut_used: ["memorylessness: condition drops out"]
+    verify: "abs(math.exp(-6/10) - 0.5488) < 1e-3"
+
+  - id: C15.12
+    chapter: 15
+    tier: route_trainer
+    archetype: "ordered count, permutation"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Mock C: an ordered battle line-up from caught Pokemon."
+    statement: |
+      From 8 caught Pokemon, how many distinct ordered battle line-ups of 3
+      can Ash field?
+    solution: |
+      'Ordered' => permutation. P(8,3) = 8*7*6 = 336.
+    answer: 336
+    shortcut_used: ["permutation P(n,k)=n!/(n-k)!"]
+    verify: "8*7*6 == 336"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C15.13
+    chapter: 15
+    tier: gym_battle
+    archetype: "CLT normal approximation to binomial, continuity correction"
+    outcomes: ["3i"]
+    distributions: [binomial, normal]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Mock A: the upset count over 100 exhibition matches."
+    statement: |
+      The League runs 100 independent exhibition matches, each an upset with
+      probability 0.3. Using the normal approximation with continuity
+      correction, find P(at most 25 upsets).
+    solution: |
+      S ~ Binomial(100, 0.3): mu = np = 30, sigma^2 = np(1-p) = 21,
+      sigma = sqrt(21) ~= 4.583. Discrete => continuity-correct at 25.5:
+      P(S<=25) ~= Phi((25.5-30)/4.583) = Phi(-0.982) ~= 0.163.
+    answer: 0.163
+    shortcut_used: ["CLT", "continuity correction <=25 -> 25.5"]
+    verify: "abs(st.norm.cdf((25.5-30)/math.sqrt(21)) - 0.163) < 2e-3"
+
+  - id: C15.14
+    chapter: 15
+    tier: gym_battle
+    archetype: "full loss policy: deductible, limit, coinsurance (exponential)"
+    outcomes: ["2e", "2f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Mock A: a full Safari policy with all three features."
+    statement: |
+      Loss X ~ Exponential(theta=8) (thousands), ordinary deductible d=2,
+      maximum covered loss u=10, coinsurance alpha=0.8. Find the expected
+      payment per loss.
+    solution: |
+      Use E[Y_L] = alpha*(E[X ^ u] - E[X ^ d]). For an exponential,
+      E[X ^ c] = theta(1 - e^(-c/theta)). E[X ^ 10] = 8(1 - e^(-1.25)) ~= 5.708;
+      E[X ^ 2] = 8(1 - e^(-0.25)) ~= 1.770.
+      E[Y_L] = 0.8(5.708 - 1.770) = 0.8(3.938) ~= 3.151 thousand.
+    answer: 3.151
+    shortcut_used: ["E[X^c]=theta(1-e^(-c/theta))", "alpha[(X^u)-(X^d)]"]
+    verify: "abs(0.8*(8*(1-math.exp(-10/8)) - 8*(1-math.exp(-2/8))) - 3.151) < 2e-3"
+
+  - id: C15.15
+    chapter: 15
+    tier: gym_battle
+    archetype: "maximum order statistic, uniform"
+    outcomes: ["3f"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Mock A: the strongest of five challengers."
+    statement: |
+      Five independent challengers each have strength X_i ~ Uniform(0,1). Find
+      the expected strength of the strongest.
+    solution: |
+      'Strongest of n' => maximum order statistic. For Uniform(0,1),
+      E[max] = n/(n+1) = 5/6 ~= 0.8333. (Or F_max(x)=x^5, density 5x^4,
+      E = integral_0^1 5x^5 dx = 5/6.)
+    answer: 0.8333
+    shortcut_used: ["E[max]=n/(n+1) for Unif(0,1)"]
+    verify: "abs(5/6 - 0.8333) < 1e-3"
+
+  - id: C15.16
+    chapter: 15
+    tier: gym_battle
+    archetype: "double integral over a region"
+    outcomes: ["3b"]
+    distributions: [joint_continuous]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Mock A: a joint density over a triangle."
+    statement: |
+      (X,Y) has joint density f(x,y) = 2 on {0 < x < y < 1}. Find P(Y < 2X).
+    solution: |
+      On the triangle 0<x<y<1 with f=2, the event Y<2X is the part with
+      x < y < 2x, intersected with y<1. Split at x=1/2:
+      integral_0^(1/2) integral_x^(2x) 2 dy dx + integral_(1/2)^1 integral_x^1 2 dy dx
+      = integral_0^(1/2) 2x dx + integral_(1/2)^1 2(1-x) dx
+      = 1/4 + 1/4 = 0.5.
+    answer: 0.5
+    shortcut_used: ["split the region at x=1/2; integrate constant density"]
+    verify: "abs(0.5 - 0.5) < 1e-12"
+
+  - id: C15.17
+    chapter: 15
+    tier: gym_battle
+    archetype: "Bayesian posterior mean, beta update"
+    outcomes: ["1g", "3c"]
+    distributions: [beta, uniform]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Mock B: Bayes with a continuous twist on a coin's bias."
+    statement: |
+      A coin's bias P is Uniform(0,1). Given P=p, a flip is heads with
+      probability p. A single flip is heads. Find E[P | heads].
+    solution: |
+      Posterior is proportional to p * 1 on (0,1), i.e. Beta(2,1) with density
+      2p. E[P | H] = integral_0^1 p * 2p dp = 2/3 ~= 0.6667. (Equivalently the
+      Beta(2,1) mean alpha/(alpha+beta) = 2/3.)
+    answer: 0.6667
+    shortcut_used: ["posterior proportional to likelihood*prior", "Beta(2,1) mean"]
+    verify: "abs(2/3 - 0.6667) < 1e-3"
+
+  - id: C15.18
+    chapter: 15
+    tier: gym_battle
+    archetype: "variance of a per-loss deductible payment, exponential"
+    outcomes: ["2e", "2c"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Mock B: variance of a deductible payment."
+    statement: |
+      Loss X ~ Exponential(theta=4), ordinary deductible d=2, no limit,
+      alpha=1. For the per-loss payment Y = (X-2)_+, find Var(Y).
+    solution: |
+      Y = 0 with probability 1 - e^(-0.5); given Y>0, Y ~ Exponential(4) by
+      memorylessness. E[Y] = 4 e^(-0.5) ~= 2.426;
+      E[Y^2] = e^(-0.5) * 2 theta^2 = 32 e^(-0.5) ~= 19.41.
+      Var(Y) = 19.41 - 2.426^2 ~= 19.41 - 5.89 = 13.52.
+    answer: 13.52
+    shortcut_used: ["memoryless exponential", "E[Y^2]=e^(-d/theta)*2theta^2", "Var=E[Y^2]-E[Y]^2"]
+    verify: "abs((32*math.exp(-0.5) - (4*math.exp(-0.5))**2) - 13.52) < 0.05"
+
+  - id: C15.19
+    chapter: 15
+    tier: gym_battle
+    archetype: "sum of independent normals"
+    outcomes: ["3h", "3g"]
+    distributions: [normal]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Mock B: two teammates' independent normal contributions."
+    statement: |
+      Two teammates' contributions are independent: A ~ Normal(20,16) and
+      B ~ Normal(30,9). Find P(A+B > 60).
+    solution: |
+      Sums of independent normals stay normal: A+B ~ Normal(20+30, 16+9)
+      = Normal(50, 25), sigma = 5. P(A+B>60) = 1 - Phi((60-50)/5)
+      = 1 - Phi(2) = 1 - 0.9772 = 0.0228.
+    answer: 0.0228
+    shortcut_used: ["sum of independent normals: means add, variances add"]
+    verify: "abs((1 - st.norm.cdf((60-50)/5)) - 0.0228) < 1e-3"
+
+  - id: C15.20
+    chapter: 15
+    tier: gym_battle
+    archetype: "conditional expectation from a density"
+    outcomes: ["3c", "2b"]
+    distributions: [continuous]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Mock B: a conditional expectation from a triangular density."
+    statement: |
+      X has density f(x) = x/8 on 0 < x < 4. Find E[X | X > 2].
+    solution: |
+      P(X>2) = integral_2^4 x/8 dx = (1/16)(16-4) = 0.75.
+      E[X; X>2] = integral_2^4 x * x/8 dx = (1/24)(64-8) = 56/24 ~= 2.333.
+      E[X | X>2] = 2.333 / 0.75 ~= 3.111.
+    answer: 3.111
+    shortcut_used: ["E[X|A]=E[X;A]/P(A)"]
+    verify: "abs((56/24)/0.75 - 3.111) < 1e-3"
+
+  - id: C15.21
+    chapter: 15
+    tier: gym_battle
+    archetype: "variance of a linear combination"
+    outcomes: ["3g", "3e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Mock B: covariance of a linear combination."
+    statement: |
+      For X,Y with Var(X)=4, Var(Y)=9, Corr(X,Y)=0.5, find Var(2X - Y).
+    solution: |
+      Cov(X,Y) = 0.5 * sqrt(4*9) = 3.
+      Var(2X - Y) = 4 Var(X) + Var(Y) - 2(2) Cov(X,Y) = 16 + 9 - 12 = 13.
+    answer: 13
+    shortcut_used: ["Var(aX+bY)=a^2VarX+b^2VarY+2ab Cov", "Cov=rho*sigmaX*sigmaY"]
+    verify: "abs(4*4 + 9 - 2*2*3 - 13) < 1e-9"
+
+  - id: C15.22
+    chapter: 15
+    tier: gym_battle
+    archetype: "superposition of independent Poissons"
+    outcomes: ["2d2"]
+    distributions: [poisson]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Mock C: Pidgey and Spearow as superposed Poisson processes."
+    statement: |
+      Pidgey arrive at rate 2/hr and Spearow at rate 3/hr, independent Poisson
+      processes. Find P(exactly 4 birds total in one hour).
+    solution: |
+      Superposition of independent Poissons is Poisson with summed rate:
+      total ~ Poisson(2+3=5). P(=4) = e^(-5) 5^4 / 4!
+      = e^(-5)(625)/24 ~= 0.0067379(625)/24 ~= 0.1755.
+    answer: 0.1755
+    shortcut_used: ["Poisson superposition: rates add", "Poisson pmf"]
+    verify: "abs(math.exp(-5)*5**4/math.factorial(4) - 0.1755) < 2e-3"
+
+  - id: C15.23
+    chapter: 15
+    tier: gym_battle
+    archetype: "gamma tail via the Poisson-sum identity"
+    outcomes: ["2d3"]
+    distributions: [gamma]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Mock C: a gamma tail solved by the Poisson-sum identity."
+    statement: |
+      X ~ Gamma(alpha=2, theta=3). Find P(X > 6).
+    solution: |
+      For integer shape alpha, the gamma tail is a Poisson sum:
+      P(X>x) = e^(-x/theta) * sum_{j=0}^{alpha-1} (x/theta)^j / j!.
+      Here x/theta = 6/3 = 2 and alpha=2: P(X>6) = e^(-2)(1 + 2) = 3e^(-2)
+      ~= 0.4060.
+    answer: 0.4060
+    shortcut_used: ["gamma tail = Poisson-sum identity"]
+    verify: "abs(3*math.exp(-2) - 0.4060) < 1e-3"
+
+  - id: C15.24
+    chapter: 15
+    tier: gym_battle
+    archetype: "the master identity (loss model)"
+    outcomes: ["2e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Mock C: the warden's master-identity puzzle."
+    statement: |
+      The warden tells you E[X]=10 and X ^ 8 has mean 6.2 (thousands). Find
+      E[(X-8)_+].
+    solution: |
+      The master identity: E[(X-d)_+] = E[X] - E[X ^ d]. So
+      E[(X-8)_+] = 10 - 6.2 = 3.8 thousand.
+    answer: 3.8
+    shortcut_used: ["E[(X-d)_+] = E[X] - E[X^d]"]
+    verify: "abs(10 - 6.2 - 3.8) < 1e-9"
+
+  - id: C15.25
+    chapter: 15
+    tier: gym_battle
+    archetype: "law of total expectation, mixture"
+    outcomes: ["3c"]
+    distributions: [mixture, exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Mock C: a mixture of short and long battles."
+    statement: |
+      With probability 0.6 a battle is 'short,' damage Exponential(mean 3);
+      with probability 0.4 it is 'long,' damage Exponential(mean 8). Find the
+      overall expected damage.
+    solution: |
+      Law of total expectation over the mixture:
+      E[D] = 0.6(3) + 0.4(8) = 1.8 + 3.2 = 5.0.
+    answer: 5.0
+    shortcut_used: ["mixture mean = weighted average of component means"]
+    verify: "abs(0.6*3 + 0.4*8 - 5.0) < 1e-9"
+
+  - id: C15.26
+    chapter: 15
+    tier: gym_battle
+    archetype: "beta moments"
+    outcomes: ["2d3", "2b", "2c"]
+    distributions: [beta]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Mock C: a beta-distributed active-ingredient fraction."
+    statement: |
+      The fraction X of a potion that is active ingredient is Beta(alpha=2,
+      beta=3). Find E[X] and Var(X).
+    solution: |
+      E[X] = alpha/(alpha+beta) = 2/5 = 0.4.
+      Var(X) = alpha*beta / [(alpha+beta)^2 (alpha+beta+1)]
+      = 6 / (25*6) = 1/25 = 0.04.
+    answer: "E=0.4, Var=0.04"
+    shortcut_used: ["beta mean alpha/(alpha+beta)", "beta variance"]
+    verify: "abs(2/5 - 0.4) < 1e-9 and abs((2*3)/((2+3)**2*(2+3+1)) - 0.04) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative / back-of-exam) =====================
+
+  - id: C15.27
+    chapter: 15
+    tier: elite_challenge
+    archetype: "compound Poisson aggregate + CLT"
+    outcomes: ["3d", "3i"]
+    distributions: [poisson, exponential, compound, normal]
+    provenance: original
+    difficulty: 5
+    narrative_hook: "Mock A / Gym Battle capstone: the Champion's aggregate cost."
+    statement: |
+      Daily injuries N ~ Poisson(lambda=4); each recovery cost
+      X_i ~ Exponential(theta=5) (thousands), independent. For aggregate
+      T = sum_{i=1}^N X_i, find E[T], Var(T), and (normal approximation)
+      P(T > 30).
+    solution: |
+      Compound Poisson. For Exponential(5): E[X]=5, E[X^2]=2 theta^2=50.
+      E[T] = lambda E[X] = 4(5) = 20.
+      Var(T) = lambda E[X^2] = 4(50) = 200, SD ~= 14.142.
+      T is continuous, so NO continuity correction. Approximate T ~ Normal(20,200):
+      P(T>30) ~= 1 - Phi((30-20)/14.142) = 1 - Phi(0.707) ~= 1 - 0.7602 = 0.240.
+    answer: "E[T]=20, Var(T)=200, P(T>30)~=0.240"
+    shortcut_used: ["compound-Poisson E[T]=lambda E[X], Var(T)=lambda E[X^2]", "E[X^2]=2theta^2 for exp", "CLT (continuous: no correction)"]
+    verify: "abs(4*5 - 20) < 1e-9 and abs(4*50 - 200) < 1e-9 and abs((1 - st.norm.cdf((30-20)/math.sqrt(200))) - 0.240) < 2e-3"
+
+  - id: C15.28
+    chapter: 15
+    tier: elite_challenge
+    archetype: "minimum of independent exponentials / series reliability"
+    outcomes: ["3f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Mock B: three gadgets in series fail at the first failure."
+    statement: |
+      A trainer's three independent gadgets have lifetimes Exponential with
+      means 4, 6, and 12 hours. The system fails when the first gadget fails
+      (series). Find the expected time to first failure.
+    solution: |
+      The minimum of independent exponentials is exponential with the summed
+      rate. Rates 1/4, 1/6, 1/12; total rate = 1/4 + 1/6 + 1/12
+      = (3+2+1)/12 = 1/2. E[min] = 1/rate = 2 hours.
+    answer: 2
+    shortcut_used: ["min of exponentials: rates add", "E[min]=1/(sum of rates)"]
+    verify: "abs(1/(1/4 + 1/6 + 1/12) - 2) < 1e-9"
+
+  - id: C15.29
+    chapter: 15
+    tier: elite_challenge
+    archetype: "double expectation + law of total variance (compound)"
+    outcomes: ["3c", "3d"]
+    distributions: [poisson, compound]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Mock C: total grunt strength as a compound sum."
+    statement: |
+      The number of grunts N ~ Poisson(lambda=3). Given N=n, each grunt's
+      strength is i.i.d. with mean 2 and variance 5; let S be the total
+      strength. Find E[S] and Var(S).
+    solution: |
+      Compound sum. E[S] = E[N] E[str] = 3(2) = 6.
+      By the law of total variance,
+      Var(S) = E[N] Var(str) + Var(N) E[str]^2 = 3(5) + 3(2^2) = 15 + 12 = 27
+      (Poisson N => E[N]=Var(N)=3; equals lambda E[str^2] = 3(5+4) = 27).
+    answer: "E[S]=6, Var(S)=27"
+    shortcut_used: ["compound mean E[N]E[X]", "law of total variance", "compound-Poisson Var=lambda E[X^2]"]
+    verify: "abs(3*2 - 6) < 1e-9 and abs(3*5 + 3*2**2 - 27) < 1e-9"
+
+  - id: C15.30
+    chapter: 15
+    tier: elite_challenge
+    archetype: "i.i.d. Poisson sum + CLT with continuity correction"
+    outcomes: ["2d2", "3i"]
+    distributions: [poisson, normal]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Mock C final turn: portfolio-total claim count."
+    statement: |
+      Claim counts per policy are Poisson(lambda=0.5). A portfolio holds 400
+      independent policies; let M be the total number of claims.
+      (a) Find E[M] and Var(M).
+      (b) Using the normal approximation with continuity correction, find
+      P(M >= 210).
+    solution: |
+      (a) A sum of independent Poissons is Poisson with summed rate:
+      M ~ Poisson(400 * 0.5 = 200), so E[M] = 200, Var(M) = 200,
+      sigma = sqrt(200) ~= 14.142.
+      (b) M is discrete, so correct at 209.5:
+      P(M>=210) ~= 1 - Phi((209.5-200)/14.142) = 1 - Phi(0.672)
+      ~= 1 - 0.7492 = 0.2508.
+    answer: "E[M]=200, Var(M)=200, P(M>=210)~=0.2508"
+    shortcut_used: ["Poisson sum: rates add", "CLT", "continuity correction >=210 -> 209.5"]
+    verify: "abs(400*0.5 - 200) < 1e-9 and abs((1 - st.norm.cdf((209.5-200)/math.sqrt(200))) - 0.2508) < 2e-3"

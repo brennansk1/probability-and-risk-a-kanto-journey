@@ -1,0 +1,169 @@
+# Problem bank — Checkpoint B (Rocket Hideout stakeout): spaced-retrieval review of
+# Topic 2 (Univariate RV), Chapters 6-10. No new content; mixed problems drawing across
+# the RV language (2a), center & spread (2b,2c,2d), discrete (2d2) & continuous (2d3)
+# distributions, and pricing/deductibles (2e,2f). Schema per problems/bank.yaml header.
+# Owned by Checkpoint B only. Verify expressions use names exposed by
+# sims/verify_examples.py (math, st); no __import__ needed.
+
+problems:
+
+  - id: C10x.1
+    chapter: 10
+    tier: route_trainer
+    archetype: "normalize a geometric-type pmf, then evaluate the cdf"
+    outcomes: ["2a"]
+    distributions: [geometric]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Counting a Magikarp's useless flops before it finally lands."
+    statement: |
+      A Magikarp's number of useless flops X before it lands has pmf
+      p(x) = c*(1/2)^x for x = 0,1,2,... Find c, then P(X <= 2).
+    solution: |
+      Sum to 1: sum_{x>=0} (1/2)^x = 1/(1-1/2) = 2, so 2c = 1 and c = 1/2.
+      P(X<=2) = 1/2 + 1/4 + 1/8 = 7/8 = 0.875.
+    answer: "c = 0.5; P(X<=2) = 0.875"
+    shortcut_used: ["geometric series normalization"]
+    verify: "abs(0.5*(1/(1-0.5)) - 1.0) < 1e-9 and abs((0.5 + 0.25 + 0.125) - 0.875) < 1e-9"
+
+  - id: C10x.2
+    chapter: 10
+    tier: route_trainer
+    archetype: "linear transform of mean and standard deviation"
+    outcomes: ["2b", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "A held item rescaling a Pokemon's base attack roll."
+    statement: |
+      A base attack roll X has E[X]=20 and Var(X)=9. A held item rescales it to
+      Y = 1.5X - 4. Find E[Y] and SD(Y).
+    solution: |
+      E[Y] = 1.5*20 - 4 = 26.
+      Var(Y) = 1.5^2 * 9 = 2.25*9 = 20.25, so SD(Y) = sqrt(20.25) = 4.5.
+      The additive -4 does not affect spread; only the 1.5 scale, squared, does.
+    answer: "E[Y]=26, SD(Y)=4.5"
+    shortcut_used: ["Var(aX+b)=a^2 Var(X)", "shift invisible to spread"]
+    verify: "abs((1.5*20 - 4) - 26) < 1e-9 and abs(math.sqrt(1.5**2 * 9) - 4.5) < 1e-9"
+
+  - id: C10x.3
+    chapter: 10
+    tier: gym_battle
+    archetype: "at-least-one for a Binomial via the complement"
+    outcomes: ["2d2"]
+    distributions: [binomial]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Throwing six Poke Balls at identical wild Pokemon."
+    statement: |
+      Six Poke Balls are thrown at identical wild Pokemon, each catching
+      independently w.p. 0.3. Find P(at least one catch).
+    solution: |
+      X ~ Bin(6, 0.3). P(X>=1) = 1 - P(X=0) = 1 - 0.7^6
+      = 1 - 0.117649 = 0.882351 ~= 0.8824.
+    answer: 0.8824
+    shortcut_used: ["1 - P(none)", "Binomial complement"]
+    verify: "abs((1 - 0.7**6) - 0.8824) < 1e-4"
+
+  - id: C10x.4
+    chapter: 10
+    tier: gym_battle
+    archetype: "Poisson pmf and at-least-one complement"
+    outcomes: ["2d2"]
+    distributions: [poisson]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Bug Catchers wandering onto the route as a Poisson process."
+    statement: |
+      Bug Catchers arrive as a Poisson process with lambda = 2 per hour. Over one
+      hour find P(exactly two) and P(at least one).
+    solution: |
+      N ~ Pois(2). P(N=2) = e^{-2} 2^2 / 2! = 2 e^{-2} ~= 0.2707.
+      P(N>=1) = 1 - P(N=0) = 1 - e^{-2} ~= 0.8647.
+    answer: "P(N=2)=0.2707, P(N>=1)=0.8647"
+    shortcut_used: ["Poisson pmf", "1 - P(0)"]
+    verify: "abs(2*math.exp(-2) - 0.2707) < 1e-4 and abs((1 - math.exp(-2)) - 0.8647) < 1e-4"
+
+  - id: C10x.5
+    chapter: 10
+    tier: gym_battle
+    archetype: "exponential survival and the memoryless property"
+    outcomes: ["2d3"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Time until a napping Snorlax stirs."
+    statement: |
+      Time T (minutes) until a Snorlax stirs is Exponential with mean theta = 5.
+      Find P(T > 8), and given it has already slept 3 minutes, the probability it
+      sleeps at least 8 more.
+    solution: |
+      S(t) = e^{-t/5}. P(T>8) = e^{-8/5} = e^{-1.6} ~= 0.2019.
+      Memoryless: P(T > 3+8 | T > 3) = P(T > 8) = e^{-8/5} ~= 0.2019.
+    answer: 0.2019
+    shortcut_used: ["exponential survival", "memorylessness"]
+    verify: "abs(math.exp(-8/5) - 0.2019) < 1e-4"
+
+  - id: C10x.6
+    chapter: 10
+    tier: elite_challenge
+    archetype: "change-of-variables: inverse-transform yields the exponential"
+    outcomes: ["2d3"]
+    distributions: [uniform, exponential]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Turning a uniform random number into a simulated loss."
+    statement: |
+      Let U ~ Unif(0,1) and X = -theta * ln(U) with theta = 4. Find the pdf of X
+      and name the distribution.
+    solution: |
+      X is monotone decreasing in U on (0,1). Invert: U = e^{-X/theta}, x>0.
+      Jacobian |dU/dx| = (1/theta) e^{-x/theta}. With f_U(u)=1,
+      f_X(x) = 1 * (1/theta) e^{-x/theta} = (1/4) e^{-x/4}, x>0.
+      This is Exponential with mean theta = 4.
+    answer: "f_X(x) = (1/4) e^{-x/4}, x>0; Exponential mean 4"
+    shortcut_used: ["change of variables", "absolute-value Jacobian"]
+    verify: "abs(st.expon(scale=4).pdf(3) - (1/4)*math.exp(-3/4)) < 1e-9 and abs(st.expon(scale=4).pdf(0) - 0.25) < 1e-9"
+
+  - id: C10x.7
+    chapter: 10
+    tier: gym_battle
+    archetype: "expected payment per loss, exponential loss + ordinary deductible"
+    outcomes: ["2e"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Quoting the Safari Zone warden's flee-cost policy with a deductible."
+    statement: |
+      A fled-Pokemon replacement cost X (thousands) is Exponential with mean 4.
+      The policy carries an ordinary deductible d = 2. Find the expected payment
+      per loss, E[(X-2)_+].
+    solution: |
+      For an exponential loss with mean theta and ordinary deductible d,
+      E[(X-d)_+] = theta * e^{-d/theta} = 4 * e^{-2/4} = 4 e^{-0.5} ~= 2.4261.
+    answer: 2.4261
+    shortcut_used: ["E[(X-d)_+] = theta e^{-d/theta} for exponential"]
+    verify: "abs(4*math.exp(-0.5) - 2.4261) < 1e-3"
+
+  - id: C10x.8
+    chapter: 10
+    tier: elite_challenge
+    archetype: "limited expected value of a discrete loss; out-of-pocket = E[X]-E[X^u]"
+    outcomes: ["2e", "2b"]
+    distributions: [discrete_uniform]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A reimbursement plan that caps a trainer's monthly Potion expense."
+    statement: |
+      Monthly Potion expense X (hundreds) is discrete: X=0,1,2,3 w.p.
+      0.4,0.3,0.2,0.1. A plan pays X capped at u=2, i.e. min(X,2). Find
+      E[X^2] (the limited expected value E[min(X,2)]) and the expected
+      out-of-pocket E[X] - E[min(X,2)].
+    solution: |
+      min(X,2) takes 0,1,2,2 for X=0,1,2,3.
+      E[min(X,2)] = 0*0.4 + 1*0.3 + 2*0.2 + 2*0.1 = 0.3+0.4+0.2 = 0.9.
+      E[X] = 0*0.4 + 1*0.3 + 2*0.2 + 3*0.1 = 1.0.
+      Out-of-pocket = E[X] - E[min(X,2)] = 1.0 - 0.9 = 0.1.
+    answer: "E[min(X,2)]=0.9, out-of-pocket=0.1"
+    shortcut_used: ["limited expected value", "E[X]-E[X^u] is the excess above the cap"]
+    verify: "abs((0*0.4 + 1*0.3 + 2*0.2 + 2*0.1) - 0.9) < 1e-9 and abs((1.0 - 0.9) - 0.1) < 1e-9"

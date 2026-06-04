@@ -1,0 +1,354 @@
+# Problem bank — Chapter 14 (Indigo Plateau): Order statistics & the Central Limit
+# Theorem. Outcomes 3f (order statistics / reliability) and 3i (CLT / continuity
+# correction). Schema per problems/bank.yaml header. This file is owned by Chapter 14
+# only. Verify expressions use the names exposed by sims/verify_examples.py
+# (math, st=scipy.stats); no __import__. CLT verifies use st.norm.cdf.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C14.1
+    chapter: 14
+    tier: route_trainer
+    archetype: "cdf of a maximum of i.i.d. uniforms"
+    outcomes: ["3f"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "The League scout flags the rookie with the highest score."
+    statement: |
+      Five rookies each post an independent score X_i ~ Uniform(0,1). The scout
+      flags the highest score. Find P(highest <= 0.8).
+    solution: |
+      The maximum's cdf is F_max(x) = [F(x)]^n = x^5 on [0,1] (all five must be
+      below x, and independent events multiply). So
+      P(max <= 0.8) = 0.8^5 = 0.32768.
+    answer: 0.32768
+    shortcut_used: ["F_max = [F(x)]^n"]
+    verify: "abs(0.8**5 - 0.32768) < 1e-9"
+
+  - id: C14.2
+    chapter: 14
+    tier: route_trainer
+    archetype: "minimum of i.i.d. exponentials, rates add"
+    outcomes: ["3f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "A defensive line collapses when the first Pokemon breaks."
+    statement: |
+      Three Pokemon hold a line; their independent break-times are exponential,
+      each with mean 10 seconds. The line collapses when the first breaks. Find
+      the expected time to collapse.
+    solution: |
+      The minimum of independent exponentials is exponential with the summed
+      rate. Each rate is 1/10; the minimum rate is 3/10, so the mean is the
+      reciprocal: 10/3 ~= 3.33 seconds.
+    answer: 3.3333
+    shortcut_used: ["min of exponentials: add rates", "mean = theta/n"]
+    verify: "abs(1/(3*(1/10)) - 10/3) < 1e-9"
+
+  - id: C14.3
+    chapter: 14
+    tier: route_trainer
+    archetype: "cdf of a maximum, non-uniform single-draw cdf"
+    outcomes: ["3f"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "A control panel displays the maximum of four sensor readings."
+    statement: |
+      Four sensor pods each report X_i with cdf F(x) = x^2 on [0,1],
+      independently. The panel shows the maximum. Find P(max <= 0.5).
+    solution: |
+      F_max(x) = [F(x)]^4 = (x^2)^4 = x^8. So P(max <= 0.5) = 0.5^8
+      = 1/256 ~= 0.00391.
+    answer: 0.00390625
+    shortcut_used: ["F_max = [F(x)]^n"]
+    verify: "abs(0.5**8 - 1/256) < 1e-12"
+
+  - id: C14.4
+    chapter: 14
+    tier: route_trainer
+    archetype: "CLT on a sample mean"
+    outcomes: ["3i"]
+    distributions: [normal]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Approximating a Pokemon's average reaction time over 100 drills."
+    statement: |
+      Reaction time per drill is i.i.d. with mean 70 ms and SD 10 ms. Over
+      n = 100 drills, approximate P(average > 72 ms).
+    solution: |
+      By the CLT the sample mean is approx Normal(70, sigma^2/n) =
+      Normal(70, 10^2/100) = Normal(70, 1), so SD = 1. Standardize:
+      z = (72 - 70)/1 = 2, and P(Xbar > 72) ~= 1 - Phi(2) ~= 0.0228.
+    answer: 0.0228
+    shortcut_used: ["mean standardized by sigma/sqrt(n)"]
+    verify: "abs((1 - st.norm.cdf((72-70)/(10/math.sqrt(100)))) - 0.0228) < 1e-3"
+
+  - id: C14.5
+    chapter: 14
+    tier: route_trainer
+    archetype: "CLT on a sum (variance given)"
+    outcomes: ["3i"]
+    distributions: [normal]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Will the total Berry shipment weight stay under budget?"
+    statement: |
+      A route delivers 50 independent Berry shipments, each mean 3 kg with
+      variance 4. Approximate P(total weight < 160 kg).
+    solution: |
+      E[S] = 50*3 = 150; Var(S) = 50*4 = 200; SD(S) = sqrt(200) ~= 14.142.
+      z = (160 - 150)/14.142 = 0.707; P(S < 160) ~= Phi(0.707) ~= 0.760.
+    answer: 0.760
+    shortcut_used: ["sum standardized by sqrt(n)*sigma; variances add"]
+    verify: "abs(st.norm.cdf((160-150)/math.sqrt(200)) - 0.760) < 1e-3"
+
+  - id: C14.6
+    chapter: 14
+    tier: route_trainer
+    archetype: "expected maximum of i.i.d. uniforms (shortcut)"
+    outcomes: ["3f"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Expected strength of the strongest of nine qualifiers."
+    statement: |
+      Nine independent qualifiers each have strength X_i ~ Uniform(0,20). Find
+      the expected strength of the strongest using the uniform shortcut.
+    solution: |
+      E[max] = n/(n+1) * b = 9/10 * 20 = 18.
+    answer: 18
+    shortcut_used: ["E[max] = n/(n+1)*b for Unif(0,b)"]
+    verify: "abs((9/10)*20 - 18) < 1e-9"
+
+  - id: C14.7
+    chapter: 14
+    tier: route_trainer
+    archetype: "series vs parallel system reliability"
+    outcomes: ["3f"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Wiring a relay device in series versus parallel."
+    statement: |
+      A relay has three independent components, each working w.p. 0.9. Find the
+      reliability (i) in series (all must work) and (ii) in parallel (any one
+      suffices).
+    solution: |
+      (i) Series fails with the minimum: R = product of works = 0.9^3 = 0.729.
+      (ii) Parallel fails with the maximum: R = 1 - product of failures
+      = 1 - 0.1^3 = 0.999.
+    answer: "series 0.729, parallel 0.999"
+    shortcut_used: ["series=min/product survivals", "parallel=max/1-product fails"]
+    verify: "abs(0.9**3 - 0.729) < 1e-9 and abs((1 - 0.1**3) - 0.999) < 1e-9"
+
+  # ===================== GYM BATTLES (SOA difficulty) =====================
+
+  - id: C14.8
+    chapter: 14
+    tier: gym_battle
+    archetype: "max of i.i.d. uniforms: mean and tail"
+    outcomes: ["3f"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Agatha asks for the best of three ghostly trials."
+    statement: |
+      Agatha sets three independent trials, each scored X_i ~ Uniform(0,1). Find
+      (i) the expected best score and (ii) P(best > 0.9).
+    solution: |
+      (i) E[max] = n/(n+1) = 3/4 = 0.75.
+      (ii) P(max > 0.9) = 1 - F_max(0.9) = 1 - 0.9^3 = 1 - 0.729 = 0.271.
+    answer: "E=0.75, P(max>0.9)=0.271"
+    shortcut_used: ["E[max]=n/(n+1)", "tail = 1 - [F(x)]^n"]
+    verify: "abs(3/4 - 0.75) < 1e-9 and abs((1 - 0.9**3) - 0.271) < 1e-9"
+
+  - id: C14.9
+    chapter: 14
+    tier: gym_battle
+    archetype: "minimum of independent exponentials (unequal rates)"
+    outcomes: ["3f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Lorelei's combo fires when the first Pokemon thaws."
+    statement: |
+      Two of Lorelei's Pokemon thaw at independent exponential times with means
+      5 and 8 minutes. The combo fires when the first thaws. Find (i) the
+      distribution of the first-thaw time, (ii) its mean, and (iii)
+      P(first > 3).
+    solution: |
+      Rates 1/5 and 1/8; sum = 1/5 + 1/8 = 13/40 = 0.325.
+      (i) First-thaw ~ Exponential(rate 0.325).
+      (ii) mean = 1/0.325 = 40/13 ~= 3.08 min.
+      (iii) P(min > 3) = e^(-0.325*3) = e^(-0.975) ~= 0.377.
+    answer: "Exp(0.325), mean ~3.08, P~0.377"
+    shortcut_used: ["min of exponentials: rates add"]
+    verify: "abs((1/5 + 1/8) - 0.325) < 1e-9 and abs(math.exp(-0.325*3) - 0.377) < 1e-3"
+
+  - id: C14.10
+    chapter: 14
+    tier: gym_battle
+    archetype: "normal approximation to binomial with continuity correction"
+    outcomes: ["3i"]
+    distributions: [binomial, normal]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Bruno wagers you win at least 110 of 200 coin-flip tiebreakers."
+    statement: |
+      You win at least 110 of 200 independent fair coin-flip tiebreakers. Using
+      the normal approximation WITH continuity correction, find the probability.
+    solution: |
+      X ~ Binomial(200, 0.5): mu = 100, sigma = sqrt(200*0.5*0.5) = sqrt(50)
+      ~= 7.071. Continuity correction: P(X >= 110) -> P(X > 109.5),
+      z = (109.5 - 100)/7.071 = 1.343, P ~= 1 - Phi(1.343) ~= 0.0896.
+      (Table-rounded Phi(1.34) gives ~0.090.)
+    answer: 0.090
+    shortcut_used: ["continuity correction: >=110 -> >109.5"]
+    verify: "abs((1 - st.norm.cdf((109.5-100)/math.sqrt(50))) - 0.0896) < 2e-3"
+
+  - id: C14.11
+    chapter: 14
+    tier: gym_battle
+    archetype: "CLT on a sum (aggregate claims)"
+    outcomes: ["3i"]
+    distributions: [normal]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Will the League's aggregate trainer claims overrun a threshold?"
+    statement: |
+      The League insures 2000 independent trainers; each files a mean-1000 claim
+      with SD 4000. Approximate P(aggregate claims > 2.1 million).
+    solution: |
+      E[S] = 2000*1000 = 2,000,000; SD(S) = sqrt(2000)*4000 ~= 178,885.
+      z = (2,100,000 - 2,000,000)/178,885 = 0.559;
+      P(S > 2.1M) ~= 1 - Phi(0.559) ~= 0.288.
+    answer: 0.288
+    shortcut_used: ["sum SD = sqrt(n)*sigma"]
+    verify: "abs((1 - st.norm.cdf((2.1e6 - 2.0e6)/(math.sqrt(2000)*4000))) - 0.288) < 2e-3"
+
+  - id: C14.12
+    chapter: 14
+    tier: gym_battle
+    archetype: "general k-th order statistic of uniforms"
+    outcomes: ["3f"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Judging drops the lowest and uses the second-lowest score."
+    statement: |
+      Four judges independently score X_i ~ Uniform(0,1); the final drops the
+      lowest and uses the second-lowest (k = 2). Find its expected value.
+    solution: |
+      For i.i.d. Uniform(0,1), E[X_(k)] = k/(n+1) = 2/5 = 0.4.
+    answer: 0.4
+    shortcut_used: ["E[X_(k)] = k/(n+1) for Unif(0,1)"]
+    verify: "abs(2/5 - 0.4) < 1e-9"
+
+  - id: C14.13
+    chapter: 14
+    tier: gym_battle
+    archetype: "expected maximum of i.i.d. exponentials (harmonic sum)"
+    outcomes: ["3f"]
+    distributions: [exponential]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "A bunker keeps power until the last backup generator dies."
+    statement: |
+      Three backup generators have independent exponential lifetimes, each mean
+      10 years. The bunker keeps power until the last dies (parallel system).
+      Find the expected time to total blackout. (Hint: E[max] of n i.i.d.
+      exponentials with mean theta is theta * sum_{j=1}^n 1/j.)
+    solution: |
+      E[max] = theta * (1 + 1/2 + 1/3) = 10 * (11/6) = 110/6 ~= 18.33 years.
+    answer: 18.3333
+    shortcut_used: ["E[max] of i.i.d. exponentials = theta*H_n"]
+    verify: "abs(10*(1 + 1/2 + 1/3) - 110/6) < 1e-9"
+
+  - id: C14.14
+    chapter: 14
+    tier: gym_battle
+    archetype: "CLT sample-size design"
+    outcomes: ["3i"]
+    distributions: [normal]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Sizing a quality-audit sample for a target precision."
+    statement: |
+      Spring tension is i.i.d. with SD sigma = 5 N. The auditor wants the sample
+      mean within 1 N of the truth w.p. 0.95. Using the CLT, find the smallest
+      sample size n.
+    solution: |
+      Need 1.96 * sigma/sqrt(n) <= 1, so sqrt(n) >= 1.96*5 = 9.8,
+      n >= 9.8^2 = 96.04. Smallest integer: n = 97.
+    answer: 97
+    shortcut_used: ["1.96*sigma/sqrt(n) <= margin; round up"]
+    verify: "math.ceil((1.96*5)**2) == 97"
+
+  - id: C14.15
+    chapter: 14
+    tier: gym_battle
+    archetype: "minimum of i.i.d. uniforms: mean and density"
+    outcomes: ["3f"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "The weaker of two challengers is sent to consolation."
+    statement: |
+      Two challengers each have strength X_i ~ Uniform(0,1). The weaker goes to
+      consolation. Find the expected strength of the weaker and the density of
+      that minimum.
+    solution: |
+      E[min] = 1/(n+1) = 1/3 ~= 0.333. Density f_min(x) = n[S(x)]^(n-1) f(x)
+      = 2(1-x)^1 * 1 = 2(1 - x) on [0,1].
+    answer: "E=1/3, f_min(x)=2(1-x)"
+    shortcut_used: ["E[min]=1/(n+1)", "f_min = n[S]^(n-1) f"]
+    verify: "abs(1/3 - 1/(2+1)) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative) =====================
+
+  - id: C14.16
+    chapter: 14
+    tier: elite_challenge
+    archetype: "expected range via order-statistic means"
+    outcomes: ["3f"]
+    distributions: [uniform]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "The League reports the gap between strongest and weakest finalist."
+    statement: |
+      Ten finalists each post an independent X_i ~ Uniform(0,1). The League
+      reports the range = strongest minus weakest. Find E[X_(10) - X_(1)].
+    solution: |
+      By linearity, E[range] = E[X_(n)] - E[X_(1)] = n/(n+1) - 1/(n+1)
+      = (n-1)/(n+1) = 9/11 ~= 0.818.
+    answer: 0.8182
+    shortcut_used: ["linearity of expectation on order-stat means"]
+    verify: "abs((10/11 - 1/11) - 9/11) < 1e-9"
+
+  - id: C14.17
+    chapter: 14
+    tier: elite_challenge
+    archetype: "compound-distribution moments + CLT normal approximation"
+    outcomes: ["3i"]
+    distributions: [poisson, normal]
+    provenance: original
+    difficulty: 5
+    narrative_hook: "Approximating the season's aggregate prize liability tail."
+    statement: |
+      Aggregate prize liability has N ~ Poisson(500) payouts, each mean 200 and
+      variance 10,000, independent of N and each other. Using E[S]=lambda*E[X]
+      and Var(S)=lambda*E[X^2] with a CLT normal approximation, find
+      P(S > 110,000).
+    solution: |
+      E[X]=200, Var(X)=10,000 => E[X^2] = 10,000 + 200^2 = 50,000.
+      E[S] = 500*200 = 100,000; Var(S) = 500*50,000 = 25,000,000;
+      SD(S) = 5000. z = (110,000 - 100,000)/5000 = 2;
+      P(S > 110,000) ~= 1 - Phi(2) ~= 0.0228.
+    answer: 0.0228
+    shortcut_used: ["compound moments E[S]=lambda*E[X], Var(S)=lambda*E[X^2]", "CLT"]
+    verify: "abs((1 - st.norm.cdf((110000 - 500*200)/math.sqrt(500*(10000+200**2)))) - 0.0228) < 1e-3"

@@ -1,0 +1,314 @@
+# Problem bank — Chapter 4 (Pewter City): Counting — fundamental counting
+# principle, permutations, combinations, multinomial arrangements, and
+# combinatorial (equal-likelihood / hypergeometric) probability. Outcome 1b.
+# Schema per problems/bank.yaml header. This file is owned by Chapter 4 only.
+# Verify expressions use the names exposed by sims/verify_examples.py
+# (math, st); math provides comb/perm/factorial, st provides hypergeom.
+# No __import__.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C4.1
+    chapter: 4
+    tier: route_trainer
+    archetype: "with-replacement ordered count via the fundamental counting principle"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Brute-forcing the forest gate's 4-dial lock."
+    statement: |
+      The forest gate's lock has 4 dial positions, each an independent digit
+      0-9 with repeats allowed. How many distinct codes must you be prepared
+      to try in the worst case?
+    solution: |
+      Four independent stages, 10 choices each, repeats allowed:
+      10 * 10 * 10 * 10 = 10^4 = 10000 codes.
+    answer: 10000
+    shortcut_used: ["multiply equal menus -> n^k"]
+    verify: "10**4 == 10000"
+
+  - id: C4.2
+    chapter: 4
+    tier: route_trainer
+    archetype: "ordered selection without replacement -> permutation"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Posing 3 of your 7 caught Pokemon left-to-right for a photo."
+    statement: |
+      You have caught 7 distinct Pokemon and display 3 of them left-to-right in
+      a photo (order is part of the picture). How many distinct photos?
+    solution: |
+      Ordered, no reuse: P(7,3) = 7*6*5 = 210 photos.
+    answer: 210
+    shortcut_used: ["shrinking-menu permutation"]
+    verify: "math.perm(7, 3) == 210"
+
+  - id: C4.3
+    chapter: 4
+    tier: route_trainer
+    archetype: "unordered selection -> combination"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Picking a 3-Pokemon team where the sheet order is irrelevant."
+    statement: |
+      From the same 7 caught Pokemon you select a 3-Pokemon team for a battle
+      (order on the team sheet is irrelevant). How many distinct teams?
+    solution: |
+      Unordered, no reuse: C(7,3) = 7*6*5 / 3! = 210/6 = 35 teams.
+      (= P(7,3)/3! — the same scene as C4.2 with order discarded.)
+    answer: 35
+    shortcut_used: ["divide the permutation count by k!"]
+    verify: "math.comb(7, 3) == 35 and math.comb(7,3) == math.perm(7,3)//math.factorial(3)"
+
+  - id: C4.4
+    chapter: 4
+    tier: route_trainer
+    archetype: "arrangement with a repeated element -> multinomial"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Scrambling the letters of WEEDLE into a cipher."
+    statement: |
+      How many distinguishable arrangements of the letters in WEEDLE are there?
+      (W, E, E, D, L, E — the letter E repeats 3 times.)
+    solution: |
+      6 letters with E repeated 3 times: 6!/3! = 720/6 = 120.
+    answer: 120
+    shortcut_used: ["divide n! by the factorial of each identical block"]
+    verify: "math.factorial(6)//math.factorial(3) == 120"
+
+  - id: C4.5
+    chapter: 4
+    tier: route_trainer
+    archetype: "multinomial arrangement, several identical blocks"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Lining up Misty's evolution stones in a row of 6 bag slots."
+    statement: |
+      Misty packs 3 identical Water Stones, 2 identical Thunder Stones, and 1
+      Leaf Stone into a row of 6 slots. How many distinguishable line-ups?
+    solution: |
+      Multinomial with blocks 3, 2, 1: 6!/(3! 2! 1!) = 720/12 = 60 ways.
+    answer: 60
+    shortcut_used: ["multinomial coefficient"]
+    verify: "math.factorial(6)//(math.factorial(3)*math.factorial(2)*math.factorial(1)) == 60"
+
+  - id: C4.6
+    chapter: 4
+    tier: route_trainer
+    archetype: "full arrangement, k = n -> n!"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Arranging all 6 distinct Poke Balls along a belt."
+    statement: |
+      A Poke Ball belt has 6 distinct clips. In how many ways can you arrange
+      all 6 of your distinct Poke Balls along the belt?
+    solution: |
+      Arrange all 6 distinct items: P(6,6) = 6! = 720 ways.
+    answer: 720
+    shortcut_used: ["P(n,n) = n!"]
+    verify: "math.factorial(6) == 720"
+
+  # ===================== GYM BATTLES (SOA difficulty) =====================
+
+  - id: C4.7
+    chapter: 4
+    tier: gym_battle
+    archetype: "without-replacement exact type-count -> combinatorial/hypergeometric"
+    outcomes: ["1b"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Scooping 3 grass Pokemon and hoping for exactly one Oddish."
+    statement: |
+      A cluster of 9 grass Pokemon holds 4 Oddish and 5 Bellsprout. You scoop 3
+      at random without replacement. Find P(exactly 1 Oddish).
+    solution: |
+      Favorable = (1 of 4 Oddish)*(2 of 5 Bellsprout); total = C(9,3) = 84.
+      P = C(4,1)C(5,2)/C(9,3) = (4*10)/84 = 40/84 = 10/21 ~= 0.4762.
+    answer: 0.4762
+    shortcut_used: ["choose successes AND choose failures over all hands"]
+    verify: "abs(math.comb(4,1)*math.comb(5,2)/math.comb(9,3) - 10/21) < 1e-9"
+
+  - id: C4.8
+    chapter: 4
+    tier: gym_battle
+    archetype: "choose-then-arrange / ordered selection"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Brock choosing 4 of 9 Pokemon and assigning 4 battle positions."
+    statement: |
+      Brock fields 9 Pokemon, chooses 4 to battle, then assigns them to 4
+      distinct positions (Lead, Second, Third, Anchor). In how many ways can he
+      both choose and assign?
+    solution: |
+      Choose 4 then arrange: C(9,4)*4! = 126*24 = 3024, equivalently
+      P(9,4) = 9*8*7*6 = 3024.
+    answer: 3024
+    shortcut_used: ["P(n,k) = C(n,k) * k!"]
+    verify: "math.comb(9,4)*math.factorial(4) == 3024 and math.perm(9,4) == 3024"
+
+  - id: C4.9
+    chapter: 4
+    tier: gym_battle
+    archetype: "at-least-one via complement -> combinatorial probability"
+    outcomes: ["1b"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Will a random 3-trainer panel include any badge holders?"
+    statement: |
+      A study group of 10 trainers — 6 Boulder-Badge holders and 4 without —
+      randomly selects a 3-trainer panel. Find P(at least 1 holder) using the
+      complement.
+    solution: |
+      Complement = panel drawn entirely from the 4 non-holders:
+      P(at least 1) = 1 - C(4,3)/C(10,3) = 1 - 4/120 = 1 - 1/30 = 29/30
+      ~= 0.9667.
+    answer: 0.9667
+    shortcut_used: ["1 - P(none)"]
+    verify: "abs((1 - math.comb(4,3)/math.comb(10,3)) - 29/30) < 1e-9"
+
+  - id: C4.10
+    chapter: 4
+    tier: gym_battle
+    archetype: "lattice paths = arrangement with repeats -> multinomial"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Counting shortest grid walks from camp to Pewter."
+    statement: |
+      You walk a grid from camp (bottom-left) to Pewter (top-right) taking only
+      steps East or North, on a 4-block-East by 3-block-North grid. How many
+      distinct shortest paths? (Each path is an arrangement of 4 E's and 3 N's.)
+    solution: |
+      Arrange 4 E's and 3 N's: 7!/(4! 3!) = C(7,3) = 35 paths.
+    answer: 35
+    shortcut_used: ["lattice path is a combination in disguise"]
+    verify: "math.factorial(7)//(math.factorial(4)*math.factorial(3)) == math.comb(7,3) == 35"
+
+  - id: C4.11
+    chapter: 4
+    tier: gym_battle
+    archetype: "independent group choices -> multiply combinations"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Building a type-balanced team with fixed counts per type."
+    statement: |
+      From 5 Fire, 4 Water, and 3 Grass distinct Pokemon (12 total), you
+      assemble a team of 5 with exactly 2 Fire, 2 Water, and 1 Grass. How many
+      such teams?
+    solution: |
+      Choose within each type and multiply (fundamental counting principle):
+      C(5,2)*C(4,2)*C(3,1) = 10*6*3 = 180 teams.
+    answer: 180
+    shortcut_used: ["multiply independent unordered choices"]
+    verify: "math.comb(5,2)*math.comb(4,2)*math.comb(3,1) == 180"
+
+  - id: C4.12
+    chapter: 4
+    tier: gym_battle
+    archetype: "ordered without replacement + favorable fraction"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "What fraction of passcodes begin with a chosen symbol?"
+    statement: |
+      A Game Corner lock uses a 5-symbol passcode from 8 distinct symbols, no
+      symbol repeated, order matters. What fraction of all such passcodes begin
+      with a specific chosen symbol?
+    solution: |
+      Total = P(8,5); fixing the first symbol leaves P(7,4) for the rest:
+      P(7,4)/P(8,5) = (7*6*5*4)/(8*7*6*5*4) = 1/8 = 0.125.
+      (Each of the 8 symbols is equally likely to lead, so the fraction is 1/8.)
+    answer: 0.125
+    shortcut_used: ["fix one slot, ratio of permutations cancels"]
+    verify: "abs(math.perm(7,4)/math.perm(8,5) - 1/8) < 1e-9"
+
+  - id: C4.13
+    chapter: 4
+    tier: gym_battle
+    archetype: "glued-block arrangement -> permutation probability"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Do you and Gary end up seated next to each other?"
+    statement: |
+      Ten distinct trainers, including you and Gary, are randomly seated in a
+      row of 10 chairs. Find P(you and Gary sit next to each other).
+    solution: |
+      Total seatings = 10!. Glue you-and-Gary into one block (2 internal
+      orders), arranging 9 units: favorable = 2*9!.
+      P = 2*9!/10! = 2/10 = 1/5 = 0.2.
+    answer: 0.2
+    shortcut_used: ["treat the adjacent pair as a single block"]
+    verify: "abs(2*math.factorial(9)/math.factorial(10) - 1/5) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative) =====================
+
+  - id: C4.14
+    chapter: 4
+    tier: elite_challenge
+    archetype: "at-least / at-most by casework; complement totals to 1"
+    outcomes: ["1b"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Drawing 5 balls and counting the rare Master Balls."
+    statement: |
+      A box holds 13 Poke Balls: 3 Master, 4 Ultra, 6 Great. Draw 5 at random
+      without replacement. Find P(at least 2 Master) and P(at most 1 Master),
+      and confirm they sum to 1.
+    solution: |
+      Total = C(13,5) = 1287. Let M = Master Balls drawn (M <= 3).
+      P(M<=1) = [C(3,0)C(10,5) + C(3,1)C(10,4)]/1287 = (252 + 630)/1287
+      = 882/1287 ~= 0.6853.
+      P(M>=2) = [C(3,2)C(10,3) + C(3,3)C(10,2)]/1287 = (360 + 45)/1287
+      = 405/1287 ~= 0.3147.
+      Check: 882 + 405 = 1287, so the two sum to 1.
+    answer: "P(>=2)=405/1287~=0.3147; P(<=1)=882/1287~=0.6853"
+    shortcut_used: ["sum disjoint exact-counts", "complement sums to 1"]
+    verify: "abs((math.comb(3,2)*math.comb(10,3)+math.comb(3,3)*math.comb(10,2))/math.comb(13,5) - 405/1287) < 1e-9 and abs((math.comb(3,0)*math.comb(10,5)+math.comb(3,1)*math.comb(10,4))/math.comb(13,5) - 882/1287) < 1e-9 and (405+882) == math.comb(13,5)"
+
+  - id: C4.15
+    chapter: 4
+    tier: elite_challenge
+    archetype: "integrative: choose-then-seat, all-one-type, exactly-k probability"
+    outcomes: ["1b"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Brock's final riddle: choose a squad, seat it, price the draw."
+    statement: |
+      From 6 Rock-type and 6 non-Rock distinct trainers (12 total), a 4-person
+      squad is chosen at random and seated in 4 labeled chairs. (a) How many
+      seated arrangements in total? (b) P(all 4 chairs filled by Rock-types)?
+      (c) P(the squad contains exactly 2 Rock-types)? (Seating irrelevant for c.)
+    solution: |
+      (a) Choose 4 of 12 and seat them: C(12,4)*4! = 495*24 = 11880 = P(12,4).
+      (b) Seating cancels, so it equals the unordered version:
+          P(all Rock) = C(6,4)/C(12,4) = 15/495 = 1/33 ~= 0.0303.
+      (c) P(exactly 2 Rock) = C(6,2)C(6,2)/C(12,4) = (15*15)/495 = 225/495
+          = 5/11 ~= 0.4545.
+    answer: "(a) 11880; (b) 1/33~=0.0303; (c) 5/11~=0.4545"
+    shortcut_used: ["seating cancels in a ratio", "exact type-count hypergeometric"]
+    verify: "math.comb(12,4)*math.factorial(4) == 11880 == math.perm(12,4) and abs(math.comb(6,4)/math.comb(12,4) - 1/33) < 1e-9 and abs(math.comb(6,2)*math.comb(6,2)/math.comb(12,4) - 5/11) < 1e-9"

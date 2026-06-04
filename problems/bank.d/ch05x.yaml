@@ -1,0 +1,206 @@
+# Problem bank — Checkpoint A (The Rocket Hideout): spaced-retrieval review of
+# Topic 1, General Probability (outcomes 1a-1g, drawn across Ch 3 Outcomes,
+# Ch 4 Counting, Ch 5 Bayes). No new content — every archetype already taught.
+# Schema per problems/bank.yaml header. Verify expressions use the names exposed
+# by sims/verify_examples.py (math, st); no __import__.
+
+problems:
+
+  # ===================== MIXED RETRIEVAL (cross-chapter) =====================
+
+  - id: CA.1
+    chapter: 5
+    tier: route_trainer
+    archetype: "set algebra: inclusion-exclusion for a union"
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Sorting confiscated Rocket loot into type bins."
+    statement: |
+      In a crate of seized items, P(useful) = 0.55, P(rare) = 0.30, and
+      P(useful and rare) = 0.20. Find P(useful or rare).
+    solution: |
+      Inclusion-exclusion: P(U or R) = P(U) + P(R) - P(U and R)
+      = 0.55 + 0.30 - 0.20 = 0.65.
+    answer: 0.65
+    shortcut_used: ["inclusion-exclusion"]
+    verify: "abs((0.55 + 0.30 - 0.20) - 0.65) < 1e-9"
+
+  - id: CA.2
+    chapter: 5
+    tier: route_trainer
+    archetype: "combinations: choose k from n (counting)"
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Picking a strike team from the grunts on duty."
+    statement: |
+      Giovanni must pick a squad of 3 grunts from the 8 on duty, order not
+      mattering. How many distinct squads are possible?
+    solution: |
+      Order does not matter, so this is a combination:
+      C(8,3) = 8!/(3!5!) = (8*7*6)/(3*2*1) = 56.
+    answer: 56
+    shortcut_used: ["combination C(n,k)"]
+    verify: "abs(math.comb(8,3) - 56) < 1e-9"
+
+  - id: CA.3
+    chapter: 5
+    tier: route_trainer
+    archetype: "complement rule for 'at least one'"
+    outcomes: ["1a", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Will any of three alarm sensors trip during the heist?"
+    statement: |
+      Three independent alarm sensors each trip with probability 0.10. Find the
+      probability that at least one trips.
+    solution: |
+      P(at least one) = 1 - P(none trip) = 1 - (0.9)^3 = 1 - 0.729 = 0.271.
+    answer: 0.271
+    shortcut_used: ["1 - P(none)", "independence product"]
+    verify: "abs((1 - 0.9**3) - 0.271) < 1e-9"
+
+  - id: CA.4
+    chapter: 5
+    tier: route_trainer
+    archetype: "conditional probability from a two-way tally"
+    outcomes: ["1c"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Reading the hideout's intruder log by floor and outcome."
+    statement: |
+      Of 200 logged intrusions: 80 reached Floor B2, and of those, 50 were
+      caught. Given an intrusion reached Floor B2, find the probability it was
+      caught.
+    solution: |
+      P(caught | B2) = P(caught and B2)/P(B2) = (50/200)/(80/200)
+      = 50/80 = 0.625.
+    answer: 0.625
+    shortcut_used: ["conditioning shrinks the world to B"]
+    verify: "abs((50/80) - 0.625) < 1e-9"
+
+  - id: CA.5
+    chapter: 5
+    tier: route_trainer
+    archetype: "law of total probability, forward weighted average"
+    outcomes: ["1f"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Odds the lift alarm sounds, depending on which keycard is used."
+    statement: |
+      40% of entries use a stolen keycard, 60% a forged one. The lift alarm
+      sounds with probability 0.30 for stolen cards and 0.10 for forged ones.
+      Find the probability the alarm sounds on a random entry.
+    solution: |
+      P(alarm) = (0.40)(0.30) + (0.60)(0.10) = 0.12 + 0.06 = 0.18.
+    answer: 0.18
+    shortcut_used: ["partition, weighted average"]
+    verify: "abs((0.40*0.30 + 0.60*0.10) - 0.18) < 1e-9"
+
+  - id: CA.6
+    chapter: 5
+    tier: gym_battle
+    archetype: "independence test via the multiplication rule"
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Do two security traits on the grunts move together?"
+    statement: |
+      Among the grunts, A = "carries a Zubat" and B = "guards the vault," with
+      P(A) = 0.5, P(B) = 0.4, and P(A or B) = 0.7. Determine whether A and B are
+      independent.
+    solution: |
+      P(A and B) = P(A) + P(B) - P(A or B) = 0.5 + 0.4 - 0.7 = 0.2.
+      P(A)P(B) = 0.5*0.4 = 0.2. Since 0.2 = 0.2, A and B ARE independent.
+    answer: "independent (0.2 = 0.2)"
+    shortcut_used: ["inclusion-exclusion for the intersection", "independence test"]
+    verify: "abs((0.5+0.4-0.7) - 0.2) < 1e-9 and abs((0.5*0.4) - 0.2) < 1e-9"
+
+  - id: CA.7
+    chapter: 5
+    tier: gym_battle
+    archetype: "chained multiplication rule, without replacement"
+    outcomes: ["1c", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Drawing keys blind from Giovanni's ring to open two doors."
+    statement: |
+      A ring holds 4 master keys and 6 decoy keys. You draw three in order
+      without replacement. Find the probability all three are master keys.
+    solution: |
+      P(all 3 master) = (4/10)*(3/9)*(2/8) = 24/720 = 1/30 ~= 0.0333.
+    answer: 0.0333
+    shortcut_used: ["multiplication rule without replacement"]
+    verify: "abs((4/10)*(3/9)*(2/8) - 1/30) < 1e-9"
+
+  - id: CA.8
+    chapter: 5
+    tier: gym_battle
+    archetype: "two-way Bayes from a forward total-probability setup"
+    outcomes: ["1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Which keycard was used, given the alarm sounded?"
+    statement: |
+      Using the setup of CA.5 (40% stolen, 60% forged; alarm w.p. 0.30 for
+      stolen, 0.10 for forged), the alarm sounded. Find P(stolen | alarm).
+    solution: |
+      joint stolen = 0.40*0.30 = 0.12; joint forged = 0.60*0.10 = 0.06;
+      total P(alarm) = 0.18. P(stolen | alarm) = 0.12/0.18 = 2/3 ~= 0.6667.
+    answer: 0.6667
+    shortcut_used: ["Bayes grid", "total probability denominator"]
+    verify: "abs((0.40*0.30)/(0.40*0.30 + 0.60*0.10) - 2/3) < 1e-9"
+
+  - id: CA.9
+    chapter: 5
+    tier: gym_battle
+    archetype: "n-way Bayes from a 3-way partition (false-positive flavor)"
+    outcomes: ["1c", "1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Which disguise did the infiltrator wear, given they were spotted?"
+    statement: |
+      An infiltrator wore a Scientist coat (0.50), a Grunt uniform (0.30), or a
+      Trainer outfit (0.20). Each is spotted by the cameras with probability
+      0.10, 0.40, 0.70 respectively. The infiltrator was spotted. Find
+      P(Trainer outfit | spotted).
+    solution: |
+      joints: Scientist 0.50*0.10=0.05; Grunt 0.30*0.40=0.12;
+      Trainer 0.20*0.70=0.14. total P(spotted)=0.31.
+      P(Trainer | spotted) = 0.14/0.31 ~= 0.4516.
+    answer: 0.4516
+    shortcut_used: ["Bayes grid", "law of total probability denominator"]
+    verify: "abs((0.20*0.70)/(0.50*0.10 + 0.30*0.40 + 0.20*0.70) - 0.4516) < 1e-3"
+
+  - id: CA.10
+    chapter: 5
+    tier: elite_challenge
+    archetype: "combinatorics likelihood feeding Bayes (counting + Bayes)"
+    outcomes: ["1b", "1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Which armory did the two grenades come from?"
+    statement: |
+      Armory A holds 5 live and 5 dud grenades; Armory B holds 2 live and 8
+      duds. An armory is chosen at random and two grenades are drawn without
+      replacement; both turn out live. Find P(Armory A | both live).
+    solution: |
+      P(2 live | A) = (5/10)(4/9) = 20/90 = 2/9.
+      P(2 live | B) = (2/10)(1/9) = 2/90 = 1/45.
+      priors 1/2 each. joints: (1/2)(2/9)=1/9; (1/2)(1/45)=1/90.
+      total = 1/9 + 1/90 = 10/90 + 1/90 = 11/90.
+      P(A | both live) = (1/9)/(11/90) = (10/90)/(11/90) = 10/11 ~= 0.9091.
+    answer: 0.9091
+    shortcut_used: ["without-replacement multiplication likelihood", "Bayes grid"]
+    verify: "abs(((1/2)*(5/10)*(4/9))/((1/2)*(5/10)*(4/9) + (1/2)*(2/10)*(1/9)) - 10/11) < 1e-9"

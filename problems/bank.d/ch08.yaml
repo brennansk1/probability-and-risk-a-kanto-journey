@@ -1,0 +1,588 @@
+# Problem bank — Chapter 8 (Celadon City): Discrete distributions — Bernoulli,
+# binomial, geometric, negative binomial, hypergeometric, Poisson, discrete
+# uniform. Outcome 2d2. Schema per problems/bank.yaml header.
+# This file is owned by Chapter 8 only. Verify expressions use the names exposed
+# by sims/verify_examples.py (math, st, random); no literal-answer restatements.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C8.1
+    chapter: 8
+    tier: route_trainer
+    archetype: "binomial mean and all-successes probability"
+    outcomes: ["2d2"]
+    distributions: ["binomial"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Battling a trainer's 6 Pokemon one at a time on Route 7."
+    statement: |
+      You battle 6 Pokemon one at a time; each round you win independently with
+      probability 0.7. Find the expected number of wins, and the probability you
+      win all six.
+    solution: |
+      X ~ Binomial(6, 0.7). E[X] = np = 6(0.7) = 4.2.
+      P(X=6) = 0.7^6 = 0.117649 ~= 0.1176.
+    answer: "E[X]=4.2; P(all six)=0.1176"
+    shortcut_used: ["binomial mean np", "all-success = p^n (single arrangement)"]
+    verify: "abs(6*0.7 - 4.2) < 1e-9 and abs(0.7**6 - 0.1176) < 1e-4"
+
+  - id: C8.2
+    chapter: 8
+    tier: route_trainer
+    archetype: "geometric, trials convention: mean and exact-trial probability"
+    outcomes: ["2d2"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Throwing at a wild Bellsprout until it flees."
+    statement: |
+      A wild Bellsprout flees on each throw with probability 0.4, independently;
+      you throw until it flees. With X = the throw on which it flees, find E[X]
+      and P(X=3).
+    solution: |
+      X ~ Geom(0.4), trials version. E[X] = 1/p = 1/0.4 = 2.5.
+      P(X=3) = q^2 p = 0.6^2 (0.4) = 0.36(0.4) = 0.144.
+    answer: "E[X]=2.5; P(X=3)=0.144"
+    shortcut_used: ["geometric mean 1/p", "p(k)=q^(k-1) p"]
+    verify: "abs(1/0.4 - 2.5) < 1e-9 and abs(0.6**2 * 0.4 - 0.144) < 1e-9"
+
+  - id: C8.3
+    chapter: 8
+    tier: route_trainer
+    archetype: "discrete uniform mean and variance"
+    outcomes: ["2d2"]
+    distributions: ["discrete_uniform"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Game Corner roulette with 18 equally likely slots."
+    statement: |
+      The Game Corner roulette has 18 numbered slots, each equally likely. Let X
+      be the landing slot, discrete uniform on {1,...,18}. Find E[X] and Var(X).
+    solution: |
+      m = 18. E[X] = (m+1)/2 = 19/2 = 9.5.
+      Var(X) = (m^2 - 1)/12 = (324 - 1)/12 = 323/12 = 26.9167.
+    answer: "E[X]=9.5; Var(X)=323/12=26.9167"
+    shortcut_used: ["discrete uniform mean (m+1)/2", "variance (m^2-1)/12"]
+    verify: "abs((18+1)/2 - 9.5) < 1e-9 and abs((18**2-1)/12 - 26.9167) < 1e-3"
+
+  - id: C8.4
+    chapter: 8
+    tier: route_trainer
+    archetype: "Poisson single window, exact masses"
+    outcomes: ["2d2"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Gastly drifting through the Tower window at 1.5 per minute."
+    statement: |
+      Gastly drift through the window at an average rate lambda = 1.5 per minute
+      (Poisson). For a single minute, find P(exactly 0) and P(exactly 2).
+    solution: |
+      lambda = 1.5. P(0) = e^{-1.5} = 0.2231.
+      P(2) = e^{-1.5}(1.5)^2/2! = 0.2231(2.25)/2 = 0.2510.
+    answer: "P(0)=0.2231; P(2)=0.2510"
+    shortcut_used: ["Poisson pmf e^{-lambda} lambda^k / k!"]
+    verify: "abs(math.exp(-1.5) - 0.2231) < 1e-4 and abs(math.exp(-1.5)*1.5**2/2 - 0.2510) < 1e-4"
+
+  - id: C8.5
+    chapter: 8
+    tier: route_trainer
+    archetype: "hypergeometric exact mass"
+    outcomes: ["2d2"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Pulling 4 items at once from a 10-item grab-bag."
+    statement: |
+      A grab-bag holds 10 items: 3 rare TMs and 7 Potions. You pull 4 at once
+      (without replacement). Find the probability exactly 2 are TMs.
+    solution: |
+      N=10, K=3, n=4. C(10,4)=210.
+      P(X=2) = C(3,2) C(7,2) / C(10,4) = (3)(21)/210 = 63/210 = 0.3000.
+    answer: "0.3000"
+    shortcut_used: ["hypergeometric counting C(K,k)C(N-K,n-k)/C(N,n)"]
+    verify: "abs(math.comb(3,2)*math.comb(7,2)/math.comb(10,4) - 0.30) < 1e-9"
+
+  - id: C8.6
+    chapter: 8
+    tier: route_trainer
+    archetype: "negative binomial, failures convention: mean"
+    outcomes: ["2d2"]
+    distributions: ["negative_binomial"]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Visiting shops until two Thunder Stones are secured."
+    statement: |
+      You need r = 2 Thunder Stones. Each shop independently has one in stock
+      with probability 0.3. Let X be the number of out-of-stock shops you visit
+      before securing the second stone. Find E[X].
+    solution: |
+      X = failures before the 2nd success, r=2, p=0.3.
+      E[X] = r q / p = 2(0.7)/0.3 = 1.4/0.3 = 4.667.
+    answer: "E[X]=4.667"
+    shortcut_used: ["negative binomial mean rq/p"]
+    verify: "abs(2*0.7/0.3 - 4.6667) < 1e-3"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C8.7
+    chapter: 8
+    tier: gym_battle
+    archetype: "binomial-to-Poisson approximation, tail by complement"
+    outcomes: ["2d2"]
+    distributions: ["binomial", "poisson"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Misty pulls a low-payout slot 40 times."
+    statement: |
+      A slot pays out on each pull with probability p = 0.05; Misty pulls 40
+      times. Using the Poisson approximation, estimate P(at least two payouts),
+      and state whether it over- or under-estimates the true binomial tail.
+    solution: |
+      lambda = np = 40(0.05) = 2. P(X>=2) = 1 - e^{-2} - 2e^{-2} = 1 - 3e^{-2}
+      = 1 - 0.40601 = 0.5940. The Poisson over-estimates the binomial tail:
+      binomial variance npq = 1.9 < 2 makes it slightly more concentrated.
+    answer: "0.5940 (Poisson over-estimates)"
+    shortcut_used: ["Bin(n,p) ~ Pois(np)", "P(>=2)=1-P(0)-P(1)"]
+    verify: "abs((1 - math.exp(-2) - 2*math.exp(-2)) - 0.5940) < 1e-4"
+
+  - id: C8.8
+    chapter: 8
+    tier: gym_battle
+    archetype: "Poisson rescaled to a sub-hour window"
+    outcomes: ["2d2"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Calls to the Pokemon Center while Nurse Joy steps away."
+    statement: |
+      Calls arrive Poisson at 4 per hour. Nurse Joy steps away for 15 minutes.
+      Find P(at least one call) and P(exactly three).
+    solution: |
+      Rate 4/hr over 0.25 hr -> lambda = 1.
+      P(>=1) = 1 - e^{-1} = 0.6321. P(=3) = e^{-1} (1)^3/3! = 0.3679/6 = 0.0613.
+    answer: "P(>=1)=0.6321; P(=3)=0.0613"
+    shortcut_used: ["rescale lambda = rate * window", "P(>=1)=1-P(0)"]
+    verify: "abs((1 - math.exp(-1)) - 0.6321) < 1e-4 and abs(math.exp(-1)/math.factorial(3) - 0.0613) < 1e-4"
+
+  - id: C8.9
+    chapter: 8
+    tier: gym_battle
+    archetype: "hypergeometric mean and variance vs binomial"
+    outcomes: ["2d2"]
+    distributions: ["hypergeometric", "binomial"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Drawing dual types from Erika's tournament bed."
+    statement: |
+      In a bed of N = 15 Pokemon, K = 5 are dual types; Erika draws n = 4 without
+      replacement. Let X be the dual types drawn. Find E[X] and Var(X), and
+      compare Var(X) to a binomial model.
+    solution: |
+      E[X] = nK/N = 4(5)/15 = 1.3333.
+      Var(X) = n (K/N)(1-K/N)(N-n)/(N-1) = 4(1/3)(2/3)(11/14) = 0.6984.
+      Binomial p=1/3 gives npq = 4(1/3)(2/3) = 0.8889, larger; correction
+      11/14 = 0.7857 shrinks it.
+    answer: "E[X]=1.3333; Var(X)=0.6984 (< binomial 0.8889)"
+    shortcut_used: ["hypergeometric mean nK/N", "finite-population correction (N-n)/(N-1)"]
+    verify: "abs(4*5/15 - 1.3333) < 1e-3 and abs(4*(5/15)*(10/15)*(11/14) - 0.6984) < 1e-3"
+
+  - id: C8.10
+    chapter: 8
+    tier: gym_battle
+    archetype: "geometric survival and memorylessness"
+    outcomes: ["2d2"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Throwing Poke Balls at a legendary bird until the catch."
+    statement: |
+      Each throw catches with probability p = 0.1. Let X be the throw on which
+      you catch it. Find P(X > 10), then use memorylessness to find
+      P(X > 15 | X > 5).
+    solution: |
+      X ~ Geom(0.1), trials. P(X>10) = q^10 = 0.9^10 = 0.3487.
+      Memoryless: P(X>15 | X>5) = P(X>10) = 0.3487.
+    answer: "P(X>10)=0.3487; P(X>15|X>5)=0.3487"
+    shortcut_used: ["geometric survival q^m", "memorylessness"]
+    verify: "abs(0.9**10 - 0.3487) < 1e-4 and abs(0.9**15/0.9**5 - 0.9**10) < 1e-12"
+
+  - id: C8.11
+    chapter: 8
+    tier: gym_battle
+    archetype: "recover binomial parameters from moments"
+    outcomes: ["2d2"]
+    distributions: ["binomial"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Reverse-engineering a binomial from its mean and variance."
+    statement: |
+      A binomial X ~ Binomial(n, p) has E[X] = 6 and Var(X) = 4.2. Recover n and
+      p, then find P(X = 0).
+    solution: |
+      np = 6, npq = 4.2 => q = 4.2/6 = 0.7, so p = 0.3 and n = 6/0.3 = 20.
+      P(X=0) = q^20 = 0.7^20 = 0.000798.
+    answer: "n=20, p=0.3; P(X=0)=0.000798"
+    shortcut_used: ["q = Var/E", "n = E/p"]
+    verify: "abs(4.2/6 - 0.7) < 1e-9 and abs(6/0.3 - 20) < 1e-9 and abs(0.7**20 - 0.000798) < 1e-5"
+
+  - id: C8.12
+    chapter: 8
+    tier: gym_battle
+    archetype: "binomial-to-Poisson approximation, lower tail"
+    outcomes: ["2d2"]
+    distributions: ["binomial", "poisson"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Defective Poke Balls in a shipment of 150."
+    statement: |
+      Defective Poke Balls occur at rate 2%. A shipment of 150 arrives. Using the
+      Poisson approximation, find P(no more than one defective).
+    solution: |
+      lambda = np = 150(0.02) = 3.
+      P(X<=1) = e^{-3} + 3e^{-3} = 4 e^{-3} = 0.1991.
+    answer: "0.1991"
+    shortcut_used: ["Bin(n,p) ~ Pois(np)", "P(<=1)=P(0)+P(1)"]
+    verify: "abs(4*math.exp(-3) - 0.1991) < 1e-4"
+
+  - id: C8.13
+    chapter: 8
+    tier: gym_battle
+    archetype: "Poisson additivity of independent streams"
+    outcomes: ["2d2"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Gastly and Haunter streams converging on Lavender Town."
+    statement: |
+      Gastly arrive Poisson at lambda_G = 3/min and Haunter at lambda_H = 1/min,
+      independently. Over a 2-minute window, find the probability the total
+      number of ghosts is exactly 5.
+    solution: |
+      Over 2 min: lambda_G = 6, lambda_H = 2; total ~ Poisson(8).
+      P(=5) = e^{-8} 8^5 / 5! = 0.0916.
+    answer: "0.0916"
+    shortcut_used: ["additivity: sum the rates", "rescale to window"]
+    verify: "abs(math.exp(-8)*8**5/math.factorial(5) - 0.0916) < 1e-4"
+
+  - id: C8.14
+    chapter: 8
+    tier: gym_battle
+    archetype: "negative binomial, total-trials convention"
+    outcomes: ["2d2"]
+    distributions: ["negative_binomial"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Challenging until a 4th victory is recorded."
+    statement: |
+      A trainer challenges until her 4th victory; each match is an independent win
+      with probability 0.6. Let X be the total matches played. Find E[X] and
+      P(X = 6).
+    solution: |
+      Y = failures before the 4th win, X = Y + 4. E[Y] = rq/p = 4(0.4)/0.6
+      = 2.667, so E[X] = 6.667. P(X=6) <=> Y=2:
+      C(2+4-1,2) p^4 q^2 = C(5,2)(0.6)^4(0.4)^2 = 10(0.1296)(0.16) = 0.20736.
+    answer: "E[X]=6.667; P(X=6)=0.20736"
+    shortcut_used: ["negbin mean rq/p plus r", "locked last success: C(k+r-1,k)"]
+    verify: "abs((4*0.4/0.6 + 4) - 6.6667) < 1e-3 and abs(math.comb(5,2)*0.6**4*0.4**2 - 0.20736) < 1e-5"
+
+  - id: C8.15
+    chapter: 8
+    tier: gym_battle
+    archetype: "hypergeometric at-least-one via complement"
+    outcomes: ["2d2"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A 5-card hand dealt from a 20-card battle deck."
+    statement: |
+      From a deck of 20 cards, 8 are Energy. You are dealt 5 without replacement.
+      Find P(at least one Energy) using the complement.
+    solution: |
+      N=20, K=8, n=5. P(0 Energy) = C(12,5)/C(20,5) = 792/15504 = 0.05108.
+      P(>=1) = 1 - 0.05108 = 0.9489.
+    answer: "0.9489"
+    shortcut_used: ["P(>=1) = 1 - P(0)", "hypergeometric counting"]
+    verify: "abs((1 - math.comb(12,5)/math.comb(20,5)) - 0.9489) < 1e-4"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =====================
+
+  - id: C8.16
+    chapter: 8
+    tier: elite_challenge
+    archetype: "Poisson thinning: rescale then thin"
+    outcomes: ["2d2"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Vileplume spore-clouds, each landing on your side or drifting away."
+    statement: |
+      Spore-clouds arrive Poisson at lambda = 3 per minute over a 5-minute battle.
+      Each independently lands on your side with probability 0.4. Let X be the
+      clouds on your side. Identify the distribution of X, then find P(X >= 2) and
+      Var(X).
+    solution: |
+      Clouds over 5 min: Poisson(15). Thinned by p=0.4 => X ~ Poisson(6).
+      P(X>=2) = 1 - e^{-6} - 6e^{-6} = 1 - 7e^{-6} = 0.9826. Var(X) = 6.
+    answer: "X ~ Poisson(6); P(X>=2)=0.9826; Var(X)=6"
+    shortcut_used: ["rescale lambda*window", "thinning Pois(mu) -> Pois(mu p)"]
+    verify: "abs((1 - 7*math.exp(-6)) - 0.9826) < 1e-4 and abs(15*0.4 - 6) < 1e-9"
+
+  - id: C8.17
+    chapter: 8
+    tier: elite_challenge
+    archetype: "recover Poisson lambda from P(0); plus mode"
+    outcomes: ["2d2"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Inferring the encounter rate on Route 8 from a zero probability."
+    statement: |
+      Daily wild encounters are Poisson with mean lambda, and P(0 encounters)
+      = 0.2. Find lambda, then P(X >= 2) and the most likely (modal) number of
+      encounters.
+    solution: |
+      e^{-lambda} = 0.2 => lambda = -ln 0.2 = 1.6094.
+      P(X>=2) = 1 - e^{-lambda} - lambda e^{-lambda} = 1 - 0.2 - 1.6094(0.2)
+      = 0.4781. lambda non-integer, so mode = floor(lambda) = 1.
+    answer: "lambda=1.6094; P(X>=2)=0.4781; mode=1"
+    shortcut_used: ["lambda = -ln P(0)", "Poisson mode = floor(lambda)"]
+    verify: "abs((-math.log(0.2)) - 1.6094) < 1e-4 and abs((1 - 0.2 - (-math.log(0.2))*0.2) - 0.4781) < 1e-4"
+
+  - id: C8.18
+    chapter: 8
+    tier: elite_challenge
+    archetype: "negative binomial vs hypergeometric: means and the correction"
+    outcomes: ["2d2"]
+    distributions: ["negative_binomial", "hypergeometric"]
+    provenance: original
+    difficulty: 5
+    narrative_hook: "With-replacement collecting vs a rival's without-replacement draw."
+    statement: |
+      You draw single Pokemon with replacement from a pool that is 30% Water-type,
+      stopping at your 3rd Water-type; let N be the total draws. A rival draws 5
+      without replacement from a pool of 10 (3 Water). Find E[N] and
+      E[Water in the rival's 5], and explain in one line why the
+      without-replacement mean is unaffected by the correction though the variance
+      is.
+    solution: |
+      With replacement, wait for 3rd Water (p=0.3): E[failures] = rq/p
+      = 3(0.7)/0.3 = 7, so E[N] = 7 + 3 = 10. Rival, without replacement
+      (N=10, K=3, n=5): E[Water] = nK/N = 15/10 = 1.5. One line: the
+      hypergeometric mean nK/N equals the binomial mean with p = K/N because
+      expectation is linear -- each draw is marginally a success w.p. K/N
+      regardless of replacement; only the variance picks up (N-n)/(N-1), since
+      dependence affects second moments, not first.
+    answer: "E[N]=10; E[Water]=1.5"
+    shortcut_used: ["negbin total = rq/p + r", "hypergeometric mean nK/N = np", "linearity ignores dependence"]
+    verify: "abs((3*0.7/0.3 + 3) - 10) < 1e-9 and abs(5*3/10 - 1.5) < 1e-9"
+
+  # ===================== TOP-UP: BERNOULLI / NEG-BIN / DISCRETE-UNIFORM =====================
+
+  - id: C8.19
+    chapter: 8
+    tier: route_trainer
+    archetype: "Bernoulli mean and variance from an indicator"
+    outcomes: ["2d2"]
+    distributions: ["bernoulli"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "A single Poke Ball throw at a Caterpie."
+    statement: |
+      A single Poke Ball throw catches a Caterpie with probability p = 0.7. Let
+      X = 1 if caught, 0 otherwise (a Bernoulli trial). Find E[X] and Var(X).
+    solution: |
+      A Bernoulli(p) indicator has E[X] = p = 0.7 and
+      Var(X) = p(1-p) = 0.7(0.3) = 0.21.
+    answer: "E[X]=0.7; Var(X)=0.21"
+    shortcut_used: ["Bernoulli mean p", "variance p(1-p)"]
+    verify: "abs(0.7 - 0.7) < 1e-9 and abs(0.7*0.3 - 0.21) < 1e-9"
+
+  - id: C8.20
+    chapter: 8
+    tier: route_trainer
+    archetype: "Bernoulli as a binomial with n=1; pmf value"
+    outcomes: ["2d2"]
+    distributions: ["bernoulli"]
+    provenance: original
+    difficulty: 1
+    narrative_hook: "Does this Pidgey flee on the first turn?"
+    statement: |
+      A wild Pidgey flees on the first turn with probability 0.35. Let X be the
+      Bernoulli indicator of fleeing. State P(X=0), P(X=1), and confirm
+      Var(X) is maximized would require p=0.5 (just report Var here).
+    solution: |
+      P(X=1) = 0.35, P(X=0) = 0.65. Var(X) = p(1-p) = 0.35(0.65) = 0.2275.
+      (The Bernoulli variance p(1-p) is maximized at p = 0.5 where it equals
+      0.25; here it is slightly below that.)
+    answer: "P(X=0)=0.65, P(X=1)=0.35; Var(X)=0.2275"
+    shortcut_used: ["Bernoulli pmf", "Var=p(1-p)"]
+    verify: "abs(0.35*0.65 - 0.2275) < 1e-9 and abs((1-0.35) - 0.65) < 1e-9"
+
+  - id: C8.21
+    chapter: 8
+    tier: route_trainer
+    archetype: "sum of i.i.d. Bernoulli is binomial (mean of a sum)"
+    outcomes: ["2d2"]
+    distributions: ["bernoulli", "binomial"]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Three independent Quick Ball throws."
+    statement: |
+      You make 3 independent Quick Ball throws, each succeeding with p = 0.4.
+      Writing each as a Bernoulli indicator X_i, let S = X_1 + X_2 + X_3. Use
+      linearity to find E[S] and Var(S).
+    solution: |
+      Each X_i ~ Bernoulli(0.4): E[X_i] = 0.4, Var(X_i) = 0.4(0.6) = 0.24. By
+      linearity and independence, E[S] = 3(0.4) = 1.2 and Var(S) = 3(0.24) = 0.72.
+      (S is Binomial(3, 0.4), the sum-of-Bernoulli identity.)
+    answer: "E[S]=1.2; Var(S)=0.72"
+    shortcut_used: ["sum of Bernoulli = binomial", "linearity of E and Var under independence"]
+    verify: "abs(3*0.4 - 1.2) < 1e-9 and abs(3*0.4*0.6 - 0.72) < 1e-9"
+
+  - id: C8.22
+    chapter: 8
+    tier: gym_battle
+    archetype: "Bernoulli indicator inside an expectation argument"
+    outcomes: ["2d2", "2b"]
+    distributions: ["bernoulli"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Expected number of distinct types seen among independent encounters."
+    statement: |
+      On a route, each of 5 independent encounters is Fire-type with probability
+      0.2. Let X_i be the Bernoulli indicator that encounter i is Fire-type and
+      N = sum X_i the count of Fire-types. Find E[N] and P(N=0).
+    solution: |
+      Each X_i ~ Bernoulli(0.2). By linearity E[N] = 5(0.2) = 1. The encounters
+      are independent, so P(N=0) = (1 - 0.2)^5 = 0.8^5 = 0.32768.
+    answer: "E[N]=1; P(N=0)=0.32768"
+    shortcut_used: ["indicator-sum mean = sum of p", "independence for all-zero probability"]
+    verify: "abs(5*0.2 - 1) < 1e-9 and abs(0.8**5 - 0.32768) < 1e-9"
+
+  - id: C8.23
+    chapter: 8
+    tier: gym_battle
+    archetype: "Bernoulli MGF and second moment"
+    outcomes: ["2d2", "2d"]
+    distributions: ["bernoulli"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A coin-flip gate that opens (1) or stays shut (0)."
+    statement: |
+      A gate opens (X=1) with probability p = 0.6 and stays shut (X=0) otherwise.
+      Write the Bernoulli MGF M_X(t), then use it to recover E[X] and E[X^2], and
+      give Var(X).
+    solution: |
+      Bernoulli MGF: M_X(t) = (1-p) + p e^t = 0.4 + 0.6 e^t.
+      M_X'(t) = 0.6 e^t => E[X] = 0.6. M_X''(t) = 0.6 e^t => E[X^2] = 0.6.
+      Var(X) = 0.6 - 0.6^2 = 0.6 - 0.36 = 0.24 = p(1-p). (For a 0/1 variable
+      E[X^2] = E[X] since X^2 = X.)
+    answer: "M_X=0.4+0.6e^t; E[X]=E[X^2]=0.6; Var=0.24"
+    shortcut_used: ["Bernoulli MGF", "X^2=X for indicators"]
+    verify: "abs(0.6 - 0.6) < 1e-9 and abs(0.6 - 0.6**2 - 0.24) < 1e-9"
+
+  - id: C8.24
+    chapter: 8
+    tier: elite_challenge
+    archetype: "Bernoulli mixture / conditioning (indicator with random p)"
+    outcomes: ["2d2", "2b"]
+    distributions: ["bernoulli"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "A capture whose success rate depends on a hidden weather state."
+    statement: |
+      A capture succeeds with probability p, where p = 0.8 in clear weather
+      (chance 0.6) and p = 0.3 in rain (chance 0.4). Let X be the Bernoulli
+      success indicator. Find the unconditional E[X] = P(X=1) and Var(X).
+    solution: |
+      By the law of total probability, P(X=1) = 0.6(0.8) + 0.4(0.3)
+      = 0.48 + 0.12 = 0.60, so E[X] = 0.60. Marginally X is Bernoulli(0.60),
+      hence Var(X) = 0.6(0.4) = 0.24. (X is still a 0/1 indicator, so its
+      variance is p_bar(1 - p_bar) with the blended success rate.)
+    answer: "E[X]=0.60; Var(X)=0.24"
+    shortcut_used: ["total probability for blended p", "Bernoulli Var=p(1-p)"]
+    verify: "abs(0.6*0.8 + 0.4*0.3 - 0.60) < 1e-9 and abs(0.6*0.4 - 0.24) < 1e-9"
+
+  - id: C8.25
+    chapter: 8
+    tier: route_trainer
+    archetype: "negative binomial pmf, trials-until-r form"
+    outcomes: ["2d2"]
+    distributions: ["negative_binomial"]
+    provenance: original
+    difficulty: 2
+    narrative_hook: "Landing the 3rd Gym Badge on exactly the 5th attempt."
+    statement: |
+      Each Gym attempt succeeds independently with probability p = 0.5. Let X be
+      the number of attempts needed to earn the 3rd badge. Find P(X = 5).
+    solution: |
+      Trials-until-r form: P(X=k) = C(k-1, r-1) p^r (1-p)^(k-r) with r=3, p=0.5.
+      P(X=5) = C(4,2) (0.5)^3 (0.5)^2 = 6 (0.5)^5 = 6/32 = 0.1875.
+    answer: "P(X=5)=0.1875"
+    shortcut_used: ["negative binomial pmf C(k-1,r-1) p^r q^(k-r)"]
+    verify: "abs(math.comb(4,2)*0.5**3*0.5**2 - 0.1875) < 1e-9"
+
+  - id: C8.26
+    chapter: 8
+    tier: gym_battle
+    archetype: "negative binomial mean and variance, failures convention"
+    outcomes: ["2d2", "2c"]
+    distributions: ["negative_binomial"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "Counting missed throws before the 4th capture."
+    statement: |
+      Each throw catches independently with probability p = 0.25. Let Y be the
+      number of misses before the 4th catch (failures convention). Find E[Y] and
+      Var(Y).
+    solution: |
+      Failures-before-r form, r=4, p=0.25, q=0.75:
+      E[Y] = r q / p = 4(0.75)/0.25 = 3/0.25 = 12.
+      Var(Y) = r q / p^2 = 4(0.75)/0.0625 = 3/0.0625 = 48.
+    answer: "E[Y]=12; Var(Y)=48"
+    shortcut_used: ["negbin mean rq/p", "variance rq/p^2"]
+    verify: "abs(4*0.75/0.25 - 12) < 1e-9 and abs(4*0.75/0.25**2 - 48) < 1e-9"
+
+  - id: C8.27
+    chapter: 8
+    tier: elite_challenge
+    archetype: "negative binomial tail via complement using scipy"
+    outcomes: ["2d2"]
+    distributions: ["negative_binomial"]
+    provenance: original
+    difficulty: 4
+    narrative_hook: "Probability the 2nd legendary sighting needs more than 6 patrols."
+    statement: |
+      Each patrol independently yields a legendary sighting with probability
+      p = 0.4. Let X be the number of patrols to reach the 2nd sighting. Find
+      P(X > 6) = P(at most 1 sighting in the first 6 patrols).
+    solution: |
+      'More than 6 patrols for the 2nd success' means the first 6 patrols hold
+      at most 1 success: P(X>6) = P(B<=1) where B ~ Binomial(6, 0.4).
+      P(B=0) = 0.6^6 = 0.046656; P(B=1) = 6(0.4)(0.6^5) = 6(0.4)(0.07776)
+      = 0.186624. Sum = 0.23328.
+    answer: "P(X>6)=0.23328"
+    shortcut_used: ["NegBin tail = Binomial CDF complement", "P(X>n)=P(B<=r-1)"]
+    verify: "abs(st.binom.cdf(1, 6, 0.4) - 0.23328) < 1e-5"
+
+  - id: C8.28
+    chapter: 8
+    tier: gym_battle
+    archetype: "discrete uniform probability and expected value of a function"
+    outcomes: ["2d2", "2b"]
+    distributions: ["discrete_uniform"]
+    provenance: original
+    difficulty: 3
+    narrative_hook: "A fair Voltorb-faced die rolled for a prize multiplier."
+    statement: |
+      A fair die shows X uniform on {1,2,3,4,5,6}. A prize pays g(X) = X^2
+      Poke-dollars. Find E[X^2] (the prize's expected payout) and P(X >= 5).
+    solution: |
+      Discrete uniform on 1..6: E[X^2] = (1+4+9+16+25+36)/6 = 91/6 = 15.1667.
+      P(X >= 5) = P(X in {5,6}) = 2/6 = 1/3 = 0.3333.
+    answer: "E[X^2]=91/6=15.1667; P(X>=5)=1/3"
+    shortcut_used: ["LOTUS on discrete uniform", "equally-likely counting"]
+    verify: "abs(sum(x*x for x in range(1,7))/6 - 91/6) < 1e-9 and abs(2/6 - 1/3) < 1e-9"
