@@ -544,6 +544,11 @@ The minimum of independent exponentials is exponential with the **summed rate**.
 ::: team-rocket
 **TRANSMISSION INTERCEPTED — Team Rocket's Trap**
 
+<figure style="margin:1em auto; max-width:140px; text-align:center;">
+<img src="../../assets/sprites/front/52.png" alt="Meowth" style="width:120px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#052 Meowth</strong> — cheering the miscounted odds.</figcaption>
+</figure>
+
 Jessie has a plan to skim the prize pool. "We win at least *one hundred ten* of two hundred rigged rounds," she announces, "and the bonus is ours. I did the normal approximation — mean a hundred, standard deviation about seven-oh-seven." James scribbles: $z = \tfrac{110 - 100}{7.07} = 1.41$, giving $1 - \Phi(1.41) \approx 0.079$. "Eight percent, boss!" Meowth cheers.
 
 But the win count is a *whole number*, and Jessie forgot the **continuity correction**. The bar for "at least $110$" starts at $109.5$, not $110$:

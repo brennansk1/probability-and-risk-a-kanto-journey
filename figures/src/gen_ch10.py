@@ -47,6 +47,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, FancyArrowPatch
 from cycler import cycler
 
+from sprite_util import front, item, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -115,6 +117,11 @@ def fig_deductible_survival() -> Path:
     ax.set_ylabel(r"$S(x)=P(X>x)$")
     ax.set_title("Deductible: expected payment is the survival area right of $d$")
     ax.legend(loc="upper right")
+
+    # Decoration (iron rule: margin only, never over curve/labels/axes). A fled
+    # Rattata -- the warden's warm-up flee -- perches in the empty mid-right
+    # margin, clear of the survival curve, the legend, and every number.
+    place_sprite(ax, front(19), (16.5, 0.62), zoom=0.55, alpha=0.92)
     return save(fig, "ch10_deductible_survival")
 
 
@@ -157,6 +164,11 @@ def fig_limit_survival() -> Path:
     ax.set_ylabel(r"$S(x)=P(X>x)$")
     ax.set_title("The master identity in one picture: $\\mathrm{E}[X\\wedge u]+\\mathrm{E}[(X-u)_+]=\\mathrm{E}[X]$")
     ax.legend(loc="upper right")
+
+    # Decoration (iron rule: empty margin only). A Chansey -- a rare, expensive
+    # flee whose loss can run past the cap -- sits in the open upper-right
+    # triangle above the survival line, below the legend, over no data.
+    place_sprite(ax, front(113), (8.6, 0.60), zoom=0.5, alpha=0.9)
     return save(fig, "ch10_limit_survival")
 
 
@@ -207,6 +219,11 @@ def fig_payment_vs_loss() -> Path:
     ax.set_ylabel("policy payment $Y_L$ (thousands)")
     ax.set_title(r"Payment vs. loss: $Y_L=\alpha[(X\wedge u)-(X\wedge d)]$")
     ax.legend(loc="upper left")
+
+    # Decoration (iron rule: empty margin only). A Safari Ball -- the gear the
+    # warden's policy reimburses -- rests in the open lower-right space below
+    # the capped-payment line, over no curve, marker, or number.
+    place_sprite(ax, item("safari-ball"), (12.6, 2.4), zoom=0.95, alpha=0.92)
     return save(fig, "ch10_payment_vs_loss")
 
 
@@ -280,6 +297,11 @@ def fig_perloss_vs_perpayment() -> Path:
     ax.set_ylim(-0.4, y_top + bar_h + 0.8)
     ax.axis("off")
     ax.set_title("Per loss vs. per payment: delete the zeros, average rises")
+
+    # Decoration (iron rule: empty margin only). A small Rattata in the open
+    # strip below the PER PAYMENT bar -- one of the fled Pokemon being averaged
+    # -- sits over no bar, arrow, label, or number.
+    place_sprite(ax, front(19), (1.0, -0.05), zoom=0.42, alpha=0.9)
     return save(fig, "ch10_perloss_vs_perpayment")
 
 

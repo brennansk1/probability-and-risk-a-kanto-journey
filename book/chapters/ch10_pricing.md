@@ -652,6 +652,11 @@ $$\Var(Z)=26.34-3.938^2=10.83, \quad \Var(Y_L)=0.8^2(10.83)=6.93, \quad \SD(Y_L)
 
 ### Route Trainers (mechanics)
 
+<figure style="margin:1em auto; max-width:120px; text-align:center;">
+<img src="../../assets/sprites/front/19.png" alt="Rattata" style="width:90px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#019 Rattata</strong> — the warden's warm-up flee</figcaption>
+</figure>
+
 **C10.1.** 🔴 *(Warden's warm-up.)* A fled Rattata's gear costs $X\sim\Expo(\theta=4)$ (thousands). The trial policy carries an ordinary deductible $d=2$. Find the expected payment **per loss**.
 
 **C10.2.** 🔴 *(The honest check size.)* Same loss as C10.1, $X\sim\Expo(4)$, deductible $d=2$. Find the expected payment **per payment**.

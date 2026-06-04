@@ -48,6 +48,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
+from sprite_util import front, item, place_sprite
+
 # --- paths / theme -----------------------------------------------------------
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
@@ -126,6 +128,14 @@ def fig_discrete_vs_continuous():
              bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="#CCCCCC"))
     axc.legend(loc="upper right", fontsize=9.5)
 
+    # --- decorative sprites (margins only; never over data) -----------------
+    # discrete: a small Pidgey sits in the upper-left margin (count = "how many")
+    place_sprite(axd, front(16), (0.10, 0.86), xycoords="axes fraction",
+                 zoom=0.42, alpha=0.95)
+    # continuous: a Magikarp rides the lower-right margin, clear of curve/area
+    place_sprite(axc, front(129), (0.88, 0.32), xycoords="axes fraction",
+                 zoom=0.38, alpha=0.9)
+
     fig.suptitle("Two ways probability lives on the line",
                  fontsize=15, fontweight="bold", y=1.02)
     fig.tight_layout()
@@ -162,9 +172,14 @@ def fig_pmf_bars():
               label="$P(X\\geq 2)=0.3+0.2=0.5$"),
     ]
     ax.legend(handles=handles, loc="upper right")
-    ax.text(0.5, 0.06, "all four heights sum to $1$", transform=ax.transAxes,
-            ha="center", fontsize=11, style="italic", color=INK,
+    # note relocated to the empty gutter over x=0 (clear of every bar)
+    ax.text(0.0, 0.44, "all four heights\nsum to $1$",
+            ha="center", va="center", fontsize=10.5, style="italic", color=INK,
             bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="#CCCCCC"))
+
+    # decorative: a small Pidgey perches atop the tallest bar (margin, no data)
+    place_sprite(ax, front(16), (1, 0.40 + 0.045), zoom=0.40, alpha=0.95)
+
     fig.tight_layout()
     save(fig, "ch06_pmf_bars.png")
 
@@ -183,29 +198,36 @@ def fig_pdf_area():
                     edgecolor=RED)
     ax.axhline(0, color=INK, linewidth=1.0)
     ax.axhline(1, color=INK, linewidth=0.8, linestyle=":")
-    ax.text(1.0, 1.0, "  height $=1$", va="center", ha="left",
+    # "height = 1" reference, kept inside the right edge (ha=right)
+    ax.text(0.985, 1.05, "height $=1$ ", va="bottom", ha="right",
             fontsize=9.5, color=INK)
 
-    # area label
+    # area label (points into the shaded region, below the line)
     ax.annotate("$P(X\\leq\\frac{1}{2})=$ shaded area $=\\frac{3}{4}$",
-                xy=(0.22, 0.9), xytext=(0.40, 1.55),
+                xy=(0.22, 0.85), xytext=(0.34, 1.45),
                 fontsize=12, color=INK,
                 arrowprops=dict(arrowstyle="->", color=INK, lw=1.2))
-    # height-is-density note
+    # height-is-density note (points at f(0)=2; text well clear to the right)
     ax.annotate("height is a density,\nnot a probability\n($f(0)=2>1$)",
-                xy=(0.0, 2.0), xytext=(0.30, 2.05),
-                fontsize=10.5, color=INK, ha="left", va="center",
+                xy=(0.0, 2.0), xytext=(0.30, 2.10),
+                fontsize=10.5, color=INK, ha="left", va="top",
                 arrowprops=dict(arrowstyle="->", color=INK, lw=1.2))
-    # whole-area = 1 note
-    ax.text(0.66, 0.30, "whole area\nunder line $=1$", fontsize=10.5,
+    # whole-area = 1 note (in the unshaded lower-right triangle, clear of curve)
+    ax.text(0.70, 0.28, "whole area\nunder line $=1$", fontsize=10.5,
             color=INK, ha="center", style="italic")
 
-    ax.set_xlim(0, 1.02)
-    ax.set_ylim(0, 2.3)
+    ax.set_xlim(0, 1.04)
+    ax.set_ylim(0, 2.35)
     ax.set_xlabel("depth fraction $x$")
     ax.set_ylabel("density $f(x)$")
     ax.set_title("The depth density: probability is shaded area")
-    ax.legend(loc="upper right")
+    # legend lower-left, clear of every annotation
+    ax.legend(loc="lower left", bbox_to_anchor=(0.015, 0.02))
+
+    # decorative: a Magikarp drifts in the lower-right margin (water depth motif)
+    place_sprite(ax, front(129), (0.90, 0.13), xycoords="axes fraction",
+                 zoom=0.36, alpha=0.9)
+
     fig.tight_layout()
     save(fig, "ch06_pdf_area.png")
 
@@ -266,6 +288,12 @@ def fig_cdf_staircase_smooth():
     axc.text(0.5, 0.04, "slope is the density", transform=axc.transAxes,
              ha="center", va="bottom", fontsize=10, style="italic", color=INK)
 
+    # --- decorative sprites (lower-right margins, clear of curves) ----------
+    place_sprite(axd, front(16), (0.88, 0.20), xycoords="axes fraction",
+                 zoom=0.40, alpha=0.95)   # discrete: Pidgey count
+    place_sprite(axc, front(120), (0.86, 0.20), xycoords="axes fraction",
+                 zoom=0.40, alpha=0.9)    # continuous: Staryu recovery time
+
     fig.suptitle("The cdf accumulates probability from $0$ to $1$",
                  fontsize=15, fontweight="bold", y=1.02)
     fig.tight_layout()
@@ -310,6 +338,11 @@ def fig_cdf_survival_percentile():
     ax.set_ylabel("probability")
     ax.set_title("Cdf and survival are mirror images summing to $1$")
     ax.legend(loc="center right")
+
+    # decorative: Staryu in the upper-left margin (its recovery time is T)
+    place_sprite(ax, front(120), (0.085, 0.86), xycoords="axes fraction",
+                 zoom=0.42, alpha=0.95)
+
     fig.tight_layout()
     save(fig, "ch06_cdf_survival_percentile.png")
 
@@ -352,26 +385,37 @@ def fig_rv_web():
                             color=color, linewidth=2.0, zorder=2)
         ax.add_patch(a)
 
+    def label(x, y, text, color, fontsize=11):
+        # white-backed label so it stays legible and never reads as struck-through
+        ax.text(x, y, text, color=color, fontsize=fontsize, ha="center",
+                va="center", zorder=6,
+                bbox=dict(boxstyle="round,pad=0.25", fc="white",
+                          ec=color, alpha=0.95, linewidth=1.0))
+
     cx, cy = nodes["cdf"][0], nodes["cdf"][1]
     px, py = nodes["pmfpdf"][0], nodes["pmfpdf"][1]
     sx, sy = nodes["survival"][0], nodes["survival"][1]
     qx, qy = nodes["percentile"][0], nodes["percentile"][1]
 
-    # pmf/pdf -> cdf  (accumulate) and cdf -> pmf/pdf (differentiate): curved pair
-    arrow((px + 0.6, py - 0.6), (cx - 1.4, cy + 1.0), BLUE, rad=0.25)
-    arrow((cx - 1.4, cy + 0.6), (px + 0.8, py - 1.0), INK, rad=0.25)
-    ax.text(2.7, 6.9, "accumulate\n(sum / integrate)", color=BLUE, fontsize=10,
-            ha="left")
-    ax.text(4.2, 6.2, "differentiate", color=INK, fontsize=10, ha="left")
+    # pmf/pdf <-> cdf: two well-separated curved arrows so labels sit clear of both
+    # accumulate (down, left lane)
+    arrow((px + 0.2, py - 0.8), (cx - 1.5, cy + 0.9), BLUE, rad=0.35)
+    label(1.85, 6.35, "accumulate\n(sum / integrate)", BLUE, fontsize=9.5)
+    # differentiate (up, right lane)
+    arrow((cx - 1.0, cy + 1.0), (px + 1.2, py - 0.9), INK, rad=0.35)
+    label(4.25, 6.95, "differentiate", INK, fontsize=9.5)
 
     # cdf -> survival
-    arrow((cx + 1.3, cy + 0.6), (sx - 1.2, sy - 0.7), RED, rad=-0.15)
-    ax.text(6.6, 6.5, "$S=1-F$", color=RED, fontsize=11, ha="center")
+    arrow((cx + 1.35, cy + 0.5), (sx - 1.25, sy - 0.7), RED, rad=-0.18)
+    label(6.75, 6.55, "$S=1-F$", RED)
 
     # cdf -> percentile
-    arrow((cx + 1.3, cy - 0.6), (qx - 1.2, qy + 0.7), GREEN, rad=0.15)
-    ax.text(6.6, 3.5, "invert:\nsolve $F=p$", color=GREEN, fontsize=11,
-            ha="center")
+    arrow((cx + 1.35, cy - 0.5), (qx - 1.25, qy + 0.7), GREEN, rad=0.18)
+    label(6.75, 3.45, "invert:\nsolve $F=p$", GREEN)
+
+    # decorative items in empty corners (illustrative; never over arrows/labels)
+    place_sprite(ax, item("poke-ball"), (0.9, 8.9), zoom=0.85, alpha=0.9)
+    place_sprite(ax, item("potion"), (1.0, 1.6), zoom=0.85, alpha=0.9)
 
     ax.set_title("The RV Web", fontsize=17, fontweight="bold")
     ax.text(5.0, 0.4, "the cdf $F$ is the hub: reach every other object from it",

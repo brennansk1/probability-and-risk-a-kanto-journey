@@ -133,6 +133,19 @@ figcaption { font-size: 9pt; color: #666; font-style: italic; margin-top: 4pt; }
 .team-rocket > :not(:first-child), .kanto-realworld > :not(:first-child),
 .cold-open > :not(:first-child) { padding: 4px 16px; }
 
+/* Box HEADER text must keep its panel color — the global `strong{color:#111}`
+   rule otherwise paints bold titles near-black, making them invisible on the
+   dark Team Rocket (#111) bar (and muddy on the others). Bold/italic in a header
+   inherits the header's color instead. */
+.pokedex-entry > :first-child strong, .pokedex-entry > :first-child b, .pokedex-entry > :first-child em,
+.trainers-tip > :first-child strong, .trainers-tip > :first-child b, .trainers-tip > :first-child em,
+.team-rocket > :first-child strong, .team-rocket > :first-child b, .team-rocket > :first-child em,
+.kanto-realworld > :first-child strong, .kanto-realworld > :first-child b, .kanto-realworld > :first-child em,
+.cold-open > :first-child strong, .cold-open > :first-child b, .cold-open > :first-child em,
+.concept-gate > :first-child strong, .concept-gate > :first-child b, .concept-gate > :first-child em {
+    color: inherit;
+}
+
 /* POKEDEX ENTRY: the device screen (camera lens + indicator lights) */
 .pokedex-entry { border: 3px solid var(--kanto-red); background: #f3f9ff; }
 .pokedex-entry > :first-child {

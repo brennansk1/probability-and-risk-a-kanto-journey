@@ -501,6 +501,11 @@ Four examples, fading from fully narrated to exam-speed. The first leads with th
 
 ### Worked Example 13.1 — Boulders and Onix (full narration; understanding-first)
 
+<figure style="margin:1.25em auto; max-width:150px; text-align:center;">
+<img src="../../assets/sprites/front/95.png" alt="Onix" style="width:120px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#095 Onix — the rock-snake whose appearances $Y$ track the boulders $X$</strong></figcaption>
+</figure>
+
 **ARCHETYPE:** *Covariance and correlation from a joint pmf table; constants-drop-out rule.*
 
 **Setup.** The Concept-1 table again, now as a clean exam item. $X$ = boulders cleared, $Y$ = Onix met:

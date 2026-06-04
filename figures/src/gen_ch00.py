@@ -52,6 +52,8 @@ from matplotlib.patches import (
     Wedge,
 )
 
+from sprite_util import front, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -74,6 +76,11 @@ YEL_FILL = "#FCEFB8"
 GRN_FILL = "#D6ECDA"
 
 PRINT_DPI = 300
+
+# Illustrative party (order caught) for the subscript / summation figures.
+# Sprites DECORATE — every figure still teaches with them removed. Dex numbers:
+# 1 Bulbasaur, 16 Pidgey, 19 Rattata, 25 Pikachu, 10 Caterpie, 43 Oddish.
+PARTY_DEX = [1, 16, 19, 25, 10, 43]
 
 
 def save(fig, name: str) -> Path:
@@ -140,6 +147,12 @@ def fig_variable_vs_value():
                                      arrowstyle="-|>", color=MUTE, lw=1.4,
                                      zorder=2))
     pokeball(cx, cy, r, closed=False)
+    # Candidate species — "either a Pidgey or a Rattata" — faded in the upper
+    # corners of the panel, well clear of the L symbol and captions below.
+    place_sprite(ax, front(16), (1.55, 8.2), zoom=0.42, alpha=0.7, zorder=2)
+    place_sprite(ax, front(19), (7.65, 8.2), zoom=0.42, alpha=0.7, zorder=2)
+    ax.text(4.6, 8.2, "?", fontsize=30, ha="center", va="center",
+            color=MUTE, fontweight="bold", zorder=2)
     ax.text(4.6, 3.45, r"$L$", fontsize=46, ha="center", va="center",
             color=KANTO_BLUE, fontweight="bold")
     ax.text(4.6, 2.05, "the NAME of the uncertain level\n(the slot — not yet decided)",
@@ -150,6 +163,9 @@ def fig_variable_vs_value():
                                 boxstyle="round,pad=0.15", fc=GRN_FILL,
                                 ec=KANTO_GRN, lw=1.8, zorder=1))
     pokeball(13.6, 6.4, 1.5, closed=True)
+    # The slot is filled: a Pidgey jumped out at level 3. Sprite sits in the
+    # upper margin, not over the L = 3 math beneath it.
+    place_sprite(ax, front(16), (16.4, 8.2), zoom=0.5, alpha=0.95, zorder=2)
     ax.text(16.4, 6.4, "Lv. 3", fontsize=15, ha="center", va="center",
             color=INK, fontweight="bold",
             bbox=dict(boxstyle="round,pad=0.3", fc="white", ec=INK, lw=1.2))
@@ -197,16 +213,22 @@ def fig_subscripts_team():
         ax.add_patch(FancyBboxPatch((x, y, ), 8.0, 2.4,
                                     boxstyle="round,pad=0.06", fc=face,
                                     ec=edge, lw=lw, zorder=2))
-        # mini pokeball icon (monochrome, no species art)
+        # The caught species sits in the slot — a real numbered party. The
+        # sprite is purely a portrait beside the L_i math, never over it; if a
+        # sprite file is missing, fall back to a monochrome pokeball icon so the
+        # figure still reads. (Grayscale-safe: the math carries all meaning.)
         bcx, bcy = x + 1.0, y + 1.2
-        ax.add_patch(Wedge((bcx, bcy), 0.55, 0, 180, fc=KANTO_RED, ec=INK,
-                           lw=1.2, zorder=3))
-        ax.add_patch(Wedge((bcx, bcy), 0.55, 180, 360, fc="white", ec=INK,
-                           lw=1.2, zorder=3))
-        ax.add_patch(Rectangle((bcx - 0.55, bcy - 0.06), 1.10, 0.12, fc=INK,
-                               zorder=4))
-        ax.add_patch(Circle((bcx, bcy), 0.17, fc="white", ec=INK, lw=1.0,
-                            zorder=5))
+        sp = place_sprite(ax, front(PARTY_DEX[idx]), (bcx, bcy), zoom=0.5,
+                          alpha=1.0, zorder=3)
+        if sp is None:
+            ax.add_patch(Wedge((bcx, bcy), 0.55, 0, 180, fc=KANTO_RED, ec=INK,
+                               lw=1.2, zorder=3))
+            ax.add_patch(Wedge((bcx, bcy), 0.55, 180, 360, fc="white", ec=INK,
+                               lw=1.2, zorder=3))
+            ax.add_patch(Rectangle((bcx - 0.55, bcy - 0.06), 1.10, 0.12,
+                                   fc=INK, zorder=4))
+            ax.add_patch(Circle((bcx, bcy), 0.17, fc="white", ec=INK, lw=1.0,
+                                zorder=5))
         # subscript label and value
         ax.text(x + 2.3, y + 1.55, rf"$L_{{{idx+1}}}$", fontsize=24,
                 ha="left", va="center", color=INK, fontweight="bold")
@@ -265,6 +287,13 @@ def fig_summation_anatomy():
             text="TERM: what you\nadd each time\n($i$ plugged in)",
             color="#C9971C", fs=10.5, connectionstyle="arc3,rad=0.2")
 
+    # The four summed party members (levels 5, 8, 3, 12), as small faded
+    # portraits in the empty right margin — a reminder that the terms are a real
+    # team's levels. Decorative only; sit clear of the sigma, callouts, banner.
+    for j, dex in enumerate(PARTY_DEX[:4]):
+        place_sprite(ax, front(dex), (14.7 + 0.95 * j, 3.0), zoom=0.34,
+                     alpha=0.6, zorder=2)
+
     # Worked expansion banner.
     ax.add_patch(FancyBboxPatch((1.2, 0.35), 16.6, 1.55,
                                 boxstyle="round,pad=0.1", fc=YEL_FILL,
@@ -293,6 +322,10 @@ def fig_function_machine():
             color=INK, fontweight="bold")
     ax.text(2.1, 5.35, "the input\n(a thing that might happen)", fontsize=9.5,
             ha="center", va="center", color=INK)
+    # The Pokedex analogy from the prose: point the named machine at a species.
+    # Small faded portrait in the empty upper-left margin, clear of the title,
+    # the input chip, and the dial/examples math.
+    place_sprite(ax, front(16), (1.55, 9.35), zoom=0.42, alpha=0.7, zorder=2)
 
     # arrow in
     ax.add_patch(FancyArrowPatch((3.75, 6.9), (5.55, 6.9), arrowstyle="-|>",
@@ -388,8 +421,8 @@ def fig_given_bar():
     ax.plot([5.0, 6.8], [6.2, 6.2], color=KANTO_GRN, lw=2.2)
     ax.plot([5.0, 5.0], [6.2, 6.45], color=KANTO_GRN, lw=2.2)
     ax.plot([6.8, 6.8], [6.2, 6.45], color=KANTO_GRN, lw=2.2)
-    ax.text(5.9, 5.05, "THE QUESTION\nfind the chance of this,\ninside that world",
-            fontsize=10.5, ha="center", va="center", color=INK,
+    ax.text(4.45, 5.05, "THE QUESTION\nfind the chance of this,\ninside that world",
+            fontsize=10, ha="center", va="center", color=INK,
             bbox=dict(boxstyle="round,pad=0.35", fc=GRN_FILL, ec=KANTO_GRN,
                       lw=1.4))
 
@@ -397,8 +430,8 @@ def fig_given_bar():
     ax.plot([9.4, 11.2], [6.2, 6.2], color=KANTO_BLUE, lw=2.2)
     ax.plot([9.4, 9.4], [6.2, 6.45], color=KANTO_BLUE, lw=2.2)
     ax.plot([11.2, 11.2], [6.2, 6.45], color=KANTO_BLUE, lw=2.2)
-    ax.text(10.3, 5.05, "THE GIVEN WORLD\nassume this happened —\neverything to the right",
-            fontsize=10.5, ha="center", va="center", color=INK,
+    ax.text(11.05, 5.05, "THE GIVEN WORLD\nassume this happened —\neverything to the right",
+            fontsize=10, ha="center", va="center", color=INK,
             bbox=dict(boxstyle="round,pad=0.35", fc=BLUE_FILL, ec=KANTO_BLUE,
                       lw=1.4))
 
@@ -408,8 +441,12 @@ def fig_given_bar():
     ax.add_patch(FancyBboxPatch((13.1, 2.2), 5.6, 5.0,
                                 boxstyle="round,pad=0.05", fc="#EDEDED",
                                 ec=MUTE, lw=1.2, zorder=1))
-    ax.text(13.45, 6.85, "sample space\n(dimmed)", fontsize=8.5, ha="left",
-            va="top", color=MUTE, zorder=2)
+    ax.text(16.4, 8.05, "sample space (dimmed)", fontsize=8.5, ha="center",
+            va="bottom", color=MUTE, zorder=2)
+    ax.add_patch(FancyArrowPatch((17.0, 8.0), (17.6, 7.15),
+                                 arrowstyle="-|>", color=MUTE, lw=0.9,
+                                 zorder=2, alpha=0.7,
+                                 mutation_scale=8))
     # circle B (the given world, in focus)
     bcirc = Circle((inx, iny - 0.7), 1.85, fc=BLUE_FILL, ec=KANTO_BLUE,
                    lw=2.0, alpha=0.9, zorder=2)
@@ -424,8 +461,11 @@ def fig_given_bar():
             va="center", color=KANTO_GRN, fontweight="bold", zorder=4)
     ax.text(inx - 0.45, iny - 0.35, r"$A\cap B$", fontsize=10, ha="center",
             va="center", color=INK, fontweight="bold", zorder=5)
-    ax.text(15.9, 2.55,
-            "condition = crop the world down to $B$,\nthen look at $A$ inside",
+    # B = "carries a Water-type": a small Squirtle in the corner of the B region
+    # ties the given world to the prose. Decorative, off every label.
+    place_sprite(ax, front(7), (16.75, 6.55), zoom=0.34, alpha=0.85, zorder=4)
+    ax.text(15.9, 2.45,
+            "condition = crop the world\ndown to $B$, then look\nat $A$ inside",
             fontsize=8.8, ha="center", va="bottom", color=INK, zorder=4)
 
     ax.text(6.5, 2.6, "The bar is NOT symmetric:\n$P(A\\mid B)\\neq P(B\\mid A)$ in general.",

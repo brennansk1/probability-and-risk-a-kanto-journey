@@ -29,6 +29,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Circle, FancyArrowPatch, FancyBboxPatch
 from cycler import cycler
 
+from sprite_util import front, item, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -70,53 +72,65 @@ def _blank(ax):
 # 1. Conditioning: "shrinking the world" (renormalize by dividing by P(B)).
 # --------------------------------------------------------------------------
 def fig_conditioning_shrink():
-    fig, (axL, axR) = plt.subplots(1, 2, figsize=(11, 5.2))
-    fig.suptitle("Conditioning = shrinking the world down to $B$", y=0.99)
+    fig, (axL, axR) = plt.subplots(1, 2, figsize=(11, 5.4))
+    fig.suptitle("Conditioning = shrinking the world down to $B$", y=0.995)
 
     # LEFT: full sample space S, B shaded, A-and-B sliver highlighted.
     _blank(axL)
     axL.set_xlim(0, 10)
-    axL.set_ylim(0, 8)
+    axL.set_ylim(0, 8.6)
     axL.add_patch(Rectangle((0, 0), 10, 8, fill=True, facecolor=KANTO_BG,
                             edgecolor=INK, lw=1.6))
-    axL.text(0.3, 7.5, "$S$: all 60 trainers", fontsize=12, va="top",
+    axL.text(0.3, 7.6, "$S$: all 60 trainers", fontsize=11.5, va="top",
              fontweight="bold", color=INK)
-    # B = Water-type subset.
+    # B = Water-type subset: 24 of 60. A-and-B (locals) = 9 of the 24.
     axL.add_patch(Rectangle((4.6, 1.0), 4.8, 4.6, facecolor=KANTO_BLUE,
                             edgecolor=INK, lw=1.4, alpha=0.55, hatch="//"))
-    axL.text(7.0, 5.3, "$B$ = Water-type", ha="center", fontsize=11,
+    axL.text(7.6, 5.85, "$B$ = Water-type (24)", ha="center", fontsize=10.5,
              color=INK, fontweight="bold")
-    # A-and-B sliver.
-    axL.add_patch(Rectangle((4.6, 1.0), 1.7, 4.6, facecolor=KANTO_RED,
+    # A-and-B sliver: 9/24 of B's width -> 4.8 * 9/24 = 1.8 wide.
+    axL.add_patch(Rectangle((4.6, 1.0), 1.8, 4.6, facecolor=KANTO_RED,
                             edgecolor=INK, lw=1.4, alpha=0.85, hatch="xx"))
-    axL.text(5.45, 0.55, "$A\\cap B$", ha="center", fontsize=11, color=INK)
-    axL.set_title("The whole world $S$", fontsize=13)
+    axL.text(5.5, 3.3, "9", ha="center", va="center", fontsize=13,
+             color="white", fontweight="bold")
+    axL.text(8.0, 3.3, "15", ha="center", va="center", fontsize=12, color=INK)
+    axL.text(5.5, 0.55, "$A\\cap B$ = locals (9)", ha="center", fontsize=10,
+             color=INK)
+    axL.text(2.2, 3.3, "36 not\nWater-type", ha="center", va="center",
+             fontsize=9.5, color=INK, style="italic")
+    axL.set_title("The whole world $S$ — locals are $9/60$", fontsize=12)
 
     # arrow between panels
-    arr = FancyArrowPatch((0.485, 0.5), (0.515, 0.5),
+    arr = FancyArrowPatch((0.485, 0.52), (0.515, 0.52),
                           transform=fig.transFigure, mutation_scale=26,
-                          lw=2.2, color=KANTO_GREEN)
+                          lw=2.4, color=KANTO_GREEN)
     fig.patches.append(arr)
-    fig.text(0.5, 0.40, "re-crop\n& renormalize\n$\\div\\,P(B)$",
-             ha="center", va="top", fontsize=10, color=INK)
+    fig.text(0.5, 0.46, "re-crop &\nrenormalize\n$\\div\\,P(B)$",
+             ha="center", va="top", fontsize=9.5, color=INK, fontweight="bold")
 
     # RIGHT: B fills the frame; A-within-B is the answer.
     _blank(axR)
     axR.set_xlim(0, 10)
-    axR.set_ylim(0, 8)
+    axR.set_ylim(0, 8.6)
     axR.add_patch(Rectangle((0, 0), 10, 8, facecolor=KANTO_BLUE,
                             edgecolor=INK, lw=1.8, alpha=0.55, hatch="//"))
-    axR.text(0.4, 7.5, "Now $B$ is the entire world", fontsize=12, va="top",
-             fontweight="bold", color=INK)
-    axR.add_patch(Rectangle((0, 0), 3.5, 8, facecolor=KANTO_RED,
+    # A-within-B: 9 of 24 -> 10 * 9/24 = 3.75 wide.
+    axR.add_patch(Rectangle((0, 0), 3.75, 8, facecolor=KANTO_RED,
                             edgecolor=INK, lw=1.6, alpha=0.85, hatch="xx"))
-    axR.text(1.75, 4.0, "$A\\cap B$", ha="center", va="center",
-             fontsize=14, color="white", fontweight="bold")
-    axR.text(6.75, 4.0, "$B$ but not $A$", ha="center", va="center",
+    axR.text(1.875, 4.0, "9\nlocals", ha="center", va="center",
+             fontsize=13, color="white", fontweight="bold")
+    axR.text(6.875, 4.0, "15\nnot local", ha="center", va="center",
              fontsize=12, color=INK)
-    axR.set_title(r"$P(A\mid B)=\frac{P(A\cap B)}{P(B)}$", fontsize=14)
+    # title placed ABOVE the frame so it never sits on the red region.
+    axR.text(5.0, 8.35, "Now $B$ (24) is the entire world", ha="center",
+             va="bottom", fontsize=11.5, fontweight="bold", color=INK)
+    axR.set_title(r"$P(A\mid B)=\frac{P(A\cap B)}{P(B)}=\frac{9}{24}=0.375$",
+                  fontsize=13)
 
-    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    # decorative: a Staryu in the lower-right margin (a Water-type owner's mon).
+    place_sprite(axR, front(120), (9.4, 0.7), zoom=0.34, alpha=0.9, zorder=6)
+
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
     return save(fig, "ch04_conditioning_shrink")
 
 
@@ -174,6 +188,14 @@ def fig_probability_tree():
         ax.text(pos[0] + 0.65, pos[1], path, ha="left", va="center",
                 fontsize=11, color=INK)
 
+    # decorative items in the left margin: a Poke Ball and a Great Ball legend.
+    place_sprite(ax, item("poke-ball"), (0.55, 7.9), zoom=0.45, alpha=0.95)
+    ax.text(1.05, 7.9, "= Poke Ball", ha="left", va="center", fontsize=9,
+            color=INK)
+    place_sprite(ax, item("great-ball"), (0.55, 7.2), zoom=0.45, alpha=0.95)
+    ax.text(1.05, 7.2, "= Great Ball", ha="left", va="center", fontsize=9,
+            color=INK)
+
     ax.text(6.0, 0.2,
             "Each leaf = product along its path  (multiply the branch probabilities)",
             ha="center", fontsize=10, style="italic", color=INK)
@@ -203,16 +225,24 @@ def fig_union_venn():
     ax.add_patch(Circle((5.3, 4.3), 0.95, facecolor=KANTO_RED, edgecolor=INK,
                         lw=1.4, alpha=0.7, hatch="xx", zorder=2))
 
-    ax.text(3.1, 6.4, "$A$ = Water-type\n($=30$)", ha="center", fontsize=11,
+    ax.text(3.1, 6.7, "$A$ = Water-type\n($=40$)", ha="center", fontsize=11,
             color=INK, fontweight="bold")
-    ax.text(7.6, 6.4, "$B$ = tall-grass\n($=25$)", ha="center", fontsize=11,
+    ax.text(7.6, 6.7, "$B$ = tall-grass\n($=30$)", ha="center", fontsize=11,
             color=INK, fontweight="bold")
-    ax.text(3.4, 4.3, "18", ha="center", va="center", fontsize=13, color=INK)
-    ax.text(7.2, 4.3, "13", ha="center", va="center", fontsize=13, color=INK)
-    ax.text(5.3, 4.3, "12", ha="center", va="center", fontsize=13,
+    # A-only = 40 - 12 = 28; B-only = 30 - 12 = 18; overlap = 12.
+    ax.text(3.4, 4.3, "28", ha="center", va="center", fontsize=13, color=INK)
+    ax.text(7.2, 4.3, "18", ha="center", va="center", fontsize=13, color=INK)
+    ax.text(5.3, 4.55, "12", ha="center", va="center", fontsize=13,
             color="white", fontweight="bold")
-    ax.text(5.3, 2.7, "overlap counted\nTWICE -> subtract", ha="center",
-            va="top", fontsize=9.5, color=KANTO_RED, fontweight="bold")
+    # overlap callout placed BELOW the Venn, clear of the red lens.
+    ax.text(5.3, 1.35, "overlap counted\nTWICE $\\to$ subtract once",
+            ha="center", va="top", fontsize=9.5, color=KANTO_RED,
+            fontweight="bold")
+    ax.annotate("", xy=(5.3, 3.35), xytext=(5.3, 1.55),
+                arrowprops=dict(arrowstyle="->", color=KANTO_RED, lw=1.6))
+    # union total, stated explicitly.
+    ax.text(5.3, 7.55, r"$P(A\cup B)=\frac{40+30-12}{100}=0.58$", ha="center",
+            fontsize=11, color=INK)
 
     # disjoint (mutually exclusive) inset.
     ax.add_patch(FancyBboxPatch((8.9, 0.5), 3.0, 3.0,
@@ -226,6 +256,11 @@ def fig_union_venn():
             color=INK, fontweight="bold")
     ax.text(10.4, 0.75, "no overlap:\n$P(A\\cap B)=0$", ha="center", va="bottom",
             fontsize=8.5, color=INK)
+
+    # decorative mons in the circle corners (clear of all counts/labels):
+    # a Magikarp (Water-type) low-left in A, an Oddish (grass) low-right in B.
+    place_sprite(ax, front(129), (3.0, 3.0), zoom=0.34, alpha=0.85, zorder=4)
+    place_sprite(ax, front(43), (7.6, 3.0), zoom=0.34, alpha=0.85, zorder=4)
 
     fig.tight_layout()
     return save(fig, "ch04_union_venn")
@@ -305,12 +340,12 @@ def fig_total_prob_tree():
             fontweight="bold", color=INK, zorder=4)
 
     branches = [
-        ("Staryu", 0.5, 0.30, 6.3, KANTO_BLUE, "//"),
-        ("Starmie", 0.3, 0.60, 4.0, KANTO_RED, "xx"),
-        ("Psyduck", 0.2, 0.10, 1.7, KANTO_YEL, ".."),
+        ("Staryu", 0.5, 0.30, 6.3, KANTO_BLUE, "//", 120),
+        ("Starmie", 0.3, 0.60, 4.0, KANTO_RED, "xx", 121),
+        ("Psyduck", 0.2, 0.10, 1.7, KANTO_YEL, "..", 54),
     ]
     total = 0.0
-    for name, prior, like, y, color, hatch in branches:
+    for name, prior, like, y, color, hatch, dex in branches:
         tip = (5.6, y)
         ax.annotate("", xy=tip, xytext=(root[0] + 0.4, root[1]),
                     arrowprops=dict(arrowstyle="-", color=color, lw=2.4))
@@ -321,6 +356,15 @@ def fig_total_prob_tree():
                             lw=1.4, alpha=0.85, hatch=hatch, zorder=3))
         ax.text(tip[0], y, name, ha="center", va="center", fontsize=8.5,
                 fontweight="bold", color=INK, zorder=4)
+        # Small species sprite tucked into the white gap just left of its leaf
+        # node. The middle branch runs horizontally through y, so its edge line
+        # would pass straight through the sprite -- nudge that one down to clear
+        # the line. The diagonal branches already clear it, so nudge them toward
+        # their own line's "inside" to sit in clean white space.
+        sx = 4.3
+        sy = y - 0.62 if abs(y - root[1]) < 0.5 else (
+            y - 0.30 if y > root[1] else y + 0.30)
+        place_sprite(ax, front(dex), (sx, sy), zoom=0.32, alpha=0.92, zorder=4)
         contrib = prior * like
         total += contrib
         ax.text(tip[0] + 0.7, y,
@@ -341,89 +385,112 @@ def fig_total_prob_tree():
 # 6. Bayes table: the detective's grid (prior x likelihood -> posterior).
 # --------------------------------------------------------------------------
 def fig_bayes_table():
-    fig, ax = plt.subplots(figsize=(11, 5.6))
+    fig, ax = plt.subplots(figsize=(11.5, 6.0))
     _blank(ax)
     ax.set_xlim(0, 12)
-    ax.set_ylim(0, 8)
+    ax.set_ylim(0, 8.4)
     ax.set_title("The detective's grid: multiply across, normalize down\n"
-                 "Did your Staryu actually catch the Cerulean flu?", fontsize=13.5)
+                 "Did the Staryu actually catch Brineflux?", fontsize=13.5)
 
-    cols = ["Cause", "Prior", "Likelihood", "Joint = Prior x Like.",
-            "Posterior = Joint / total"]
+    cols = ["Cause", "Prior", "Likelihood\n$P(+\\mid\\cdot)$",
+            "Joint\n$=$ Prior $\\times$ Like.", "Posterior\n$=$ Joint $/$ total"]
+    # Chapter numbers (Sick-Staryu, Beat 8 / WE 5.1):
+    #   Sick:    prior 0.02, P(+|D)=0.95 -> joint 0.0190
+    #   Healthy: prior 0.98, P(+|Dc)=0.08 -> joint 0.0784
+    #   total P(+) = 0.0974; posteriors 0.195 / 0.805.
     rows = [
-        ("Sick", 0.10, 0.90, 0.090, KANTO_RED, "xx"),
-        ("Healthy", 0.90, 0.20, 0.180, KANTO_BLUE, "//"),
+        ("Sick", 0.02, 0.95, 0.0190, KANTO_RED, "xx"),
+        ("Healthy", 0.98, 0.08, 0.0784, KANTO_BLUE, "//"),
     ]
     total_joint = sum(r[3] for r in rows)
 
-    x_edges = [0.3, 2.6, 4.4, 6.3, 8.7, 11.7]
-    y_top = 6.6
-    rh = 1.5
+    x_edges = [0.3, 2.5, 4.3, 6.3, 8.7, 11.7]
+    y_top = 6.0
+    hh = 1.05   # header height
+    rh = 1.35   # data row height
 
     # header row
     for j, c in enumerate(cols):
         ax.add_patch(Rectangle((x_edges[j], y_top), x_edges[j + 1] - x_edges[j],
-                               rh * 0.8, facecolor=KANTO_GRAY, edgecolor=INK,
-                               lw=1.3, alpha=0.85))
-        ax.text((x_edges[j] + x_edges[j + 1]) / 2, y_top + rh * 0.4, c,
+                               hh, facecolor=KANTO_GRAY, edgecolor=INK,
+                               lw=1.3, alpha=0.9))
+        ax.text((x_edges[j] + x_edges[j + 1]) / 2, y_top + hh / 2, c,
                 ha="center", va="center", fontsize=9.5, color="white",
                 fontweight="bold")
 
+    post_centers = []
     for i, (name, prior, like, joint, color, hatch) in enumerate(rows):
         y = y_top - (i + 1) * rh
         post = joint / total_joint
-        vals = [name, f"{prior:.2f}", f"{like:.2f}", f"{joint:.3f}",
+        post_centers.append((y + rh / 2, post))
+        vals = [name, f"{prior:.2f}", f"{like:.2f}", f"{joint:.4f}",
                 f"{post:.3f}"]
         for j, v in enumerate(vals):
-            fc = "white"
-            if j == 0:
-                fc = color
+            fc = color if j == 0 else "white"
             ax.add_patch(Rectangle((x_edges[j], y),
                                    x_edges[j + 1] - x_edges[j], rh,
                                    facecolor=fc, edgecolor=INK, lw=1.2,
-                                   alpha=0.85 if j == 0 else 1.0,
+                                   alpha=0.9 if j == 0 else 1.0,
                                    hatch=hatch if j == 0 else None))
             ax.text((x_edges[j] + x_edges[j + 1]) / 2, y + rh / 2, v,
-                    ha="center", va="center", fontsize=11,
+                    ha="center", va="center", fontsize=11.5,
                     color="white" if j == 0 else INK,
-                    fontweight="bold" if j == 0 else "normal")
+                    fontweight="bold" if j in (0, 4) else "normal")
 
-    # "multiply across" arrow on the Sick row.
-    ax.annotate("", xy=(6.2, y_top - rh + rh / 2),
-                xytext=(2.7, y_top - rh + rh / 2),
+    # "multiply across" arrow ABOVE the Sick row (in the header gap), so it
+    # never crosses the prior/likelihood numbers.
+    y_sick = y_top - rh + rh / 2
+    ax.annotate("", xy=(x_edges[3] + 0.05, y_top - 0.12),
+                xytext=(x_edges[1] + 0.2, y_top - 0.12),
                 arrowprops=dict(arrowstyle="->", color=KANTO_GREEN, lw=2.0))
-    ax.text(4.4, y_top - rh + rh + 0.18, "multiply across",
-            ha="center", fontsize=9, color=KANTO_GREEN, fontweight="bold")
+    ax.text((x_edges[1] + x_edges[3]) / 2, y_top + 0.06, "multiply across",
+            ha="center", va="bottom", fontsize=9, color=KANTO_GREEN,
+            fontweight="bold")
 
-    # joint-column total = P(evidence).
-    y_tot = y_top - 3 * rh
-    ax.add_patch(Rectangle((x_edges[3], y_tot), x_edges[4] - x_edges[3], rh * 0.8,
+    # joint-column total = P(evidence), in a band just below the two rows.
+    y_tot = y_top - 2 * rh - hh
+    ax.add_patch(Rectangle((x_edges[3], y_tot), x_edges[4] - x_edges[3], hh,
                            facecolor=KANTO_YEL, edgecolor=INK, lw=1.3, alpha=0.6,
                            hatch=".."))
-    ax.text((x_edges[3] + x_edges[4]) / 2, y_tot + rh * 0.4,
-            f"$P(+)={total_joint:.3f}$", ha="center", va="center",
-            fontsize=10.5, color=INK, fontweight="bold")
-    ax.annotate("", xy=((x_edges[3] + x_edges[4]) / 2, y_tot + rh * 0.8),
-                xytext=((x_edges[3] + x_edges[4]) / 2, y_top - 2 * rh + 0.1),
+    ax.text((x_edges[3] + x_edges[4]) / 2, y_tot + hh / 2,
+            f"$P(+)={total_joint:.4f}$", ha="center", va="center",
+            fontsize=11, color=INK, fontweight="bold")
+    ax.annotate("", xy=((x_edges[3] + x_edges[4]) / 2, y_tot + hh + 0.02),
+                xytext=((x_edges[3] + x_edges[4]) / 2, y_top - 2 * rh - 0.02),
                 arrowprops=dict(arrowstyle="-", color=KANTO_YEL, lw=2.2))
-    ax.text((x_edges[3] + x_edges[4]) / 2, y_tot - 0.45,
+    ax.text((x_edges[3] + x_edges[4]) / 2, y_tot - 0.28,
             "sum the joint column", ha="center", fontsize=9, color=INK,
             style="italic")
 
-    # divide -> posterior, with self-check.
-    ax.annotate("", xy=((x_edges[4] + x_edges[5]) / 2, y_tot + rh * 0.85),
-                xytext=((x_edges[4] + x_edges[5]) / 2, y_tot + rh * 1.4),
-                arrowprops=dict(arrowstyle="->", color=KANTO_GREEN, lw=2.0))
-    ax.text(11.0, y_tot + rh * 0.4, "each $\\div P(+)$", ha="center",
-            fontsize=8.5, color=KANTO_GREEN, rotation=90)
+    # divide -> posterior: a curved arrow from the P(+) band up to the
+    # posterior column, placed in the right margin (clear of all numbers).
+    ax.annotate("", xy=(x_edges[4] - 0.08, y_tot + hh / 2),
+                xytext=(x_edges[4] + 0.05, y_tot + hh / 2),
+                arrowprops=dict(arrowstyle="-", color=KANTO_GREEN, lw=0))
+    ax.annotate("", xy=((x_edges[4] + x_edges[5]) / 2, y_top - 2 * rh - 0.05),
+                xytext=((x_edges[4] + x_edges[5]) / 2, y_tot + hh + 0.02),
+                arrowprops=dict(arrowstyle="->", color=KANTO_GREEN, lw=1.8,
+                                connectionstyle="arc3,rad=0"))
+    ax.text(x_edges[5] - 0.05, (y_tot + y_top - 2 * rh) / 2 + 0.1,
+            "each joint\n$\\div\\,P(+)$", ha="right", va="center",
+            fontsize=8.5, color=KANTO_GREEN, fontweight="bold")
 
     psum = sum(r[3] for r in rows) / total_joint
-    ax.text(6.0, 0.4,
-            f"Self-check: posteriors sum to {psum:.0f}  "
-            "(0.333 + 0.667 = 1.000)  ✓",
-            ha="center", fontsize=10.5, color=KANTO_GREEN, fontweight="bold",
+    p_sick = rows[0][3] / total_joint
+    p_heal = rows[1][3] / total_joint
+    ax.text(6.0, 0.35,
+            f"Self-check: posteriors sum to {psum:.0f}   "
+            f"({p_sick:.3f} + {p_heal:.3f} = 1.000)  "
+            r"$\Rightarrow$ a positive scan is still only $\approx 19.5\%$ sick",
+            ha="center", fontsize=10, color=KANTO_GREEN, fontweight="bold",
             bbox=dict(boxstyle="round,pad=0.3", fc="#E8F5E9", ec=KANTO_GREEN,
                       lw=1.4))
+
+    # decorative Staryu in the Sick cell's top-left corner (clear of the
+    # "Sick" label, which is centered in the cell).
+    place_sprite(ax, front(120), (x_edges[0] + 0.32, y_sick + rh * 0.32),
+                 zoom=0.26, alpha=0.9, zorder=6)
+
     fig.tight_layout()
     return save(fig, "ch04_bayes_table")
 
@@ -470,9 +537,17 @@ def fig_sequential_update():
     ]
     ax.legend(handles=handles, loc="upper left")
     ax.annotate("evidence piles\non Rocket", xy=(2 + w / 2, 0.94),
-                xytext=(1.4, 0.78), fontsize=10, color=KANTO_RED,
+                xytext=(1.35, 0.74), fontsize=10, color=KANTO_RED,
                 fontweight="bold",
                 arrowprops=dict(arrowstyle="->", color=KANTO_RED, lw=1.8))
+
+    # decorative: a stolen Poke Ball icon hovering over the short Local group
+    # (plenty of headroom there; clear of every bar and value label).
+    place_sprite(ax, item("poke-ball"), (1.0, 0.32), zoom=0.5, alpha=0.85,
+                 zorder=6)
+    ax.text(1.0, 0.46, "the stolen\nitem bag", ha="center", va="bottom",
+            fontsize=8, color=INK, style="italic")
+
     fig.tight_layout()
     return save(fig, "ch04_sequential_update")
 
@@ -481,60 +556,70 @@ def fig_sequential_update():
 # 8. Base-rate / false-positive area visual (Sick-Staryu test).
 # --------------------------------------------------------------------------
 def fig_base_rate():
-    fig, ax = plt.subplots(figsize=(10, 6.2))
+    fig, ax = plt.subplots(figsize=(10.5, 6.4))
     _blank(ax)
     ax.set_xlim(0, 10)
-    ax.set_ylim(-0.8, 9)
-    ax.set_title("Why a positive test can still mean 'probably healthy'\n"
-                 "Base rate 10% sick, 90% sensitivity, 20% false-positive rate",
+    ax.set_ylim(-1.0, 9.2)
+    ax.set_title("Why a positive scan can still mean 'probably healthy'\n"
+                 "Base rate 2% sick, 95% sensitivity, 8% false-positive rate",
                  fontsize=13)
 
-    # 1000 Staryu as a 10-wide unit square split by base rate.
-    # Sick column (10%) on the left, Healthy (90%) on the right.
-    sick_w = 1.0   # 10% of width 10
-    heal_w = 9.0
+    # 10,000 Water Pokemon (Beat 3): 200 sick, 9,800 healthy.
+    # Widths are NOT to base-rate scale (2% is too thin to read); we instead
+    # use a readable split and label the true population counts explicitly.
+    sick_w = 1.6
+    heal_w = 8.4
     H = 7.5
-    y0 = 0.5
+    y0 = 0.6
 
-    # Sick block: true positives (0.9) shaded, false negatives (0.1) lighter.
-    tp_h = 0.90 * H
+    # Sick block (200): true positives 95% -> 190, false negatives 5% -> 10.
+    tp_h = 0.95 * H
     ax.add_patch(Rectangle((0, y0), sick_w, tp_h, facecolor=KANTO_RED,
                            edgecolor=INK, lw=1.2, alpha=0.85, hatch="xx"))
     ax.add_patch(Rectangle((0, y0 + tp_h), sick_w, H - tp_h, facecolor=KANTO_RED,
-                           edgecolor=INK, lw=1.2, alpha=0.25))
+                           edgecolor=INK, lw=1.2, alpha=0.22))
 
-    # Healthy block: false positives (0.2) shaded, true negatives (0.8) light.
-    fp_h = 0.20 * H
+    # Healthy block (9,800): false positives 8% -> 784, true negatives -> 9,016.
+    fp_h = 0.08 * H
     ax.add_patch(Rectangle((sick_w, y0), heal_w, fp_h, facecolor=KANTO_BLUE,
                            edgecolor=INK, lw=1.2, alpha=0.8, hatch="//"))
     ax.add_patch(Rectangle((sick_w, y0 + fp_h), heal_w, H - fp_h,
                            facecolor=KANTO_BLUE, edgecolor=INK, lw=1.2,
-                           alpha=0.18))
+                           alpha=0.16))
 
-    # counts (out of 1000).
-    ax.text(sick_w / 2, y0 + tp_h / 2, "90\nTrue\npos.", ha="center",
-            va="center", fontsize=9, color="white", fontweight="bold")
+    # counts (out of 10,000).
+    ax.text(sick_w / 2, y0 + tp_h / 2, "190\nTrue\npos.", ha="center",
+            va="center", fontsize=9.5, color="white", fontweight="bold")
     ax.text(sick_w / 2, y0 + tp_h + (H - tp_h) / 2, "10\nmiss", ha="center",
             va="center", fontsize=7.5, color=INK)
     ax.text(sick_w + heal_w / 2, y0 + fp_h / 2,
-            "180  False positives", ha="center", va="center", fontsize=11,
+            "784  False positives", ha="center", va="center", fontsize=11,
             color="white", fontweight="bold")
     ax.text(sick_w + heal_w / 2, y0 + fp_h + (H - fp_h) / 2,
-            "720  True negatives", ha="center", va="center", fontsize=11,
+            "9,016  True negatives", ha="center", va="center", fontsize=11,
             color=INK)
 
-    ax.text(sick_w / 2, y0 + H + 0.25, "SICK\n100", ha="center", fontsize=10,
+    ax.text(sick_w / 2, y0 + H + 0.25, "SICK\n200", ha="center", fontsize=10,
             color=KANTO_RED, fontweight="bold")
-    ax.text(sick_w + heal_w / 2, y0 + H + 0.25, "HEALTHY  900", ha="center",
+    ax.text(sick_w + heal_w / 2, y0 + H + 0.25, "HEALTHY  9,800", ha="center",
             fontsize=10, color=KANTO_BLUE, fontweight="bold")
 
+    # bracket the two shaded "positive" bands.
+    ax.annotate("", xy=(sick_w + heal_w + 0.05, y0),
+                xytext=(sick_w + heal_w + 0.05, y0 + fp_h),
+                arrowprops=dict(arrowstyle="-", color=INK, lw=1.0))
+
     # punchline: among positives, P(sick | +).
-    ax.text(5.0, -0.55,
-            "Among the $90+180=270$ positives, only 90 are truly sick:  "
-            r"$P(\text{sick}\mid +)=\frac{90}{270}\approx 0.33$",
+    ax.text(5.0, -0.7,
+            "Among the $190+784=974$ positives, only 190 are truly sick:  "
+            r"$P(\text{sick}\mid +)=\frac{190}{974}\approx 0.195$",
             ha="center", fontsize=11.5, color=INK, fontweight="bold",
             bbox=dict(boxstyle="round,pad=0.35", fc="#FFF6D6", ec=KANTO_YEL,
                       lw=1.5))
+
+    # decorative Staryu in the top-right margin (the scanned patient).
+    place_sprite(ax, front(120), (9.4, 8.7), zoom=0.3, alpha=0.9, zorder=6)
+
     fig.tight_layout()
     return save(fig, "ch04_base_rate")
 
@@ -552,7 +637,7 @@ REGISTRY = [
 
 
 def main() -> None:
-    print(f"Generating Chapter 4 (Bayes) figures -> {OUT} at {PRINT_DPI} DPI")
+    print(f"Generating Chapter 5 (Bayes) figures -> {OUT} at {PRINT_DPI} DPI")
     written = [fn() for fn in REGISTRY]
     print(f"Done. {len(written)} figures written.")
 

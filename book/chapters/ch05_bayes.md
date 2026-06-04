@@ -663,6 +663,11 @@ $$P(\text{same}) = \underbrace{\tfrac{7}{10}\cdot\tfrac{6}{9}}_{\text{both Poké
 
 **ARCHETYPE:** *Law of total probability (forward; no inversion).*
 
+<figure style="margin:1.25em auto; max-width:130px; text-align:center;">
+<img src="../../assets/sprites/front/54.png" alt="Psyduck" style="width:110px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.8em;">#54 Psyduck — Misty's least-likely lead ($0.2$)</figcaption>
+</figure>
+
 **Setup.** Leads: Staryu $0.5$, Starmie $0.3$, Psyduck $0.2$; super-effective rates $0.3, 0.6, 0.1$. Find $P(\text{opener super-effective})$.
 
 $$P(E) = (0.5)(0.3) + (0.3)(0.6) + (0.2)(0.1) = 0.15 + 0.18 + 0.02 = 0.35.$$

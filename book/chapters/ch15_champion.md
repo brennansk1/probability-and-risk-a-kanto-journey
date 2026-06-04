@@ -378,6 +378,11 @@ Four examples model the *recognition-then-execution* loop on **unlabeled, mixed*
 
 ### Worked Example 15.1 — A Hidden Poisson (full narration; recognition-first)
 
+<figure style="margin:1.5em auto; max-width:130px; text-align:center;">
+<img src="../../assets/sprites/front/21.png" alt="Spearow" style="width:96px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#021 Spearow</strong> — arrivals at an average rate ⇒ Poisson</figcaption>
+</figure>
+
 **ARCHETYPE:** *Poisson count, "at least" via complement.*
 
 **Setup (in-world).** Gary leads with a flock count: "On Route 1, Spearow swoop in at an average rate of $3$ per minute, independently. In a given minute, what's the probability *at least two* swoop in?"
@@ -395,6 +400,11 @@ With $e^{-3}\approx 0.049787$: $\;1 - 4(0.049787) = 1 - 0.19915 \approx \mathbf{
 **Step 4 — Check & pitfall.** $0.8009\in[0,1]$ ✓ (guardrail). **Pitfall:** computing $1-P(1)$ and forgetting $P(0)$ — "at least two" must complement *both* low values. *(Back-ref: Entries №15·2, №15·3.)*
 
 ### Worked Example 15.2 — A Disguised Bayes (partial guidance)
+
+<figure style="margin:1.5em auto; max-width:130px; text-align:center;">
+<img src="../../assets/sprites/front/92.png" alt="Gastly, a Ghost-type" style="width:96px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#092 Gastly</strong> — a rare Ghost the scanner flags: low base rate ⇒ Bayes</figcaption>
+</figure>
 
 **ARCHETYPE:** *Two-way Bayes / false-positive (low base rate).*
 

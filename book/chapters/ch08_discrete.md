@@ -570,6 +570,11 @@ $$P(X \ge 3) = 1 - 0.67780 = 0.3222.$$
 
 ### Worked Example 8.2 — Waiting for the Marowak's Ghost (partial guidance)
 
+<figure style="margin:1.25em auto; max-width:130px; text-align:center;">
+<img src="../../assets/sprites/front/105.png" alt="Marowak" style="width:110px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.8em;"><strong>#105 Marowak</strong> — the vengeful ghost you wait on, pass after pass.</figcaption>
+</figure>
+
 **ARCHETYPE:** *Geometric — wait for the first success (trials convention); survival + memorylessness.*
 
 **Setup.** Each pass through the top chamber, the ghost manifests w.p. $p = 0.15$. Find $\E[X]$ (the pass it first appears) and $P(X > 5)$.

@@ -524,6 +524,11 @@ $$F(x) = \int_0^x 2(1-t)\,dt = 2x - x^2 \quad\text{for }0\le x\le1, \qquad F(x)=
 
 **Setup.** Misty's Staryu recovers in $T$ minutes with cdf $F(t)=1-e^{-t/8}$ for $t\ge0$. Find (a) $P(T>8)$, (b) the density $f(t)$, and (c) the median recovery time.
 
+<figure style="margin:1.25em auto; max-width:130px; text-align:center;">
+<img src="../../assets/sprites/front/120.png" alt="Staryu" style="width:110px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.8em;">#120 Staryu — recovery time $T$</figcaption>
+</figure>
+
 **(a)** Survival is one minus the cdf (Entry №05):
 $$P(T>8) = S(8) = 1 - F(8) = 1 - (1-e^{-1}) = e^{-1} \approx 0.368.$$
 
@@ -577,6 +582,11 @@ When the density lives on a finite interval $[a,b]$, the cdf has three parts: $0
 
 ::: team-rocket
 **TRANSMISSION INTERCEPTED — Team Rocket's Trap**
+
+<figure style="margin:1em auto; max-width:120px; text-align:center;">
+<img src="../../assets/sprites/front/129.png" alt="Magikarp" style="width:100px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.8em;">#129 Magikarp — the "resale value" $X$</figcaption>
+</figure>
 
 Jessie has "found" a density for the resale value $X$ (in thousands) of a swiped Magikarp: $f(x) = c\,x$ on $0\le x\le 3$. "We don't need that pesky constant," she sneers. "The chance the value's below $2$? The density there runs from $0$ up to $c\cdot2$ — call it, eh, *two-ish*. Probability two!" James squints. "Jessie… a probability can't be more than one." Meowth waves him off — "details!" — and they price the Magikarp on a probability of *two*, which is nonsense, and the deal collapses.
 

@@ -47,6 +47,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, FancyArrowPatch, Polygon, FancyBboxPatch
 from cycler import cycler
 
+from sprite_util import front, item, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -99,23 +101,31 @@ def fig_expectation_balance() -> Path:
                                 lw=1.3, alpha=0.92, zorder=4))
         axd.text(x, p + 0.03, f"p = {p}", ha="center", va="bottom",
                  fontsize=10, color=INK)
-        axd.text(x, -0.055, f"$x={int(x)}$", ha="center", va="top",
+        # x-tick labels live BELOW the fulcrum band so the triangle never
+        # sits on top of the "x=2" label.
+        axd.text(x, -0.30, f"$x={int(x)}$", ha="center", va="top",
                  fontsize=11, color=INK)
 
-    # Fulcrum (triangle) at the balance point = mean.
+    # Fulcrum (triangle) at the balance point = mean, in the band just under
+    # the beam (above the tick labels).
+    tri_top = -0.02
     tri_h = 0.16
-    axd.add_patch(Polygon([(mean, beam_y), (mean - 0.22, beam_y - tri_h),
-                           (mean + 0.22, beam_y - tri_h)],
+    axd.add_patch(Polygon([(mean, tri_top), (mean - 0.22, tri_top - tri_h),
+                           (mean + 0.22, tri_top - tri_h)],
                           closed=True, facecolor=KANTO_YEL,
                           edgecolor=INK, lw=1.5, zorder=5))
     axd.annotate(f"balance point\n$E[X] = {mean:.2f}$",
-                 xy=(mean, beam_y - tri_h), xytext=(mean + 1.2, 0.32),
+                 xy=(mean + 0.18, tri_top - tri_h / 2), xytext=(mean + 1.15, 0.34),
                  ha="left", va="center", fontsize=11, color=INK,
                  arrowprops=dict(arrowstyle="->", color=INK, lw=1.4))
 
+    # Pikachu in the upper-left margin — the promenade vending-machine prize
+    # that pays X. Decorative; sits in empty whitespace, over no data.
+    place_sprite(axd, front(25), (0.5, 0.46), zoom=0.42, alpha=0.95)
+
     axd.set_xlim(0, 6.2)
-    axd.set_ylim(-0.42, 0.62)
-    axd.set_title("Discrete prize: weighted blocks on a seesaw")
+    axd.set_ylim(-0.46, 0.62)
+    axd.set_title("Discrete prize: weighted blocks on a seesaw", fontsize=12)
     axd.set_xlabel("prize value  $x$  (dollars)")
     axd.set_yticks([])
     axd.grid(False)
@@ -140,15 +150,18 @@ def fig_expectation_balance() -> Path:
                  xy=(cmean, -0.045), xytext=(cmean + 1.3, 0.22),
                  ha="left", va="center", fontsize=11, color=INK,
                  arrowprops=dict(arrowstyle="->", color=INK, lw=1.4))
-    # Mark the peak (mode) to contrast with the mean.
+    # Mark the peak (mode) to contrast with the mean. Label placed in the
+    # empty upper-left of the panel (off the curve), pointing to the peak.
     peak_x = x[np.argmax(dens)]
     axc.axvline(peak_x, color=KANTO_BLUE, lw=1.5, ls=":")
-    axc.text(peak_x - 0.1, dens.max() * 0.92, "peak\n(mode)", ha="right",
-             va="top", fontsize=9.5, color=KANTO_BLUE)
+    axc.annotate("peak (mode)", xy=(peak_x, dens.max()),
+                 xytext=(peak_x - 0.85, dens.max() * 1.12),
+                 ha="right", va="center", fontsize=9.5, color=KANTO_BLUE,
+                 arrowprops=dict(arrowstyle="->", color=KANTO_BLUE, lw=1.2))
 
     axc.set_xlim(0, 6.2)
-    axc.set_ylim(-0.12, dens.max() * 1.25)
-    axc.set_title("Continuous density: balanced under the mean")
+    axc.set_ylim(-0.12, dens.max() * 1.28)
+    axc.set_title("Continuous density: balanced under the mean", fontsize=12)
     axc.set_xlabel("value  $x$")
     axc.set_yticks([])
     axc.legend(loc="upper right")
@@ -225,6 +238,10 @@ def fig_jensen_lotus() -> Path:
     ax.set_ylabel("output  $g(x)$")
     ax.set_title("Why $E[g(X)] \\neq g(E[X])$ when $g$ curves")
     ax.legend(loc="upper left")
+
+    # Raichu in the open lower-right corner: the jolt X whose charged attack is
+    # g(X)=X^2. Decorative; well clear of the curve, points, and brackets.
+    place_sprite(ax, front(26), (3.55, 1.1), zoom=0.42, alpha=0.95)
     fig.tight_layout()
     return save(fig, "ch07_jensen_lotus")
 
@@ -308,6 +325,11 @@ def fig_variance_spread() -> Path:
     ax_s.set_yticks([])
     ax_s.set_xlabel("value")
     ax_s.legend(loc="upper center", fontsize=8.3, bbox_to_anchor=(0.5, -0.12))
+
+    # Voltorb in the open upper-left of the rescaling panel — Surge's charge
+    # whose spread we are rescaling. Decorative; clear of all three curves.
+    place_sprite(ax_s, front(100), (0.13, 0.93), zoom=0.34,
+                 xycoords="axes fraction", alpha=0.9)
 
     fig.suptitle("Variance = average squared deviation about the mean",
                  fontsize=15, fontweight="bold")
@@ -442,6 +464,13 @@ def fig_survival_darthvader() -> Path:
             style="italic",
             bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="#CCCCCC"))
     ax.legend(loc="upper right")
+
+    # Magikarp + safari/poke-ball in the open right-side whitespace (below the
+    # legend, right of the decayed tail): the flooding-hull / S.S. Anne trade
+    # narrative. Decorative; the survival curve and shaded area read fine
+    # without them.
+    place_sprite(ax, front(129), (34, 0.6), zoom=0.4, alpha=0.92)
+
     fig.tight_layout()
     return save(fig, "ch07_survival_darthvader")
 

@@ -57,6 +57,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch  # noqa: F401
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from sprite_util import front, place_sprite  # noqa: E402
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -167,6 +171,10 @@ def fig_uniform_rectangle():
     ax.set_ylim(0, h * 2.25)
     ax.grid(False)
 
+    # Porygon sits in the empty upper-left margin (well clear of all math)
+    place_sprite(ax, front(137), (0.07, 0.86), xycoords="axes fraction",
+                 zoom=0.5)
+
     fig.tight_layout()
     out = OUT / "ch09_uniform_rectangle.png"
     fig.savefig(out, dpi=DPI)
@@ -214,6 +222,10 @@ def fig_exponential_decay():
     axin.set_yticks([])
     axin.set_facecolor("#FFFFFF")
 
+    # Drowzee in the lower-right margin, where the tail has decayed to ~0
+    place_sprite(ax, front(96), (0.9, 0.13), xycoords="axes fraction",
+                 zoom=0.5, alpha=0.95)
+
     fig.tight_layout()
     out = OUT / "ch09_exponential_decay.png"
     fig.savefig(out, dpi=DPI)
@@ -260,6 +272,10 @@ def fig_gamma_family():
     ax.grid(axis="x", visible=False)
     ax.legend(loc="upper right")
 
+    # Kadabra in the lower-right margin, clear of every curve and the legend
+    place_sprite(ax, front(64), (0.92, 0.13), xycoords="axes fraction",
+                 zoom=0.5, alpha=0.95)
+
     fig.tight_layout()
     out = OUT / "ch09_gamma_family.png"
     fig.savefig(out, dpi=DPI)
@@ -298,6 +314,10 @@ def fig_beta_family():
     ax.grid(axis="x", visible=False)
     ax.legend(loc="upper center", fontsize=10)
 
+    # Mr. Mime (the psychic-barrier mon) in the lower-left margin corner
+    place_sprite(ax, front(122), (0.07, 0.13), xycoords="axes fraction",
+                 zoom=0.5, alpha=0.95)
+
     fig.tight_layout()
     out = OUT / "ch09_beta_family.png"
     fig.savefig(out, dpi=DPI)
@@ -320,10 +340,11 @@ def fig_normal_standardize():
                      hatch="//", edgecolor=INK, lw=0, zorder=3)
     axL.axvline(1.5, color=INK, ls=":", lw=1.3)
     axL.annotate(r"$P(Z>1.5)=1-\Phi(1.5)=0.0668$", xy=(2.0, 0.02),
-                 xytext=(0.1, 0.30), fontsize=11.5, color=KANTO_RED,
+                 xytext=(-3.9, 0.34), fontsize=11.5, color=KANTO_RED,
+                 ha="left",
                  arrowprops=dict(arrowstyle="->", color=KANTO_RED, lw=1.4))
-    axL.text(1.5, -0.02, r"$z=1.5$", ha="center", va="top", fontsize=11,
-             color=INK)
+    axL.set_xticks([-4, -2, 0, 1.5, 4])
+    axL.set_xticklabels(["$-4$", "$-2$", "$0$", "$z=1.5$", "$4$"])
     axL.set_xlabel(r"$z$")
     axL.set_ylabel(r"density  $\varphi(z)$")
     axL.set_title("A right tail is $1-\\Phi(z)$")
@@ -338,14 +359,18 @@ def fig_normal_standardize():
     for v in (-1, 2):
         axR.axvline(v, color=INK, ls=":", lw=1.3)
     axR.annotate(r"$\Phi(2)-\Phi(-1)=0.8185$", xy=(0.3, 0.18),
-                 xytext=(-3.7, 0.33), fontsize=11.5, color="#2c6e36",
+                 xytext=(-3.9, 0.33), fontsize=11.5, color="#2c6e36",
+                 ha="left",
                  arrowprops=dict(arrowstyle="->", color="#2c6e36", lw=1.4))
-    axR.text(-1, -0.02, r"$z=-1$", ha="center", va="top", fontsize=11,
-             color=INK)
-    axR.text(2, -0.02, r"$z=2$", ha="center", va="top", fontsize=11, color=INK)
+    axR.set_xticks([-4, -1, 0, 2, 4])
+    axR.set_xticklabels(["$-4$", "$z=-1$", "$0$", "$z=2$", "$4$"])
     axR.set_xlabel(r"$z$")
     axR.set_title("A band is $\\Phi(z_2)-\\Phi(z_1)$")
     axR.grid(axis="x", visible=False)
+
+    # Alakazam (Sabrina's ace) in the right panel's empty upper-right margin
+    place_sprite(axR, front(65), (0.9, 0.82), xycoords="axes fraction",
+                 zoom=0.5, alpha=0.95)
 
     fig.suptitle(r"Standardize, then read the $\Phi$ table (left-area)",
                  fontsize=15, fontweight="bold")
@@ -414,7 +439,7 @@ def fig_transform_sliver():
     fig.suptitle("Probability is conserved: the Jacobian rescales each sliver\n"
                  r"$f_Y(y)=f_X(x)\,\left|dx/dy\right|$ keeps the two slivers' areas equal",
                  fontsize=13, fontweight="bold")
-    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    fig.subplots_adjust(left=0.13, right=0.97, top=0.90, bottom=0.08)
     out = OUT / "ch09_transform_sliver.png"
     fig.savefig(out, dpi=DPI)
     plt.close(fig)

@@ -13,6 +13,11 @@
 <figcaption>Topic 1 complete — before you press on, a detour beneath the Game Corner to prove the General Probability toolkit is yours for keeps.</figcaption>
 </figure>
 
+<figure style="margin:1.5em auto; max-width:160px; text-align:center;">
+<img src="../../assets/sprites/front/25.png" alt="Pikachu" style="width:130px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#025 Pikachu — perched on the terminal for the Topic 1 audit</strong></figcaption>
+</figure>
+
 ::: cold-open
 **▶ COLD OPEN — CHECKPOINT: "The Rocket Hideout"**
 
@@ -71,6 +76,11 @@ The retrieval drill tested the rules one at a time. Real exam questions don't an
 **CA.5.** 🟡 $40\%$ of entries use a **stolen** keycard and $60\%$ a **forged** one. The lift alarm sounds w.p. $0.30$ for stolen cards and $0.10$ for forged ones. Find the probability the alarm sounds on a random entry.
 
 **CA.6.** 🟡 Among the grunts, $A=$ "carries a Zubat" and $B=$ "guards the vault," with $P(A)=0.5$, $P(B)=0.4$, and $P(A\cup B)=0.7$. Are $A$ and $B$ independent? Justify with a computation.
+
+<figure style="margin:1.5em auto; max-width:150px; text-align:center;">
+<img src="../../assets/sprites/front/41.png" alt="Zubat" style="width:120px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#041 Zubat — the grunt's signature in event $A$</strong></figcaption>
+</figure>
 
 **CA.7.** 🔵 A key ring holds $4$ master keys and $6$ decoys. You draw **three** in order without replacement. Find the probability all three are master keys.
 

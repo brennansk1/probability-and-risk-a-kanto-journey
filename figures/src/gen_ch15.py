@@ -45,6 +45,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Rectangle
 from cycler import cycler
 
+from sprite_util import front, item, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -151,6 +153,12 @@ def fig_two_pass_timeline():
     axP1.text(total + 1.25, 0.65, "flagged ⚑", va="center", fontsize=9.5,
               color=INK)
 
+    # --- decorative sprite (margin only): Charizard = the "monster" problem,
+    # placed in the right margin beside the legend, clear of every slot/label.
+    # Illustrative only; the timeline teaches identically with it removed.
+    place_sprite(axP1, front(6), (total + 1.95, -0.05), zoom=0.4, alpha=0.92,
+                 zorder=2)
+
     # banked-time reservoir cue under pass 1
     axP1.annotate("gifts bank time ↓",
                   xy=(total / 2, -0.05), xytext=(total / 2, 1.55),
@@ -189,6 +197,11 @@ def fig_two_pass_timeline():
                             ec=KANTO_YEL, lw=1.2))
     axP2.text(-0.4, -0.30, "final sweep at the buzzer — zero blanks",
               ha="left", va="top", fontsize=9.5, color=INK)
+
+    # --- decorative item (margin only): a Poké Ball beside the "bubble every
+    # blank" sliver — every question gets a ball thrown at it. Off the data.
+    place_sprite(axP2, item("poke-ball"), (sliver_x + 1.35, 0.35), zoom=0.85,
+                 alpha=0.95, zorder=2)
 
     return save(fig, "ch15_two_pass_timeline")
 
@@ -278,6 +291,12 @@ def fig_recognition_tree():
             ha="center", va="center", fontsize=11, color=INK,
             style="italic")
 
+    # --- decorative sprites (empty bottom corners only): Gastly tags the
+    # "given that / flagged" Ghost-scanner tell (→ Bayes); Spearow tags the
+    # "average rate per interval" flock tell (→ Poisson). Off every node/edge.
+    place_sprite(ax, front(92), (1.15, 0.55), zoom=0.45, alpha=0.9, zorder=2)
+    place_sprite(ax, front(21), (10.9, 0.55), zoom=0.45, alpha=0.9, zorder=2)
+
     return save(fig, "ch15_recognition_tree")
 
 
@@ -357,6 +376,18 @@ def fig_shortcut_catalog():
             ha="center", va="center", fontsize=9.5, color=INK,
             fontweight="bold", style="italic")
 
+    # --- decorative sprite (empty 9th grid cell only): Charizard, whose flame
+    # is the worked gamma-kernel example (WE 15.3). Fills the blank tile, sits
+    # over no identity or tell. Purely illustrative.
+    r9, c9 = 2, 2
+    x9 = margin + c9 * (cw + margin)
+    y9 = y_top - (r9 + 1) * ch - r9 * margin
+    place_sprite(ax, front(6), (x9 + cw / 2, y9 + ch / 2), zoom=0.62,
+                 alpha=0.95, zorder=2)
+    ax.text(x9 + cw / 2, y9 + 0.12, "gamma kernel = Charizard's flame",
+            ha="center", va="bottom", fontsize=7.6, color=KANTO_GRAY,
+            style="italic")
+
     return save(fig, "ch15_shortcut_catalog")
 
 
@@ -400,14 +431,14 @@ def fig_sanity_corridors():
     ax = axes[0]
     base(ax, -0.4, 1.7, "Probability  —  legal corridor $[0,1]$")
     corridor(ax, 0, 1, KANTO_GREEN, "//", "$0\\leq P\\leq 1$")
-    ax.set_xticks([0, 0.5, 1, 1.4])
+    ax.set_xticks([0, 0.5, 1])  # 1.4 omitted: the red X already marks it
     red_x(ax, 1.4, "$P=1.4$\nrecheck before bubbling")
 
     # (b) Variance in [0, inf); impossible -3.
     ax = axes[1]
     base(ax, -4.5, 6.0, "Variance  —  legal corridor $[0,\\infty)$")
     corridor(ax, 0, 6.0, KANTO_BLUE, "\\\\", "$\\mathrm{Var}\\geq 0$")
-    ax.annotate("", xy=(6.0, 0.5 * 0), xytext=(5.4, 0),
+    ax.annotate("", xy=(6.0, 0), xytext=(5.4, 0),
                 arrowprops=dict(arrowstyle="-|>", color=KANTO_BLUE, lw=1.4))
     ax.set_xticks([-3, 0, 3, 6])
     red_x(ax, -3, "$\\mathrm{Var}=-3$\nrecheck before bubbling")
@@ -424,6 +455,10 @@ def fig_sanity_corridors():
     ax.annotate("", xy=(5.0, -0.30), xytext=(0.2, -0.30),
                 arrowprops=dict(arrowstyle="-|>", color=KANTO_GREEN, lw=1.3))
     ax.set_xticks([0, 5, 8])
+    # decorative item (empty gap between the loss line and the impossible X):
+    # a Potion = the payment/recovery this corridor bounds. Off the data.
+    place_sprite(ax, item("potion"), (6.4, 0.5), zoom=0.7, alpha=0.95,
+                 xycoords="data", zorder=3)
     red_x(ax, 8, "$\\mathbb{E}[\\text{pay}]=8>5$\nrecheck before bubbling")
 
     # (d) Weighted average between smallest and largest input.

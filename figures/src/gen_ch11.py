@@ -38,6 +38,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon, Rectangle, FancyArrowPatch
 from cycler import cycler
 
+from sprite_util import front, item, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -108,8 +110,10 @@ def _draw_triangle(ax, color=KANTO_BLUE, alpha=0.30, hatch=None, label=True):
     ax.plot([0, 0], [0, 1], color=INK, lw=1.6)   # left edge x = 0
     ax.plot([0, 1], [1, 1], color=INK, lw=1.6)   # top edge y = 1
     if label:
-        ax.text(0.22, 0.74, "$0<x<y<1$", fontsize=12, color=INK,
-                rotation=0, ha="center", fontweight="bold")
+        # Support label sits high-left, well clear of the horizontal inner-sweep
+        # arrows (drawn near y ~ 0.35-0.85) and the slanted x=y edge label.
+        ax.text(0.26, 0.93, "$0<x<y<1$", fontsize=12, color=INK,
+                rotation=0, ha="center", va="center", fontweight="bold")
         ax.text(0.62, 0.50, "$x=y$", fontsize=11, color=INK, rotation=45,
                 ha="center", va="center")
 
@@ -132,6 +136,9 @@ def fig_support_volume():
     axL.text(y0 / 2, y0 + 0.045, "$x:0\\to y$", color=KANTO_RED, fontsize=11,
              ha="center", fontweight="bold")
     axL.text(1.02, y0, "fixed $y$", color=KANTO_RED, fontsize=10, va="center")
+    # Decorative only: Charmander (Cinnabar / fire-type mansion specimen) rests in
+    # the empty forbidden wedge x>y, below the diagonal — no math lives here.
+    place_sprite(axL, front(4), (0.80, 0.18), zoom=0.42, alpha=0.9)
 
     _unit_axes(axR, r"Footprint of $P\left(X<\frac{1}{2},\,Y<\frac{1}{2}\right)$")
     # whole triangle in gray, sub-triangle in green
@@ -172,6 +179,9 @@ def fig_marginal_shadow():
                 fontsize=10.5, color=INK, ha="center",
                 bbox=dict(boxstyle="round,pad=0.3", fc="#FFF6D6",
                           ec=KANTO_YEL, lw=1.3))
+    # Decorative only: Vulpix (the tail-curl ledger of problem C11.4) sits in the
+    # empty forbidden wedge x>y — clear of every arrow, label, and axis.
+    place_sprite(ax, front(37), (0.82, 0.16), zoom=0.42, alpha=0.9)
     fig.tight_layout()
     return save(fig, "ch11_marginal_shadow")
 
@@ -193,8 +203,11 @@ def fig_inner_limit():
              ha="center", fontweight="bold")
     axL.text(0.78, 0.66, "edge $x=y$\ncaps it", color=INK, fontsize=10,
              va="center")
+    # Decorative only: Growlithe (the C11.2/C11.6 log specimen) in the empty
+    # forbidden wedge x>y, well below the "edge x=y" note — over no math.
+    place_sprite(axL, front(58), (0.80, 0.18), zoom=0.42, alpha=0.9)
 
-    _unit_axes(axR, r"Footprint of ``both below $\frac{1}{2}$''")
+    _unit_axes(axR, "Footprint of “both below $\\frac{1}{2}$”")
     axR.add_patch(Polygon(TRI, closed=True, facecolor=KANTO_GRAY, alpha=0.22,
                           edgecolor="none"))
     axR.plot([0, 1], [0, 1], color=INK, lw=2.2)
@@ -233,6 +246,9 @@ def fig_conditional_slice():
              fontsize=12, fontweight="bold")
     axL.text(x0 + 0.03, 0.72, "$x<y<1$", color=KANTO_RED, fontsize=10.5,
              rotation=90, va="center", fontweight="bold")
+    # Decorative only: Mewtwo (the entwined-attributes creation log of the Gym
+    # Battle) in the empty forbidden wedge x>y — clear of slice, curve, and axes.
+    place_sprite(axL, front(150), (0.80, 0.20), zoom=0.42, alpha=0.85)
 
     # RIGHT: the slice before/after rescaling -> a proper density of Y.
     axR.set_facecolor("white")
@@ -280,6 +296,9 @@ def fig_independence_contrast():
                  fontsize=10.5, color=INK, ha="center",
                  bbox=dict(boxstyle="round,pad=0.3", fc="#FFE0E0",
                            ec=KANTO_RED, lw=1.3))
+    # Decorative only: Charmander in the empty forbidden wedge x>y of the
+    # dependent triangle — over no math.
+    place_sprite(axL, front(4), (0.80, 0.18), zoom=0.40, alpha=0.9)
 
     _unit_axes(axR, "Box: independence is at least possible")
     axR.add_patch(Rectangle((0, 0), 1, 1, facecolor=KANTO_GREEN, alpha=0.22,
@@ -294,6 +313,9 @@ def fig_independence_contrast():
              fontsize=10, color=INK, ha="center",
              bbox=dict(boxstyle="round,pad=0.3", fc="#DFF5E1",
                        ec=KANTO_GREEN, lw=1.3))
+    # Decorative only: a Master Ball tucked in the corner of the clean product
+    # region — the "independence is possible" box — over hatch fill, no math.
+    place_sprite(axR, item("master-ball"), (0.85, 0.15), zoom=0.85, alpha=0.92)
 
     fig.tight_layout()
     return save(fig, "ch11_independence_contrast")

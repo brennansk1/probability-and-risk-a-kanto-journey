@@ -9,6 +9,11 @@
 
 # Checkpoint B — The Univariate World {.type-normal}
 
+<figure style="margin:1.5em auto; max-width:160px; text-align:center;">
+<img src="../../assets/sprites/front/25.png" alt="Pikachu" style="width:130px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#025 Pikachu — curled on the dashboard for the Topic 2 stakeout review</strong></figcaption>
+</figure>
+
 ::: cold-open
 **▶ COLD OPEN — EPISODE: "Stakeout at the Rocket Hideout"**
 
@@ -81,6 +86,11 @@ These eight problems are deliberately **interleaved**: consecutive ones come fro
 ::: answer-key
 **Full worked solution per problem, tagged to its source chapter. A quick-answer table closes the section.**
 
+<figure style="margin:1.5em auto; max-width:140px; text-align:center;">
+<img src="../../assets/sprites/front/129.png" alt="Magikarp" style="width:120px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#129 Magikarp</strong> — its flailing flops $X$ follow a geometric-type pmf</figcaption>
+</figure>
+
 **B.1** — *(Ch 6) Normalize a geometric-type pmf, then sum the cdf.* The pmf must sum to $1$. Using the geometric series $\sum_{x=0}^{\infty} (1/2)^x = \dfrac{1}{1-1/2} = 2$,
 $$\sum_{x=0}^{\infty} c\,(1/2)^x = 2c = 1 \;\Longrightarrow\; c = \tfrac12.$$
 Then $p(0)=\tfrac12,\ p(1)=\tfrac14,\ p(2)=\tfrac18$, so
@@ -98,6 +108,11 @@ $$P(X\ge 1) = 1 - P(X=0) = 1 - (0.7)^6 = 1 - 0.117649 = 0.882351 \approx 0.8824.
 $$P(N=2) = \frac{e^{-2} 2^2}{2!} = 2e^{-2} \approx 0.2707,$$
 $$P(N\ge 1) = 1 - P(N=0) = 1 - e^{-2} \approx 0.8647.$$
 
+<figure style="margin:1.5em auto; max-width:150px; text-align:center;">
+<img src="../../assets/sprites/front/143.png" alt="Snorlax, asleep" style="width:130px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#143 Snorlax</strong> — its nap time $T$ is exponential, so the minutes already slept are forgotten</figcaption>
+</figure>
+
 **B.5** — *(Ch 9) Exponential survival, then memorylessness.* For $\Expo(\theta=5)$, $S(t)=e^{-t/\theta}$:
 $$P(T>8) = e^{-8/5} = e^{-1.6} \approx 0.2019.$$
 By the **memoryless** property the $3$ minutes already slept are forgotten:
@@ -112,6 +127,11 @@ That is the **Exponential** pdf with mean $\theta = 4$. (This is exactly how a s
 **B.7** — *(Ch 10) Expected payment per loss, exponential + ordinary deductible.* For an exponential loss with mean $\theta$ and ordinary deductible $d$, the memoryless property gives the clean closed form
 $$\E[(X-d)_+] = \theta\, e^{-d/\theta} = 4\,e^{-2/4} = 4\,e^{-0.5} \approx 2.4261.$$
 (Equivalently $\E[(X-d)_+] = \E[X] - \E[X\wedge d]$; the exponential just collapses it to $\theta e^{-d/\theta}$.)
+
+<figure style="margin:1.5em auto; max-width:110px; text-align:center;">
+<img src="../../assets/items/potion.png" alt="Potion" style="width:90px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>Potion</strong> — the monthly expense $X$ the reimbursement plan caps at the limit $u=2$</figcaption>
+</figure>
 
 **B.8** — *(Ch 10 + Ch 8) Capped expectation and the leftover out-of-pocket.* The capped variable $X\wedge 2$ takes values $0,1,2,2$ when $X=0,1,2,3$ (the $X=3$ outcome is clipped to $2$):
 

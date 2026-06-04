@@ -8,6 +8,11 @@
 
 # Center & Spread {.type-electric}
 
+<figure style="margin:1.25em auto; max-width:150px; text-align:center;">
+<img src="../../assets/sprites/front/25.png" alt="Pikachu" style="width:120px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.8em;"><strong>#025 Pikachu</strong> — on your shoulder as the S.S. Anne floods, the spark behind every number in this chapter.</figcaption>
+</figure>
+
 <figure>
 <img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the journey now at Vermilion City on the southern coast; Cerulean and the Nugget Bridge lie to the north." style="width:70%; max-width:520px; display:block; margin:1em auto; image-rendering: pixelated;">
 <figcaption>Route to a 10 — you have crossed the Nugget Bridge and reached <strong>Vermilion City</strong>, the harbor town, the docked S.S. Anne, and Lt. Surge's Electric gym: the home of the <em>Thunder Badge</em>.</figcaption>
@@ -174,7 +179,7 @@ $$\E[X] = \sum_x x\,p(x)\ \ (\text{discrete}),\qquad \E[X] = \int_{-\infty}^{\in
 *Recognition cue:* the words **"average," "expected," "mean," "fair value," "long-run."** Weight each value by its probability and add (or integrate). A rare extreme value still pulls the mean toward itself.
 :::
 
-## Concept 2 — $\E[g(X)]$ and Linearity
+## Concept 2 — $\operatorname{E}[g(X)]$ and Linearity
 
 ::: concept-gate
 **DO YOU ALREADY OWN THIS? — Functions of $X$ and Linearity**
@@ -609,6 +614,11 @@ If a count-based average and a probability-weighted sum disagree (as in Concept 
 
 ::: team-rocket
 **TRANSMISSION INTERCEPTED — Team Rocket's Trap**
+
+<figure style="margin:1em auto; max-width:140px; text-align:center;">
+<img src="../../assets/sprites/front/129.png" alt="Magikarp" style="width:120px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.8em;"><strong>#129 Magikarp</strong> — the captured prize Team Rocket tries to misprice.</figcaption>
+</figure>
 
 Jessie schemes to "fairly price" the ransom for a captured Magikarp. The black-market multiplier squares the resale value, so the payout is $X^2$. "Easy!" she crows. "The average value is $\E[X]=4$, so the average *squared* value is just $\E[X^2]=4^2=16$. We demand sixteen!" James nods. Meowth tallies the loot.
 

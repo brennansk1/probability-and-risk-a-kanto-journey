@@ -28,18 +28,24 @@ Run: python figures/src/gen_ch13.py
 """
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
+import numpy as np
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as pe
 from matplotlib.patches import Rectangle, FancyArrowPatch
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
 OUT.mkdir(parents=True, exist_ok=True)
+
+sys.path.insert(0, str(HERE))
+from sprite_util import front, place_sprite  # noqa: E402
 
 plt.style.use(str(HERE / "kanto_theme.mplstyle"))
 
@@ -93,19 +99,30 @@ def variance_grid() -> Path:
                                        edgecolor=DIAG_EDGE, linewidth=1.6,
                                        hatch="///", zorder=1))
                 ax.text(cx, cy, rf"$a_{{{r+1}}}^{{2}}\,\mathrm{{Var}}(X_{{{r+1}}})$",
-                        ha="center", va="center", fontsize=13, color=INK, zorder=3)
+                        ha="center", va="center", fontsize=12, color=INK, zorder=3,
+                        path_effects=[pe.withStroke(linewidth=2.6, foreground="white")])
             else:
                 i, j = (r, c) if r < c else (c, r)
                 ax.add_patch(Rectangle((bx, by), cell, cell, facecolor=OFF_FILL,
                                        edgecolor=OFF_EDGE, linewidth=1.6,
                                        hatch="..", zorder=1))
-                ax.text(cx, cy + 0.10,
-                        rf"$a_{{{i+1}}}a_{{{j+1}}}\,\mathrm{{Cov}}(X_{{{i+1}}},X_{{{j+1}}})$",
-                        ha="center", va="center", fontsize=11.5, color=INK, zorder=3)
+                # Split the covariance label over two lines so it fits inside
+                # the cell with margin to spare (the old single-line label
+                # overflowed the cell width and ran into its neighbours). A
+                # small white halo behind each line keeps it legible over the
+                # dotted hatch.
+                halo = [pe.withStroke(linewidth=2.6, foreground="white")]
+                ax.text(cx, cy + 0.20, rf"$a_{{{i+1}}}a_{{{j+1}}}\,\mathrm{{Cov}}$",
+                        ha="center", va="center", fontsize=10.5, color=INK,
+                        zorder=3, path_effects=halo)
+                ax.text(cx, cy - 0.07,
+                        rf"$(X_{{{i+1}}},X_{{{j+1}}})$",
+                        ha="center", va="center", fontsize=10.5, color=INK,
+                        zorder=3, path_effects=halo)
                 # Matched tag marking the two mirror cells of the same pair.
-                ax.text(cx, cy - 0.27, f"pair {pair_tag[(i, j)]}",
-                        ha="center", va="center", fontsize=9.5, style="italic",
-                        color=OFF_EDGE, zorder=3)
+                ax.text(cx, cy - 0.34, f"pair {pair_tag[(i, j)]}",
+                        ha="center", va="center", fontsize=8.5, style="italic",
+                        color=OFF_EDGE, zorder=3, path_effects=halo)
 
     # Row / column header labels.
     for c in range(N):
@@ -119,6 +136,17 @@ def variance_grid() -> Path:
                 ha="right", va="center", fontsize=13.5, fontweight="bold",
                 color=INK)
 
+    # --- Sprite decoration (margins only; never over a cell) -------------
+    # The chapter's running team is Pikachu (X1), Charizard (X2), Bulbasaur
+    # (X3); drop a tiny sprite above each column header so the abstract X_i
+    # ties back to the actual climbers. They sit in the top margin, well
+    # clear of every label, number, and grid cell.
+    team = [25, 6, 1]  # Pikachu, Charizard, Bulbasaur
+    for c, dex in enumerate(team):
+        bx, _ = cell_xy(0, c)
+        place_sprite(ax, front(dex), (bx + cell / 2, y0 + N * cell + 0.78),
+                     zoom=0.42, alpha=0.95, zorder=4)
+
     # Faint diagonal line emphasizing the symmetry axis.
     ax.plot([x0, x0 + N * cell], [y0 + N * cell, y0], color=INK,
             lw=1.0, ls=(0, (4, 4)), alpha=0.5, zorder=2)
@@ -131,8 +159,8 @@ def variance_grid() -> Path:
         p2 = (bxj + cell / 2, byj + cell / 2)
         ax.add_patch(FancyArrowPatch(
             p1, p2, connectionstyle="arc3,rad=0.28",
-            arrowstyle="<|-|>", mutation_scale=12,
-            color=OFF_EDGE, lw=1.3, alpha=0.55, zorder=2))
+            arrowstyle="<|-|>", mutation_scale=11,
+            color=OFF_EDGE, lw=1.1, alpha=0.40, zorder=2))
 
     # Legend (two rows so the two entries never overlap).
     leg_y2 = y0 - 0.55   # upper legend row: diagonal
@@ -150,19 +178,106 @@ def variance_grid() -> Path:
             ha="left", va="center", fontsize=11, color=INK)
 
     ax.set_title("Sum every cell of the grid", fontsize=16, pad=26)
-    ax.text(x0 + N * cell / 2, y0 + N * cell + 0.62,
+    ax.text(x0 + N * cell / 2, y0 + N * cell + 1.30,
             r"each off-diagonal covariance appears twice $\Rightarrow$ the factor of $2$",
             ha="center", va="bottom", fontsize=11.5, style="italic", color=OFF_EDGE)
 
     ax.set_xlim(x0 - 1.65, x0 + N * cell + 0.55)
-    ax.set_ylim(leg_y1 - 0.25, y0 + N * cell + 1.05)
+    ax.set_ylim(leg_y1 - 0.25, y0 + N * cell + 1.75)
     fig.tight_layout()
     return save(fig, "ch13_variance_grid")
+
+
+def correlation_scatter() -> Path:
+    """Three scatterplots illustrating positive / zero / negative covariance.
+
+    Concept 1, Beat 8 references assets/diagrams/ch11_correlation_scatter.png.
+    That PNG existed but was generated ad-hoc (no reproducible function) AND
+    was missing the dashed mean crosshairs / four-quadrant shading that BOTH
+    the chapter's alt text and figcaption explicitly describe ("Dashed
+    crosshairs mark each variable's mean, dividing the plane into four
+    quadrants; dots in the upper-right and lower-left quadrants contribute
+    positive deviation-products..."). This function regenerates the figure to
+    match the prose: each panel now draws the mean crosshairs and faintly
+    shades the two "positive-product" quadrants so the covariance reasoning is
+    visible, not just asserted.
+    """
+    rng = np.random.default_rng(13)
+    n = 220
+    panels = [
+        (KANTO_RED, r"$\rho \approx +0.9$  (move together)", 0.9, "pos"),
+        (KANTO_BLUE, r"$\rho \approx 0$  (no linear link)", 0.0, "zero"),
+        ("#3DA35D", r"$\rho \approx -0.9$  (move opposite)", -0.9, "neg"),
+    ]
+
+    fig, axes = plt.subplots(1, 3, figsize=(12.0, 4.4))
+
+    for ax, (color, title, rho, kind) in zip(axes, panels):
+        # Correlated bivariate normal with the target rho, standardized.
+        z1 = rng.standard_normal(n)
+        z2 = rng.standard_normal(n)
+        x = z1
+        y = rho * z1 + np.sqrt(max(1 - rho ** 2, 0.0)) * z2
+        mx, my = x.mean(), y.mean()
+
+        # Faint shading of the two quadrants whose deviation-products are
+        # POSITIVE (upper-right and lower-left), centred on the means. Drawn
+        # behind the dots so it never obscures a single data point.
+        lim = 3.4
+        ax.axhspan(my, my + lim, xmin=0.5, xmax=1.0, color=color, alpha=0.06, zorder=0)
+        ax.axvspan(mx - lim, mx, ymin=0.0, ymax=0.5, color=color, alpha=0.06, zorder=0)
+        # (upper-right and lower-left blocks)
+        ax.add_patch(Rectangle((mx, my), lim, lim, color=color, alpha=0.06,
+                               zorder=0, lw=0))
+        ax.add_patch(Rectangle((mx - lim, my - lim), lim, lim, color=color,
+                               alpha=0.06, zorder=0, lw=0))
+
+        ax.scatter(x, y, s=11, color=color, alpha=0.7, zorder=2,
+                   edgecolors="none")
+
+        # Dashed mean crosshairs.
+        ax.axhline(my, color=INK, lw=1.1, ls=(0, (5, 4)), alpha=0.7, zorder=1)
+        ax.axvline(mx, color=INK, lw=1.1, ls=(0, (5, 4)), alpha=0.7, zorder=1)
+
+        ax.set_title(title, fontsize=13, pad=10, color=INK)
+        ax.set_xlabel("Pokemon A performance", fontsize=10)
+        if ax is axes[0]:
+            ax.set_ylabel("Pokemon B performance", fontsize=10)
+        ax.set_xlim(-lim, lim)
+        ax.set_ylim(-lim, lim)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.grid(False)
+        ax.text(mx + 0.12, lim - 0.25, r"$\mu_A$", fontsize=9, color=INK,
+                ha="left", va="top", alpha=0.8)
+        ax.text(-lim + 0.18, my + 0.12, r"$\mu_B$", fontsize=9, color=INK,
+                ha="left", va="bottom", alpha=0.8)
+
+    # --- Sprite decoration (panel corners only; never over the cloud) -----
+    # Pikachu + Charizard "surge together" -> positive panel; a placid
+    # Slowpoke (#79) for the no-link panel; Charizard + a wilting Bulbasaur
+    # for the move-opposite panel, mirroring the chapter's Charizard/Bulbasaur
+    # negative-correlation story. Placed in the empty top-left / bottom-right
+    # corners with alpha<1 so no data point is hidden.
+    place_sprite(axes[0], front(25), (0.13, 0.87), xycoords="axes fraction",
+                 zoom=0.34, alpha=0.9)
+    place_sprite(axes[1], front(79), (0.13, 0.87), xycoords="axes fraction",
+                 zoom=0.34, alpha=0.85)
+    place_sprite(axes[2], front(6), (0.14, 0.87), xycoords="axes fraction",
+                 zoom=0.34, alpha=0.9)
+    place_sprite(axes[2], front(1), (0.87, 0.15), xycoords="axes fraction",
+                 zoom=0.34, alpha=0.9)
+
+    fig.suptitle("Correlation: how two teammates' performances move together",
+                 fontsize=15, fontweight="bold", y=1.02)
+    fig.tight_layout()
+    return save(fig, "ch11_correlation_scatter")
 
 
 def main() -> None:
     print(f"Generating Chapter 13 (Covariance) figures -> {OUT} at {PRINT_DPI} DPI")
     variance_grid()
+    correlation_scatter()
     print("Done.")
 
 

@@ -471,6 +471,11 @@ $$\Var(X) = 111.7 + 925 = 1036.7, \qquad \SD(X) = \sqrt{1036.7} \approx 32.2.$$
 
 **Setup.** A captured Nidoking's recovery time $X$ (minutes) is exponential, but the *rate* depends on how injured it is: $X \mid \Lambda \sim \Expo(\text{mean}{=}\Lambda)$, where the random mean $\Lambda \sim \Unif(10,20)$. Find $\E[X]$ and $\Var(X)$.
 
+<figure style="margin:1.5em auto; max-width:150px; text-align:center;">
+<img src="../../assets/sprites/front/34.png" alt="Nidoking" style="width:130px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#34 Nidoking — recovery time with a random rate $\Lambda$</strong></figcaption>
+</figure>
+
 **Identify.** Inner is exponential with mean $\Lambda$, so (exponential facts) $\E[X\mid\Lambda]=\Lambda$ and $\Var(X\mid\Lambda)=\Lambda^2$. Outer $\Lambda\sim\Unif(10,20)$: $\E[\Lambda]=15$, $\Var(\Lambda)=\tfrac{(20-10)^2}{12}=\tfrac{100}{12}=8.3\overline{3}$. *Your move: feed these into the two laws.*
 
 **Mean (total expectation).**

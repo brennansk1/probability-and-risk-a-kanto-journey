@@ -370,6 +370,12 @@ $$P(\text{at least one}) = 1 - P(\text{none}) = 1 - (0.8)^{12} = 1 - 0.0687 = 0.
 
 ### Worked Example 3.2 — Oak's Two-Species Census (partial guidance)
 
+<figure style="margin:1.5em auto; max-width:200px; text-align:center;">
+<img src="../../assets/sprites/front/16.png" alt="Pidgey" style="width:96px; display:inline-block; image-rendering: pixelated; vertical-align:middle;">
+<img src="../../assets/sprites/front/19.png" alt="Rattata" style="width:96px; display:inline-block; image-rendering: pixelated; vertical-align:middle;">
+<figcaption style="font-size:0.85em;"><strong>#016 Pidgey</strong> and <strong>#019 Rattata</strong> — the two species Oak is counting</figcaption>
+</figure>
+
 **ARCHETYPE:** *Two-event inclusion–exclusion; "exactly one."*
 
 **Setup.** Over the morning, $P(\text{Pidgey seen})=0.6$, $P(\text{Rattata seen})=0.5$, $P(\text{both})=0.3$. Find $P(\text{at least one})$ and $P(\text{exactly one})$.

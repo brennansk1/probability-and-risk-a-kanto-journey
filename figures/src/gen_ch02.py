@@ -50,6 +50,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, FancyArrowPatch
 
+from sprite_util import front, item, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -115,25 +117,33 @@ def fig_geometric_sum() -> None:
 
     # Annotate the shrinking gap to 5 at the first interior point only
     # (later gaps are too thin to label without crowding the crest).
-    for ki in (1,):
-        gap = ceiling - partial[ki]
-        ax.annotate(
-            "", xy=(ki, ceiling), xytext=(ki, partial[ki]),
-            arrowprops=dict(arrowstyle="<->", color=KANTO_GREEN, lw=1.8))
-        ax.text(ki + 0.12, (ceiling + partial[ki]) / 2,
-                f"gap {gap:.3g}", color="#2F6E3C", fontsize=10,
-                va="center", ha="left", fontweight="bold")
-    ax.text(5.3, 2.4,
+    # Place the arrow just LEFT of the bar/curve so it never sits on the red line.
+    ki = 1
+    gap = ceiling - partial[ki]
+    ax.annotate(
+        "", xy=(ki - 0.33, ceiling), xytext=(ki - 0.33, partial[ki]),
+        arrowprops=dict(arrowstyle="<->", color=KANTO_GREEN, lw=1.8))
+    ax.text(ki - 0.42, (ceiling + partial[ki]) / 2,
+            f"gap\n{gap:.2g}", color="#2F6E3C", fontsize=9.5,
+            va="center", ha="right", fontweight="bold")
+    ax.text(5.45, 2.2,
             "each step the\ngap shrinks by\n$r=0.4$",
             ha="center", va="center", fontsize=10.5, color="#2F6E3C",
             bbox=dict(boxstyle="round,pad=0.3", fc="white", ec=KANTO_GREEN))
 
-    # Term-value labels on the bars.
-    for ki in range(n):
+    # Term-value labels: only the first three bars are tall enough to label
+    # cleanly inside; later bars are too thin and would collide with the red
+    # running-total line, so we leave them unlabeled.
+    for ki in range(3):
         ax.text(ki, bottoms[ki] + terms[ki] / 2,
                 f"{terms[ki]:.3g}".rstrip("0").rstrip("."),
-                ha="center", va="center", fontsize=8.5, color="white",
-                fontweight="bold")
+                ha="center", va="center", fontsize=9, color="white",
+                fontweight="bold", zorder=6)
+
+    # Caterpie swarm: a small sprite atop the first (largest) bar, in the empty
+    # upper-left margin. Illustrative only — sits on no curve, number, or axis.
+    place_sprite(ax, front(10), (0.0, 3.0), zoom=0.34,
+                 box_alignment=(0.5, 0.0), alpha=0.95, zorder=6)
 
     ax.set_xlabel("term index $k$")
     ax.set_ylabel("value")
@@ -187,13 +197,18 @@ def fig_mode_tangent() -> None:
     axin.plot(xi, poly, color=KANTO_GREEN, linewidth=2.0, label=r"$x^2$")
     axin.plot(xi, expo, color=KANTO_RED, linewidth=2.0, linestyle="--",
               label=r"$e^{x/3}$")
-    axin.set_ylim(0, 120)
+    axin.set_ylim(0, 145)            # extra headroom so the title clears the curves
     axin.set_xlim(0, 18)
-    axin.set_title(r"$\frac{x^2}{e^{x/3}}\to 0$", fontsize=10, pad=2)
+    axin.set_title(r"$\dfrac{x^2}{e^{x/3}}\to 0$", fontsize=10, pad=8)
     axin.tick_params(labelsize=7)
-    axin.legend(loc="upper left", fontsize=7.5)
-    axin.text(9.5, 18, "exponential\nwins", fontsize=7.5, color=KANTO_RED,
+    axin.legend(loc="upper left", fontsize=7.5, framealpha=0.95)
+    axin.text(11.5, 40, "exponential\nwins", fontsize=7.5, color=KANTO_RED,
               ha="center", fontweight="bold")
+
+    # Pikachu watches from the charging cradle (cold open). Tucked into the
+    # lower-right margin, on no curve or axis the reader must read.
+    place_sprite(ax, front(25), (11.4, 0.022), zoom=0.40,
+                 box_alignment=(1.0, 0.0), alpha=0.95, zorder=6)
     save(fig, "ch02_mode_tangent")
 
 
@@ -254,6 +269,11 @@ def fig_improper_area() -> None:
     ax.set_xlim(0, 40)
     ax.set_ylim(0, 0.165)
     ax.legend(loc="upper right")
+
+    # A Potion in the dead-flat far tail (recovery-time density of a fainted
+    # Pokemon). Empty region, well clear of curve, axes, and every label.
+    place_sprite(ax, item("potion"), (36.0, 0.052), zoom=0.85, alpha=0.92,
+                 box_alignment=(0.5, 0.5), zorder=6)
     save(fig, "ch02_improper_area")
 
 
@@ -283,6 +303,12 @@ def fig_gamma_integrand() -> None:
     ax.set_xlim(0, 14)
     ax.set_ylim(0, 1.05)
     ax.legend(loc="upper right", fontsize=10)
+
+    # The Master Ball: this identity IS the Master Ball of integrals. Drop a
+    # small one in the empty lower-right corner, below every (decayed) curve.
+    # Sits on no curve, label, or axis tick.
+    place_sprite(ax, item("master-ball"), (12.3, 0.18), zoom=0.85, alpha=0.92,
+                 box_alignment=(0.5, 0.5), zorder=6)
     save(fig, "gamma_integrand")
 
 

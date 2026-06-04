@@ -40,6 +40,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+from sprite_util import front, item, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -80,6 +82,8 @@ def fig_bernoulli_pmf():
     ax.set_ylim(0, 0.92)
     ax.set_xlim(-0.6, 1.6)
     ax.grid(axis="x", visible=False)
+    # Pikachu perched in the open space above the short "win" bar (above its label).
+    place_sprite(ax, front(25), (1.0, 0.45), zoom=0.5, alpha=0.95)
 
     fig.tight_layout()
     out = OUT / "ch08_bernoulli_pmf.png"
@@ -108,12 +112,12 @@ def fig_binomial_pmf():
 
     # mean line
     ax.axvline(n * p, color=INK, linestyle="--", linewidth=1.8, zorder=4)
-    ax.annotate(r"mean $np = 2$", xy=(2, 0.315), xytext=(4.2, 0.30),
+    ax.annotate(r"mean $np = 2$", xy=(2.05, 0.18), xytext=(4.0, 0.165),
                 fontsize=12, color=INK,
                 arrowprops=dict(arrowstyle="->", color=INK, lw=1.4))
 
-    # value labels on the leading bars
-    for k in (0, 1, 2, 3):
+    # value labels on the leading bars (k=2's value rides in the red callout below)
+    for k in (0, 1, 3):
         ax.text(k, probs[k] + 0.008, f"{probs[k]:.3f}", ha="center",
                 va="bottom", fontsize=10.5, color=INK)
 
@@ -128,6 +132,9 @@ def fig_binomial_pmf():
     ax.set_ylabel(r"$P(X = k)$")
     ax.set_title(r"Binomial$(10,\ 0.2)$ pmf — count clusters around the mean")
     ax.set_ylim(0, 0.345)
+    # Pikachu in the empty far-right margin (no data there for Binom(10,0.2)).
+    place_sprite(ax, front(25), (0.92, 0.62), xycoords="axes fraction",
+                 zoom=0.5, alpha=0.95)
     ax.set_xlim(-0.6, 10.6)
     ax.grid(axis="x", visible=False)
 
@@ -192,6 +199,10 @@ def fig_geometric_pmf():
               label=r"$k > 5$  (survival tail, mass $q^5$)"),
     ]
     ax.legend(handles=legend, loc="upper right")
+    # Marowak's vengeful ghost (the wait's "success") in the empty mid-right margin,
+    # over the low survival-tail bars — clear of every value label and axis.
+    place_sprite(ax, front(105), (0.66, 0.40), xycoords="axes fraction",
+                 zoom=0.45, alpha=0.9)
 
     fig.tight_layout()
     out = OUT / "ch08_geometric_pmf.png"
@@ -255,6 +266,9 @@ def fig_negbin_pmf():
     ax.set_ylim(0, 0.185)
     ax.set_xlim(-0.6, 15.6)
     ax.grid(axis="x", visible=False)
+    # Gloom (#044) — Erika's prized petal-token line — in the open upper-right margin.
+    place_sprite(ax, front(44), (0.9, 0.78), xycoords="axes fraction",
+                 zoom=0.5, alpha=0.95)
 
     fig.tight_layout()
     out = OUT / "ch08_negbin_pmf.png"
@@ -352,6 +366,9 @@ def fig_poisson_pmf():
     axL.annotate("long thin right tail\n(no upper bound)", xy=(9, 0.012),
                  xytext=(6.2, 0.10), fontsize=10.5, color=KANTO_GRAY,
                  arrowprops=dict(arrowstyle="->", color=KANTO_GRAY, lw=1.2))
+    # Gastly in the empty upper-right margin (decorative; over no data/axis label).
+    place_sprite(axL, front(92), (0.86, 0.80), xycoords="axes fraction",
+                 zoom=0.42, alpha=0.95)
     axL.set_xticks(ksL[::2])
     axL.set_xlabel(r"$k$  (ghosts in one minute)")
     axL.set_ylabel(r"$P(X = k)$")
@@ -370,19 +387,22 @@ def fig_poisson_pmf():
     for b, t in zip(bars, tail):
         if t:
             b.set_hatch("//")
+    axR.set_ylim(0, 0.135)
     axR.axvline(lamR, color=INK, linestyle="--", linewidth=1.7, zorder=4)
-    axR.annotate(r"mean $=\lambda = 15$", xy=(15, 0.108), xytext=(19, 0.095),
+    # mean label tucked just right of the line, clear of the legend and tail callout
+    axR.annotate(r"mean $=\lambda = 15$", xy=(15, 0.088), xytext=(18.0, 0.072),
                  fontsize=11.5, color=INK,
                  arrowprops=dict(arrowstyle="->", color=INK, lw=1.3))
-    axR.annotate(r"left tail $k\leq 9$:  $P(Y<10)=0.0699$",
-                 xy=(7, 0.020), xytext=(0.5, 0.064),
-                 fontsize=11, color=KANTO_RED,
+    # left-tail callout lives in the empty upper-left, arrow down to the shaded bars;
+    # no overlap with the mean line (well to its left)
+    axR.annotate(r"left tail $k\leq 9$:" "\n" r"$P(Y<10)=0.0699$",
+                 xy=(8, 0.027), xytext=(0.3, 0.090),
+                 fontsize=11, color=KANTO_RED, ha="left",
                  arrowprops=dict(arrowstyle="->", color=KANTO_RED, lw=1.4))
     axR.set_xticks(ksR[::4])
     axR.set_xlabel(r"$k$  (ghosts in five minutes)")
     axR.set_ylabel(r"$P(Y = k)$")
     axR.set_title(r"Poisson$(\lambda = 15)$ — five minutes")
-    axR.set_ylim(0, 0.118)
     axR.grid(axis="x", visible=False)
 
     from matplotlib.patches import Patch

@@ -45,6 +45,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch, Rectangle, FancyBboxPatch
 from cycler import cycler
 
+from sprite_util import front, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -64,13 +66,15 @@ plt.rcParams["axes.prop_cycle"] = cycler(color=[
 PRINT_DPI = 300
 
 # The three Giovanni squads: probability, conditional mean, conditional variance.
+# dex matches the Gym-Battle tier story: scouts (Diglett #50), regulars
+# (Nidoking #34), elites (Rhydon #112). Sprites are decorative only.
 SQUADS = [
     {"y": 1, "p": 0.5, "mean": 40, "var": 25,  "sd": 5,  "color": KANTO_BLUE,
-     "hatch": "//",  "label": "Squad 1"},
+     "hatch": "//",  "label": "Squad 1", "dex": 50},
     {"y": 2, "p": 0.3, "mean": 70, "var": 64,  "sd": 8,  "color": KANTO_GREEN,
-     "hatch": "..",  "label": "Squad 2"},
+     "hatch": "..",  "label": "Squad 2", "dex": 34},
     {"y": 3, "p": 0.2, "mean": 120, "var": 400, "sd": 20, "color": KANTO_RED,
-     "hatch": "xx",  "label": "Squad 3"},
+     "hatch": "xx",  "label": "Squad 3", "dex": 112},
 ]
 
 
@@ -114,13 +118,19 @@ def fig_conditional_slices():
         axL.plot([sq["mean"], sq["mean"]], [off, off + peak], color=INK,
                  lw=1.8, ls="--")
         axL.plot(sq["mean"], off + peak, marker="v", color=INK, ms=8)
-        axL.text(sq["mean"] + 6, off + peak + 0.12,
-                 rf"$g({sq['y']})={sq['mean']}$", ha="left", va="bottom",
+        # center label sits just left of the peak marker, hugging its own bump
+        # so it never collides with the slice stacked above it.
+        axL.text(sq["mean"] - 6, off + peak + 0.06,
+                 rf"$g({sq['y']})={sq['mean']}$", ha="right", va="bottom",
                  fontsize=11, color=INK, fontweight="bold")
-        axL.text(2, off + peak * 0.55,
+        # label and sprite both live in the far-left margin (x < ~22, left of
+        # every bump's rising flank), stacked so neither crosses a curve.
+        axL.text(20, off + peak * 0.30,
                  rf"$X\mid Y={sq['y']}$" + f"\n(w.p. {sq['p']})",
-                 ha="left", va="center", fontsize=10.5, color=sq["color"],
+                 ha="left", va="center", fontsize=10, color=sq["color"],
                  fontweight="bold")
+        place_sprite(axL, front(sq["dex"]), (8, off + peak * 0.32),
+                     zoom=0.40, alpha=0.95)
 
     axL.set_xlim(0, 175)
     axL.set_ylim(-0.1, offsets[-1] + peak + 0.55)
@@ -194,11 +204,14 @@ def fig_total_expectation_tree():
                              boxstyle="round,pad=0.04", fc=sq["color"],
                              alpha=0.30, ec=INK, lw=1.3, hatch=sq["hatch"])
         ax.add_patch(box)
-        ax.text(leaf_x + 0.85, ly,
+        ax.text(leaf_x + 1.0, ly,
                 rf"{sq['label']}" + "\n" +
                 rf"$\mathrm{{E}}[X\mid Y{{=}}{sq['y']}]={sq['mean']}$",
                 ha="center", va="center", fontsize=10.5, color=INK,
                 fontweight="bold")
+        # decorative species sprite in the leaf box's left corner.
+        place_sprite(ax, front(sq["dex"]), (leaf_x - 0.18, ly),
+                     zoom=0.40, alpha=0.95)
         # product on the branch -> sent to the summation column
         ax.annotate("", xy=(8.7, ly), xytext=(leaf_x + 2.3, ly),
                     arrowprops=dict(arrowstyle="-|>", color=INK, lw=1.4))
@@ -235,8 +248,8 @@ def fig_total_variance_table():
     axT.set_facecolor("white")
     axT.grid(False)
     axT.axis("off")
-    axT.set_xlim(0, 10)
-    axT.set_ylim(0, 10)
+    axT.set_xlim(0, 11.2)
+    axT.set_ylim(0, 10.4)
 
     col_x = [3.4, 5.6, 7.8]          # one column per squad
     row_mean_y = 7.0
@@ -247,6 +260,8 @@ def fig_total_variance_table():
     axT.text(0.9, 8.6, "weight $P(Y)$", ha="left", va="center", fontsize=11,
              color=INK, fontweight="bold")
     for sq, cx in zip(SQUADS, col_x):
+        # decorative species sprite above each column header.
+        place_sprite(axT, front(sq["dex"]), (cx, 9.55), zoom=0.34, alpha=0.95)
         axT.text(cx, 9.0, sq["label"], ha="center", va="center", fontsize=10.5,
                  color=sq["color"], fontweight="bold")
         axT.text(cx, 8.6, rf"${sq['p']}$", ha="center", va="center",
@@ -267,20 +282,23 @@ def fig_total_variance_table():
             axT.text(cx, ry, rf"${val}$", ha="center", va="center",
                      fontsize=13, color=INK, fontweight="bold")
 
-    # arrow: variance of row 1 -> Term 2
-    axT.annotate(r"$\mathrm{Var}(\cdot)\Rightarrow$ Term 2 $= 925$",
-                 xy=(col_x[-1] + cell_w / 2, row_mean_y + 0.3),
-                 xytext=(col_x[-1] + 1.15, row_mean_y + 1.05),
+    # arrow: variance of row 1 -> Term 2 (box parked far right, below the
+    # header row so it never overlaps the Squad-3 weight label).
+    axT.annotate(r"$\mathrm{Var}(\text{row 1})$" + "\n" + r"Term 2 $= 925$",
+                 xy=(col_x[-1] + cell_w / 2, row_mean_y),
+                 xytext=(10.0, row_mean_y + 0.55),
                  arrowprops=dict(arrowstyle="-|>", color=KANTO_RED, lw=1.6),
-                 fontsize=10.5, color=KANTO_RED, ha="center", fontweight="bold",
+                 fontsize=10.5, color=KANTO_RED, ha="center", va="center",
+                 fontweight="bold",
                  bbox=dict(boxstyle="round,pad=0.28", fc="#FFE0E0",
                            ec=KANTO_RED, lw=1.4))
     # arrow: weighted average of row 2 -> Term 1
-    axT.annotate(r"weighted avg $\Rightarrow$ Term 1 $= 111.7$",
+    axT.annotate(r"wtd avg of row 2" + "\n" + r"Term 1 $= 111.7$",
                  xy=(col_x[-1] + cell_w / 2, row_var_y),
-                 xytext=(col_x[-1] + 1.0, row_var_y - 1.7),
+                 xytext=(10.0, row_var_y - 0.55),
                  arrowprops=dict(arrowstyle="-|>", color=KANTO_BLUE, lw=1.6),
-                 fontsize=10.5, color=KANTO_BLUE, ha="center", fontweight="bold",
+                 fontsize=10.5, color=KANTO_BLUE, ha="center", va="center",
+                 fontweight="bold",
                  bbox=dict(boxstyle="round,pad=0.28", fc="#E0E6FF",
                            ec=KANTO_BLUE, lw=1.4))
 
@@ -299,20 +317,26 @@ def fig_total_variance_table():
     axB.bar(bar_x, term2, width=0.5, bottom=term1, color=KANTO_RED, alpha=0.45,
             hatch="xx", edgecolor=INK, lw=1.2,
             label=r"Term 2: $\mathrm{Var}(\mathrm{E}[X\mid Y])=925$")
-    axB.text(bar_x, term1 / 2, "within-\nsquad\nnoise", ha="center",
-             va="center", fontsize=9, color=INK, fontweight="bold")
+    # the within-squad segment is tiny; label it with an external callout to
+    # the RIGHT (clear space) so the text is never clipped by the small bar.
+    axB.annotate("within-squad\nnoise (111.7)",
+                 xy=(bar_x + 0.25, term1 / 2),
+                 xytext=(bar_x + 0.30, term1 + 175),
+                 arrowprops=dict(arrowstyle="-|>", color=INK, lw=1.2),
+                 ha="left", va="center", fontsize=8.6, color=INK,
+                 fontweight="bold")
     axB.text(bar_x, term1 + term2 / 2, "which-squad\nspread\n(dominates)",
              ha="center", va="center", fontsize=10, color=INK,
              fontweight="bold")
     axB.text(bar_x, total + 35, rf"$\mathrm{{Var}}(X)={total:.1f}$",
              ha="center", va="bottom", fontsize=12.5, color=INK,
              fontweight="bold")
-    axB.set_xlim(0, 1.0)
+    axB.set_xlim(0, 1.35)
     axB.set_ylim(0, total * 1.18)
     axB.set_xticks([])
     axB.set_ylabel("variance")
     axB.set_title("Add, don't average", fontsize=12)
-    axB.legend(loc="upper center", bbox_to_anchor=(0.5, -0.04), fontsize=8.6)
+    axB.legend(loc="upper center", bbox_to_anchor=(0.5, -0.08), fontsize=8.6)
 
     fig.tight_layout()
     return save(fig, "ch12_total_variance_table")
@@ -340,6 +364,8 @@ def fig_compound_tree():
     axL.text(root[0], root[1] + 0.45,
              r"count $N\sim\mathrm{Poisson}(\lambda{=}3)$",
              ha="center", va="bottom", fontsize=11, color=INK, fontweight="bold")
+    # decorative Rhydon (#112) in the top-left margin — it lands the Horn Drills.
+    place_sprite(axL, front(112), (1.0, 9.0), zoom=0.5, alpha=0.95)
 
     # Poisson(3) weights for n = 0,1,2,3 ; "..." for the tail.
     counts = [0, 1, 2, 3]
@@ -409,7 +435,7 @@ def fig_compound_tree():
     axR.set_ylabel("variance of total damage")
     axR.set_title(r"$\mathrm{Var}(S)=\mathrm{E}[N]\sigma^2+\mathrm{Var}(N)\mu^2$",
                   fontsize=11.5)
-    axR.legend(loc="upper center", bbox_to_anchor=(0.5, -0.04), fontsize=9)
+    axR.legend(loc="upper center", bbox_to_anchor=(0.5, -0.08), fontsize=9)
 
     fig.tight_layout()
     return save(fig, "ch12_compound_tree")

@@ -173,6 +173,11 @@ If you wrote **$\tfrac{9}{40} = 0.225 = 22.5\%$**, and **$45$** (because $0.225 
 
 **A concrete instance.** Brock empties a bag for the road: $40$ balls, of which $9$ are Great Balls. "What share are Great Balls?" he asks. The share is $9$ out of $40$.
 
+<figure style="margin:1.5em auto; max-width:160px; text-align:center;">
+<img src="../../assets/items/great-ball.png" alt="Great Ball" style="width:90px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>Great Ball</strong> — $9$ of the $40$ in Brock's bag</figcaption>
+</figure>
+
 **Reason it through in words.** "$9$ out of $40$" is a *fraction*: $\tfrac{9}{40}$ — the part on top, the whole on the bottom. To get its *decimal* costume, you do exactly what the fraction bar tells you to: **divide** $9$ by $40$, giving $0.225$. To get its *percent* costume, "percent" means "per hundred," so you multiply the decimal by $100$ and tack on a $\%$: $0.225 \times 100 = 22.5\%$. Same number, three outfits.
 
 **Surface the tempting wrong idea.** A classic slip is to convert a percent to a decimal by *forgetting to divide by $100$* — reading "$22.5\%$" as the decimal $22.5$. But $22.5$ would be a share of *twenty-two and a half wholes*, which is nonsense for "$9$ out of $40$." **A percent is always the decimal $\times 100$; to undo it, divide by $100$ (slide the point two places left).** So $22.5\% = 0.225$, never $22.5$.
@@ -458,6 +463,11 @@ Four examples, fading from fully narrated to exam-speed. Each names its archetyp
 **ARCHETYPE:** *convert among fraction/decimal/percent and scale a proportion.*
 
 **Setup.** Of $25$ Pokémon logged on Route 1, $4$ are Pidgey. (a) Express the Pidgey share as a fraction, decimal, and percent. (b) If the same share held over a full day's $300$ encounters, how many Pidgey would you expect?
+
+<figure style="margin:1.5em auto; max-width:160px; text-align:center;">
+<img src="../../assets/sprites/front/16.png" alt="Pidgey" style="width:110px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#016 Pidgey</strong> — $4$ of the $25$ logged on Route 1</figcaption>
+</figure>
 
 **(a)** *Your move: form the part-over-whole fraction, then divide, then $\times 100$.*
 $$\frac{4}{25} = 4 \div 25 = 0.16 = 16\%.$$

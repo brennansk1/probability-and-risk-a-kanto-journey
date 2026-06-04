@@ -26,6 +26,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Circle, FancyBboxPatch, FancyArrowPatch
 from cycler import cycler
 
+from sprite_util import front, item, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -145,6 +147,11 @@ def fig_stage_tree():
             'each node fans into the NEXT stage\'s full menu  ("for each")',
             ha="center", fontsize=9.5, style="italic", color=INK)
 
+    # Decoration: a Caterpie waiting at the clearings (wild Pokemon gather there).
+    # Sits in the top margin beside the "clearings" header — clear of every leaf,
+    # line, and number. Removing it changes nothing the reader must read.
+    place_sprite(ax, front(10), (x3 + 0.95, head_y - 0.05), zoom=0.45, alpha=0.95)
+
     fig.tight_layout()
     return save(fig, "ch04count_stage_tree")
 
@@ -208,6 +215,11 @@ def fig_permutation_slots():
     ax.text(0.4, 0.5,
             r"directly: $P(8,3)=\frac{8!}{(8-3)!}=\frac{8!}{5!}=336$",
             ha="left", fontsize=11, color=INK)
+
+    # Decoration: Onix (Brock's roster) tucked beside the "unused tail" note in the
+    # right margin, well clear of the slots, menu numbers, and product box.
+    place_sprite(ax, front(95), (centers[-1] + 2.4, y0 + sh + 0.75),
+                 zoom=0.42, alpha=0.95)
 
     fig.tight_layout()
     return save(fig, "ch04count_permutation_slots")
@@ -280,6 +292,10 @@ def fig_combination_collapse():
             fontsize=12, fontweight="bold", color=INK, zorder=3)
     ax.text(tx + tw / 2, ty + th * 0.26, "one unordered team",
             ha="center", va="center", fontsize=10, color=INK, zorder=3)
+    # Decoration: a team member peeks from the top-right CORNER of the set box,
+    # clear of the {A,...,F} roster text and the label. Alpha < 1 over the tint.
+    place_sprite(ax, front(10), (tx + tw - 0.45, ty + th - 0.3),
+                 zoom=0.4, alpha=0.9)
 
     # bottom line: the division identity.
     ax.text(6.5, 0.55,
@@ -358,6 +374,11 @@ def fig_multinomial_repeats():
             ha="center", fontsize=14, fontweight="bold", color=KANTO_GREEN,
             bbox=dict(boxstyle="round,pad=0.3", fc="#E8F5E9", ec=KANTO_GREEN,
                       lw=1.5))
+
+    # Decoration: a Caterpie in the top-left margin (the word IS its name), clear
+    # of every letter tile, label, and equation.
+    place_sprite(ax, front(10), (0.7, 7.7), zoom=0.42, alpha=0.95)
+
     fig.tight_layout()
     return save(fig, "ch04count_multinomial_repeats")
 
@@ -381,6 +402,9 @@ def fig_hypergeom_split():
                                 alpha=0.22, hatch="xx", zorder=1))
     ax.text(sx + sw / 2, sy + sh + 0.3, "SUCCESSES: 4 Caterpie", ha="center",
             fontsize=10.5, fontweight="bold", color=KANTO_RED)
+    # Decoration: Caterpie beside its label, in the margin above the box.
+    place_sprite(ax, front(10), (sx + sw + 0.05, sy + sh + 0.32),
+                 zoom=0.36, alpha=0.95)
     succ_pos = [(sx + 0.9, sy + 1.9), (sx + 2.4, sy + 1.9),
                 (sx + 0.9, sy + 0.9), (sx + 2.4, sy + 0.9)]
     for i, (px, py) in enumerate(succ_pos):
@@ -404,6 +428,9 @@ def fig_hypergeom_split():
                                 alpha=0.22, hatch="//", zorder=1))
     ax.text(fx + fw / 2, fy + fh + 0.3, "FAILURES: 6 Weedle", ha="center",
             fontsize=10.5, fontweight="bold", color=KANTO_BLUE)
+    # Decoration: Weedle beside its label, in the margin above the box.
+    place_sprite(ax, front(13), (fx + fw + 0.05, fy + fh + 0.32),
+                 zoom=0.36, alpha=0.95)
     fail_pos = [(fx + 0.9, fy + 2.0), (fx + 2.3, fy + 2.0), (fx + 3.7, fy + 2.0),
                 (fx + 0.9, fy + 0.8), (fx + 2.3, fy + 0.8), (fx + 3.7, fy + 0.8)]
     for i, (px, py) in enumerate(fail_pos):

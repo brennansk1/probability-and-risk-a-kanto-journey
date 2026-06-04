@@ -157,6 +157,11 @@ If you can say *"$X$ is the **name** of the uncertain quantity — the slot — 
 
 Concretely: you walk into the tall grass on Route 1 and the next wild Pokémon will be either a **Pidgey** or a **Rattata**. Before it appears, call the level of that Pokémon **$L$**. Right now $L$ is just a name — a slot. Then the grass rustles, a Pidgey jumps out at **level 3**, and the slot fills: **$L = 3$**.
 
+<figure style="margin:1.5em auto; max-width:160px; text-align:center;">
+<img src="../../assets/sprites/front/16.png" alt="Pidgey" style="width:110px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#016 Pidgey</strong> — the slot named $L$ filled this run at $L = 3$</figcaption>
+</figure>
+
 **Beat 3 — Reason through it in plain words.** Notice there were two genuinely different things happening. *Before* the encounter, $L$ stood for "the level of whatever shows up" — uncertain, not yet a number, but already nameable. *After* the encounter, $L$ took the specific value $3$. The capital $L$ is the **question**; the $3$ is **this run's answer.** Run into the grass again tomorrow and the same name $L$ might take the value $5$. The *name stays put*; the *value changes run to run.*
 
 **Beat 4 — Surface and dismantle the tempting wrong idea.** The natural mistake is to think a letter is just "a number we haven't been told yet," like a missing word in a puzzle with one fixed answer.
@@ -404,7 +409,7 @@ $$f(x)=\text{``}f\text{ of }x\text{,''}\quad P(A)=\text{``the probability of }A\
 *Recognition cue:* a **named operation** ($P, \E, \Var, f, F$) hugging a bracket → "operation applied to input." A *number* hugging a bracket → multiplication. Tell them apart by what's in front.
 :::
 
-## Concept 5 — The "Given" Bar $\given$ (the hardest, most-tested reading skill)
+## Concept 5 — The "Given" Bar $\mid$ (the hardest, most-tested reading skill)
 
 ::: concept-gate
 **DO YOU ALREADY OWN THIS? — The "given" bar**

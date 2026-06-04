@@ -157,7 +157,7 @@ A valid joint distribution is the same two demands in either world: **nonnegativ
 **Beat 8 — Picture it.** A joint density is a *surface*; the probability of a region is the *volume* under it, sitting above that region's footprint on the floor.
 
 <figure>
-<img src="../../assets/diagrams/ch09_joint_region.png" alt="Two panels. Left: the triangular support 0 < x < y < 1, a shaded triangle above the line y = x, with a red arrow showing that for a fixed y the inner variable x runs from 0 to y. Right: the same triangle in gray with a smaller green sub-triangle 0 < x < y < 1/2 shaded, the region whose volume is the probability that both X and Y fall below one half." style="width:85%; max-width:560px; display:block; margin:1em auto;">
+<img src="../../assets/diagrams/ch11_support_volume.png" alt="Two panels. Left: the triangular support 0 < x < y < 1, a shaded triangle above the line y = x, with a red arrow showing that for a fixed y the inner variable x runs from 0 to y. Right: the same triangle in gray with a smaller green sub-triangle 0 < x < y < 1/2 shaded, the region whose volume is the probability that both X and Y fall below one half." style="width:85%; max-width:560px; display:block; margin:1em auto;">
 <figcaption>A joint distribution lives over a region of the floor. Left: the mansion-log support $0<x<y<1$. Right: the footprint for $P\bigl(X<\tfrac12,\,Y<\tfrac12\bigr)$ is the smaller triangle — the probability is the volume standing over it.</figcaption>
 </figure>
 
@@ -233,7 +233,7 @@ The triangle's edge $x<y$ caps the inner sweep. This is the skill Concept 3 is b
 **Beat 8 — Picture it.** The marginal of $X$ at a value $x$ is the **shadow** of the joint along a vertical strip — collapse the surface down onto the $x$-axis.
 
 <figure>
-<img src="../../assets/diagrams/ch09_joint_region.png" alt="The triangular support 0 < x < y < 1; for the marginal of Y at a fixed height y, a red arrow sweeps the inner variable x from 0 across to the slanted edge x = y, showing the inner limits run 0 to y rather than 0 to 1." style="width:78%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/diagrams/ch11_marginal_shadow.png" alt="The triangular support 0 < x < y < 1; for the marginal of Y at a fixed height y, a red arrow sweeps the inner variable x from 0 across to the slanted edge x = y, showing the inner limits run 0 to y rather than 0 to 1." style="width:78%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Marginal of $Y$ over a triangle: at height $y$, sweep $x$ from $0$ to the slanted edge $x=y$. The inner limit is $y$, not $1$ — the support dictates the limits.</figcaption>
 </figure>
 
@@ -305,7 +305,7 @@ In the first order, for a fixed $y$, $x$ enters at $0$ and exits at the edge $y$
 **Beat 8 — Picture it.** The figure makes the inner limit visible: at each height $y$, the slice of live $x$-values starts at $0$ and ends at the slanted edge.
 
 <figure>
-<img src="../../assets/diagrams/ch09_joint_region.png" alt="Two panels of the triangle 0 < x < y < 1. Left: a red horizontal arrow at a fixed height y showing the inner integral in x running from 0 to the diagonal edge x = y. Right: the smaller green sub-triangle 0 < x < y < 1/2 shaded, the footprint of the probability that both coordinates fall below one half." style="width:85%; max-width:560px; display:block; margin:1em auto;">
+<img src="../../assets/diagrams/ch11_inner_limit.png" alt="Two panels of the triangle 0 < x < y < 1. Left: a red horizontal arrow at a fixed height y showing the inner integral in x running from 0 to the diagonal edge x = y. Right: the smaller green sub-triangle 0 < x < y < 1/2 shaded, the footprint of the probability that both coordinates fall below one half." style="width:85%; max-width:560px; display:block; margin:1em auto;">
 <figcaption>Left: for a fixed $y$, the inner integral in $x$ runs $0\to y$ — the edge $x=y$ caps it. Right: the sub-triangle $0<x<y<\tfrac12$ is the true footprint of "both below $\tfrac12$," not the square.</figcaption>
 </figure>
 
@@ -383,7 +383,7 @@ $$P(Y\in A\mid X=x) = \int_A f_{Y\mid X}(y\mid x)\,dy, \qquad \E[Y\mid X=x] = \i
 **Beat 8 — Picture it.** Conditioning on $X=x$ is taking the **vertical slice** of the surface at $x$, then stretching it vertically until its area is one.
 
 <figure>
-<img src="../../assets/diagrams/ch09_joint_region.png" alt="The joint support with a vertical slice drawn at a fixed power value x; the slice is the conditional distribution of Y given X = x, rescaled by dividing by the marginal f_X(x) so the slice integrates to one." style="width:78%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/diagrams/ch11_conditional_slice.png" alt="The joint support with a vertical slice drawn at a fixed power value x; the slice is the conditional distribution of Y given X = x, rescaled by dividing by the marginal f_X(x) so the slice integrates to one." style="width:78%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Conditioning on $X=x$ slices the joint at that $x$; dividing the slice by $f_X(x)$ rescales it into a genuine density of $Y$.</figcaption>
 </figure>
 
@@ -452,7 +452,7 @@ Pass both → independent. Fail either → dependent.
 **Beat 8 — Picture it.** On a rectangle the support is a clean box; on a triangle the slanted edge is the visible proof the variables constrain each other.
 
 <figure>
-<img src="../../assets/diagrams/ch09_joint_region.png" alt="The triangular support 0 < x < y < 1 with its slanted edge x = y highlighted, captioned to show that because the range of one variable depends on the other, the variables cannot be independent — contrasted in the caption with a clean rectangular box where independence is possible." style="width:78%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/diagrams/ch11_independence_contrast.png" alt="Two panels. Left: the triangular support 0 < x < y < 1 with its slanted edge x = y highlighted in red, captioned to show that because the range of one variable depends on the other, the variables cannot be independent. Right: a clean rectangular box where independence is at least possible if the density also factors." style="width:85%; max-width:560px; display:block; margin:1em auto;">
 <figcaption>The slanted edge $x=y$ is the visible signature of dependence: the range of $X$ depends on $Y$. Only a clean rectangular box even permits independence — and then only if the density also factors.</figcaption>
 </figure>
 
@@ -585,6 +585,11 @@ A conditional of $Y$ given $X$ divides by $f_X$ (the *conditioning* variable's m
 :::
 
 ## Team Rocket's Trap
+
+<figure style="margin:1.5em auto; max-width:140px; text-align:center;">
+<img src="../../assets/sprites/front/52.png" alt="Meowth" style="width:120px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;"><strong>#52 Meowth</strong> — Team Rocket factors $8xy$ on a triangle and pays for it</figcaption>
+</figure>
 
 ::: team-rocket
 **TRANSMISSION INTERCEPTED — Team Rocket's Trap**

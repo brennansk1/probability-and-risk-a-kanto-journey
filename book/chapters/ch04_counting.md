@@ -512,6 +512,11 @@ $$P(\ge2) = P(2) + P(3) = \frac{36}{120} + \frac{\binom{4}{3}\binom{6}{0}}{120} 
 
 **Setup.** Distinguishable arrangements of the $8$ letters in **CATERPIE** (two E's)?
 
+<figure style="margin:1em auto; max-width:120px; text-align:center;">
+<img src="../../assets/sprites/front/10.png" alt="Caterpie" style="width:96px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.8em;"><strong>#010 Caterpie</strong> — eight letters, two of them E</figcaption>
+</figure>
+
 $$\frac{8!}{2!} = \frac{40{,}320}{2} = 20{,}160.$$
 
 **Check & pitfall.** All distinct would be $8!$; the two identical E's collapse each pair to one, so divide by $2!$. **Pitfall:** reporting $40{,}320$ — that double-counts every word by swapping indistinguishable E's. *(Back-ref: Entry №04.)*

@@ -532,7 +532,13 @@ Jessie, James, and Meowth have stolen a Pokédex and are trying to crack Oak's e
 
 "Easy!" crows Meowth. "Da power on $x$ is $3$, da scale is $2$ — so it's $\Gamma(3)\cdot 2^{3} = 2\cdot 8 = 16$!"
 
-"Sixteen units of twerp-tracking power!" cheers James, flipping the switch. The detector glows feebly, points at a Magikarp, and the whole contraption sputters out. The *correct* value was $96$ — they were off by a factor of six, and their underpowered gadget couldn't even find Pikachu next door. "Looks like Team Rocket's *underestimating* again!"
+"Sixteen units of twerp-tracking power!" cheers James, flipping the switch. The detector glows feebly, points at a Magikarp, and the whole contraption sputters out.
+
+<figure style="margin:1.5em auto; max-width:160px; text-align:center;">
+<img src="../../assets/sprites/front/129.png" alt="Magikarp" style="width:120px; display:block; margin:0 auto; image-rendering: pixelated;">
+<figcaption style="font-size:0.85em;">All the underpowered detector can find — a Magikarp, while Pikachu sits next door.</figcaption>
+</figure>
+ The *correct* value was $96$ — they were off by a factor of six, and their underpowered gadget couldn't even find Pikachu next door. "Looks like Team Rocket's *underestimating* again!"
 
 **Where it fails:** Meowth set $\alpha$ equal to the power on $x$. But the exponent on $x$ is $\alpha - 1$, **not** $\alpha$ — so a power of $3$ means $\alpha = 4$, and $\Gamma(4) = 3! = 6$, giving $6\cdot 16 = 96$. **Always set $\alpha = (\text{power on } x) + 1$ before reaching for the factorial.** The off-by-one is the exact trap from Concept 4 — and it is the most-punished gamma-integral error on the exam.
 :::

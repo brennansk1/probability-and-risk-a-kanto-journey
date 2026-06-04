@@ -46,6 +46,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, FancyArrowPatch, Circle, FancyBboxPatch
 from cycler import cycler
 
+from sprite_util import front, item, place_sprite
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OUT = ROOT / "assets" / "diagrams"
@@ -86,28 +88,38 @@ def fig_max_density() -> Path:
         (3, KANTO_BLUE, "--", "n = 3  (3x^2)"),
         (8, KANTO_RED,  "-.", "n = 8  (8x^7)"),
     ]
+    # Stagger the mean labels vertically so none collides with the x-axis label.
+    mean_label_y = {1: -0.45, 3: -0.95, 8: -1.45}
     for n, color, ls, label in specs:
         y = n * x ** (n - 1)
         ax.plot(x, y, color=color, ls=ls, lw=2.6, label=label, zorder=3)
         mean = n / (n + 1)
         ax.axvline(mean, color=color, ls=":", lw=1.4, alpha=0.8, zorder=2)
         ax.annotate(
-            rf"$\frac{{{n}}}{{{n + 1}}}$",
-            xy=(mean, 0), xytext=(mean, -0.55 - 0.35 * (n == 8)),
-            ha="center", va="top", color=color, fontsize=12,
+            rf"mean $\frac{{{n}}}{{{n + 1}}}$",
+            xy=(mean, 0), xytext=(mean, mean_label_y[n]),
+            ha="center", va="top", color=color, fontsize=11,
             annotation_clip=False,
         )
 
-    ax.text(0.50, -1.15, r"mean $\frac{n}{n+1}$ creeps toward 1 $\rightarrow$",
+    ax.text(0.50, -1.95, r"mean $\frac{n}{n+1}$ creeps toward 1 $\rightarrow$",
             ha="center", va="top", color=INK, fontsize=11, clip_on=False)
 
     ax.set_xlim(0, 1.02)
     ax.set_ylim(0, 8.4)
-    ax.set_xlabel("x")
+    # Place the axis label at the right end so it never overlaps the mean ticks.
+    ax.set_xlabel("x", loc="right")
     ax.set_ylabel(r"$f_{\max}(x) = n\,x^{\,n-1}$")
     ax.set_title("Density of the maximum of n i.i.d. Uniform(0,1)")
     ax.legend(loc="upper left", framealpha=0.95)
-    fig.subplots_adjust(bottom=0.22)
+
+    # Sprite (margin decoration): the "strongest" piling up near the ceiling.
+    # Pikachu sits in the empty upper-center, clear of the legend, every curve,
+    # equation, and axis number. Illustrative only.
+    place_sprite(ax, front(25), (0.46, 0.90), xycoords="axes fraction",
+                 zoom=0.5, alpha=0.95)
+
+    fig.subplots_adjust(bottom=0.26)
     return save(fig, "ch14_max_density")
 
 
@@ -212,7 +224,7 @@ def fig_series_parallel() -> Path:
     ax_s.text(1.5, 0.05, "lifetime = min   (weakest link)",
               ha="center", va="center", fontsize=10.5, color=INK)
     ax_s.text(1.5, -0.18,
-              r"$R = \prod_i S_i = 0.9^3 = 0.729$",
+              r"$R = \prod_i\, S_i = 0.9^3 = 0.729$",
               ha="center", va="center", fontsize=11.5, color=KANTO_RED)
     ax_s.set_xlim(-0.4, 3.4)
     ax_s.set_ylim(-0.35, 1.0)
@@ -229,7 +241,7 @@ def fig_series_parallel() -> Path:
     ax_p.text(1.0, -0.02, "lifetime = max   (last backup)",
               ha="center", va="center", fontsize=10.5, color=INK)
     ax_p.text(1.0, -0.25,
-              r"$R = 1 - \prod_i F_i = 1 - 0.1^3 = 0.999$",
+              r"$R = 1 - \prod_i\, F_i = 1 - 0.1^3 = 0.999$",
               ha="center", va="center", fontsize=11.5, color=KANTO_BLUE)
     ax_p.set_xlim(-0.35, 2.35)
     ax_p.set_ylim(-0.42, 1.1)
@@ -237,6 +249,14 @@ def fig_series_parallel() -> Path:
     for ax in (ax_s, ax_p):
         ax.set_aspect("equal")
         ax.axis("off")
+
+    # Margin sprites (decoration only — clear of every box, line, and formula).
+    # Onix, a long chain of segments, evokes the SERIES chain (weakest-link min).
+    place_sprite(ax_s, front(95), (0.12, 0.92), xycoords="axes fraction",
+                 zoom=0.4, alpha=0.9)
+    # Chansey, the reliable backup/healer, evokes PARALLEL redundancy (last-backup max).
+    place_sprite(ax_p, front(113), (0.86, 0.93), xycoords="axes fraction",
+                 zoom=0.4, alpha=0.9)
 
     # --- Sorted-dots strip on [0,1] with X_(2) circled ---
     ax_k.set_title(r"Order statistics: the $k$-th sorted value  "
@@ -346,6 +366,12 @@ def fig_continuity_correction() -> Path:
     ax.set_ylabel("probability")
     ax.set_title("Continuity correction: include the whole 180 bar")
     ax.legend(loc="upper right", framealpha=0.95)
+
+    # Margin sprite: a Great Ball marks the "wins" tally being counted.
+    # Sits in the empty upper-left, clear of bars, curve, and the 179.5 line.
+    place_sprite(ax, item("great-ball"), (0.07, 0.86), xycoords="axes fraction",
+                 zoom=0.5, alpha=0.95)
+
     return save(fig, "ch14_continuity_correction")
 
 
