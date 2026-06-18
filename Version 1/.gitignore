@@ -1,0 +1,15 @@
+# Rendered book PDFs (large — regenerate with `make book` / `make workbook`)
+Probability_and_Risk_A_Kanto_Journey.pdf
+Probability_and_Risk_A_Kanto_Journey_WORKBOOK.pdf
+# Build output (HTML + PDF, large)
+build/
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+# OS
+.DS_Store
+# Draft-1 backups (reference only)
+drafts/
