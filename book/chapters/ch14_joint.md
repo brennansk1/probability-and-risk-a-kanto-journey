@@ -33,7 +33,7 @@ So how do you pull *one* variable's behavior out of a *two*-variable law — and
 
 ## Where You Are — 60-Second Retrieval
 
-**Rank: Junior · Badges: 7 (Cascade, Thunder, Boulder, Rainbow, Soul, Marsh).** You crossed the sea carrying everything you built for a **single** random variable through Saffron and the smooth continuous wilds. Back there you learned that a continuous variable $X$ is described by a **density** $f(x)$, that probabilities are **areas under it**, and that the expectation is a weighted average:
+**Rank: Ace Trainer · Badges: 6 (Cascade, Thunder, Boulder, Rainbow, Soul, Marsh).** You crossed the sea carrying everything you built for a **single** random variable through Saffron and the smooth continuous wilds. Back there you learned that a continuous variable $X$ is described by a **density** $f(x)$, that probabilities are **areas under it**, and that the expectation is a weighted average:
 
 $$P(a < X < b) = \int_a^b f(x)\,dx, \qquad \E[X] = \int x\,f(x)\,dx, \qquad \int_{-\infty}^{\infty} f(x)\,dx = 1.$$
 
@@ -812,10 +812,10 @@ $$P\bigl(X+Y>\tfrac32\bigr) = \iint_{x+y>3/2} 1\,dx\,dy = \tfrac12\cdot\tfrac12\
 
 <figure style="text-align:center; margin:1.5em auto;">
 <img src="../../assets/badges/volcano_badge.png" alt="The Volcano Badge, a red-and-orange flame-shaped gym badge" style="width:140px; display:block; margin:0 auto;">
-<figcaption class="badge-caption"><strong>Volcano Badge earned!</strong> Rank up: Junior → Ace (7 badges held; the Mansion logs are yours).</figcaption>
+<figcaption class="badge-caption"><strong>Volcano Badge earned!</strong> Rank up: Ace Trainer → Veteran Trainer (7 badges held; the Mansion logs are yours).</figcaption>
 </figure>
 
-You read the paired ledger the honest way, let the burnt edge set your limits, and Blaine pressed the Volcano Badge into your hand. **Rank: Ace.** The multivariate act is open; only Victory Road and the Plateau lie ahead.
+You read the paired ledger the honest way, let the burnt edge set your limits, and Blaine pressed the Volcano Badge into your hand. **Rank: Veteran Trainer (7 badges).** The multivariate act is open; only Victory Road and the Plateau lie ahead.
 
 **Mastery checklist — tick each before you move on (mapped 1-to-1 to the SOA outcomes):**
 

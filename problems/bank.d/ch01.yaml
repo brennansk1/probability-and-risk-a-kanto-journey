@@ -1,0 +1,609 @@
+# Problem bank — Chapter 1 (Route 1, the Spearow swarm): Fundamentals of
+# probability — sample spaces, events, set operations, Venn, De Morgan, the
+# Kolmogorov axioms, mutually exclusive, and the addition rule / inclusion-exclusion.
+# Outcomes 1a, 1d, 1e.  Tier C (set algebra) / Tier B (inclusion-exclusion).
+# Locale: Route 1 (tutorial route, no badge -- the Trainer's License stamp).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, difficulty (1-5),
+#   actor, stakes, consequence, quest_step, narrative_hook, statement, solution,
+#   answer, shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval. It exposes
+# math, st (scipy.stats), and __import__; chained problems RESTATE the prior value as
+# a given so verify never depends on another problem's answer.
+#
+# Immersion quotas met: audit >=3 (C1.8, C1.17, C1.21); rival_trap >=2
+# (C1.15, C1.22); decision >=1 (C1.20). The Team Rocket error ("mutually exclusive
+# = independent") is recycled into the audit drill C1.17.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C1.1
+    chapter: 1
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Professor Oak"
+    stakes: "Oak wants the wild slot catalogued before Ash walks the route."
+    consequence: "A complete sample space lets every later probability be measured against a real universe."
+    quest_step: 1
+    narrative_hook: "Oak's first task: catalogue one wild Route 1 slot."
+    statement: |
+      The next Route 1 encounter is Pidgey (0.45), Rattata (0.30), Spearow (0.15),
+      or 'nothing rustles' otherwise. Write the sample space and find
+      P(some Pokemon appears).
+    solution: |
+      S = {Pidgey, Rattata, Spearow, nothing} with masses 0.45, 0.30, 0.15, 0.10
+      (the last fills to 1). 'Some appears' is the complement of 'nothing':
+      P(some) = 1 - 0.10 = 0.90.
+    answer: 0.90
+    shortcut_used: ["complement of the single 'nothing' outcome"]
+    verify: "abs((1 - 0.10) - 0.90) < 1e-9"
+
+  - id: C1.2
+    chapter: 1
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Professor Oak"
+    stakes: "Tagging the non-bird sightings in the catalogue."
+    consequence: "The complement rule turns one given into its opposite for free."
+    quest_step: 2
+    narrative_hook: "Tagging the bird-types versus everything else."
+    statement: |
+      Ash is tagging the catalogue: a Route 1 sighting is a bird-type (event A)
+      with probability P(A) = 0.55. Oak needs the non-bird share for the same row,
+      so every sighting is filed exactly once. Using only the axioms, find P(A^c) --
+      the chance the sighting is NOT a bird-type -- and name the rule you used.
+    solution: |
+      Complement rule (a consequence of A2 and A3 on the disjoint pair A, A^c):
+      P(A^c) = 1 - P(A) = 1 - 0.55 = 0.45.
+    answer: 0.45
+    shortcut_used: ["complement rule P(A^c) = 1 - P(A)"]
+    verify: "abs((1 - 0.55) - 0.45) < 1e-9"
+
+  - id: C1.3
+    chapter: 1
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Professor Oak"
+    stakes: "Two species share one wild slot; both cannot appear at once."
+    consequence: "Recognizing disjointness licenses adding -- and forbids multiplying."
+    quest_step: 3
+    narrative_hook: "One slot holds one Pokemon, so Pidgey and Spearow cannot co-occur."
+    statement: |
+      G = 'it's a Pidgey' (0.45), S = 'it's a Spearow' (0.15). One wild slot holds
+      one Pokemon. Find P(G or S) and state whether G, S are mutually exclusive,
+      independent, or both.
+    solution: |
+      One slot, one Pokemon, so G and S are disjoint -> mutually exclusive.
+      By A3: P(G or S) = 0.45 + 0.15 = 0.60.
+      NOT independent: P(G and S) = 0 != P(G)P(S) = 0.0675. Disjoint
+      positive-probability events are never independent.
+    answer: "0.60; mutually exclusive, NOT independent"
+    shortcut_used: ["disjoint union adds; disjoint != independent"]
+    verify: "(abs((0.45 + 0.15) - 0.60) < 1e-9) and (0.0 != 0.45*0.15)"
+
+  - id: C1.4
+    chapter: 1
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Ash"
+    stakes: "Will rain and a roadside berry both turn up today?"
+    consequence: "Independence factors the joint; the union then needs the overlap term."
+    quest_step: 4
+    narrative_hook: "Rain and a berry on the route, declared independent."
+    statement: |
+      P(rain) = 0.40, P(berry on a bush) = 0.50, and the two are independent.
+      Find P(rain and berry), then P(at least one).
+    solution: |
+      Independence factors: P(rain and berry) = 0.40 * 0.50 = 0.20.
+      Union: P(rain or berry) = 0.40 + 0.50 - 0.20 = 0.70.
+    answer: "0.20; 0.70"
+    shortcut_used: ["independent intersection (product), then addition rule"]
+    verify: "(abs(0.40*0.50 - 0.20) < 1e-9) and (abs((0.40 + 0.50 - 0.20) - 0.70) < 1e-9)"
+
+  - id: C1.5
+    chapter: 1
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1a", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Professor Oak"
+    stakes: "Filling the four-cell Venn ledger for the survey."
+    consequence: "A complete ledger that sums to 1 is the audit on every two-event setup."
+    quest_step: 5
+    narrative_hook: "Build the four-cell Venn ledger and check it sums to 1."
+    statement: |
+      Oak wants the four-cell Venn ledger for two survey traits: A = 'bird-type'
+      with P(A) = 0.6, B = 'lives in tall grass' with P(B) = 0.5, and both at once
+      P(A and B) = 0.2. A ledger that doesn't total 1 means a sighting was lost, so
+      fill the four cells P(A and B^c), P(A^c and B), P(A and B), P(A^c and B^c) and
+      confirm they sum to 1.
+    solution: |
+      P(A and B^c) = 0.6 - 0.2 = 0.4; P(A^c and B) = 0.5 - 0.2 = 0.3;
+      P(A and B) = 0.2; P(A^c and B^c) = 1 - (0.4 + 0.3 + 0.2) = 0.1.
+      Sum = 0.4 + 0.3 + 0.2 + 0.1 = 1.0.
+    answer: "0.4, 0.3, 0.2, 0.1 (sum 1.0)"
+    shortcut_used: ["each single = own-only + shared middle; cells sum to 1"]
+    verify: "(abs((0.6-0.2) - 0.4) < 1e-9) and (abs((0.5-0.2) - 0.3) < 1e-9) and (abs((1 - (0.4+0.3+0.2)) - 0.1) < 1e-9) and (abs((0.4+0.3+0.2+0.1) - 1.0) < 1e-9)"
+
+  - id: C1.6
+    chapter: 1
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Ash (the stubborn Poke Ball)"
+    stakes: "Will the ball ever close on Pikachu across three tries?"
+    consequence: "The complement turns 'at least once' into one clean subtraction."
+    quest_step: 6
+    narrative_hook: "Pikachu refuses each of three independent throws."
+    statement: |
+      Pikachu refuses each of 3 independent throws with probability 0.5. Using the
+      complement, find P(the ball closes at least once).
+    solution: |
+      P(closes at least once) = 1 - P(refuses all three) = 1 - (0.5)^3
+      = 1 - 0.125 = 0.875.
+    answer: 0.875
+    shortcut_used: ["at least one = 1 - P(none), independent trials"]
+    verify: "abs((1 - 0.5**3) - 0.875) < 1e-9"
+
+  - id: C1.7
+    chapter: 1
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1a", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Professor Oak"
+    stakes: "Rewriting 'neither threat' for the route's danger report."
+    consequence: "De Morgan turns a 'neither' into 1 minus the union."
+    quest_step: 7
+    narrative_hook: "Rewrite 'neither A nor B' for the threat report."
+    statement: |
+      Officer Jenny's Route 1 danger report needs the 'all-clear' line: the chance
+      that NEITHER threat A nor threat B turns up. A wrong all-clear sends a trainer
+      up the road unwarned, so be exact. The scouts already logged P(A or B) = 0.72
+      (at least one threat). Rewrite P(neither A nor B) using De Morgan's law, then
+      evaluate it.
+    solution: |
+      P(neither) = P(A^c and B^c) = P((A or B)^c) = 1 - P(A or B)
+      = 1 - 0.72 = 0.28.
+    answer: 0.28
+    shortcut_used: ["De Morgan: (A or B)^c = A^c and B^c, then complement"]
+    verify: "abs((1 - 0.72) - 0.28) < 1e-9"
+
+  - id: C1.8
+    chapter: 1
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Meowth (Team Rocket recon notes)"
+    stakes: "Meowth's note declares two traits independent and tells you to 'assume it.'"
+    consequence: "If the traits are actually dependent, every downstream Rocket estimate is wrong."
+    quest_step: 8
+    narrative_hook: "AUDIT: Team Rocket's recon notes claim two traits are independent."
+    statement: |
+      Tallies of wild Pokemon give P(A) = 0.4 for 'bird-type', P(B) = 0.5 for
+      'found in tall grass', and P(A or B) = 0.65. Meowth's note declares
+      'A and B are independent -- assume it.' Are they? Compute P(A and B) and the
+      independence check, and name Meowth's error if he is wrong.
+    solution: |
+      Inclusion-exclusion: P(A and B) = P(A) + P(B) - P(A or B) = 0.4 + 0.5 - 0.65
+      = 0.25. Independence would require P(A)P(B) = (0.4)(0.5) = 0.20. Since
+      0.25 != 0.20, A and B are NOT independent (positively associated).
+      Meowth's error: he ASSUMED independence -- it must be told or derived,
+      never assumed.
+    answer: "P(A and B)=0.25; NOT independent (0.25 != 0.20)"
+    shortcut_used: ["recover the intersection via inclusion-exclusion, then test the product rule"]
+    verify: "(abs((0.4+0.5-0.65) - 0.25) < 1e-9) and (abs(0.4*0.5 - 0.20) < 1e-9) and (0.25 != 0.20)"
+
+  # ===================== GYM BATTLES (the boss fight) =====================
+
+  - id: C1.9
+    chapter: 1
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Nurse Joy (trailside Center)"
+    stakes: "Triaging which arrivals need a Potion, a cure, or both."
+    consequence: "The three quantities (at least one / exactly one / neither) size the supply order."
+    quest_step: 9
+    narrative_hook: "Triaging arrivals: Potion, status cure, or both."
+    statement: |
+      Among Pokemon brought in, 70% need a Potion, 40% a status cure, 25% both.
+      For a random arrival find (a) P(at least one treatment), (b) P(exactly one),
+      (c) P(neither).
+    solution: |
+      (a) At least one: 0.70 + 0.40 - 0.25 = 0.85.
+      (b) Exactly one: 0.85 - 0.25 = 0.60.
+      (c) Neither: 1 - 0.85 = 0.15.
+    answer: "0.85; 0.60; 0.15"
+    shortcut_used: ["addition rule; exactly-one = union minus both; neither = complement"]
+    verify: "(abs((0.70+0.40-0.25) - 0.85) < 1e-9) and (abs((0.85-0.25) - 0.60) < 1e-9) and (abs((1-0.85) - 0.15) < 1e-9)"
+
+  - id: C1.10
+    chapter: 1
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Professor Oak"
+    stakes: "Cross-tabulating three habitats in the route survey."
+    consequence: "The three-event union is the headline coverage figure for the survey."
+    quest_step: 10
+    narrative_hook: "Cross-tabulating three habitats in the survey."
+    statement: |
+      Catches are logged by habitat: P(F) = 0.5, P(W) = 0.4, P(C) = 0.3;
+      pairs 0.2, 0.15, 0.1; triple 0.05. Find P(at least one habitat) and P(none).
+    solution: |
+      P(F or W or C) = (0.5+0.4+0.3) - (0.2+0.15+0.1) + 0.05
+      = 1.2 - 0.45 + 0.05 = 0.80.
+      P(none) = 1 - 0.80 = 0.20.
+    answer: "0.80; none 0.20"
+    shortcut_used: ["3-event inclusion-exclusion (+singles -pairs +triple), then complement"]
+    verify: "(abs(((0.5+0.4+0.3) - (0.2+0.15+0.1) + 0.05) - 0.80) < 1e-9) and (abs((1 - 0.80) - 0.20) < 1e-9)"
+
+  - id: C1.11
+    chapter: 1
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Route 1 trainers"
+    stakes: "Every trainer carries at least one type; back out the overlap."
+    consequence: "Knowing the union pins down the missing 'both' overlap."
+    quest_step: 11
+    narrative_hook: "Every challenger carries at least one type; solve for the overlap."
+    statement: |
+      Trainers use a Water-type with probability 0.6, an Electric-type with 0.5,
+      and both with probability p; every trainer uses at least one (so the union
+      is 1). Find p and P(exactly one type).
+    solution: |
+      Union = 1: 1 = 0.6 + 0.5 - p -> p = 0.10.
+      Exactly one = union - both = 1 - 0.10 = 0.90.
+    answer: "p = 0.10; exactly one 0.90"
+    shortcut_used: ["invert the addition rule to solve for the overlap"]
+    verify: "(abs((0.6 + 0.5 - 1.0) - 0.10) < 1e-9) and (abs((1.0 - 0.10) - 0.90) < 1e-9)"
+
+  - id: C1.12
+    chapter: 1
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Ash (a roadside slot machine)"
+    stakes: "Two pulls at a roadside slot -- what's the chance of winning anything?"
+    consequence: "Disjoint prizes add within a pull; independence handles across pulls."
+    quest_step: 12
+    narrative_hook: "Two pulls at a roadside slot machine."
+    statement: |
+      A slot pull wins the jackpot (0.02) or a small prize (0.15), mutually
+      exclusive. Find P(win something on one pull) and P(win something at least
+      once over two independent pulls).
+    solution: |
+      One pull (disjoint prizes add): P(win) = 0.02 + 0.15 = 0.17.
+      Two independent pulls, at least once: 1 - (1 - 0.17)^2 = 1 - 0.83^2
+      = 1 - 0.6889 = 0.3111.
+    answer: "0.17; 0.3111"
+    shortcut_used: ["disjoint union within a pull; complement of 'neither' across pulls"]
+    verify: "(abs((0.02 + 0.15) - 0.17) < 1e-9) and (abs((1 - (1-0.17)**2) - 0.3111) < 1e-4)"
+
+  - id: C1.13
+    chapter: 1
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Professor Oak"
+    stakes: "The overlap went unrecorded; bound what the union could be."
+    consequence: "Feasible bounds catch impossible givens before they propagate."
+    quest_step: 13
+    narrative_hook: "The overlap is unrecorded; bound the union and the intersection."
+    statement: |
+      Oak's threat survey logged each Spearow trait separately -- T = 'targets
+      Pikachu' with P(T) = 0.40 and L = 'comes in low' with P(L) = 0.35 -- but the
+      field scout never recorded how often a bird did both, so P(T and L) is blank.
+      Before the survey can ship, Oak needs the worst- and best-case bounds. Find the
+      smallest and largest possible values of P(T or L), and of P(T and L).
+    solution: |
+      Overlap bounds: P(T and L) in [max(0, 0.40+0.35-1), min(0.40, 0.35)]
+      = [0, 0.35].
+      Since P(T or L) = 0.75 - P(T and L):
+      P(T or L) in [0.75 - 0.35, 0.75 - 0] = [0.40, 0.75].
+    answer: "P(T or L) in [0.40, 0.75]; P(T and L) in [0, 0.35]"
+    shortcut_used: ["Bonferroni-style overlap bounds from the addition rule and axioms"]
+    verify: "(abs(max(0.0, 0.40+0.35-1.0) - 0.0) < 1e-9) and (abs(min(0.40, 0.35) - 0.35) < 1e-9) and (abs((0.75 - 0.35) - 0.40) < 1e-9) and (abs((0.75 - 0.0) - 0.75) < 1e-9)"
+
+  - id: C1.14
+    chapter: 1
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Professor Oak (forest census preview)"
+    stakes: "Two bug species in the upcoming forest census."
+    consequence: "A single Venn cell and 'at most one' come straight from the overlap."
+    quest_step: 14
+    narrative_hook: "Two bug species in the next forest census."
+    statement: |
+      Oak is previewing the next forest census, where one log can list two bug
+      species at once: P(Caterpie) = 0.55, P(Weedle) = 0.45, and P(both on the same
+      log) = 0.30. To size the net order he needs the Caterpie-only count and the
+      'crowded log' rate. Find P(Caterpie but not Weedle) and P(at most one of the
+      two species).
+    solution: |
+      Caterpie but not Weedle = P(C) - P(C and W) = 0.55 - 0.30 = 0.25.
+      At most one = complement of both = 1 - 0.30 = 0.70.
+    answer: "0.25; 0.70"
+    shortcut_used: ["single Venn cell = single minus overlap; at most one = 1 - both"]
+    verify: "(abs((0.55 - 0.30) - 0.25) < 1e-9) and (abs((1 - 0.30) - 0.70) < 1e-9)"
+
+  - id: C1.15
+    chapter: 1
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary scoffs that overlapping events must be dependent."
+    consequence: "Conflating 'overlap' with 'dependent' fails the numeric independence test."
+    quest_step: 15
+    narrative_hook: "RIVAL TRAP: Gary calls overlapping events 'obviously dependent.'"
+    statement: |
+      Scouting the same Route 1 grass, Gary tracks two sighting traits: A with
+      P(A) = 0.5, B with P(B) = 0.4, and at least one showing with P(A or B) = 0.7.
+      If he ships a wrong dependence call, his whole threat sheet is off. Gary
+      scoffs, 'They obviously overlap, so they're dependent -- done.' Decide whether
+      A, B are independent by computing P(A and B) and comparing it to P(A)P(B), and
+      say whether Gary is right.
+    solution: |
+      Inclusion-exclusion: P(A and B) = P(A) + P(B) - P(A or B) = 0.5 + 0.4 - 0.7
+      = 0.2. Compare P(A)P(B) = (0.5)(0.4) = 0.2. Equal -> A and B ARE independent.
+      Gary is WRONG: overlapping does not mean dependent. Independence is the
+      numeric test P(A and B) = P(A)P(B), which here passes despite the overlap.
+    answer: "0.2 = 0.2 -> independent; Gary wrong"
+    shortcut_used: ["independence is a numeric product test, not a yes/no-overlap question"]
+    verify: "(abs((0.5 + 0.4 - 0.7) - 0.2) < 1e-9) and (abs(0.5*0.4 - 0.2) < 1e-9)"
+
+  - id: C1.16
+    chapter: 1
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Officer Jenny (provisioning audit)"
+    stakes: "Jenny audits whether Route 1 trainers carry any gear at the gate."
+    consequence: "The three-event union is the 'at least one item' carry rate; its complement is who gets turned back."
+    quest_step: 16
+    narrative_hook: "Officer Jenny's gate audit across three items."
+    statement: |
+      Officer Jenny is auditing how well Route 1 trainers are provisioned: each
+      carries a Potion (0.8), an Antidote (0.5), a map (0.6); pairs
+      P(Pot and Anti) = 0.4, P(Pot and map) = 0.5, P(Anti and map) = 0.35; all
+      three 0.3. The 'carries nothing' rate is who she has to turn back at the gate,
+      so find P(at least one item) and P(none).
+    solution: |
+      P(union) = (0.8+0.5+0.6) - (0.4+0.5+0.35) + 0.3 = 1.9 - 1.25 + 0.3 = 0.95.
+      P(none) = 1 - 0.95 = 0.05.
+    answer: "0.95; none 0.05"
+    shortcut_used: ["3-event inclusion-exclusion, then complement"]
+    verify: "(abs(((0.8+0.5+0.6) - (0.4+0.5+0.35) + 0.3) - 0.95) < 1e-9) and (abs((1 - 0.95) - 0.05) < 1e-9)"
+
+  # ===================== ELITE CHALLENGE (post-game) =====================
+
+  - id: C1.17
+    chapter: 1
+    tier: elite_challenge
+    archetype: audit
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Jessie (Team Rocket)"
+    stakes: "Jessie's snare blunder: 'mutually exclusive, so independent.'"
+    consequence: "The chapter's canonical error, audited: disjoint is the opposite of independent."
+    quest_step: 17
+    narrative_hook: "AUDIT (recycles Team Rocket's trap): two snares 'mutually exclusive, so independent.'"
+    statement: |
+      Jessie's two snares: P(A) = 0.5, P(B) = 0.5. She claims they are 'mutually
+      exclusive, so independent, so P(catch) = 0.5*0.5 = 0.25 -- or maybe
+      0.5+0.5 = 1.' Suppose the snares are genuinely mutually exclusive.
+      (a) What is the correct P(at least one fires)? (b) Can mutually exclusive
+      positive-probability events be independent? (c) Name both of Jessie's errors.
+    solution: |
+      (a) Disjoint snares add: P(at least one fires) = 0.5 + 0.5 = 1.0 (the union;
+          some snare always fires with these numbers).
+      (b) NO. Independence would need P(A and B) = P(A)P(B) = 0.25 > 0, but
+          disjointness forces P(A and B) = 0. Contradiction -> maximally dependent.
+      (c) Errors: (i) calling mutually exclusive 'independent' and multiplying
+          0.5*0.5, forbidden for disjoint events; (ii) reading the union 1.0 as a
+          catch GUARANTEE, when it only means some snare fires -- Pikachu can walk
+          between two snares firing at empty air.
+    answer: "(a) 1.0; (b) no; (c) multiplied disjoint events; misread union as a guarantee"
+    shortcut_used: ["disjoint events add (never multiply); union != catch guarantee"]
+    verify: "(abs((0.5 + 0.5) - 1.0) < 1e-9) and (abs(0.5*0.5 - 0.25) < 1e-9) and (0.0 != 0.25)"
+
+  - id: C1.18
+    chapter: 1
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "The Spearow flock"
+    stakes: "The full flock, integrated: danger per bird and across all twelve."
+    consequence: "Per-bird inclusion-exclusion feeds the 'at least one across n' complement."
+    quest_step: 18
+    narrative_hook: "The full flock: three-event danger per bird, then across twelve."
+    statement: |
+      n = 12 independent Spearow. Per bird: P(T) = 0.40, P(L) = 0.35, P(F) = 0.30;
+      pairs 0.18, 0.12, 0.10; triple 0.05. 'Dangerous' = at least one of T, L, F.
+      Find (a) the per-bird danger probability q; (b) P(none of the 12 dangerous);
+      (c) P(purely fast: F but neither T nor L) for one bird.
+    solution: |
+      (a) q = (0.40+0.35+0.30) - (0.18+0.12+0.10) + 0.05 = 1.05 - 0.40 + 0.05
+          = 0.70.
+      (b) P(none of 12) = (1 - q)^12 = 0.30^12 ~= 5.31e-7 ~= 0.
+      (c) Purely fast = P(F) - P(F and T) - P(F and L) + P(T and L and F)
+          = 0.30 - 0.12 - 0.10 + 0.05 = 0.13.
+    answer: "q = 0.70; none ~= 5.3e-7; pure-F 0.13"
+    shortcut_used: ["3-event inclusion-exclusion for q; complement over n; single cell for pure-F"]
+    verify: "(abs(((0.40+0.35+0.30) - (0.18+0.12+0.10) + 0.05) - 0.70) < 1e-9) and (abs(0.30**12 - 5.31441e-7) < 1e-10) and (abs((0.30 - 0.12 - 0.10 + 0.05) - 0.13) < 1e-9)"
+
+  - id: C1.19
+    chapter: 1
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["1d", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Ash (two traps)"
+    stakes: "Solve the overlap, test independence, and check feasibility under the axioms."
+    consequence: "An axiom-feasibility check shows when a 'disjoint' assumption is impossible."
+    quest_step: 19
+    narrative_hook: "Solve overlap, test independence, then check the disjoint case for feasibility."
+    statement: |
+      Two traps: P(A) = 0.6, P(B) = 0.5, P(at least one) = 0.8. (a) Find P(both).
+      (b) Are the traps independent? (c) If instead the traps were mutually
+      exclusive, could P(at least one) = 0.8 hold? Explain via the axioms.
+    solution: |
+      (a) P(both) = P(A) + P(B) - P(at least one) = 0.6 + 0.5 - 0.8 = 0.3.
+      (b) P(A)P(B) = (0.6)(0.5) = 0.30 = P(both) -> YES, independent.
+      (c) Mutually exclusive forces P(both) = 0, so P(at least one) = 0.6 + 0.5
+          = 1.1 > 1 -- impossible by A1/A2. Disjoint traps cannot give 0.8 here.
+    answer: "(a) 0.3; (b) independent; (c) impossible (would need 1.1 > 1)"
+    shortcut_used: ["invert addition rule; product test; axiom-feasibility of the disjoint case"]
+    verify: "(abs((0.6 + 0.5 - 0.8) - 0.3) < 1e-9) and (abs(0.6*0.5 - 0.3) < 1e-9) and ((0.6 + 0.5) > 1.0)"
+
+  - id: C1.20
+    chapter: 1
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Ash"
+    stakes: "Make a stand against the flock, or flee to Viridian?"
+    consequence: "The 'at least one' complement quantifies the Cold Open's life-or-death choice."
+    quest_step: 20
+    narrative_hook: "DECISION: stand and Thunderbolt, or flee and hope none reaches Pikachu."
+    statement: |
+      Each of n = 12 Spearow reaches Pikachu independently with probability 0.20.
+      Option A (flee): you escape cleanly only if NONE reaches Pikachu before you
+      clear the route. Option B (stand): Pikachu's Thunderbolt scatters the whole
+      flock, succeeding with probability 0.85 regardless of the dives. Compute
+      P(clean escape) for Option A and compare to Option B's 0.85; state which is
+      safer.
+    solution: |
+      Option A: P(clean escape) = P(none reaches) = (1 - 0.20)^12 = 0.8^12
+      ~= 0.0687.
+      Option B succeeds with probability 0.85.
+      Since 0.85 >> 0.0687, STANDING is far safer; fleeing leaves only a ~6.9%
+      chance of getting through untouched.
+    answer: "A ~= 0.0687; B 0.85 -> stand"
+    shortcut_used: ["at least one = 1 - P(none); compare the two options as one object"]
+    verify: "(abs(0.8**12 - 0.0687) < 1e-3) and (0.85 > 0.8**12)"
+
+  # ===== Additional bank-only problems to meet the archetype quotas =====
+
+  - id: C1.21
+    chapter: 1
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["1a"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Meowth (a swiped survey sheet)"
+    stakes: "Meowth's sheet lists encounter masses that don't add to 1."
+    consequence: "A sample space whose masses miss 1 makes every later probability wrong."
+    quest_step: 8
+    narrative_hook: "AUDIT: Meowth's swiped survey sheet drops the 'nothing' outcome."
+    statement: |
+      Meowth's swiped survey sheet records the wild slot as Pidgey 0.45,
+      Rattata 0.30, Spearow 0.15 -- and declares 'the space is complete, masses
+      sum to 1.' Find the true mass of the missing 'nothing' outcome and name
+      Meowth's error.
+    solution: |
+      Listed masses sum to 0.45 + 0.30 + 0.15 = 0.90, not 1. By A2 the whole
+      space must total 1, so the missing 'nothing' outcome carries
+      1 - 0.90 = 0.10. Meowth's error: he dropped the boring 'nothing' outcome,
+      leaving a non-exhaustive space whose masses fall short of 1.
+    answer: "P(nothing) = 0.10; Meowth dropped the 'nothing' outcome (masses summed to 0.90)"
+    shortcut_used: ["axiom A2: outcome masses of an exhaustive space sum to 1"]
+    verify: "(abs((0.45 + 0.30 + 0.15) - 0.90) < 1e-9) and (abs((1 - 0.90) - 0.10) < 1e-9)"
+
+  - id: C1.22
+    chapter: 1
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary brags he can add two threat probabilities to get the union."
+    consequence: "Adding overlapping events double-counts and can exceed 1 -- a tell it's wrong."
+    quest_step: 16
+    narrative_hook: "RIVAL TRAP: Gary adds overlapping threats and gets a probability above 1."
+    statement: |
+      Gary brags: 'A Spearow targets Pikachu with probability 0.40 and dives low
+      with probability 0.35 -- so dangerous (targets OR low) is just 0.40 + 0.35
+      = 0.75, easy.' The overlap is P(target and low) = 0.18. Find the true
+      P(target or low) and name Gary's error.
+    solution: |
+      Addition rule: P(target or low) = 0.40 + 0.35 - 0.18 = 0.57.
+      Gary's error: he added overlapping events without subtracting the overlap
+      (double-counting the 0.18 that are both). His 0.75 over-counts by exactly
+      0.18; the correct union is 0.57.
+    answer: "0.57; Gary double-counted the 0.18 overlap"
+    shortcut_used: ["addition rule subtracts the overlap; bare sum double-counts"]
+    verify: "(abs((0.40 + 0.35 - 0.18) - 0.57) < 1e-9) and (abs((0.40 + 0.35) - 0.75) < 1e-9)"

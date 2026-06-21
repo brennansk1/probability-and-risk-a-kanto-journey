@@ -254,8 +254,11 @@ problems:
     quest_step: 10
     narrative_hook: "Three-Pokemon vanguard with mixed-sign covariances."
     statement: |
-      Var(X1)=2, Var(X2)=3, Var(X3)=4; Cov(X1,X2)=1, Cov(X1,X3)=-1, X2 and X3
-      uncorrelated. Find Var(X1+X2+X3).
+      Your three-Pokemon vanguard pushes a jammed boulder gate first; if the
+      total push swings too wide the gate slams back on them. Their outputs
+      X1, X2, X3 have Var(X1)=2, Var(X2)=3, Var(X3)=4; Cov(X1,X2)=1,
+      Cov(X1,X3)=-1, and X2, X3 are uncorrelated. Oak needs the spread of the
+      combined push before he sends them in: find Var(X1+X2+X3).
     solution: |
       Var = (2+3+4) + 2(Cov12 + Cov13 + Cov23) = 9 + 2(1 - 1 + 0) = 9 + 0 = 9.
     answer: "9"
@@ -307,8 +310,10 @@ problems:
     quest_step: 12
     narrative_hook: "Two linked cave attributes with density f=x+y on the unit square."
     statement: |
-      A pair has joint density f(x,y)=x+y on 0<=x<=1, 0<=y<=1. Find Cov(X,Y).
-      (You may use E[X]=E[Y]=7/12.)
+      Two linked cave attributes -- a ledge's grip X and its loose-rock risk Y --
+      follow the joint density f(x,y)=x+y on 0<=x<=1, 0<=y<=1, and Oak needs to
+      know whether better grip tends to come with more loose rock before the team
+      commits. Find Cov(X,Y). (You may use E[X]=E[Y]=7/12.)
     solution: |
       E[XY] = int_0^1 int_0^1 xy(x+y) dx dy
             = int_0^1 int_0^1 (x^2 y + x y^2) dx dy.
@@ -543,8 +548,12 @@ problems:
     quest_step: 21
     narrative_hook: "Front-pair total and rear-pair total share X2."
     statement: |
-      X1,X2,X3 have SD 2, 3, sqrt(5); rho12=0.5, rho13=-0.2, rho23=0.
-      A = X1+X2, B = X2+X3. Find Cov(A,B).
+      Oak splits the vanguard into a front pair and a rear pair to cross two
+      ledges at once, but the same climber X2 is roped into both pairs -- so if
+      one pair lurches, the shared climber drags the other. The outputs X1, X2,
+      X3 have SD 2, 3, sqrt(5); rho12=0.5, rho13=-0.2, rho23=0. The front-pair
+      total is A = X1+X2 and the rear-pair total is B = X2+X3. Find Cov(A,B) so
+      Oak knows how tightly the two pairs move together.
     solution: |
       Cov12=0.5*2*3=3; Cov13=-0.2*2*sqrt(5)=-0.89443; Cov23=0; Var(X2)=9.
       By bilinearity, Cov(A,B)=Cov(X1,X2)+Cov(X1,X3)+Cov(X2,X2)+Cov(X2,X3)

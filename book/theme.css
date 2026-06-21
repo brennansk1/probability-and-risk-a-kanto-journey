@@ -166,6 +166,13 @@ kbd, .kbd {
 .enrichment > :first-child { color: #6a6f76; font-weight: 700; }
 /* Distribution Pokédex profile frame (scan readout) */
 .dex-profile { page-break-inside: avoid; margin: 12pt auto; text-align: center; }
+/* "Now Playing" — watch-alongside TV-show tie-in (§29), a TV-screen motif */
+.now-playing {
+  border: 2px solid #5a3fb8; background: #f4f1fb;
+  border-radius: 6px; padding: 0.55em 0.9em; margin: 12pt 0;
+  page-break-inside: avoid;
+}
+.now-playing > :first-child { color: #5a3fb8; font-weight: 700; }
 
 /* POKEDEX ENTRY: the device screen (camera lens + indicator lights) */
 .pokedex-entry { border: 3px solid var(--kanto-red); background: #f3f9ff; }

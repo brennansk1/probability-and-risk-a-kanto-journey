@@ -5,8 +5,18 @@
      REAL derivation (never asserted). Length flexes to the concept; never trim to fit.
    • Calculator key-caps: write [2nd]{.kbd} and [ ... ]{.keystroke} as BARE markdown —
      NEVER inside backticks (backticks make pandoc render them as literal text).
-   • Figures: inline <figure><img src="../../assets/diagrams/chNN_slug.png" alt="...">;
-     every figure needs alt text; generate via figures/src/gen_chNN.py.
+   • WATCH-ALONGSIDE (§29): include a ::: now-playing box (Indigo-League episode tie-in)
+     after Where You Are; weave the cold-open/beats to track that episode; label any
+     embellishment as an in-world extension. Use the locked §29 episode map.
+   • VISUAL IMMERSION 10/10 (§30, rubric dim 12 must be >=9): visuals are a primary
+     immersion channel. Embed, all inline <figure><img ... alt> with real alt text:
+       - concept figures (>=1 per spatial/multi-step concept) via figures/src/gen_chNN.py;
+       - CAST portraits at their beats (Oak @ Briefing; gym leader @ Gym Battle; Team Rocket
+         @ Trap; Gary @ rival-trap) from assets/characters|vs/;
+       - MASCOT sprites making the RV concrete from assets/sprites/front|official/
+         (margins only, via place_sprite — IRON RULE: never over a curve/equation/axis);
+       - the earned badge @ Badge Earned (assets/badges/); item glyphs where natural.
+     A Tier-A chapter that renders as a wall of text with one figure FAILS.
    • Answer section heading is exactly "## Answers".
    • Drills = one escalating QUESTLINE (§28): commission -> Route legs -> Gym-Battle boss
      -> Elite post-game; quotas: audit >=3, rival_trap >=2, decision >=1; recycle the
@@ -25,6 +35,10 @@
 
 ## Where You Are — 60-Second Retrieval
 {Retrieve the prior chapter's load-bearing idea; name the Trainer Rank + badges held; 3 instant-check questions.}
+
+::: now-playing
+**📺 NOW PLAYING — Indigo League {EP0xx "title"}**  {1–2 lines: what happens this episode + how it sets up the chapter's math; "watch before/after this chapter." Reference only on-screen events; label embellishments.}
+:::
 
 ## Oak's Briefing — Learning Outcomes & Test-Out Gate
 {Outcomes discharged (tag SOA ids) + exam-weight signpost + a Test-Out Gate (timed problems with answers).}

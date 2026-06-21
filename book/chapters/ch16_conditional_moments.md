@@ -36,7 +36,7 @@ You've computed expectations before. You've never computed an expectation *insid
 
 ## Where You Are — 60-Second Retrieval
 
-**Rank: Veteran · Badges: 7.** On Victory Road, last chapter, you learned to handle several random variables moving **together**: you built **covariance** $\Cov(X,Y) = \E[XY] - \E[X]\E[Y]$, read its **sign** as the direction of co-movement, and — the load-bearing skill — found the variance of a **linear combination**, $\Var(aX+bY) = a^2\Var(X) + b^2\Var(Y) + 2ab\,\Cov(X,Y)$. Crucially, you saw that when two pieces are **independent**, the cross term vanishes and *variances simply add*.
+**Rank: Veteran Trainer · Badges: 7.** On Victory Road, last chapter, you learned to handle several random variables moving **together**: you built **covariance** $\Cov(X,Y) = \E[XY] - \E[X]\E[Y]$, read its **sign** as the direction of co-movement, and — the load-bearing skill — found the variance of a **linear combination**, $\Var(aX+bY) = a^2\Var(X) + b^2\Var(Y) + 2ab\,\Cov(X,Y)$. Crucially, you saw that when two pieces are **independent**, the cross term vanishes and *variances simply add*.
 
 That is exactly the foundation this chapter stands on. Everything in Viridian is built on one move: **take the mean (or the variance) of a conditional slice, and then watch what happens when you let the conditioning value vary.** And the "variances add for independent pieces" fact you just earned is precisely what makes a *sum of a random number of pieces* tractable. Take sixty seconds and prove you still own the pieces before reading on.
 
@@ -785,10 +785,10 @@ $$P(S>2600)\approx 1-\Phi\!\Big(\tfrac{2600-2000}{894.4}\Big)=1-\Phi(0.671)\appr
 
 <figure style="text-align:center; margin:1.5em auto;">
 <img src="../../assets/badges/earth_badge.png" alt="Earth Badge" style="width:140px; display:block; margin:0 auto;">
-<figcaption class="badge-caption"><strong>Earth Badge earned!</strong> Rank up: Veteran → 8 badges, Plateau-bound.</figcaption>
+<figcaption class="badge-caption"><strong>Earth Badge earned!</strong> Rank up: Veteran Trainer → Champion-ready (8 badges).</figcaption>
 </figure>
 
-You separated the fear from Giovanni's hidden dice from the fear from his Pokémon, handed him both numbers, and the eighth badge was yours. **Rank: Veteran (8 badges).** All eight badges in hand — only the Indigo Plateau remains.
+You separated the fear from Giovanni's hidden dice from the fear from his Pokémon, handed him both numbers, and the eighth badge was yours. **Rank: Champion-ready (8 badges).** All eight badges in hand — only the Indigo Plateau remains.
 
 **Mastery checklist — tick each before you move on (mapped 1-to-1 to the SOA outcomes):**
 

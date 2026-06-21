@@ -40,7 +40,7 @@ You look up the dark slope. Six Pokémon, six variances, and a tangle of who-mov
 
 ## Where You Are — 60-Second Retrieval
 
-**Rank: Ace Trainer · Badges: 8.** Every gym badge is on your case; the road from Viridian now climbs into Victory Road, the last leg before the Indigo Plateau. You arrive carrying everything from the joint-distribution chapters and the chapter on expectation. Two ideas from back there are the ground this chapter stands on.
+**Rank: Veteran Trainer · Badges: 7.** Seven badges earned; only Giovanni's Earth Badge remains. The road from Viridian now climbs into Victory Road, the last leg before the Indigo Plateau. You arrive carrying everything from the joint-distribution chapters and the chapter on expectation. Two ideas from back there are the ground this chapter stands on.
 
 First, **expectation is linear, always** — no conditions, no fine print:
 
@@ -820,11 +820,11 @@ $$P(N\ge5)\approx 1-0.4405=0.5595.$$
 
 **C15.8.** 🟡 *(Cave RNG joint pmf of boulders cleared and Onix met.)* The joint pmf of $(X,Y)$ is $p(0,0)=0.2$, $p(1,0)=0.2$, $p(0,1)=0.1$, $p(1,1)=0.3$, $p(2,1)=0.2$. Compute $\Cov(X,Y)$ and the correlation $\rho$.
 
-**C15.9.** 🟡 *(Three-Pokémon vanguard with mixed-sign covariances.)* $\Var(X_1)=2$, $\Var(X_2)=3$, $\Var(X_3)=4$; $\Cov(X_1,X_2)=1$, $\Cov(X_1,X_3)=-1$, and $X_2,X_3$ uncorrelated. Find $\Var(X_1+X_2+X_3)$.
+**C15.9.** 🟡 *(Three-Pokémon vanguard with mixed-sign covariances.)* Your three-Pokémon vanguard pushes a jammed boulder gate first; if the total push swings too wide the gate slams back on them. Their outputs $X_1,X_2,X_3$ have $\Var(X_1)=2$, $\Var(X_2)=3$, $\Var(X_3)=4$; $\Cov(X_1,X_2)=1$, $\Cov(X_1,X_3)=-1$, and $X_2,X_3$ uncorrelated. Oak needs the spread of the combined push before he sends them in: find $\Var(X_1+X_2+X_3)$.
 
 **C15.10.** 🟡 *(Load-weighted team total.)* With the variances and covariances of C15.9, the load-weighted total is $W=X_1+2X_2+3X_3$. Find $\Var(W)$.
 
-**C15.11.** 🔵 *(Two linked cave attributes with a continuous density.)* A pair has joint density $f(x,y)=x+y$ on the unit square $0\le x\le1,\ 0\le y\le1$. Find $\Cov(X,Y)$. (You may use $\E[X]=\E[Y]=\tfrac{7}{12}$.)
+**C15.11.** 🔵 *(Two linked cave attributes with a continuous density.)* Two linked cave attributes — a ledge's grip $X$ and its loose-rock risk $Y$ — follow the joint density $f(x,y)=x+y$ on the unit square $0\le x\le1,\ 0\le y\le1$, and Oak needs to know whether better grip tends to come with more loose rock before the team commits. Find $\Cov(X,Y)$. (You may use $\E[X]=\E[Y]=\tfrac{7}{12}$.)
 
 **C15.12.** 🔵 *(RIVAL TRAP — Gary reads $\rho=0$ as "independent.")* Let $X$ be uniform on $\{-1,0,1\}$ (each prob $\tfrac13$) and $Y=X^2$. Gary glances at the data and announces, "$\rho=0$, so $X$ and $Y$ are independent — send them on separate ropes." Show $\Cov(X,Y)=0$, show $X$ and $Y$ are **not** independent, and name Gary's error.
 
@@ -846,7 +846,7 @@ $$P(N\ge5)\approx 1-0.4405=0.5595.$$
 
 **C15.17.** 🔵 *(A random number of pushes, each expending random strength.)* You make $N\sim\Poisson(3)$ pushes, each expending independent strength $S_i$ with $\E[S]=2$, $\Var(S)=1$, independent of $N$. The total expended is $T=\sum_{i=1}^N S_i$. Using $\E[T]=\E[N]\E[S]$ and $\Var(T)=\E[N]\Var(S)+\Var(N)\E[S]^2$, find $\E[T]$ and $\Var(T)$.
 
-**C15.18.** 🔵 *(Front-pair total and rear-pair total share $X_2$.)* With $X_1,X_2,X_3$ as in the Gym Battle capstone ($\sigma_1=2,\sigma_2=3,\sigma_3=\sqrt5$; $\rho_{12}=0.5,\rho_{13}=-0.2,\rho_{23}=0$), Oak wants the covariance between the *front-pair total* $A=X_1+X_2$ and the *rear-pair total* $B=X_2+X_3$ (note $X_2$ appears in both). Use bilinearity to find $\Cov(A,B)$.
+**C15.18.** 🔵 *(Front-pair total and rear-pair total share $X_2$.)* Oak splits the vanguard into a front pair and a rear pair to cross two ledges at once, but the same climber $X_2$ is roped into both pairs — so if one pair lurches, the shared climber drags the other. With $X_1,X_2,X_3$ as in the Gym Battle capstone ($\sigma_1=2,\sigma_2=3,\sigma_3=\sqrt5$; $\rho_{12}=0.5,\rho_{13}=-0.2,\rho_{23}=0$), Oak wants the covariance between the *front-pair total* $A=X_1+X_2$ and the *rear-pair total* $B=X_2+X_3$. Use bilinearity to find $\Cov(A,B)$ so he knows how tightly the two pairs move together.
 
 **C15.19.** 🔵 *(Joint moment of the total.)* Two teammates have $\E[X]=3$, $\E[Y]=5$, $\Var(X)=4$, $\Var(Y)=9$, $\Cov(X,Y)=2$. Find the second moment of the team total $\E[(X+Y)^2]$ and the product moment $\E[XY]$.
 :::
@@ -964,8 +964,8 @@ $$\Var(X+Y)=4+9+2(2)=17, \quad \E[X+Y]=8, \quad \E[(X+Y)^2]=17+8^2=\boxed{81}.$$
 ## Badge Earned — the Victory Road Medallion
 
 <figure style="text-align:center; margin:1.5em auto;">
-<img src="../../assets/badges/earth_badge.png" alt="The Victory Road checkpoint medallion" style="width:140px; display:block; margin:0 auto;">
-<figcaption class="badge-caption"><strong>Victory Road Cleared — checkpoint medallion!</strong> The team climbed as one total.</figcaption>
+<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with Victory Road cleared and the Indigo Plateau ahead" style="width:140px; display:block; margin:0 auto;">
+<figcaption class="badge-caption"><strong>Victory Road — the Indigo Plateau in sight.</strong> The team climbed as one total; seven badges in hand, only Giovanni's Earth Badge left to earn.</figcaption>
 </figure>
 
 You handed Oak the honest risk profile, the team held together on the cliff, and you cleared Victory Road before dusk — the Indigo Plateau is now in sight. You earn the **Victory Road Cleared** medallion when you can, unaided:

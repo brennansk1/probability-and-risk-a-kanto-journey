@@ -287,6 +287,8 @@ All prior open threads are locked below — this plan is implementation-ready:
 - Build discipline — four-layer verification, the wave engine, dossiers & inventory → **§26**.
 - Figure-embedding architecture — token system + manifest + no-mutation build copy → **§27**.
 - True progression & immersion — drill archetypes, the chapter questline, the Trainer Rank ladder → **§28**.
+- Watch-Alongside TV-show tie-in — the locked episode map + `now-playing` boxes + viewing-guide appendix → **§29**.
+- Visual immersion — sprites + figures to 10/10 (per-chapter visual manifest; rubric dim 12) → **§30**.
 
 ---
 
@@ -535,7 +537,7 @@ Three full exams, each **30 questions / 3 hours / scored 0–10 (6 passes)**, we
 
 **Global DoD:** both coverage matrices (§8) green; `make verify` (seed 151) and `make lint` clean (incl. token/manifest + grid-count assertions, §27); `make book` + `make workbook` render without artifacts (0 "could not fetch"); asset audit passes (every referenced asset exists; every chapter has banner + progress strip + manifest figures + Pokédex profiles); a **full blind re-derivation across all chapters** with zero unresolved discrepancies; the **independent Exam-P tutor re-grade** (Layer 4) gives a **letter grade of A** on the comprehensive rubric — the QA loop (fix → re-grade) repeats until an A is earned; nothing ships below an A; copyright disclaimer intact.
 
-**The grade-until-A gate (Layer 4, mandatory).** After a chapter is fully generated, a fresh independent Exam-P **tutor agent** (no authoring context) grades it on a comprehensive rubric and assigns a **letter grade**. Rubric dimensions (each scored, with evidence): (1) mathematical correctness & rigor; (2) **teaching completeness — every concept fully developed with NO compression** (full nine-beat, full derivation, full ramp; flag any rushed/truncated/over-merged concept); (3) notation taught before use; (4) pacing & one-lesson focus; (5) structure/format adherence (§6); (6) immersion in openers AND drills + the questline (§28); (7) calculator integration (§13); (8) Cold-Read Test; (9) Skip Test; (10) exam-readiness (would these problems + teaching produce a 9–10 scorer). The tutor returns a letter grade + a prioritized defect list. **If below A, fix every item and re-grade; loop until A.** Only then is the chapter ✅ in `BOOK_INVENTORY.md`. The same gate runs once more on the full assembled book before release.
+**The grade-until-A gate (Layer 4, mandatory).** After a chapter is fully generated, a fresh independent Exam-P **tutor agent** (no authoring context) grades it on a comprehensive rubric and assigns a **letter grade**. Rubric dimensions (each scored, with evidence): (1) mathematical correctness & rigor; (2) **teaching completeness — every concept fully developed with NO compression** (full nine-beat, full derivation, full ramp; flag any rushed/truncated/over-merged concept); (3) notation taught before use; (4) pacing & one-lesson focus; (5) structure/format adherence (§6); (6) immersion in openers AND drills + the questline (§28); (7) calculator integration (§13); (8) Cold-Read Test; (9) Skip Test; (10) exam-readiness (would these problems + teaching produce a 9–10 scorer); (11) **watch-alongside fidelity** (§29) — an accurate `now-playing` episode tie-in whose cold-open/beats track the cited Indigo-League episode(s), embellishments labeled, so reading reinforces watching; (12) **visual immersion** (§30) — sprites + figures rich, pervasive, and tasteful (concept figures + character portraits + mascot sprites + the earned badge), all honoring the iron rule. The tutor returns a letter grade + a prioritized defect list. **An A requires dimension 12 (visual immersion) ≥ 9 and dimension 11 present and accurate.** **If below A, fix every item and re-grade; loop until A.** Only then is the chapter ✅ in `BOOK_INVENTORY.md`. The same gate runs once more on the full assembled book before release.
 
 **Execution roadmap (ordered):**
 1. **Port infrastructure** (§21/§22): copy v1 pipeline to root, apply the deltas, confirm an empty tree runs `make html`.
@@ -624,4 +626,54 @@ The questline is a **narrative ordering over a required coverage manifest**, not
 - `progress_strip()` / `vs_banner()` read `book/ranks.yaml` to render rank + badge gallery; questline interstitial beats render from the bank's `quest_step` ordering.
 - **DoD additions (§25):** each chapter's drills form a coherent questline (commission → legs → Gym-Battle boss → optional post-game) that pays off the cold-open; archetype quotas + dossier coverage manifest both met; ≥1 drill recycles the chapter's canonical error; the cast micro-arc is present; chained problems are self-contained for `verify:`; the progress strip shows correct rank/badges/readiness.
 
-*Pokémon is owned by Nintendo / Game Freak / Creatures Inc.; educational, non-commercial work; exam details verified against the SOA Exam P syllabus (September 2026).*
+---
+
+## 29. Watch-Alongside — the TV-show tie-in (a core immersion pillar)
+
+**Vision:** the book is built so a learner can **watch the Pokémon *Indigo League* anime alongside reading** — each chapter's cold-open and story beats track specific episode(s), so watching and reading reinforce each other and interest stays high. The real-world actuarial bridge (§ "From Kanto to the Real World") is kept; the show is the hook, the math is the cargo, the real world is the payoff.
+
+**Mechanism — a per-chapter `::: now-playing` box** (placed right after the Cold Open / "Where You Are"): *"📺 NOW PLAYING — Indigo League EP0xx '<title>'"*, 1–2 lines on what happens in that episode and how it sets up the chapter's math, and a "watch this before/after the chapter" cue. **Fidelity rule:** reference only events that actually occur in the cited episode; where the book extends canon (e.g., the Pokémon-Mansion paired logs in ch14, the Safari-Zone deductible job in ch06), **label it an in-world extension**, never claim it's on screen.
+
+**The locked episode map** (verified against Serebii/Bulbapedia):
+
+| Ch | Locale | Watch-Alongside (Indigo League) |
+|---|---|---|
+| 00 | Pallet Town | EP001 *Pokémon! I Choose You!* |
+| 01 | Route 1 (Spearow swarm) | EP001 + EP002 *Pokémon Emergency!* |
+| 02 | Cerulean / Misty | EP007 *The Water Flowers of Cerulean City* |
+| 03 | S.S. Anne → Vermilion / Surge | EP014 *Electric Shock Showdown* + EP015 *Battle Aboard the St. Anne* |
+| 04 | Viridian Forest / Pewter / Brock | EP003 *Ash Catches a Pokémon* · EP004 *Challenge of the Samurai* · EP005 *Showdown in Pewter City* |
+| 05 | Lavender Tower / Celadon / Erika | EP023 *The Tower of Terror* · EP024 *Haunter Versus Kadabra* · EP026 *Pokémon Scent-sation!* |
+| 06 | Fuchsia / Safari / Koga | EP032 *The Ninja Poké-Showdown* (+ Safari Zone EP035 *The Legend of Dratini*) |
+| 07 | Checkpoint A | recap — rewatch EP001–026 highlights |
+| 08 | Bill's lighthouse (calculus) | EP013 *Mystery at the Lighthouse* |
+| 09 | Saffron / Sabrina | EP022 *Abra and the Psychic Showdown* + EP024 *Haunter Versus Kadabra* |
+| 10 | Saffron / Silph Co. | EP022–024 (Sabrina arc) |
+| 11 | the smooth wilds | cross-Kanto travel episodes (no single gym) |
+| 12 | the Grand Gathering (CLT) | EP077 *Round One – Begin!* (the League crowd = the bell of thousands) |
+| 13 | Cinnabar Lab | EP056 *Volcanic Panic* (Cinnabar arc) |
+| 14 | Cinnabar Mansion / Blaine | EP056 *Volcanic Panic* (Blaine/Volcano; Mansion logs = in-world extension) |
+| 15 | Victory Road | the road to the Plateau (~EP075–076) |
+| 16 | Viridian Gym / Giovanni | EP063 *The Battle of the Badge* |
+| 17 | Indigo Plateau / Elite Four | EP077–080 (League rounds) |
+| 18 | Checkpoint B | EP077 |
+| 19 | Champion = the exam | EP081 *Friend and Foe Alike* + EP082 *Friends to the End* (Ash vs Ritchie) |
+
+**Appendix add:** an **Episode Companion (Viewing Guide)** — the full chapter↔episode order so the reader can binge the season alongside the book, with each entry noting the concept that episode motivates.
+
+---
+
+## 30. Visual immersion — sprites + figures to 10/10 (a core immersion pillar)
+
+**Vision:** visuals are a **primary immersion channel, not decoration.** Every chapter should feel illustrated — concept figures, the actual Pokémon as the random variables, the cast at their beats, the badge you earn — all under the **IRON RULE** (never over a curve/equation/axis; math clarity wins absolutely; cover the art with your hand and the math still teaches). Target: a reader is never more than a beat away from a relevant image, yet no equation is ever crowded.
+
+**Per-chapter visual manifest (minimum — all inline `<figure><img …>` with descriptive alt text; pixel sprites use `image-rendering: pixelated`):**
+- **Concept figures** — ≥1 per spatial/multi-step concept (the §16 list); matplotlib, `chapter_accent(ch)` tint, color-blind-safe (labels + hatching), 300 DPI.
+- **Cast portraits at their beats** — Oak at Oak's Briefing; the **gym leader** at the Gym Battle; **Team Rocket** at the Trap; **Gary** at a rival-trap drill; Misty/Brock where they pose a sub-problem. Sources: `assets/characters/`, `assets/vs/` (higher-res VS portraits).
+- **Mascot sprites make the RV concrete** — the chapter's distribution/scenario mascots (`assets/sprites/front/` or `official/`) composited in figure margins via `sprite_util.place_sprite()` and/or beside the relevant Pokédex Entry.
+- **The earned badge** at "Badge Earned" (`assets/badges/`); **item glyphs** (`assets/items/`, e.g., Poké Balls) as wayfinding where natural.
+- **Chrome (chrome pass):** a chapter banner (leader VS portrait + type color + the §28 progress strip). Until the chrome pass, authors stub the header with an inline leader portrait + type accent.
+
+**Grading:** this is rubric dimension **12** (§25) and **must score ≥9 for an A**. The asset audit also counts embedded images per chapter (a Tier-A chapter that renders as a wall of text with one figure fails). The iron rule is non-negotiable: a flourish that competes with a formula is cut.
+
+*Pokémon is owned by Nintendo / Game Freak / Creatures Inc.; educational, non-commercial work; exam details verified against the SOA Exam P syllabus (September 2026). All anime/sprite assets are used for a private, non-distributed educational build.*

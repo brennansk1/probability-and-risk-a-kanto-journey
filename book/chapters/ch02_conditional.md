@@ -40,7 +40,7 @@ And you don't yet know how. *How do you turn a clue into a probability of guilt?
 
 ## Where You Are — 60-Second Retrieval
 
-**Rank: Rookie · Badges: 0.** You have your Trainer's License from Route 1, but no gym badge yet — Cerulean is your first. Back on Route 1, in the previous chapter, you built the **sample space** $S$ — the set of all outcomes — and learned the axioms: $0 \le P(A) \le 1$, $P(S)=1$, and that disjoint events add. You drew **Venn diagrams** to picture an event $A$ as a region inside the rectangle $S$, and you used the **complement rule** $P(A^c) = 1 - P(A)$ to turn "at least one" into "one minus none."
+**Rank: Rookie Trainer · Badges: 0.** You have your Trainer's License from Route 1, but no gym badge yet — Cerulean is your first. Back on Route 1, in the previous chapter, you built the **sample space** $S$ — the set of all outcomes — and learned the axioms: $0 \le P(A) \le 1$, $P(S)=1$, and that disjoint events add. You drew **Venn diagrams** to picture an event $A$ as a region inside the rectangle $S$, and you used the **complement rule** $P(A^c) = 1 - P(A)$ to turn "at least one" into "one minus none."
 
 That is exactly the foundation this chapter stands on. **Conditioning** — the first idea of Cerulean — is nothing more than *cropping that Venn rectangle down to a smaller world*. Take sixty seconds and prove you still own these before reading on.
 
