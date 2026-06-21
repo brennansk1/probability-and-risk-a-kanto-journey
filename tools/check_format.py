@@ -38,7 +38,8 @@ APX_DIR = ROOT / "book" / "appendices"
 ASSETS = ROOT / "assets"
 
 KNOWN_BOX_CLASSES = {"pokedex-entry", "trainers-tip", "team-rocket", "kanto-realworld",
-                     "cold-open", "problem-set", "answer-key", "concept-gate"}
+                     "cold-open", "problem-set", "answer-key", "concept-gate",
+                     "now-playing", "enrichment", "dex-profile"}
 
 # Macros defined in book/mathjax-preamble.md plus common TeX commands.
 KNOWN_MACROS = {
@@ -50,6 +51,9 @@ KNOWN_MACROS = {
     r"\theta", r"\lambda", r"\alpha", r"\beta", r"\gamma", r"\Gamma", r"\mu", r"\sigma",
     r"\Phi", r"\phi", r"\rho", r"\pi", r"\sqrt", r"\left", r"\right", r"\cdot", r"\times",
     r"\wedge", r"\vee", r"\mid", r"\leq", r"\geq", r"\neq", r"\approx", r"\sim", r"\in",
+    r"\to", r"\gg", r"\ll", r"\le", r"\ge", r"\overset", r"\big", r"\Big", r"\bigg", r"\Bigg",
+    r"\Rightarrow", r"\rightarrow", r"\leadsto", r"\mapsto", r"\binom", r"\ln", r"\exp",
+    r"\texttt", r"\textbf", r"\text", r"\quad", r"\qquad", r"\dots", r"\ldots", r"\cdots",
     r"\binom", r"\text", r"\mathbf", r"\mathcal", r"\operatorname", r"\begin", r"\end",
     r"\partial", r"\quad", r"\qquad", r"\ldots", r"\cdots", r"\overline", r"\underbrace",
     r"\perp", r"\Pr", r"\exp", r"\ln", r"\log", r"\max", r"\min", r"\bar", r"\hat",
@@ -107,7 +111,7 @@ def audit_file(path: Path):
         errors.append(f"{rel}: unbalanced inline '$' delimiters")
 
     # ---- per math-span checks ----
-    for m in re.finditer(r'\$\$(.+?)\$\$', text, re.S):
+    for m in re.finditer(r'\$\$(.+?)\$\$', math_text, re.S):
         span = m.group(1)
         if not span.strip():
             errors.append(f"{rel}: empty $$ math span")

@@ -1,0 +1,633 @@
+# Problem bank — Chapter 3 (S.S. Anne -> Vermilion City): Discrete random variables
+# & moments. pmf/cdf/survival; mode, median/percentiles; expected value, tools for
+# means, survival-function (Darth-Vader) method; variance & Var(aX+b); MGF; discrete
+# uniform.  Outcomes 2a, 2c, 2d.  Tier-A chapter.  Locale: Vermilion (Lt. Surge /
+# Thunder).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   provenance, difficulty (1-5), actor, stakes, consequence, quest_step,
+#   narrative_hook, statement, solution, answer, shortcut_used, calc_skill (opt), verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes math,
+# st (scipy.stats), __import__). Chained problems RESTATE the prior value as a given so
+# verify never depends on another problem's answer.
+#
+# Immersion quotas met: audit >=3 (C3.8, C3.16, plus the recycled Team-Rocket mode-as-
+# mean error in C3.8); rival_trap >=2 (C3.13, C3.23); decision >=1 (C3.21, C3.26).
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C3.1
+    chapter: 3
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2a", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "the S.S. Anne purser"
+    stakes: "She needs the single most-common badge count to size the on-board prize tiers."
+    consequence: "Get the center wrong and the prize tiers misfire for most passengers."
+    quest_step: 1
+    tia_section: "A.3.1-A.3.2"
+    narrative_hook: "Reading the passenger badge-count ledger for the most likely and middle value."
+    statement: |
+      Passenger badge counts B in {0,1,2,3} have pmf 0.50, 0.30, 0.15, 0.05.
+      Find the mode and the median of B.
+    solution: |
+      Mode = value with the largest mass = 0 (p(0)=0.50). cdf = 0.50, 0.80, 0.95,
+      1.00; first cdf >= 0.5 is F(0)=0.50, so median = 0.
+    answer: "mode 0, median 0"
+    shortcut_used: ["mode = tallest bar", "median = first cdf >= 0.5"]
+    verify: "(lambda p:(p.index(max(p))==0) and (next(i for i,c in enumerate([sum(p[:j+1]) for j in range(len(p))]) if c>=0.5)==0))([0.50,0.30,0.15,0.05])"
+
+  - id: C3.2
+    chapter: 3
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Pikachu"
+    stakes: "Surge wants the average number of Thunder Shocks Pikachu lands in a warm-up bout."
+    consequence: "The expected shock count sets the energy budget for the real gym battle."
+    quest_step: 2
+    tia_section: "A.3.3"
+    narrative_hook: "Averaging Pikachu's Thunder Shocks per warm-up bout."
+    statement: |
+      The number of Thunder Shocks N in {1,2,3} has pmf 0.5, 0.3, 0.2. Find E[N].
+    solution: |
+      E[N] = 1(0.5) + 2(0.3) + 3(0.2) = 0.5 + 0.6 + 0.6 = 1.7.
+    answer: 1.7
+    shortcut_used: ["E[X] = sum k p(k)"]
+    calc_skill: 1var_stats
+    verify: "abs((1*0.5 + 2*0.3 + 3*0.2) - 1.7) < 1e-9"
+
+  - id: C3.3
+    chapter: 3
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2a", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "the lifeboat crew"
+    stakes: "The captain wants the expected minutes to a lifeboat launch, straight from the survival report."
+    consequence: "Expected launch time drives the evacuation schedule as the ship lists."
+    quest_step: 3
+    tia_section: "A.3.5"
+    narrative_hook: "Computing expected launch time directly from the captain's survival report."
+    statement: |
+      A lifeboat's time-to-launch X in {0,1,2,3} minutes has survival values
+      S(0)=0.8, S(1)=0.5, S(2)=0.2, S(3)=0.05. Find E[X] by the survival
+      (Darth-Vader) method.
+    solution: |
+      E[X] = sum_{k>=0} S(k) = 0.8 + 0.5 + 0.2 + 0.05 = 1.55.
+    answer: 1.55
+    shortcut_used: ["E[X] = sum S(k) for non-negative integer X"]
+    verify: "abs((0.8 + 0.5 + 0.2 + 0.05) - 1.55) < 1e-9"
+
+  - id: C3.4
+    chapter: 3
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "the captain"
+    stakes: "He needs the spread of intact decks to judge how uncertain the damage forecast is."
+    consequence: "A large variance means the single-number forecast cannot be trusted alone."
+    quest_step: 4
+    tia_section: "A.3.6-A.3.7"
+    narrative_hook: "Finding the variance of the intact-deck count from its two moments."
+    statement: |
+      The ship's intact-deck RV X has E[X]=2.15 and E[X^2]=6.05 (both given). Find
+      Var(X) and the standard deviation sigma.
+    solution: |
+      Var(X) = E[X^2] - (E[X])^2 = 6.05 - 2.15^2 = 6.05 - 4.6225 = 1.4275.
+      sigma = sqrt(1.4275) ~ 1.195.
+    answer: "Var = 1.4275, sigma ~ 1.195"
+    shortcut_used: ["Var = E[X^2] - (E[X])^2"]
+    calc_skill: 1var_stats
+    verify: "abs((6.05 - 2.15**2) - 1.4275) < 1e-9 and abs((6.05-2.15**2)**0.5 - 1.1948) < 1e-3"
+
+  - id: C3.5
+    chapter: 3
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "a marine surveyor"
+    stakes: "She prices salvage as $4M per intact deck plus a $5M flat fee and needs its mean and spread."
+    consequence: "The salvage estimate feeds the insurer's payout reserve."
+    quest_step: 5
+    tia_section: "A.3.4, A.3.7"
+    narrative_hook: "Rescaling the intact-deck RV into a dollar salvage estimate Y = 4X + 5."
+    statement: |
+      Each intact deck is valued at $4M plus a flat $5M survey fee, so Y = 4X + 5.
+      Given E[X]=2.15 and Var(X)=1.4275, find E[Y] and Var(Y).
+    solution: |
+      E[Y] = 4 E[X] + 5 = 4(2.15) + 5 = 13.6.
+      Var(Y) = 4^2 Var(X) = 16(1.4275) = 22.84 (the +5 adds no variance).
+    answer: "E[Y] = 13.6, Var(Y) = 22.84"
+    shortcut_used: ["E[aX+b]=aE[X]+b", "Var(aX+b)=a^2 Var(X)"]
+    verify: "abs((4*2.15 + 5) - 13.6) < 1e-9 and abs((16*1.4275) - 22.84) < 1e-9"
+
+  - id: C3.6
+    chapter: 3
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c", "2d"]
+    distributions: ["discrete_uniform"]
+    provenance: original
+    difficulty: 1
+    actor: "Lt. Surge"
+    stakes: "He sends you onto one of eight training pads chosen uniformly at random."
+    consequence: "The pad number's mean and spread calibrate the gym's difficulty meter."
+    quest_step: 6
+    tia_section: "A.3.8"
+    narrative_hook: "Mean and variance of a uniformly random training-pad number."
+    statement: |
+      X is discrete uniform on {1,2,...,8}. Find E[X] and Var(X).
+    solution: |
+      Discrete uniform on {1..n}, n=8: E[X] = (n+1)/2 = 4.5;
+      Var(X) = (n^2 - 1)/12 = 63/12 = 5.25.
+    answer: "E[X] = 4.5, Var(X) = 5.25"
+    shortcut_used: ["discrete uniform mean (n+1)/2, variance (n^2-1)/12"]
+    verify: "abs(((8+1)/2) - 4.5) < 1e-9 and abs(((8**2-1)/12) - 5.25) < 1e-9"
+
+  - id: C3.7
+    chapter: 3
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2a", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "the purser"
+    stakes: "She needs the quartile cut-points of the intact-deck distribution for the damage bulletin."
+    consequence: "Quartiles communicate the spread to passengers without a full table."
+    quest_step: 7
+    tia_section: "A.3.2"
+    narrative_hook: "Reading the 25th and 75th percentiles off the ship's cdf."
+    statement: |
+      For the ship's RV X with cdf 0.10, 0.30, 0.60, 0.85, 1.00 on k=0..4, find the
+      25th and 75th percentiles.
+    solution: |
+      First cdf >= 0.25 is F(1)=0.30, so the 25th percentile is 1.
+      First cdf >= 0.75 is F(3)=0.85, so the 75th percentile is 3.
+    answer: "25th = 1, 75th = 3"
+    shortcut_used: ["percentile = smallest k with F(k) >= p"]
+    verify: "(lambda F:(next(k for k,c in enumerate(F) if c>=0.25)==1) and (next(k for k,c in enumerate(F) if c>=0.75)==3))([0.10,0.30,0.60,0.85,1.00])"
+
+  - id: C3.26
+    chapter: 3
+    tier: route_trainer
+    archetype: decision
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "a cautious casino player"
+    stakes: "Two machines pay the same on average; the player must pick the steadier one to protect a thin bankroll."
+    consequence: "Choosing the higher-variance machine risks ruin despite the equal mean."
+    quest_step: 8
+    tia_section: "A.3.6-A.3.7"
+    narrative_hook: "Choosing between two equal-mean casino machines by their variance."
+    statement: |
+      Machine A pays X_A in {0,4} each w.p. 0.5; Machine B pays X_B in {1,3} each
+      w.p. 0.5. Find the common mean, then each variance, and say which machine a
+      risk-averse player should choose.
+    solution: |
+      Means: E[X_A] = (0+4)/2 = 2, E[X_B] = (1+3)/2 = 2 (equal).
+      Var(X_A) = (0^2+4^2)/2 - 2^2 = 8 - 4 = 4.
+      Var(X_B) = (1^2+3^2)/2 - 2^2 = 5 - 4 = 1.
+      Same mean, but A has four times the variance; a risk-averse player chooses B.
+    answer: "mean 2; Var_A = 4 > Var_B = 1; pick B"
+    shortcut_used: ["equal means -> decide on variance", "Var = E[X^2] - (E[X])^2"]
+    verify: "abs(((0+4)/2)-((1+3)/2))<1e-9 and abs(((0**2+4**2)/2-2**2)-4)<1e-9 and abs(((1**2+3**2)/2-2**2)-1)<1e-9"
+
+  # ===================== GYM BATTLES (the boss fight) =====================
+
+  - id: C3.8
+    chapter: 3
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2a", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Team Rocket (Meowth)"
+    stakes: "Meowth bets the team's whole budget that the casino's average payout equals its most common payout."
+    consequence: "Reporting the mode as the mean over-states the average and busts the budget."
+    quest_step: 9
+    tia_section: "A.3.1, A.3.3"
+    narrative_hook: "Catching Meowth reporting the casino machine's mode as its mean."
+    statement: |
+      The token machine's winnings W in {0,1,2,3,4} have pmf 0.10, 0.15, 0.20,
+      0.25, 0.30. Meowth's note says "the average payout is 4 tokens -- that's the
+      most common result." Find the true E[W] and name Meowth's error.
+    solution: |
+      E[W] = 0(0.10)+1(0.15)+2(0.20)+3(0.25)+4(0.30)
+           = 0 + 0.15 + 0.40 + 0.75 + 1.20 = 2.5.
+      Meowth reported the MODE (4, the largest mass) as the MEAN. The mean is the
+      probability-weighted average 2.5, dragged down by the low/zero payouts.
+    answer: "E[W] = 2.5 (Meowth confused mode with mean)"
+    shortcut_used: ["mean = sum k p(k), NOT the mode"]
+    calc_skill: 1var_stats
+    verify: "abs((0*0.10+1*0.15+2*0.20+3*0.25+4*0.30) - 2.5) < 1e-9 and ([0.10,0.15,0.20,0.25,0.30].index(max([0.10,0.15,0.20,0.25,0.30]))==4)"
+
+  - id: C3.9
+    chapter: 3
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "the salvage assessor"
+    stakes: "The insurer needs the mean, variance, and SD of the wreck's salvage value to set a reserve."
+    consequence: "Center and spread together fix both the reserve and its risk load."
+    quest_step: 10
+    tia_section: "A.3.3, A.3.6-A.3.7"
+    narrative_hook: "Full center-and-spread of the wreck's dollar salvage value."
+    statement: |
+      Salvage value V in {0,10,20,30,40} ($M) has pmf 0.15, 0.25, 0.30, 0.20, 0.10.
+      Find E[V], Var(V), and sigma.
+    solution: |
+      E[V] = 0(0.15)+10(0.25)+20(0.30)+30(0.20)+40(0.10) = 2.5+6+6+4 = 18.5.
+      E[V^2] = 0+100(0.25)+400(0.30)+900(0.20)+1600(0.10) = 25+120+180+160 = 485.
+      Var(V) = 485 - 18.5^2 = 485 - 342.25 = 142.75; sigma ~ 11.95.
+    answer: "E[V] = 18.5, Var(V) = 142.75, sigma ~ 11.95"
+    shortcut_used: ["E and Var from a pmf via 1-Var Stats"]
+    calc_skill: 1var_stats
+    verify: "(lambda k,p:(abs(sum(a*b for a,b in zip(k,p))-18.5)<1e-9) and (abs((sum(a*a*b for a,b in zip(k,p))-sum(a*b for a,b in zip(k,p))**2)-142.75)<1e-9))([0,10,20,30,40],[0.15,0.25,0.30,0.20,0.10])"
+
+  - id: C3.10
+    chapter: 3
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2a", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "the ship's engineer"
+    stakes: "Only the generator's cdf survived the flooding; the engineer still needs its expected run-length."
+    consequence: "Expected run-length sets how long emergency power can be counted on."
+    quest_step: 11
+    tia_section: "A.3.5"
+    narrative_hook: "Recovering the expected run-length from a cdf via the survival method."
+    statement: |
+      A generator's run-length X in {0,1,2,3,4} has cdf F = 0.10, 0.35, 0.65, 0.90,
+      1.00. Find E[X] by the Darth-Vader method.
+    solution: |
+      S(k) = 1 - F(k) = 0.90, 0.65, 0.35, 0.10, 0.
+      E[X] = sum S(k) = 0.90 + 0.65 + 0.35 + 0.10 = 2.0.
+    answer: 2.0
+    shortcut_used: ["E[X] = sum (1 - F(k))"]
+    verify: "abs(sum(1-c for c in [0.10,0.35,0.65,0.90,1.00]) - 2.0) < 1e-9"
+
+  - id: C3.11
+    chapter: 3
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c", "2d"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "the Pokedex Actuary Mode"
+    stakes: "Only the MGF of a damage RV was logged; you must recover its moments and pmf."
+    consequence: "Reconstructing the moments from the MGF unlocks the rest of the analysis."
+    quest_step: 12
+    tia_section: "A.3.8"
+    narrative_hook: "Extracting moments from a logged moment generating function."
+    statement: |
+      An RV has MGF M_X(t) = 0.2 + 0.5 e^t + 0.3 e^{2t}. Find E[X] and Var(X) by
+      differentiating at t=0, and identify the pmf.
+    solution: |
+      pmf reads off the coefficients: p(0)=0.2, p(1)=0.5, p(2)=0.3.
+      M'(t) = 0.5 e^t + 0.6 e^{2t} -> E[X] = M'(0) = 0.5 + 0.6 = 1.1.
+      M''(t) = 0.5 e^t + 1.2 e^{2t} -> E[X^2] = M''(0) = 0.5 + 1.2 = 1.7.
+      Var(X) = 1.7 - 1.1^2 = 1.7 - 1.21 = 0.49.
+    answer: "E[X] = 1.1, Var(X) = 0.49; pmf 0.2, 0.5, 0.3"
+    shortcut_used: ["E[X^r] = M^{(r)}(0)", "Var = E[X^2] - (E[X])^2"]
+    verify: "abs((0.5+0.6) - 1.1) < 1e-9 and abs(((0.5+1.2) - (0.5+0.6)**2) - 0.49) < 1e-9"
+
+  - id: C3.12
+    chapter: 3
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c", "2d"]
+    distributions: ["discrete_uniform"]
+    provenance: original
+    difficulty: 2
+    actor: "Lt. Surge"
+    stakes: "The advanced pads are numbered 2 through 9, picked uniformly; Surge wants their mean and spread."
+    consequence: "Shifting the pad labels must not change the spread -- a test of the transform rule."
+    quest_step: 13
+    tia_section: "A.3.8"
+    narrative_hook: "Mean and variance of a shifted discrete-uniform pad number."
+    statement: |
+      X is discrete uniform on {2,3,...,9} (eight consecutive values). Find E[X] and
+      Var(X).
+    solution: |
+      Eight consecutive values: mean is the midpoint (2+9)/2 = 5.5. Variance depends
+      only on the count m=8: Var = (m^2 - 1)/12 = 63/12 = 5.25 (a shift moves the
+      mean, not the variance).
+    answer: "E[X] = 5.5, Var(X) = 5.25"
+    shortcut_used: ["shift moves mean not variance", "uniform var (m^2-1)/12"]
+    verify: "(lambda k:(abs(sum(k)/len(k)-5.5)<1e-9) and (abs(sum((x-5.5)**2 for x in k)/len(k)-5.25)<1e-9))([2,3,4,5,6,7,8,9])"
+
+  - id: C3.13
+    chapter: 3
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary insists his Eevee is the better attacker purely because its expected damage is higher."
+    consequence: "Picking by mean alone ignores spread -- and here even the mean claim is false."
+    quest_step: 14
+    tia_section: "A.3.3, A.3.6"
+    narrative_hook: "Testing Gary's 'higher mean wins' boast against the variance."
+    statement: |
+      Gary's Eevee deals damage D in {1,2,6} with pmf 0.5, 0.3, 0.2; your Pokemon
+      deals a steady 3 every turn. Gary says "my Eevee's expected damage is higher,
+      so it's the better attacker." Find E[D], compare to 3, and say whether mean
+      alone settles it (use variance).
+    solution: |
+      E[D] = 1(0.5) + 2(0.3) + 6(0.2) = 0.5 + 0.6 + 1.2 = 2.3 -- BELOW your 3.
+      E[D^2] = 1(0.5) + 4(0.3) + 36(0.2) = 0.5 + 1.2 + 7.2 = 8.9.
+      Var(D) = E[D^2] - (E[D])^2 = 8.9 - 5.29 = 3.61.
+      Gary is wrong twice: his Eevee's mean (2.3) is lower than your 3, and even if
+      it weren't, your constant has zero variance (perfectly reliable) versus the
+      Eevee's large spread.
+    answer: "Eevee E[D] = 2.3 < 3; Gary wrong"
+    shortcut_used: ["compare means", "constant has zero variance"]
+    verify: "abs((1*0.5 + 2*0.3 + 6*0.2) - 2.3) < 1e-9 and (1*0.5 + 2*0.3 + 6*0.2) < 3"
+
+  - id: C3.14
+    chapter: 3
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "the salvage bonus clerk"
+    stakes: "A bonus pays the SQUARE of the intact-deck count; the clerk must average a nonlinear payout."
+    consequence: "Plugging the mean into the square would mis-price the bonus."
+    quest_step: 15
+    tia_section: "A.3.4"
+    narrative_hook: "Averaging a squared (nonlinear) payout with LOTUS."
+    statement: |
+      For the ship's RV X (pmf 0.10, 0.20, 0.30, 0.25, 0.15 on 0..4), a bonus pays
+      g(X) = X^2 (thousand). Find E[g(X)] = E[X^2], and note why it is not (E[X])^2.
+    solution: |
+      E[X^2] = 0 + 1(0.20) + 4(0.30) + 9(0.25) + 16(0.15) = 0.20+1.20+2.25+2.40
+             = 6.05. This is NOT (E[X])^2 = 2.15^2 = 4.6225: average the squares, do
+      not square the average. (Their gap 1.4275 is the variance.)
+    answer: "E[X^2] = 6.05 (not 4.6225)"
+    shortcut_used: ["LOTUS: E[g(X)] = sum g(k) p(k)", "E[X^2] != (E[X])^2"]
+    verify: "(lambda k,p:abs(sum(a*a*b for a,b in zip(k,p))-6.05)<1e-9 and abs(sum(a*a*b for a,b in zip(k,p)) - sum(a*b for a,b in zip(k,p))**2 - 1.4275)<1e-9)([0,1,2,3,4],[0.10,0.20,0.30,0.25,0.15])"
+
+  - id: C3.15
+    chapter: 3
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2a", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "the Vermilion statistician"
+    stakes: "She must report all three centers of a skewed battles-won distribution and show they differ."
+    consequence: "Confusing the three centers would misreport typical daily performance."
+    quest_step: 16
+    tia_section: "A.3.1-A.3.3"
+    narrative_hook: "Computing mode, median, and mean of a right-skewed battles-won RV."
+    statement: |
+      X in {0,1,2,3,4,5} has pmf 0.40, 0.25, 0.15, 0.10, 0.06, 0.04. Find the mode,
+      median, and mean and confirm mode < median < mean.
+    solution: |
+      Mode = 0 (mass 0.40, the peak). cdf = 0.40, 0.65, 0.80, 0.90, 0.96, 1.00;
+      first >= 0.5 is F(1)=0.65, so median = 1. Mean = 0(0.40)+1(0.25)+2(0.15)+
+      3(0.10)+4(0.06)+5(0.04) = 0.25+0.30+0.30+0.24+0.20 = 1.29. So 0 < 1 < 1.29.
+    answer: "mode 0, median 1, mean 1.29"
+    shortcut_used: ["three centers can disagree under skew"]
+    verify: "(lambda k,p:(p.index(max(p))==0) and (next(j for j,c in enumerate([sum(p[:i+1]) for i in range(len(p))]) if c>=0.5)==1) and (abs(sum(a*b for a,b in zip(k,p))-1.29)<1e-9))([0,1,2,3,4,5],[0.40,0.25,0.15,0.10,0.06,0.04])"
+
+  - id: C3.16
+    chapter: 3
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "a sloppy field recorder"
+    stakes: "The recorder's notes claim a damage RV's variance equals its second moment."
+    consequence: "Dropping the squared-mean term inflates the variance tenfold."
+    quest_step: 17
+    tia_section: "A.3.7"
+    narrative_hook: "Catching a dropped (E[X])^2 term in a recorded variance."
+    statement: |
+      A trainer's notes give E[X]=3 and E[X^2]=10 for a damage RV, then state "so
+      Var(X)=10." Find the true variance and name the error.
+    solution: |
+      Var(X) = E[X^2] - (E[X])^2 = 10 - 3^2 = 10 - 9 = 1. The note reported the raw
+      second moment as the variance -- it forgot to subtract (E[X])^2.
+    answer: "Var = 1 (not 10)"
+    shortcut_used: ["Var = E[X^2] - (E[X])^2"]
+    verify: "abs((10 - 3**2) - 1) < 1e-9"
+
+  - id: C3.17
+    chapter: 3
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "the gym's energy meter"
+    stakes: "Total energy is 2 per shock plus a 5-unit base; Surge wants its mean and variance."
+    consequence: "The energy budget must account for both the shifted mean and the scaled spread."
+    quest_step: 18
+    tia_section: "A.3.4, A.3.7"
+    narrative_hook: "Transforming the shock count into total energy Y = 2N + 5."
+    statement: |
+      Thunder Shocks N have pmf 0.5, 0.3, 0.2 on {1,2,3}, so E[N]=1.7 and Var(N)=0.61
+      (both given). Total energy is Y = 2N + 5. Find E[Y] and Var(Y).
+    solution: |
+      E[Y] = 2 E[N] + 5 = 2(1.7) + 5 = 8.4.
+      Var(Y) = 2^2 Var(N) = 4(0.61) = 2.44 (the +5 adds no variance).
+    answer: "E[Y] = 8.4, Var(Y) = 2.44"
+    shortcut_used: ["E[aX+b]=aE[X]+b", "Var(aX+b)=a^2 Var(X)"]
+    verify: "abs((2*1.7 + 5) - 8.4) < 1e-9 and abs((4*0.61) - 2.44) < 1e-9"
+
+  - id: C3.18
+    chapter: 3
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c", "2d"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "the Pokedex Actuary Mode"
+    stakes: "A swarm-count RV is logged only by its MGF; you must read off its mean and check the MGF is valid."
+    consequence: "A quick M(0)=1 check guards against a corrupted MGF before you trust it."
+    quest_step: 19
+    tia_section: "A.3.8"
+    narrative_hook: "Reading the mean off a Poisson-style MGF and sanity-checking M(0)=1."
+    statement: |
+      An RV has M_X(t) = e^{2(e^t - 1)} (a Poisson, previewed). You are told
+      M_X'(0) = 2. State E[X] and confirm M_X(0) = 1.
+    solution: |
+      E[X] = M_X'(0) = 2. Every MGF has M_X(0) = E[e^0] = 1; here
+      M_X(0) = e^{2(e^0 - 1)} = e^{2(1-1)} = e^0 = 1.
+    answer: "E[X] = 2, M_X(0) = 1"
+    shortcut_used: ["E[X] = M'(0)", "M(0) = 1 always"]
+    verify: "abs(__import__('math').exp(2*(__import__('math').exp(0) - 1)) - 1) < 1e-12"
+
+  # ===================== ELITE CHALLENGE (post-game) =====================
+
+  - id: C3.19
+    chapter: 3
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2a", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "the salvage actuary"
+    stakes: "She must chain the survival-mean with a 10x dollar transform and a variance, all from partial data."
+    consequence: "Integrating survival, transform, and variance gives the full salvage distribution summary."
+    quest_step: 20
+    tia_section: "A.3.5, A.3.7"
+    narrative_hook: "Combining the survival method with a linear transform and a variance."
+    statement: |
+      A non-negative integer RV X has survival S(0)=0.7, S(1)=0.4, S(2)=0.2,
+      S(3)=0.05, S(4)=0. (a) Find E[X]. (b) If Y=10X, find E[Y]. (c) Given also
+      E[X^2]=3.05, find Var(Y).
+    solution: |
+      (a) E[X] = 0.7+0.4+0.2+0.05 = 1.35.
+      (b) E[Y] = 10 E[X] = 13.5.
+      (c) Var(X) = E[X^2] - (E[X])^2 = 3.05 - 1.35^2 = 3.05 - 1.8225 = 1.2275;
+          Var(Y) = 10^2 Var(X) = 100(1.2275) = 122.75.
+    answer: "E[X]=1.35, E[Y]=13.5, Var(Y)=122.75"
+    shortcut_used: ["sum S(k)", "E[aX]=aE[X]", "Var(aX)=a^2 Var(X)"]
+    verify: "abs((0.7+0.4+0.2+0.05) - 1.35) < 1e-9 and abs(10*1.35 - 13.5) < 1e-9 and abs(100*(3.05 - 1.35**2) - 122.75) < 1e-9"
+
+  - id: C3.20
+    chapter: 3
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2c", "2d"]
+    distributions: ["discrete_uniform"]
+    provenance: original
+    difficulty: 4
+    actor: "Professor Oak"
+    stakes: "Oak asks you to derive the discrete-uniform formulas from scratch, not just quote them."
+    consequence: "A from-scratch derivation proves you own the formulas under exam pressure."
+    quest_step: 21
+    tia_section: "A.3.8"
+    narrative_hook: "Deriving the discrete-uniform mean and variance from the power sums."
+    statement: |
+      For X discrete uniform on {1,...,n}, derive E[X]=(n+1)/2 and Var(X)=(n^2-1)/12
+      using sum k = n(n+1)/2 and sum k^2 = n(n+1)(2n+1)/6. Evaluate at n=6.
+    solution: |
+      E[X] = (1/n) * n(n+1)/2 = (n+1)/2.
+      E[X^2] = (1/n) * n(n+1)(2n+1)/6 = (n+1)(2n+1)/6.
+      Var = (n+1)(2n+1)/6 - (n+1)^2/4 = (n+1)(n-1)/12 = (n^2-1)/12.
+      At n=6: E[X] = 7/2 = 3.5, Var = 35/12 ~ 2.917.
+    answer: "(n+1)/2 and (n^2-1)/12; at n=6: 3.5 and 35/12"
+    shortcut_used: ["power sums", "Var = E[X^2] - (E[X])^2"]
+    verify: "(lambda n,k:(abs(sum(k)/n - (n+1)/2)<1e-9) and (abs(sum(x*x for x in k)/n - sum(k)/n*sum(k)/n - (n*n-1)/12)<1e-9))(6,list(range(1,7)))"
+
+  - id: C3.21
+    chapter: 3
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Ash (you)"
+    stakes: "The battle format decides whether raw magnitude (mean) or reliability (low variance) should win your pick."
+    consequence: "Choosing the wrong summary for the format loses the match."
+    quest_step: 22
+    tia_section: "A.3.3, A.3.6-A.3.7"
+    narrative_hook: "Picking Raichu vs Pikachu by the summary the battle format rewards."
+    statement: |
+      Raichu R in {0,2,4,6} (p=0.10,0.20,0.30,0.40) and Pikachu P in {2,3,4,5}
+      (p=0.20,0.30,0.30,0.20). Given E[R]=4.0, Var(R)=4.0 and E[P]=3.5, Var(P)=1.05,
+      decide: (a) in a must-not-whiff battle (a single 0 loses), which do you send?
+      (b) in a 'highest single hit wins' format, which gives the better shot at a 6?
+    solution: |
+      (a) Send Pikachu: Raichu deals 0 with prob 0.10 (instant loss) and has 4x the
+          variance; Pikachu never drops below 2. Low variance / high floor wins.
+      (b) Send Raichu: only Raichu can reach 6 (prob 0.40); Pikachu caps at 5. The
+          heavy upper tail that hurts reliability helps a max-hit format.
+    answer: "(a) Pikachu; (b) Raichu"
+    shortcut_used: ["variance/floor vs upper tail -- format decides"]
+    verify: "(lambda kr,pr,kp,pp:(abs(sum(a*b for a,b in zip(kr,pr))-4.0)<1e-9) and (abs(sum(a*a*b for a,b in zip(kr,pr))-sum(a*b for a,b in zip(kr,pr))**2-4.0)<1e-9) and (abs(sum(a*a*b for a,b in zip(kp,pp))-sum(a*b for a,b in zip(kp,pp))**2-1.05)<1e-9) and (max(kp)<6))([0,2,4,6],[0.10,0.20,0.30,0.40],[2,3,4,5],[0.20,0.30,0.30,0.20])"
+
+  - id: C3.23
+    chapter: 3
+    tier: elite_challenge
+    archetype: rival_trap
+    outcomes: ["2c"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Gary Oak"
+    stakes: "Gary claims a rescaled stat's variance just scales by the same factor, ignoring the square."
+    consequence: "Forgetting to square the scale understates the spread and mis-prices the risk."
+    quest_step: 23
+    tia_section: "A.3.7"
+    narrative_hook: "Catching Gary forget to square the scale in Var(aX)."
+    statement: |
+      A damage stat X has Var(X)=5. Gary triples it for a power-up, Y=3X, and says
+      "the variance just triples too, so Var(Y)=15." Find the true Var(Y) and name
+      Gary's error.
+    solution: |
+      Var(3X) = 3^2 Var(X) = 9(5) = 45, not 15. Gary forgot to SQUARE the scale: a
+      factor a multiplies the variance by a^2, not a.
+    answer: "Var(Y) = 45 (Gary forgot to square the 3)"
+    shortcut_used: ["Var(aX) = a^2 Var(X)"]
+    verify: "abs((3**2 * 5) - 45) < 1e-9"
+
+  - id: C3.24
+    chapter: 3
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2a", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Team Rocket (Jessie)"
+    stakes: "Jessie computes an expected escape time from a survival report but skips the first survival term."
+    consequence: "Dropping S(0) understates the expected time and bungles the getaway plan."
+    quest_step: 24
+    tia_section: "A.3.5"
+    narrative_hook: "Catching an off-by-one in a survival-method expectation (S(0) dropped)."
+    statement: |
+      An escape time X in {0,1,2,3} has survival S(0)=0.8, S(1)=0.5, S(2)=0.2,
+      S(3)=0. Jessie sums "S(1)+S(2)+S(3) = 0.7" and calls that the expected time.
+      Find the true E[X] and name Jessie's error.
+    solution: |
+      The survival method sums from k=0: E[X] = S(0)+S(1)+S(2)+S(3)
+      = 0.8+0.5+0.2+0 = 1.5. Jessie DROPPED the S(0) term (an off-by-one), starting
+      at k=1 and getting 0.7. The sum must start at k=0.
+    answer: "E[X] = 1.5 (Jessie dropped the S(0) term)"
+    shortcut_used: ["E[X] = sum S(k) starting at k=0"]
+    verify: "abs((0.8+0.5+0.2+0.0) - 1.5) < 1e-9 and abs((0.5+0.2+0.0) - 0.7) < 1e-9"

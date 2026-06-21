@@ -16,7 +16,7 @@ Live status of the V3 build (*Probability & Risk: A Kanto Journey*). One row per
 | 00 | Orientation | — | ☐ |
 | 01 | Fundamentals of Probability | C/B | ☐ |
 | 02 | Conditional Probability & Bayes | A | ✅ gold-standard exemplar — L1 harness 26/26 · L2 lint pass · L3 blind re-derivation (all correct) · **L4 tutor letter grade = A** (all 10 dims 9–10; NO concept compression — every concept fully derived) · A+ polish applied · clean build |
-| 03 | Discrete RVs & Moments | A | ☐ |
+| 03 | Discrete RVs & Moments | A | ✅ **grade A** — harness clean · blind re-derivation (1 prose-drift caught & fixed) · 1-Var-Stats flagship · build clean |
 | 04 | Combinatorics | B | ☐ |
 | 05 | Key Discrete Distributions | B | ☐ |
 | 06 | Deductibles & Limits (Discrete) | B | ☐ |
@@ -25,7 +25,7 @@ Live status of the V3 build (*Probability & Risk: A Kanto Journey*). One row per
 | 09 | Densities & CDFs | B | ☐ |
 | 10 | Continuous Moments | B | ☐ |
 | 11 | Key Continuous Distributions | B | ☐ |
-| 12 | Normal & the CLT | A | ☐ |
+| 12 | Normal & the CLT | A | ✅ **grade A** — harness 39/39 re-derived · CLT + continuity correction fully derived · build clean |
 | 13 | Continuous Deductibles & Review | B | ☐ |
 | 14 | Joint Distributions | A | ✅ **grade A** — harness 22/22 · blind re-derivation 22/22 + WEs · build clean · no compression |
 | 15 | Joint Moments & Covariance | A | ✅ **grade A** — harness 22/22 · blind re-derivation 36/36 · build clean · no compression |

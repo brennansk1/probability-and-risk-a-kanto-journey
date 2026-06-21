@@ -1,0 +1,481 @@
+# Problem bank — Chapter 12 (the Grand Gathering / Indigo League qualifier):
+# the Normal distribution, standardization, the Z-table, the Central Limit Theorem,
+# and the continuity correction. Outcomes 2d, 3i. Tier-A chapter. Locale: the Grand
+# Gathering (no badge — League qualifier crowd). distributions tag: normal.
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   provenance, difficulty (1-5), actor, stakes, consequence, quest_step,
+#   narrative_hook, statement, solution, answer, shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval. It exposes
+# math, st (scipy.stats), and __import__. EVERY verify reproduces the PRINTED
+# table-method answer using two-decimal z and the standard-normal TABLE values of
+# Phi (NOT scipy's exact cdf), so the check matches what a student computes by hand.
+#
+# Immersion quotas met: audit >=3 (C12.10, C12.15, C12.18); rival_trap >=2
+# (C12.12, C12.14); decision >=1 (C12.17, C12.19). Team Rocket error (forgetting the
+# continuity correction on a discrete sum) recycled into the audit drill C12.10.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C12.1
+    chapter: 12
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 1
+    actor: "the League quartermaster"
+    stakes: "She needs one qualifier's percentile before seeding the bracket."
+    consequence: "A correct standardization places the trainer in the right round-one slot."
+    quest_step: 1
+    narrative_hook: "Ranking a single qualifier against the field by standardizing their score."
+    statement: |
+      Qualifying scores are X ~ N(mu = 70, sigma = 10). Find P(X <= 85).
+    solution: |
+      z = (85 - 70)/10 = 1.50. P(X <= 85) = Phi(1.50) = 0.9332.
+    answer: 0.9332
+    shortcut_used: ["standardize then read the Z-table"]
+    verify: "abs((85-70)/10 - 1.50) < 1e-9 and abs(0.9332 - 0.9332) < 1e-9"
+
+  - id: C12.2
+    chapter: 12
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 1
+    actor: "the League quartermaster"
+    stakes: "She wants the fraction of the field that counts as 'top performer'."
+    consequence: "The upper-tail fraction sizes the elite bracket."
+    quest_step: 2
+    narrative_hook: "Finding how rare a 90-plus qualifying score is."
+    statement: |
+      With X ~ N(70, 10^2), find P(X > 90).
+    solution: |
+      z = (90 - 70)/10 = 2.00. P(X > 90) = 1 - Phi(2.00) = 1 - 0.9772 = 0.0228.
+    answer: 0.0228
+    shortcut_used: ["upper tail = 1 - Phi(z)"]
+    verify: "abs((90-70)/10 - 2.00) < 1e-9 and abs((1 - 0.9772) - 0.0228) < 1e-9"
+
+  - id: C12.3
+    chapter: 12
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 2
+    actor: "the League quartermaster"
+    stakes: "Her table prints only whole-tenth rows; she needs the value between them."
+    consequence: "Correct interpolation avoids snapping to the wrong multiple-choice option."
+    quest_step: 3
+    narrative_hook: "Interpolating the Z-table for a z that lands between two printed rows."
+    statement: |
+      You have standardized to z = 1.13. Using Phi(1.10) = 0.8643 and
+      Phi(1.20) = 0.8849, interpolate for Phi(1.13).
+    solution: |
+      t = (1.13 - 1.10)/0.10 = 0.30.
+      Phi(1.13) ~ 0.8643 + 0.30(0.8849 - 0.8643) = 0.8643 + 0.0062 = 0.8705.
+    answer: 0.8705
+    shortcut_used: ["linear interpolation between table rows"]
+    verify: "abs((0.8643 + 0.30*(0.8849 - 0.8643)) - 0.8705) < 5e-4"
+
+  - id: C12.4
+    chapter: 12
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 2
+    actor: "the League quartermaster"
+    stakes: "A below-average score needs the negative-z (symmetry) handling."
+    consequence: "Symmetry gives the lower-tail fraction without a negative-z table."
+    quest_step: 4
+    narrative_hook: "Finding the lower-tail probability for a score below the mean."
+    statement: |
+      With X ~ N(70, 10^2), find P(X < 58).
+    solution: |
+      z = (58 - 70)/10 = -1.20. P(X < 58) = Phi(-1.20) = 1 - Phi(1.20)
+      = 1 - 0.8849 = 0.1151.
+    answer: 0.1151
+    shortcut_used: ["symmetry Phi(-z) = 1 - Phi(z)"]
+    verify: "abs((58-70)/10 + 1.20) < 1e-9 and abs((1 - 0.8849) - 0.1151) < 1e-9"
+
+  - id: C12.5
+    chapter: 12
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 2
+    actor: "the League quartermaster"
+    stakes: "She wants a no-table mental estimate while away from her desk."
+    consequence: "The empirical rule gives instant coverage fractions for planning."
+    quest_step: 5
+    narrative_hook: "Using the 68-95-99.7 rule to estimate coverage with no table."
+    statement: |
+      Scores are N(70, 10^2). Using only the 68-95-99.7 rule, what fraction of
+      trainers score between 50 and 90? Between 60 and 80?
+    solution: |
+      [50, 90] = [mu - 2sigma, mu + 2sigma] -> ~95%.
+      [60, 80] = [mu - sigma, mu + sigma] -> ~68%.
+    answer: "~95%; ~68%"
+    shortcut_used: ["68-95-99.7 empirical rule"]
+    verify: "abs((50-70)/10 + 2) < 1e-9 and abs((90-70)/10 - 2) < 1e-9 and abs((60-70)/10 + 1) < 1e-9 and abs((80-70)/10 - 1) < 1e-9"
+
+  - id: C12.6
+    chapter: 12
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 2
+    actor: "the League quartermaster"
+    stakes: "She must publish the advancement cutoff before round one seeds."
+    consequence: "An inverse-normal lookup sets the exact top-10% threshold."
+    quest_step: 6
+    narrative_hook: "Inverse normal: turning a top-10% rule into a cutoff score."
+    statement: |
+      With X ~ N(70, 10^2), the League advances the top 10%. Find the cutoff
+      score. Use Phi(1.28) = 0.90.
+    solution: |
+      Top 10%: Phi(z) = 0.90 -> z = 1.28. c = mu + z*sigma = 70 + 1.28(10) = 82.8.
+    answer: 82.8
+    shortcut_used: ["inverse normal: c = mu + z*sigma"]
+    verify: "abs((70 + 1.28*10) - 82.8) < 1e-9"
+
+  - id: C12.7
+    chapter: 12
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 2
+    actor: "the League quartermaster"
+    stakes: "She needs the share of the field landing in a target score band."
+    consequence: "Standardizing both ends gives the interval probability."
+    quest_step: 7
+    narrative_hook: "An interval probability: standardize both endpoints and subtract."
+    statement: |
+      With X ~ N(70, 10^2), find P(60 <= X <= 85).
+    solution: |
+      z1 = (60-70)/10 = -1.00, z2 = (85-70)/10 = 1.50.
+      P = Phi(1.50) - Phi(-1.00) = 0.9332 - (1 - 0.8413) = 0.9332 - 0.1587 = 0.7745.
+    answer: 0.7745
+    shortcut_used: ["interval = Phi(z2) - Phi(z1); symmetry for negative z"]
+    verify: "abs((0.9332 - (1 - 0.8413)) - 0.7745) < 1e-9"
+
+  # ===================== GYM BATTLES (the boss fight) =====================
+
+  - id: C12.8
+    chapter: 12
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 3
+    actor: "the League quartermaster"
+    stakes: "A court is booked for a fixed window; she needs the overrun risk."
+    consequence: "The CLT-sum tail probability decides whether to add a buffer slot."
+    quest_step: 8
+    narrative_hook: "CLT for a SUM: total match time on a court, standardized with sigma*sqrt(n)."
+    statement: |
+      Each match runs mu = 25 min, sd sigma = 10 min (skewed), independent. A court
+      hosts n = 64 matches. Find P(total time > 1680 min).
+    solution: |
+      E[S] = 64*25 = 1600; sd = 10*sqrt(64) = 80. z = (1680 - 1600)/80 = 1.00.
+      P(S > 1680) = 1 - Phi(1.00) = 1 - 0.8413 = 0.1587.
+    answer: 0.1587
+    shortcut_used: ["CLT sum: N(n*mu, n*sigma^2), sd = sigma*sqrt(n)"]
+    verify: "abs((1680 - 64*25)/(10*(64**0.5)) - 1.00) < 1e-9 and abs((1 - 0.8413) - 0.1587) < 1e-9"
+
+  - id: C12.9
+    chapter: 12
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 3
+    actor: "the League quartermaster"
+    stakes: "She wants the chance the average healing-slot wait beats a target."
+    consequence: "The CLT-mean tail sizes the staffing for the healing center."
+    quest_step: 9
+    narrative_hook: "CLT for a MEAN: average wait time, standardized with sigma/sqrt(n)."
+    statement: |
+      Trainers wait mu = 8 min, sd sigma = 6 min for a healing slot, independent.
+      Over n = 100 trainers, find P(Xbar < 7).
+    solution: |
+      E[Xbar] = 8; sd = 6/sqrt(100) = 0.6. z = (7 - 8)/0.6 = -1.67.
+      P(Xbar < 7) = Phi(-1.67) = 1 - Phi(1.67) = 1 - 0.9525 = 0.0475.
+    answer: 0.0475
+    shortcut_used: ["CLT mean: N(mu, sigma^2/n), sd = sigma/sqrt(n)"]
+    verify: "abs((7 - 8)/(6/(100**0.5)) + 1.67) < 5e-3 and abs((1 - 0.9525) - 0.0475) < 1e-9"
+
+  - id: C12.10
+    chapter: 12
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 3
+    actor: "Team Rocket (their betting pool note)"
+    stakes: "Team Rocket prices a payout bet and may set the odds wrong."
+    consequence: "Forgetting the half-step underprices the bet and bankrupts the pool."
+    quest_step: 10
+    narrative_hook: "AUDIT: Team Rocket normal-approximates a discrete win-count without the continuity correction."
+    statement: |
+      A trainer wins each of n = 144 independent matches w.p. p = 0.5; X = wins.
+      Team Rocket's note prices "X >= 80" as 1 - Phi((80 - 72)/6) = 1 - Phi(1.33)
+      = 0.0918. Find the continuity-corrected P(X >= 80) and name the error.
+    solution: |
+      mu = 144(0.5) = 72; sigma = sqrt(144*0.5*0.5) = 6. "X >= 80" -> left edge 79.5:
+      P(X >= 80) ~ 1 - Phi((79.5 - 72)/6) = 1 - Phi(1.25) = 1 - 0.8944 = 0.1056.
+      Error: Team Rocket standardized the integer 80 (z = 1.33) instead of the bar's
+      left edge 79.5 (z = 1.25) -- they FORGOT the continuity correction. The honest
+      value 0.1056 exceeds their 0.0918, so their odds underprice the payout.
+    answer: 0.1056
+    shortcut_used: ["continuity correction: P(X>=a) ~ P(Y > a - 0.5)"]
+    verify: "abs((79.5 - 72)/6 - 1.25) < 1e-9 and abs((1 - 0.8944) - 0.1056) < 1e-9 and ((1 - 0.8944) > (1 - 0.9082))"
+
+  - id: C12.11
+    chapter: 12
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 3
+    actor: "the League quartermaster"
+    stakes: "She needs the chance a court sees an exact win-count for a prize tier."
+    consequence: "An exact-count correction (one bar wide) sizes the bonus payout."
+    quest_step: 11
+    narrative_hook: "Continuity correction for an EXACT count: a one-bar-wide sliver."
+    statement: |
+      With X ~ Binomial(144, 0.5) (mu = 72, sigma = 6), approximate P(X = 75)
+      using the continuity correction.
+    solution: |
+      P(X = 75) ~ P(74.5 < Y < 75.5) = Phi((75.5-72)/6) - Phi((74.5-72)/6)
+      = Phi(0.58) - Phi(0.42) = 0.7190 - 0.6628 = 0.0562.
+    answer: 0.0562
+    shortcut_used: ["P(X=k) ~ Phi(k+0.5 std) - Phi(k-0.5 std)"]
+    verify: "abs((75.5-72)/6 - 0.58) < 1e-2 and abs((74.5-72)/6 - 0.42) < 1e-2 and abs((0.7190 - 0.6628) - 0.0562) < 1e-9"
+
+  - id: C12.12
+    chapter: 12
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 4
+    actor: "Gary (rival)"
+    stakes: "Gary boasts an average score is as variable as a single score."
+    consequence: "Believing the spread doesn't shrink leads to a wildly wrong tail estimate."
+    quest_step: 12
+    narrative_hook: "RIVAL TRAP: Gary keeps the single-match sd for the average of 25 matches."
+    statement: |
+      Match scores have mean mu = 60, sd sigma = 20. Gary says: "I'll average 25
+      matches; my average is just as spread out as one match -- sd still 20 -- so
+      scoring above 70 on average is as likely as on one match." Find the true
+      P(Xbar > 70) for n = 25 and explain his error.
+    solution: |
+      sd(Xbar) = 20/sqrt(25) = 4. z = (70 - 60)/4 = 2.50.
+      P(Xbar > 70) = 1 - Phi(2.50) = 1 - 0.9938 = 0.0062.
+      Gary kept the single-match sd 20; the average of 25 has sd 20/sqrt(25) = 4,
+      five times tighter. Above-70-on-average (0.0062) is far rarer than on one
+      match (1 - Phi(0.5) = 0.3085). Averaging shrinks the spread.
+    answer: 0.0062
+    shortcut_used: ["CLT mean sd = sigma/sqrt(n) (shrinks)"]
+    verify: "abs((70 - 60)/(20/(25**0.5)) - 2.50) < 1e-9 and abs((1 - 0.9938) - 0.0062) < 1e-9"
+
+  - id: C12.13
+    chapter: 12
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 3
+    actor: "the League quartermaster"
+    stakes: "Daily potion demand is a Poisson count she must cover."
+    consequence: "Normal-approximating the Poisson with a correction sizes the daily stock."
+    quest_step: 13
+    narrative_hook: "Normal approximation to a POISSON count, with continuity correction."
+    statement: |
+      Daily potion demand is Poisson with mean lambda = 100 (so mu = 100,
+      sigma = sqrt(100) = 10). Using the normal approximation WITH continuity
+      correction, find P(X <= 110).
+    solution: |
+      "X <= 110" -> right edge 110.5: P(X <= 110) ~ Phi((110.5 - 100)/10)
+      = Phi(1.05) = 0.8531.
+    answer: 0.8531
+    shortcut_used: ["Poisson ~ N(lambda, lambda); P(X<=b) ~ P(Y < b + 0.5)"]
+    verify: "abs((110.5 - 100)/10 - 1.05) < 1e-9 and abs(0.8531 - 0.8531) < 1e-9"
+
+  - id: C12.14
+    chapter: 12
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary (rival)"
+    stakes: "Gary mis-standardizes by dividing by the variance, not the sd."
+    consequence: "A bogus z makes a top-7% score look 'basically average'."
+    quest_step: 14
+    narrative_hook: "RIVAL TRAP: Gary divides by sigma^2 = 100 instead of sigma = 10."
+    statement: |
+      Scores are X ~ N(mu = 50, sigma^2 = 100). Gary computes z = (65 - 50)/100
+      = 0.15 and concludes "basically average." Find the correct z and P(X > 65),
+      and name his error.
+    solution: |
+      sigma = sqrt(100) = 10, so z = (65 - 50)/10 = 1.50.
+      P(X > 65) = 1 - Phi(1.50) = 1 - 0.9332 = 0.0668.
+      Gary divided by the VARIANCE 100 instead of the standard deviation 10. A score
+      1.5 sd above the mean is not average -- only the top 6.7% beat it.
+    answer: 0.0668
+    shortcut_used: ["standardize with sigma, not sigma^2"]
+    verify: "abs((65 - 50)/(100**0.5) - 1.50) < 1e-9 and abs((1 - 0.9332) - 0.0668) < 1e-9"
+
+  - id: C12.15
+    chapter: 12
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 3
+    actor: "an intern's planning report"
+    stakes: "The report claims a TOTAL's spread shrinks with n."
+    consequence: "Using the mean's formula for a sum understates the reserve 400-fold."
+    quest_step: 15
+    narrative_hook: "AUDIT: an intern uses sigma/sqrt(n) for the spread of a SUM."
+    statement: |
+      An intern's report on the total potion use of n = 400 matches (per-match
+      mu = 4, sigma = 3) states "the total has standard deviation sigma/sqrt(n)
+      = 3/20 = 0.15." Compute the correct standard deviation of the total and name
+      the error.
+    solution: |
+      The SUM of 400 matches has sd = sigma*sqrt(n) = 3*sqrt(400) = 3*20 = 60.
+      Error: the intern used the MEAN's formula sigma/sqrt(n) for the TOTAL. A sum's
+      spread GROWS, not shrinks; the correct sd is 60.
+    answer: 60
+    shortcut_used: ["sum sd = sigma*sqrt(n) (grows); mean sd = sigma/sqrt(n) (shrinks)"]
+    verify: "abs(3*(400**0.5) - 60) < 1e-9 and abs(3/(400**0.5) - 0.15) < 1e-9 and (3*(400**0.5) > 3/(400**0.5))"
+
+  - id: C12.16
+    chapter: 12
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 3
+    actor: "the League quartermaster"
+    stakes: "She needs the chance a court's win-count lands in a central band."
+    consequence: "A two-sided corrected interval sizes the 'typical-court' contingency."
+    quest_step: 16
+    narrative_hook: "Two-sided count interval with continuity correction (stretch both ends)."
+    statement: |
+      With X ~ Binomial(100, 0.5) (mu = 50, sigma = 5), find P(45 <= X <= 55)
+      using the continuity correction.
+    solution: |
+      Stretch to outer edges 44.5 and 55.5:
+      P = Phi((55.5-50)/5) - Phi((44.5-50)/5) = Phi(1.10) - Phi(-1.10)
+      = 0.8643 - (1 - 0.8643) = 0.8643 - 0.1357 = 0.7286.
+    answer: 0.7286
+    shortcut_used: ["P(a<=X<=b) ~ Phi(b+0.5 std) - Phi(a-0.5 std)"]
+    verify: "abs((55.5-50)/5 - 1.10) < 1e-9 and abs((44.5-50)/5 + 1.10) < 1e-9 and abs((0.8643 - (1 - 0.8643)) - 0.7286) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (post-game) =====================
+
+  - id: C12.17
+    chapter: 12
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["2d", "3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 4
+    actor: "the League quartermaster"
+    stakes: "She must stock potions so the run-out risk is only 5%."
+    consequence: "An inverse-CLT-sum solve sets the exact order quantity."
+    quest_step: 17
+    narrative_hook: "DECISION: invert the CLT for a sum to find the 95%-safe stock level."
+    statement: |
+      Round One is n = 900 independent matches, per-match potion use mu = 4,
+      sigma = 3. Find the stock level c with P(S_900 > c) = 0.05. Use z = 1.645.
+    solution: |
+      E[S] = 900*4 = 3600; sd = 3*sqrt(900) = 90. P(S > c) = 0.05 -> z = 1.645:
+      c = mu + z*sigma = 3600 + 1.645(90) = 3600 + 148.05 = 3748.05 ~ 3748 potions.
+    answer: 3748
+    shortcut_used: ["inverse CLT sum: c = n*mu + z*sigma*sqrt(n)"]
+    verify: "abs((3600 + 1.645*90) - 3748.05) < 1e-6 and round(3600 + 1.645*90) == 3748"
+
+  - id: C12.18
+    chapter: 12
+    tier: elite_challenge
+    archetype: audit
+    outcomes: ["2d", "3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 4
+    actor: "a planning report"
+    stakes: "The report calls a +/-2sigma band 'almost surely' the total."
+    consequence: "Overstating 2sigma as near-certain hides a 5% over/undershoot risk."
+    quest_step: 18
+    narrative_hook: "AUDIT: a +/-2sigma interval mislabeled 'almost surely' (it's only 95%)."
+    statement: |
+      The total score of n = 100 independent trainers (per-trainer mu = 70,
+      sigma = 10) is reported as "almost surely within [6800, 7200]." Using the CLT
+      and the 68-95-99.7 rule, what fraction of the time does the total fall in
+      that interval, and is "almost surely" justified?
+    solution: |
+      E[S] = 100*70 = 7000; sd = 10*sqrt(100) = 100. [6800, 7200] = [mu-2sigma,
+      mu+2sigma] -> ~95% by the empirical rule. "Almost surely" overstates it:
+      ~5% of the time the total falls outside. Near-certainty needs +/-3sigma
+      = [6700, 7300].
+    answer: "~95%; not 'almost surely'"
+    shortcut_used: ["CLT sum + 68-95-99.7: +/-2sigma holds 95%"]
+    verify: "abs((6800 - 7000)/100 + 2) < 1e-9 and abs((7200 - 7000)/100 - 2) < 1e-9 and (0.95 < 0.997)"
+
+  - id: C12.19
+    chapter: 12
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["3i"]
+    distributions: ["normal"]
+    provenance: original
+    difficulty: 5
+    actor: "the League quartermaster"
+    stakes: "She stocks each court so a discrete potion count overruns only 2.5%."
+    consequence: "Inverting the CLT WITH a half-step sets the per-court order."
+    quest_step: 19
+    narrative_hook: "DECISION: invert the CLT for a sum, then half-step for the discrete potion count."
+    statement: |
+      Per-match potion use is mu = 4, sigma = 3. For one court of n = 100 matches,
+      find the stock level c with P(S_100 > c) = 0.025, applying a continuity
+      correction for the discrete potion count. Use z = 1.96.
+    solution: |
+      E[S] = 100*4 = 400; sd = 3*sqrt(100) = 30. "> c" for a discrete count uses
+      the corrected edge c + 0.5: c + 0.5 = mu + z*sigma = 400 + 1.96(30)
+      = 400 + 58.8 = 458.8 -> c = 458.3 ~ 458 potions. (Without the half-step you
+      would report 459; the correction shaves it to 458.)
+    answer: 458
+    shortcut_used: ["inverse CLT sum + continuity correction: c + 0.5 = n*mu + z*sigma*sqrt(n)"]
+    verify: "abs((400 + 1.96*30) - 458.8) < 1e-6 and round((400 + 1.96*30) - 0.5) == 458"

@@ -632,7 +632,7 @@ The questline is a **narrative ordering over a required coverage manifest**, not
 
 **Vision:** the book is built so a learner can **watch the Pokémon *Indigo League* anime alongside reading** — each chapter's cold-open and story beats track specific episode(s), so watching and reading reinforce each other and interest stays high. The real-world actuarial bridge (§ "From Kanto to the Real World") is kept; the show is the hook, the math is the cargo, the real world is the payoff.
 
-**Mechanism — a per-chapter `::: now-playing` box** (placed right after the Cold Open / "Where You Are"): *"📺 NOW PLAYING — Indigo League EP0xx '<title>'"*, 1–2 lines on what happens in that episode and how it sets up the chapter's math, and a "watch this before/after the chapter" cue. **Fidelity rule:** reference only events that actually occur in the cited episode; where the book extends canon (e.g., the Pokémon-Mansion paired logs in ch14, the Safari-Zone deductible job in ch06), **label it an in-world extension**, never claim it's on screen.
+**Mechanism — a per-chapter `::: now-playing` box** (placed right after the Cold Open / "Where You Are"): a **real still from the tied episode** (`assets/stills/`, extracted locally per §30), then *"📺 NOW PLAYING — Indigo League EP0xx '<title>'"*, 1–2 lines on what happens in that episode and how it sets up the chapter's math, and a "watch this before/after the chapter" cue. **Fidelity rule:** reference only events that actually occur in the cited episode; where the book extends canon (e.g., the Pokémon-Mansion paired logs in ch14, the Safari-Zone deductible job in ch06), **label it an in-world extension**, never claim it's on screen.
 
 **The locked episode map** (verified against Serebii/Bulbapedia):
 
@@ -667,11 +667,15 @@ The questline is a **narrative ordering over a required coverage manifest**, not
 
 **The one hard guardrail:** **never generate or draw sprite / character / badge / Pokémon art.** That art must always be a **real asset downloaded from online** (PokeAPI · pret/pokered · Pokémon Showdown, via `assets/download_*.py`). The author *generates* only **math figures** (matplotlib diagrams) — and those figures may **composite real sprites** into themselves. (Reason: fabricated sprite art can't match the real thing.)
 
-**Two visual channels, both using REAL assets, used richly:**
+**Three visual channels, all using REAL assets, used richly:**
 1. **Generated concept figures** — matplotlib math diagrams (`figures/src/gen_chNN.py`), `chapter_accent(ch)` tint, color-blind-safe (labels + hatching), 300 DPI; ≥1 per spatial/multi-step concept (§16). They **composite real Pokémon sprites** via `sprite_util.place_sprite()` (margins/corners only — **IRON RULE:** never over a curve, equation, axis, or label) so the random variable is *visible* inside its own figure.
 2. **Real online assets embedded at their beats** — Pokémon sprites, gym-leader/cast portraits, the earned badge, item glyphs — as inline `<figure><img src="../../assets/{sprites,characters,vs,badges,items}/…" alt="…">` (pixel art uses `image-rendering:pixelated`). Oak at Oak's Briefing; the leader at the Gym Battle; Team Rocket at the Trap; Gary at a rival-trap drill; the chapter's mascots beside the relevant Pokédex Entry; the badge at "Badge Earned."
 
-**Pull as much real art from online as the chapters can use** — more Pokémon, VS portraits, backgrounds, items — whenever a beat benefits; the build embeds them (base64). The chapter banner + §28 progress strip are generated figures compositing the **real** leader portrait + badge + map.
+3. **Real TV-show episode stills (watch-alongside frames)** — frames extracted **locally** from the user's own Season-1 video files via `assets/extract_stills.py` (ffmpeg → `assets/stills/chNN_*.png`). A still is the *actual on-screen moment* the chapter ties to (§29). **Use stills for scene/narrative beats** — the `now-playing` box, the cold-open scene, the chapter banner, the Gym-Battle moment — where a real frame beats a static sprite; **keep clean sprites for figure compositing** (a busy frame harms a diagram). Per beat, pick whichever is more immersive; a still may *replace* a VS portrait at the banner/gym beat when it reads better. Stills are **real frames, never generated**; curate by extracting candidate frames around the target timestamp and selecting the best (downscale/compress for build size; alt text; iron rule).
+
+**Pull as much real art from online as the chapters can use** — more Pokémon, VS portraits, backgrounds, items — whenever a beat benefits; the build embeds them (base64). The chapter banner + §28 progress strip are generated figures compositing the **real** leader portrait/episode still + badge + map.
+
+**Sourcing & rights:** stills are extracted **only** from local video files the user supplies (never downloaded from streaming/unauthorized sources); like all sprite/anime assets they are real, used in a **private, non-distributed** educational build, never generated.
 
 **Conformance (see §31):** every figure and embedded asset exists because a concept or beat needs it, placed where TIA puts that concept — rich, never padding the TIA flow.
 

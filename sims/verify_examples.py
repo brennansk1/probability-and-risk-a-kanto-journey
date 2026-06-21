@@ -36,7 +36,8 @@ except Exception:  # noqa: BLE001
 SAFE_BUILTINS = {"__import__": __import__, "abs": abs, "round": round, "min": min,
                  "max": max, "sum": sum, "len": len, "range": range, "pow": pow,
                  "all": all, "any": any, "sorted": sorted, "int": int, "float": float,
-                 "list": list, "map": map, "zip": zip, "enumerate": enumerate}
+                 "list": list, "map": map, "zip": zip, "enumerate": enumerate,
+                 "next": next, "iter": iter, "filter": filter}
 
 
 def main() -> int:

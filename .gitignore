@@ -17,5 +17,9 @@ __pycache__/
 venv/
 .pytest_cache/
 
+# TV-show source video (large, private — user-supplied, never committed) + extracted stills
+video/
+assets/stills/
+
 # OS
 .DS_Store

@@ -113,6 +113,15 @@ Drive `assets/download_*.py` to ensure these real Gen-1 front sprites exist for 
 
 ---
 
+## Part 2b — TV-show episode stills (real frames; watch-alongside)
+
+When the user supplies local Season-1 video files, extract stills locally with `assets/extract_stills.py` (ffmpeg) into `assets/stills/`, then embed them at **scene/narrative beats only** (sprites stay for figure compositing):
+- **now-playing box** → the exact tied-episode moment (every chapter, §29 map).
+- **cold-open** → a still of the scene the cold open dramatizes.
+- **chapter banner** (chrome) → a show still of the locale/leader (may replace the VS sprite when it reads better).
+- **Gym-Battle capstone** → the actual battle still.
+Curation: extract candidate frames around each target timestamp, **view them, pick the best**, downscale/compress, add alt text. Stills are real frames, never generated; local files only.
+
 ## Part 3 — Execution order to the finished product (each chapter → QA grade A)
 
 1. **Re-author the policy/standard into the dossiers:** generate `docs/design/chNN.md` for every chapter from the rows above (coverage manifest + concept order + figures+sprites + episode + questline + length).
