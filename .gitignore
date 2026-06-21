@@ -1,0 +1,21 @@
+# Build output (HTML + PDFs; regenerate with `make`)
+build/
+
+# Fetched + generated art (regenerate: assets/download_*.py, then figures/src/gen_*.py)
+assets/sprites/
+assets/badges/
+assets/characters/
+assets/maps/
+assets/items/
+assets/vs/
+assets/diagrams/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# OS
+.DS_Store

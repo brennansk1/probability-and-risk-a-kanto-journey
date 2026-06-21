@@ -1,0 +1,10 @@
+# Python deps for asset fetching, figure generation, and the verification/audit gates.
+requests>=2.31
+tqdm>=4.66
+matplotlib>=3.8
+numpy>=1.26
+scipy>=1.11
+PyYAML>=6.0
+Pillow>=10.0        # nearest-neighbor upscaling for print-DPI sprites
+# weasyprint is optional (Chrome headless is the fallback PDF renderer):
+# weasyprint>=60

@@ -1,0 +1,268 @@
+/* ============================================================================
+   Probability & Risk: A Kanto Journey — print stylesheet
+   Markdown -> Pandoc -> HTML(+MathJax) -> WeasyPrint/Chrome -> PDF
+   Palette and base structure adapted from the sister project
+   (Causal Inference: A Pokemon Approach). Pokemon-flavored chrome added here.
+   ============================================================================ */
+
+/* ---- Pixel display font (chrome only; OFL). Place TTF in book/fonts/. ---- */
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url('fonts/PressStart2P-Regular.ttf') format('truetype');
+    font-display: swap;
+}
+
+/* ---- Palette ---- */
+:root {
+    --kanto-red:   #EE1515;
+    --kanto-blue:  #3B4CCA;
+    --kanto-yellow:#FFD733;
+    --kanto-green: #4DAD5B;
+    --kanto-gray:  #888888;
+    --kanto-bg:    #FAFAF5;
+    /* official-ish type colors for per-chapter accents */
+    --t-rock:#B6A136; --t-water:#6390F0; --t-electric:#F7D02C; --t-grass:#7AC74C;
+    --t-poison:#A33EA1; --t-psychic:#F95587; --t-fire:#EE8130; --t-ground:#E2BF65;
+    --t-normal:#A8A77A; --t-ghost:#735797;
+}
+
+/* ---- Page setup (PRINT & BIND) ----------------------------------------
+   Trim: US Letter (8.5x11). Mirrored margins give a binding gutter: the inner
+   edge gets extra room so text isn't swallowed by the spine. Page numbers sit
+   on the outer edge; the running head on the outer top. Chapters open on a
+   recto (right-hand) page. If you switch to a 6x9/A4 trim or full-bleed images,
+   adjust `size` and add `bleed: 3mm; marks: crop;`.
+------------------------------------------------------------------------- */
+@page {
+    size: 8.5in 11in;
+    margin: 1in 0.8in 1in 1.1in;   /* default; overridden per side below */
+}
+@page :left {                       /* even/verso: gutter on the right (inner) */
+    margin-left: 0.8in; margin-right: 1.1in;
+    @bottom-left { content: counter(page); font-family: 'Georgia', serif; font-size: 10pt; color: #666; }
+    @top-left    { content: string(chapter-title); font-family: 'Press Start 2P', monospace; font-size: 7pt; color: #888; }
+}
+@page :right {                      /* odd/recto: gutter on the left (inner) */
+    margin-left: 1.1in; margin-right: 0.8in;
+    @bottom-right { content: counter(page); font-family: 'Georgia', serif; font-size: 10pt; color: #666; }
+    @top-right   { content: string(chapter-title); font-family: 'Press Start 2P', monospace; font-size: 7pt; color: #888; }
+}
+@page :first { @top-left { content: ""; } @top-right { content: ""; }
+               @bottom-left { content: ""; } @bottom-right { content: ""; } }
+
+/* ---- Body ---- */
+body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 11pt; line-height: 1.55; color: #222;
+    text-align: justify; hyphens: auto;
+}
+
+/* ---- Headings ---- */
+h1 {
+    font-size: 26pt; color: var(--kanto-red);
+    border-bottom: 3px solid var(--kanto-red); padding-bottom: 6px;
+    margin-top: 36pt; margin-bottom: 18pt;
+    break-before: right;            /* chapters open on a recto (right) page */
+    string-set: chapter-title content();
+}
+h1:first-of-type { break-before: avoid; }
+/* avoid blank-verso surprises in light viewers that ignore break-before:right */
+@media screen { h1 { break-before: page; } }
+h1 .chapter-num, .badge-caption, .running-head { font-family: 'Press Start 2P', monospace; }
+
+/* per-chapter type accents: add class="type-water" etc. to the <h1> */
+h1.type-rock     { color: var(--t-rock);     border-bottom-color: var(--t-rock); }
+h1.type-water    { color: var(--t-water);    border-bottom-color: var(--t-water); }
+h1.type-electric { color: #b58f00;           border-bottom-color: var(--t-electric); }
+h1.type-grass    { color: var(--t-grass);    border-bottom-color: var(--t-grass); }
+h1.type-poison   { color: var(--t-poison);   border-bottom-color: var(--t-poison); }
+h1.type-psychic  { color: var(--t-psychic);  border-bottom-color: var(--t-psychic); }
+h1.type-fire     { color: var(--t-fire);     border-bottom-color: var(--t-fire); }
+h1.type-ground   { color: #9a7b2e;           border-bottom-color: var(--t-ground); }
+
+h2 { font-size: 18pt; color: var(--kanto-blue); border-bottom: 1px solid #ccc;
+     padding-bottom: 4px; margin-top: 24pt; margin-bottom: 10pt; page-break-after: avoid; }
+h3 { font-size: 14pt; color: #222; margin-top: 18pt; margin-bottom: 8pt; page-break-after: avoid; }
+h4 { font-size: 12pt; color: #444; font-style: italic; margin-top: 12pt; page-break-after: avoid; }
+
+p { margin: 6pt 0; orphans: 3; widows: 3; }
+mjx-container { font-size: 110%; }
+
+/* ---- Code ---- */
+code { font-family: 'Menlo','Monaco','Courier New',monospace; font-size: 9pt;
+       background: #f4f4f4; padding: 1px 4px; border-radius: 3px; }
+pre  { font-family: 'Menlo','Monaco','Courier New',monospace; font-size: 8.5pt;
+       background: #f7f7f7; border: 1px solid #ddd; border-left: 4px solid var(--kanto-blue);
+       padding: 10px 12px; line-height: 1.35; white-space: pre-wrap; page-break-inside: avoid; }
+pre code { background: transparent; padding: 0; font-size: inherit; }
+
+/* ---- Tables (red header, zebra) ---- */
+table { border-collapse: collapse; margin: 12pt auto; font-size: 10pt; width: 100%; page-break-inside: avoid; }
+th { background: var(--kanto-red); color: #fff; padding: 6px 10px; border: 1px solid #c41212; text-align: left; }
+td { padding: 5px 10px; border: 1px solid #ddd; vertical-align: top; }
+tr:nth-child(even) td { background: #fafafa; }
+
+/* ---- Poke Ball list bullets (opt-in: class="pokeball" on the ul) ---- */
+ul.pokeball { list-style: none; padding-left: 1.4em; }
+ul.pokeball > li::before {
+    content: ""; display: inline-block; width: 0.7em; height: 0.7em;
+    margin-left: -1.2em; margin-right: 0.5em; vertical-align: middle;
+    border: 1.5px solid #222; border-radius: 50%;
+    background: linear-gradient(to bottom, var(--kanto-red) 0 45%, #222 45% 55%, #fff 55% 100%);
+}
+
+/* ---- Figures ---- */
+figure { text-align: center; margin: 12pt 0; page-break-inside: avoid; }
+figcaption { font-size: 9pt; color: #666; font-style: italic; margin-top: 4pt; }
+
+/* ===========================================================================
+   The five Pokemon-styled callout boxes (authored as Pandoc fenced divs :::)
+   =========================================================================== */
+.pokedex-entry, .trainers-tip, .team-rocket, .kanto-realworld, .cold-open {
+    margin: 14pt 0; padding: 0; page-break-inside: avoid;
+    border-radius: 10px; overflow: hidden; position: relative;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.12);
+}
+.pokedex-entry > :first-child, .trainers-tip > :first-child,
+.team-rocket > :first-child, .kanto-realworld > :first-child, .cold-open > :first-child {
+    margin: 0; padding: 7px 14px;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    font-size: 9pt; letter-spacing: 0.5px; color: #fff;
+}
+.pokedex-entry > :not(:first-child), .trainers-tip > :not(:first-child),
+.team-rocket > :not(:first-child), .kanto-realworld > :not(:first-child),
+.cold-open > :not(:first-child) { padding: 4px 16px; }
+
+/* Box HEADER text must keep its panel color — the global `strong{color:#111}`
+   rule otherwise paints bold titles near-black, making them invisible on the
+   dark Team Rocket (#111) bar (and muddy on the others). Bold/italic in a header
+   inherits the header's color instead. */
+.pokedex-entry > :first-child strong, .pokedex-entry > :first-child b, .pokedex-entry > :first-child em,
+.trainers-tip > :first-child strong, .trainers-tip > :first-child b, .trainers-tip > :first-child em,
+.team-rocket > :first-child strong, .team-rocket > :first-child b, .team-rocket > :first-child em,
+.kanto-realworld > :first-child strong, .kanto-realworld > :first-child b, .kanto-realworld > :first-child em,
+.cold-open > :first-child strong, .cold-open > :first-child b, .cold-open > :first-child em,
+.concept-gate > :first-child strong, .concept-gate > :first-child b, .concept-gate > :first-child em {
+    color: inherit;
+}
+
+/* ===== V3 additions ===== */
+/* Calculator key-caps: [2nd]{.kbd} renders as <kbd> (pandoc bracketed_spans); sequences wrapped in [ ... ]{.keystroke} */
+kbd, .kbd {
+  font-family: 'Menlo','Monaco','Courier New',monospace;
+  font-size: 0.82em; font-weight: 700; line-height: 1;
+  display: inline-block; padding: 2px 6px; margin: 0 1px;
+  color: #222; background: #fafafa;
+  border: 1px solid #b8b8c0; border-bottom-width: 3px; border-radius: 5px;
+  box-shadow: 0 1px 0 #d8d8e0; white-space: nowrap;
+}
+.keystroke { line-height: 2; }
+/* Enrichment ("Beyond the Syllabus") — deliberately quieter than core content */
+.enrichment {
+  border: 2px dashed #9aa0a6; background: #f7f7f4;
+  border-radius: 6px; padding: 0.6em 0.9em; margin: 12pt 0;
+  font-size: 0.95em; page-break-inside: avoid;
+}
+.enrichment > :first-child { color: #6a6f76; font-weight: 700; }
+/* Distribution Pokédex profile frame (scan readout) */
+.dex-profile { page-break-inside: avoid; margin: 12pt auto; text-align: center; }
+
+/* POKEDEX ENTRY: the device screen (camera lens + indicator lights) */
+.pokedex-entry { border: 3px solid var(--kanto-red); background: #f3f9ff; }
+.pokedex-entry > :first-child {
+    background: var(--kanto-red); padding-left: 78px;
+    background-image:
+        radial-gradient(circle at 18px 50%, #7FD7FF 0 7px, var(--kanto-blue) 7px 9px, transparent 9px),
+        radial-gradient(circle at 40px 42%, #ff5a5a 0 2.5px, transparent 2.5px),
+        radial-gradient(circle at 50px 42%, var(--kanto-yellow) 0 2.5px, transparent 2.5px),
+        radial-gradient(circle at 60px 42%, var(--kanto-green) 0 2.5px, transparent 2.5px);
+}
+.pokedex-entry > :not(:first-child) {
+    background-image: repeating-linear-gradient(to bottom, rgba(59,76,202,0.04) 0 2px, transparent 2px 4px);
+}
+
+/* TRAINER'S TIP: field note + yellow Poke Ball button */
+.trainers-tip { border: 2px solid #E6B800; background: #fffbe6; }
+.trainers-tip > :first-child {
+    background: var(--kanto-yellow); color: #5a4a00;
+    background-image: radial-gradient(circle at calc(100% - 16px) 50%,
+        #fff 0 4px, #333 4px 5.5px, var(--kanto-yellow) 5.5px 11px, #333 11px 12.5px, transparent 12.5px);
+}
+
+/* TEAM ROCKET'S TRAP: intercepted transmission + white R disc */
+.team-rocket { border: 2px solid var(--kanto-red); background: #fdeeee; }
+.team-rocket > :first-child {
+    background: #111; padding-left: 36px;
+    background-image: radial-gradient(circle at 16px 50%, #fff 0 9px, transparent 9px);
+}
+.team-rocket > :first-child::before {
+    content: "R"; position: absolute; left: 11px; top: 7px;
+    color: var(--kanto-red); font-weight: 900; font-size: 11pt; font-family: Arial, sans-serif;
+}
+
+/* FROM KANTO TO THE REAL WORLD: actuarial dispatch */
+.kanto-realworld { border: 2px solid #2e7d32; border-left-width: 8px; background: #eef7ef; }
+.kanto-realworld > :first-child { background: #2e7d32; }
+
+/* COLD OPEN: episode teaser */
+.cold-open { border: 1px dashed #aaa; background: #f5f5f5; font-style: italic; }
+.cold-open > :first-child { background: var(--kanto-gray); font-style: normal; }
+.cold-open > :not(:first-child) { line-height: 1.7; }
+
+/* ===========================================================================
+   Textbook-formatted problem sets & answer keys (authored as ::: fenced divs).
+   Problems and solutions are written as paragraphs beginning **C4.1.** etc.;
+   the hanging indent + spacing give the clean numbered-list look of a real
+   textbook, and the math inside breathes (display math centered).
+   =========================================================================== */
+.problem-set, .answer-key { margin: 10pt 0 16pt; }
+
+/* tier sub-headings inside a problem set */
+.problem-set h3, .answer-key h3 {
+    font-size: 12.5pt; color: var(--kanto-red); font-variant: small-caps;
+    letter-spacing: 0.5px; border-bottom: 1px dotted #ddd; padding-bottom: 2px;
+    margin: 16pt 0 8pt;
+}
+
+/* each problem / each solution = a hanging-indent block, clearly separated */
+.problem-set > p, .answer-key > p {
+    margin: 0 0 11pt 1.8em;
+    text-indent: -1.8em;          /* the C4.k label hangs into the left margin */
+    line-height: 1.5;
+    page-break-inside: avoid;
+}
+.problem-set > p > strong:first-child,
+.answer-key > p > strong:first-child { color: var(--kanto-blue); }
+
+/* display math inside a hanging-indent problem must reset the indent so it centers */
+.problem-set mjx-container[display="true"],
+.answer-key  mjx-container[display="true"] { text-indent: 0; margin: 6pt 0; }
+
+.answer-key { font-size: 10.5pt; }   /* solutions slightly tighter than problems */
+.answer-key > p { border-left: 2px solid #eee; padding-left: 10px; }
+
+/* concept skip-gate panel ("Do you already own this?") — Poké Center heal/proceed */
+.concept-gate {
+    border: 2px dashed var(--kanto-green); background: #f1faf2;
+    border-radius: 10px; padding: 8px 14px; margin: 14pt 0; page-break-inside: avoid;
+}
+.concept-gate > :first-child {
+    font-family: 'Press Start 2P', monospace; font-size: 8pt; color: #2e7d32;
+    margin: 0 0 4pt;
+}
+
+/* ---- Section divider ---- */
+hr { border: none; border-top: 1px solid #ccc; margin: 18pt 0; }
+
+/* ---- Title page ---- */
+.titlepage { page-break-after: always; text-align: center; padding-top: 3cm; }
+.titlepage h1 { font-size: 48pt; color: var(--kanto-red); border: none; margin-bottom: 0; }
+.titlepage h2 { font-size: 28pt; color: var(--kanto-blue); border: none; margin-top: 8px; }
+.titlepage h3 { font-size: 18pt; color: #555; font-style: italic; border: none; margin-top: 24px; }
+
+/* ---- TOC ---- */
+#TOC, nav[role="doc-toc"] { page-break-before: always; page-break-after: always; }
+#TOC a, nav[role="doc-toc"] a { color: var(--kanto-blue); text-decoration: none; }
+
+a { color: var(--kanto-blue); text-decoration: none; }
+strong, b { font-weight: bold; color: #111; }

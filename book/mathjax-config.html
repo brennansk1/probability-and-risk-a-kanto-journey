@@ -1,0 +1,32 @@
+<!-- Global MathJax v3 macro definitions, mirrored from book/mathjax-preamble.md.
+     Injected into <head> via Pandoc --include-in-header so the macros resolve
+     EVERYWHERE — including the table of contents (which renders before the
+     in-body \newcommand block). Defense-in-depth: chapter headings also avoid
+     custom macros, but this hardens macro rendering book-wide. -->
+<script>
+  window.MathJax = {
+    tex: {
+      macros: {
+        E: "\\operatorname{E}",
+        Var: "\\operatorname{Var}",
+        SD: "\\operatorname{SD}",
+        Cov: "\\operatorname{Cov}",
+        Corr: "\\operatorname{Corr}",
+        given: "\\mid",
+        Normal: "\\mathcal{N}",
+        Expo: "\\operatorname{Exp}",
+        Poisson: "\\operatorname{Pois}",
+        Binom: "\\operatorname{Bin}",
+        Geom: "\\operatorname{Geom}",
+        NegBin: "\\operatorname{NegBin}",
+        HyperGeom: "\\operatorname{HGeom}",
+        GammaDist: "\\operatorname{Gamma}",
+        BetaDist: "\\operatorname{Beta}",
+        Unif: "\\operatorname{Unif}",
+        dplus: ["\\left(#1-#2\\right)_{+}", 2],
+        limexp: ["\\operatorname{E}\\!\\left[#1 \\wedge #2\\right]", 2],
+        indicator: ["\\mathbf{1}\\!\\left\\{#1\\right\\}", 1]
+      }
+    }
+  };
+</script>

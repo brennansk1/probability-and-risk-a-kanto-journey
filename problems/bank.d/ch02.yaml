@@ -1,0 +1,715 @@
+# Problem bank — Chapter 2 (Viridian -> Cerulean City): Conditional probability,
+# independence, addition/multiplication rules, total probability & Bayes.
+# Outcomes 1c, 1e, 1f, 1g.  Tier-A chapter.  Locale: Cerulean (Misty / Cascade).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, difficulty (1-5),
+#   actor, stakes, consequence, quest_step, narrative_hook, statement, solution,
+#   answer, shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval. It exposes
+# math, st (scipy.stats), and __import__; chained problems RESTATE the prior value as
+# a given so verify never depends on another problem's answer.
+#
+# Immersion quotas met: audit >=3 (C2.8, C2.10, C2.23, C2.25); rival_trap >=2
+# (C2.13, C2.24); decision >=1 (C2.21, C2.22, C2.26).
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C2.1
+    chapter: 2
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1c"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Officer Jenny"
+    stakes: "She needs the crime-scene wildlife catalogued before the trail goes cold."
+    consequence: "A clean catalog lets the investigation condition on real habitat data, not guesses."
+    quest_step: 1
+    narrative_hook: "Cataloguing Route 24 Pokemon by type and habitat for Jenny's case file."
+    statement: |
+      Of 100 Pokemon logged on Route 24: 40 are Water-type, 30 live in tall
+      grass, and 12 are both Water-type and live in tall grass. Given that one
+      lives in tall grass, find the probability it is Water-type.
+    solution: |
+      P(Water | grass) = P(Water and grass)/P(grass) = (12/100)/(30/100)
+      = 12/30 = 0.40.
+    answer: 0.40
+    shortcut_used: ["conditioning shrinks the world to B"]
+    verify: "abs((12/30) - 0.40) < 1e-9"
+
+  - id: C2.2
+    chapter: 2
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1c"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Brock (his recovered ball bag)"
+    stakes: "Jenny wants the odds the second recovered ball was a Great Ball, to match an inventory."
+    consequence: "Matching the draw odds confirms whether the recovered pair came from this bag."
+    quest_step: 2
+    narrative_hook: "Inventorying the Center's recovered ball stash, two drawn without replacement."
+    statement: |
+      A bag has 5 Poke Balls and 4 Great Balls. Two are drawn without
+      replacement. Given the first is a Poke Ball, find the probability the
+      second is a Great Ball.
+    solution: |
+      After removing one Poke Ball, 8 balls remain, 4 of them Great:
+      P(2nd Great | 1st Poke) = 4/8 = 0.50.
+    answer: 0.50
+    shortcut_used: ["conditional probability renormalizes to the shrunken bag"]
+    verify: "abs((4/8) - 0.50) < 1e-9"
+
+  - id: C2.3
+    chapter: 2
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Bill (the lighthouse keeper)"
+    stakes: "Jenny needs to know if the alarm beacon could even have fired on the theft night."
+    consequence: "If the beacon almost surely shines, a dark beacon means it was deliberately disabled."
+    quest_step: 3
+    narrative_hook: "Checking whether the Center's alarm beacon could have fired."
+    statement: |
+      Bill's lighthouse beacon runs on two independent circuits: circuit 1 works
+      with probability 0.9, circuit 2 with probability 0.8. The beacon shines if
+      at least one circuit works. Find P(shines).
+    solution: |
+      P(shines) = 1 - P(both fail) = 1 - (1-0.9)(1-0.8) = 1 - (0.1)(0.2)
+      = 1 - 0.02 = 0.98.
+    answer: 0.98
+    shortcut_used: ["at least one = 1 - product of failures (independence)"]
+    verify: "abs((1 - (0.1*0.2)) - 0.98) < 1e-9"
+
+  - id: C2.4
+    chapter: 2
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Ash and Misty"
+    stakes: "Exactly one of them must net the witness Tentacool without spooking it."
+    consequence: "A captured witness Pokemon can be scanned for the thief's scent."
+    quest_step: 4
+    narrative_hook: "Ash and Misty independently try to net a witness Pokemon."
+    statement: |
+      Ash and Misty independently try to catch a Tentacool: Ash succeeds with
+      probability 0.6, Misty with probability 0.7. Find the probability that
+      exactly one of them catches it.
+    solution: |
+      Exactly one = (Ash, not Misty) + (not Ash, Misty)
+      = 0.6*(1-0.7) + (1-0.6)*0.7 = 0.18 + 0.28 = 0.46.
+    answer: 0.46
+    shortcut_used: ["exactly-one of two independent events sums two disjoint products"]
+    verify: "abs((0.6*0.3 + 0.4*0.7) - 0.46) < 1e-9"
+
+  - id: C2.5
+    chapter: 2
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1f"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Misty"
+    stakes: "Whether last night was a flooding night governs how to read the wet footprints."
+    consequence: "A high baseline flood rate would make wet footprints weak evidence."
+    quest_step: 5
+    narrative_hook: "Was last night a flooding night? It changes the footprint evidence."
+    statement: |
+      30% of Cerulean days are rainy. The gym floods with probability 0.5 on
+      rainy days and 0.05 on dry days. Find the probability the gym floods on a
+      random day.
+    solution: |
+      Law of total probability over {rainy, dry}:
+      P(flood) = (0.3)(0.5) + (0.7)(0.05) = 0.15 + 0.035 = 0.185.
+    answer: 0.185
+    shortcut_used: ["two-case law of total probability (B and B^c)"]
+    verify: "abs((0.3*0.5 + 0.7*0.05) - 0.185) < 1e-9"
+
+  - id: C2.6
+    chapter: 2
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1g"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Nurse Joy"
+    stakes: "A suspect's Pokemon scanned NEGATIVE; does that clear it of Brineflux?"
+    consequence: "A near-zero posterior clears the suspect Pokemon and narrows the field."
+    quest_step: 6
+    narrative_hook: "A suspect's Pokemon scans negative for Brineflux -- does that clear it?"
+    statement: |
+      Nurse Joy's quick-scan flags 90% of genuinely sick Pokemon and 20% of
+      healthy ones; 10% of those scanned are sick. A Pokemon scans NEGATIVE.
+      Find P(sick | negative).
+    solution: |
+      P(neg|sick) = 1-0.90 = 0.10; P(neg|healthy) = 1-0.20 = 0.80.
+      Joints: sick 0.10*0.10 = 0.010; healthy 0.90*0.80 = 0.720; total 0.730.
+      P(sick|neg) = 0.010/0.730 = 0.0137.
+    answer: 0.0137
+    shortcut_used: ["two-way Bayes on a non-event (negative test)"]
+    verify: "abs((0.10*0.10)/(0.10*0.10 + 0.90*0.80) - 0.0137) < 1e-4"
+
+  - id: C2.7
+    chapter: 2
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1c"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Officer Jenny"
+    stakes: "Two TMs were taken; the odds both were Fire TMs help fingerprint the haul."
+    consequence: "Matching the haul composition points to which trainer's bag was hit."
+    quest_step: 7
+    narrative_hook: "Two TMs were taken from the recovered stash."
+    statement: |
+      A stack holds 3 Fire TMs and 2 Water TMs. Draw two in order without
+      replacement. Find the probability both are Fire TMs.
+    solution: |
+      P(both Fire) = (3/5)*(2/4) = 6/20 = 0.30.
+    answer: 0.30
+    shortcut_used: ["chained multiplication, denominators shrink 5 -> 4"]
+    verify: "abs((3/5)*(2/4) - 0.30) < 1e-9"
+
+  - id: C2.8
+    chapter: 2
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Meowth (Team Rocket recon notes)"
+    stakes: "Meowth's note declares two traits independent and tells you to 'assume it.'"
+    consequence: "If the traits are actually dependent, every downstream Rocket estimate is wrong."
+    quest_step: 8
+    narrative_hook: "AUDIT: Team Rocket's recon notes claim two traits are independent."
+    statement: |
+      Tallies of wild Pokemon give P(A)=0.4 for 'Water-type', P(B)=0.5 for
+      'found near the river', and P(A or B)=0.65. Meowth's note declares
+      'A and B are independent -- assume it.' Are they? Compute P(A and B) and
+      the independence check, and name Meowth's error if he is wrong.
+    solution: |
+      Inclusion-exclusion: P(A and B) = P(A)+P(B)-P(A or B) = 0.4+0.5-0.65 = 0.25.
+      Independence would require P(A)P(B) = (0.4)(0.5) = 0.20.
+      Since 0.25 != 0.20, A and B are NOT independent (positively associated).
+      Meowth's error: he ASSUMED independence -- it must be told or derived, never
+      assumed.
+    answer: "P(A and B)=0.25; NOT independent (0.25 != 0.20)"
+    shortcut_used: ["recover the intersection via inclusion-exclusion, then test the product rule"]
+    verify: "(abs((0.4+0.5-0.65) - 0.25) < 1e-9) and (abs(0.4*0.5 - 0.20) < 1e-9) and (0.25 != 0.20)"
+
+  - id: C2.22
+    chapter: 2
+    tier: route_trainer
+    archetype: decision
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Ash"
+    stakes: "Two wild Pokemon, one ball each: do you need both to catch, or is one enough?"
+    consequence: "The two questions (both vs at least one) are the same independent object, read two ways."
+    quest_step: 9
+    narrative_hook: "DECISION: one ball each at two different wild Pokemon, throws independent."
+    statement: |
+      You throw a Poke Ball at one wild Pokemon (catches with probability 0.6)
+      and, separately, a Great Ball at another (catches with probability 0.75).
+      The two throws are independent. Find the probability BOTH catch and the
+      probability AT LEAST ONE catches.
+    solution: |
+      Both: P = 0.6*0.75 = 0.45 (independence factors the joint).
+      At least one: 1 - P(neither) = 1 - (1-0.6)(1-0.75) = 1 - 0.4*0.25
+      = 1 - 0.10 = 0.90.
+    answer: "both 0.45; at least one 0.90"
+    shortcut_used: ["independence: product for AND; complement of neither for OR"]
+    verify: "(abs(0.6*0.75 - 0.45) < 1e-9) and (abs((1 - 0.4*0.25) - 0.90) < 1e-9)"
+
+  # ===================== GYM BATTLES (the boss fight) =====================
+
+  - id: C2.9
+    chapter: 2
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Officer Jenny"
+    stakes: "A witness Pokemon fled the scene; identifying its species places a suspect."
+    consequence: "The most-probable species given the flight narrows who was near the Center."
+    quest_step: 10
+    narrative_hook: "A witness Pokemon FLED -- which species was it?"
+    statement: |
+      A wild Pokemon is Goldeen (50%), Seaking (30%), or Horsea (20%). Each
+      flees if you hesitate: Goldeen 0.2, Seaking 0.5, Horsea 0.8. The Pokemon
+      FLED. Find P(Horsea | fled).
+    solution: |
+      Joints: Goldeen 0.50*0.2=0.10; Seaking 0.30*0.5=0.15; Horsea 0.20*0.8=0.16.
+      Total P(fled) = 0.41. P(Horsea|fled) = 0.16/0.41 = 0.390.
+    answer: 0.390
+    shortcut_used: ["3-way Bayes grid; joint column sum is P(evidence)"]
+    verify: "abs((0.20*0.8)/(0.50*0.2 + 0.30*0.5 + 0.20*0.8) - 0.390) < 1e-3"
+
+  - id: C2.10
+    chapter: 2
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Team Rocket (a planted note)"
+    stakes: "A disguised Voltorb at the scene did not explode; Rocket's note claims it was '95% a dud.'"
+    consequence: "Pointing the probability at the wrong event would mislead the whole investigation."
+    quest_step: 11
+    narrative_hook: "AUDIT: a planted 'Voltorb' decoy did NOT explode; Rocket's note claims ~95% a dud."
+    statement: |
+      A disguised Voltorb explodes with probability 0.7 if it's a live decoy and
+      0.05 if it's a dud; the bag is 20% live decoys. You toss one and it does
+      NOT explode. The planted note says 'no explosion means it was almost
+      certainly a dud -- about 95%.' Find the true P(live | no explosion) and
+      name the error.
+    solution: |
+      P(no boom|live) = 0.30; P(no boom|dud) = 0.95.
+      Joints: live 0.20*0.30 = 0.060; dud 0.80*0.95 = 0.760; total 0.820.
+      P(live | no boom) = 0.060/0.820 = 0.0732.
+      The note's "~95%" actually quotes P(dud|no boom) = 0.760/0.820 = 0.927,
+      inflated to 95% and pointed at the wrong event. The question is whether
+      it was LIVE, and the true answer is about 0.073.
+    answer: 0.0732
+    shortcut_used: ["two-way Bayes on a non-event; do not confuse P(dud|.) with the asked event"]
+    verify: "abs((0.20*0.30)/(0.20*0.30 + 0.80*0.95) - 0.0732) < 1e-4"
+
+  - id: C2.11
+    chapter: 2
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1c", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Officer Jenny"
+    stakes: "The stolen incubator had Shiny eggs; the odds at least one drawn is Shiny dates the theft."
+    consequence: "A high 'at least one' chance means the thief almost surely grabbed a Shiny."
+    quest_step: 12
+    narrative_hook: "How many Shiny eggs are in the stolen incubator?"
+    statement: |
+      A box has 10 eggs, 3 Shiny. Draw two without replacement. Find the
+      probability at least one is Shiny.
+    solution: |
+      P(no Shiny) = (7/10)*(6/9) = 42/90 = 7/15.
+      P(at least one) = 1 - 7/15 = 8/15 = 0.533.
+    answer: 0.533
+    shortcut_used: ["at least one = 1 - P(none), without replacement"]
+    verify: "abs((1 - (7/10)*(6/9)) - 8/15) < 1e-9"
+
+  - id: C2.12
+    chapter: 2
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Officer Jenny"
+    stakes: "Three tampered Game-Corner machines; exactly-two paying out flags the tamper pattern."
+    consequence: "The exactly-two probability is the fingerprint of the rigging scheme."
+    quest_step: 13
+    narrative_hook: "Three Game-Corner machines were tampered with; which paid out?"
+    statement: |
+      Three machines pay out independently: X with probability 0.2, Y with 0.3,
+      Z with 0.25. One pull each. Find the probability EXACTLY TWO pay out.
+    solution: |
+      Sum the three 'two win, one loses' products:
+      X,Y,Z^c: 0.2*0.3*0.75 = 0.045
+      X,Z,Y^c: 0.2*0.7*0.25 = 0.035
+      Y,Z,X^c: 0.8*0.3*0.25 = 0.060
+      Total = 0.140.
+    answer: 0.140
+    shortcut_used: ["exactly-two = sum of three disjoint independent triple-products"]
+    verify: "abs((0.2*0.3*0.75 + 0.2*0.7*0.25 + 0.8*0.3*0.25) - 0.140) < 1e-9"
+
+  - id: C2.13
+    chapter: 2
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Gary Oak"
+    stakes: "Gary brags he can name Misty's super-effective lead just from the result."
+    consequence: "If Gary swapped the bar, his confident '60%' is the prosecutor's fallacy."
+    quest_step: 14
+    narrative_hook: "RIVAL TRAP: Gary watches Misty's super-effective opener and brags it 'has to be Starmie, at least 60%.'"
+    statement: |
+      Misty leads Staryu (0.5), Starmie (0.3), Psyduck (0.2) with super-effective
+      rates 0.3, 0.6, 0.1. Her opener WAS super-effective. Gary says 'obviously it
+      was Starmie -- that's the strongest, has to be at least 60%.' Find the true
+      P(Starmie | super-effective) and say whether Gary is right.
+    solution: |
+      P(super-eff) = 0.5*0.3 + 0.3*0.6 + 0.2*0.1 = 0.15+0.18+0.02 = 0.35.
+      Starmie joint = 0.3*0.6 = 0.18.
+      P(Starmie | super-eff) = 0.18/0.35 = 0.514.
+      Gary is WRONG: he quoted the likelihood P(super-eff|Starmie)=0.60 as if it
+      were the posterior. The bar flipped (prosecutor's fallacy). Starmie is the
+      most likely lead, but at ~51.4%, not 60%.
+    answer: 0.514
+    shortcut_used: ["Bayes inversion; posterior = joint / total, not the likelihood"]
+    verify: "abs((0.3*0.6)/(0.5*0.3 + 0.3*0.6 + 0.2*0.1) - 0.514) < 1e-3"
+
+  - id: C2.14
+    chapter: 2
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1g"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Nurse Joy"
+    stakes: "A rare-Pokerus screen on a suspect's Pokemon comes back positive."
+    consequence: "Even a positive on a 99%-sensitive test barely moves a 0.5%-rare cause."
+    quest_step: 15
+    narrative_hook: "A rare Pokerus screen on a suspect's Pokemon comes back positive."
+    statement: |
+      A diagnostic for rare Pokerus has sensitivity 0.99 and specificity 0.96;
+      prevalence 0.5%. A Pokemon tests positive. Find P(infected | positive) and
+      comment on why it is small.
+    solution: |
+      P(+|inf)=0.99; P(+|not)=1-0.96=0.04; prevalence 0.005.
+      Joints: inf 0.005*0.99 = 0.004950; not 0.995*0.04 = 0.039800; total 0.044750.
+      P(inf|+) = 0.004950/0.044750 = 0.1106.
+      Small because the disease is so rare that false positives among the 99.5%
+      healthy population vastly outnumber the few true positives.
+    answer: 0.1106
+    shortcut_used: ["false-positive Bayes with an extreme base rate"]
+    verify: "abs((0.005*0.99)/(0.005*0.99 + 0.995*0.04) - 0.1106) < 1e-4"
+
+  - id: C2.15
+    chapter: 2
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Officer Jenny"
+    stakes: "A recovered ball failed to release; was it the trick ball among three?"
+    consequence: "A zero likelihood for normal balls eliminates them, pinning it on the trick ball."
+    quest_step: 16
+    narrative_hook: "One of three recovered balls is a trick ball; a thrown ball failed to release."
+    statement: |
+      Of three identical-looking Poke Balls, one is a trick ball (releases its
+      Pokemon 80% of the time), the other two release 100% of the time. You pick
+      one at random, throw it, and the Pokemon STAYS IN. Find P(trick | stays in).
+    solution: |
+      Priors 1/3 each. P(stay|trick)=0.20; P(stay|normal)=0.
+      Joints: trick (1/3)(0.20); the two normal balls both 0. Total = (1/3)(0.20).
+      P(trick | stay) = (1/3)(0.20) / ((1/3)(0.20)) = 1.
+      A normal ball never fails, so a stay-in can only be the trick ball.
+    answer: 1.0
+    shortcut_used: ["zero-likelihood causes are eliminated; posterior collapses to 1"]
+    verify: "abs(((1/3)*0.20)/((1/3)*0.20 + (1/3)*0 + (1/3)*0) - 1.0) < 1e-9"
+
+  - id: C2.16
+    chapter: 2
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "A half-seen battle witness"
+    stakes: "The witness only saw whether the opening turn was won; was the lead Electric?"
+    consequence: "Both a win and a loss update belief about the hidden lead type."
+    quest_step: 17
+    narrative_hook: "Reading a battle the witness only half-saw: won or lost the opening turn."
+    statement: |
+      Let A = 'the lead was Electric' and B = 'the trainer won the opening turn'.
+      The lead is Electric 30% of the time (P(A)=0.3); when it is, they win turn
+      one with probability P(B|A)=0.7, otherwise P(B|A^c)=0.4. Find P(A|B) (won --
+      was it Electric?) and P(A|B^c) (lost -- was it Electric?).
+    solution: |
+      P(B) = 0.3*0.7 + 0.7*0.4 = 0.21 + 0.28 = 0.49.
+      P(A|B) = 0.21/0.49 = 0.4286.
+      P(B^c) = 0.51; P(A and B^c) = 0.3*(1-0.7) = 0.09.
+      P(A|B^c) = 0.09/0.51 = 0.1765.
+    answer: "P(A|B)=0.4286; P(A|B^c)=0.1765"
+    shortcut_used: ["2x2 Bayes; total probability for both the event and its complement"]
+    verify: "(abs((0.3*0.7)/(0.3*0.7 + 0.7*0.4) - 0.4286) < 1e-3) and (abs((0.3*0.3)/(0.3*0.3 + 0.7*0.6) - 0.1765) < 1e-3)"
+
+  - id: C2.17
+    chapter: 2
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Officer Jenny"
+    stakes: "A red lure was found at the scene; which urn (suspect cache) did it come from?"
+    consequence: "The most-probable source urn ties the lure to a specific cache."
+    quest_step: 18
+    narrative_hook: "Three lure urns at the scene; a red lure was found."
+    statement: |
+      Urn I has 2 red, 3 blue; Urn II has 4 red, 1 blue; Urn III has 1 red,
+      4 blue. Pick an urn uniformly, draw one lure; it's RED. Find P(Urn II | red).
+    solution: |
+      Priors 1/3 each. P(red|I)=2/5, P(red|II)=4/5, P(red|III)=1/5.
+      Joints: I (1/3)(2/5)=2/15; II 4/15; III 1/15; total 7/15.
+      P(II|red) = (4/15)/(7/15) = 4/7 = 0.571.
+    answer: 0.571
+    shortcut_used: ["classic urn Bayes; equal priors cancel into a ratio of likelihoods"]
+    verify: "abs(((1/3)*(4/5))/((1/3)*(2/5) + (1/3)*(4/5) + (1/3)*(1/5)) - 4/7) < 1e-9"
+
+  - id: C2.18
+    chapter: 2
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "A suspect's spinner-based alibi"
+    stakes: "The alibi rests on three events being 'independent'; check it rigorously."
+    consequence: "Pairwise independence is not enough; the alibi fails the mutual test."
+    quest_step: 19
+    narrative_hook: "A spinner-based alibi: is the evidence really (mutually) independent?"
+    statement: |
+      On a spinner, events A, B, C each have probability 1/2 with all three
+      pairwise intersections equal to 1/4, but P(A and B and C) = 1/4
+      (constructed so that whenever any two of A, B, C occur, the third does
+      too -- an intentional valid construction, not a typo, and a second,
+      different valid construction from the four-sector spinner
+      A={1,2}, B={1,3}, C={1,4} in Concept 4 Beat 7; the two are not the
+      same object). Show
+      A, B, C are pairwise independent but NOT mutually independent.
+    solution: |
+      Each pair: P(A and B) = 1/4 = (1/2)(1/2) = P(A)P(B), and likewise for the
+      other two pairs -> pairwise independent.
+      Mutual independence also requires P(A and B and C) = P(A)P(B)P(C) = 1/8.
+      But P(A and B and C) = 1/4 != 1/8 -> the triple condition fails. So the
+      events are pairwise but not mutually independent.
+    answer: "pairwise independent (1/4 = 1/2*1/2); not mutual (1/4 != 1/8)"
+    shortcut_used: ["mutual independence needs every subcollection, including the triple"]
+    verify: "(abs(0.25 - 0.5*0.5) < 1e-9) and (abs(0.5*0.5*0.5 - 0.125) < 1e-9) and (0.25 != 0.125)"
+
+  # ===================== ELITE CHALLENGE (post-game) =====================
+
+  - id: C2.19
+    chapter: 2
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["1c", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Officer Jenny"
+    stakes: "A recovered pair of Poke Balls -- which of two suspect bags did it come from?"
+    consequence: "The without-replacement likelihood per bag drives the source posterior."
+    quest_step: 20
+    narrative_hook: "Counting + Bayes: which bag did the recovered pair come from?"
+    statement: |
+      Bag 1 has 6 Poke Balls and 4 Great Balls; Bag 2 has 3 Poke Balls and
+      7 Great Balls. Pick a bag at random, draw two without replacement; both are
+      Poke Balls. Find P(Bag 1 | two Poke).
+    solution: |
+      Likelihoods: P(2 Poke|Bag1) = (6/10)(5/9) = 1/3;
+      P(2 Poke|Bag2) = (3/10)(2/9) = 1/15.
+      Priors 1/2 each. Joints: Bag1 = 1/6; Bag2 = 1/30; total = 1/5.
+      P(Bag1 | 2 Poke) = (1/6)/(1/5) = 5/6 = 0.833.
+    answer: 0.833
+    shortcut_used: ["Bayes with a without-replacement likelihood per source"]
+    verify: "abs(((1/2)*(6/10)*(5/9))/((1/2)*(6/10)*(5/9) + (1/2)*(3/10)*(2/9)) - 5/6) < 1e-9"
+
+  - id: C2.20
+    chapter: 2
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["1g"]
+    distributions: []
+    provenance: original
+    difficulty: 5
+    actor: "The phantom thief"
+    stakes: "The thief strikes a SECOND night; consistent evidence should sharpen the verdict."
+    consequence: "A second clue-theft drives the Rocket posterior from a coin-flip to near certainty."
+    quest_step: 21
+    narrative_hook: "Sequential updating: the thief strikes a second night, same clue."
+    statement: |
+      The phantom thief strikes two nights running, each leaving wet footprints,
+      by the same unknown group. Using the Gym Battle figures (Traveler share
+      0.60, steal 0.05, clue 0.40; Local 0.35, 0.01, 0.20; Rocket 0.05, 0.30,
+      0.90), and treating the two nights as conditionally independent given the
+      group, find P(Rocket | two clue thefts).
+      (Restated given: the one-night posteriors were Traveler 0.458, Local 0.027,
+      Rocket 0.515.)
+    solution: |
+      Per-night likelihood = steal*clue: Traveler 0.02, Local 0.002, Rocket 0.27.
+      Two conditionally independent nights -> square each, weight by share:
+      Traveler 0.60*0.02^2 = 0.000240
+      Local    0.35*0.002^2 = 0.00000140
+      Rocket   0.05*0.27^2 = 0.0036450
+      Total = 0.00388640.
+      P(Rocket | two clue thefts) = 0.0036450/0.00388640 = 0.938.
+    answer: 0.938
+    shortcut_used: ["conditionally-independent evidence: square the per-night likelihoods"]
+    verify: "abs((0.05*0.27**2)/(0.60*0.02**2 + 0.35*0.002**2 + 0.05*0.27**2) - 0.938) < 1e-3"
+
+  - id: C2.21
+    chapter: 2
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["1g"]
+    distributions: []
+    provenance: original
+    difficulty: 5
+    actor: "Nurse Joy"
+    stakes: "Joy quarantines only if P(disease) > 0.5; one scan vs. two is the decision."
+    consequence: "The same Bayes object, updated by a second scan, flips the quarantine call."
+    quest_step: 22
+    narrative_hook: "DECISION: Bayes feeding Joy's quarantine rule -- one positive scan vs. two."
+    statement: |
+      Joy quarantines only if the posterior of disease exceeds 0.5. Prevalence
+      4%, sensitivity 0.9, false-positive rate 0.05. (a) After one positive scan,
+      does she quarantine? (b) After two independent positive scans? Show the
+      posterior in each case.
+    solution: |
+      (a) Joints: sick 0.04*0.9 = 0.036; healthy 0.96*0.05 = 0.048; total 0.084.
+          P(sick|+) = 0.036/0.084 = 0.4286 < 0.5 -> NO quarantine.
+      (b) Square the likelihoods: sick 0.04*0.81 = 0.0324; healthy 0.96*0.0025
+          = 0.0024; total 0.0348. P(sick|+,+) = 0.0324/0.0348 = 0.9310 > 0.5
+          -> QUARANTINE. The second independent positive flips the decision.
+    answer: "(a) 0.4286 -> no; (b) 0.9310 -> yes"
+    shortcut_used: ["repeated independent evidence squares the likelihood; compare to a threshold"]
+    verify: "(abs((0.04*0.9)/(0.04*0.9 + 0.96*0.05) - 0.4286) < 1e-3) and ((0.04*0.9)/(0.04*0.9 + 0.96*0.05) < 0.5) and (abs((0.04*0.81)/(0.04*0.81 + 0.96*0.0025) - 0.9310) < 1e-3) and ((0.04*0.81)/(0.04*0.81 + 0.96*0.0025) > 0.5)"
+
+  # ===== Additional bank-only problems to reach ~26 and meet outcome/quota =====
+
+  - id: C2.23
+    chapter: 2
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["1c"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "Team Rocket (a swiped tally sheet)"
+    stakes: "Jessie scribbled a conditional probability on the tally and called the case 'solved.'"
+    consequence: "If Jessie divided by the wrong denominator, her accusation is baseless."
+    quest_step: 8
+    narrative_hook: "AUDIT: Jessie's tally claims P(local | Water-type) = 0.15."
+    statement: |
+      Near the Center, 60 trainers; 24 carry a Water-type; of those, 9 are
+      locals. Jessie's swiped tally records 'P(local | Water-type) = 0.15 -- so
+      locals are basically cleared.' Find the true P(local | Water-type) and name
+      Jessie's error.
+    solution: |
+      Conditioning shrinks the world to the 24 Water-type owners:
+      P(local | Water) = 9/24 = 0.375.
+      Jessie's error: she divided by 60 (the whole town), getting 9/60 = 0.15.
+      That is the JOINT share P(local and Water), not the conditional -- she forgot
+      to shrink the denominator to B.
+    answer: 0.375
+    shortcut_used: ["conditional divides by P(B)=24, not by |S|=60"]
+    verify: "(abs(9/24 - 0.375) < 1e-9) and (abs(9/60 - 0.15) < 1e-9)"
+
+  - id: C2.24
+    chapter: 2
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["1e"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary claims two of his catches were 'mutually exclusive, so independent.'"
+    consequence: "Conflating disjoint with independent is exactly backwards and voids his claim."
+    quest_step: 14
+    narrative_hook: "RIVAL TRAP: Gary says two mutually exclusive catches are 'therefore independent.'"
+    statement: |
+      Gary insists: 'My Pokemon caught either a Goldeen or a Seaking on one throw
+      -- those outcomes are mutually exclusive, so they must be independent too,
+      right?' Each has probability 0.3 on the throw and they cannot both occur.
+      Decide whether mutually exclusive (positive-probability) events can be
+      independent, with the algebra.
+    solution: |
+      Mutually exclusive means P(Goldeen and Seaking) = 0.
+      Independence would require P(Goldeen and Seaking) = P(Goldeen)P(Seaking)
+      = 0.3*0.3 = 0.09.
+      Since 0 != 0.09, they are NOT independent -- in fact they are maximally
+      DEPENDENT (one occurring makes the other impossible). Gary has it exactly
+      backwards.
+    answer: "NOT independent (0 != 0.09); disjoint is the opposite of independent"
+    shortcut_used: ["disjoint positive-probability events are maximally dependent"]
+    verify: "(abs(0.3*0.3 - 0.09) < 1e-9) and (0.0 != 0.09)"
+
+  - id: C2.25
+    chapter: 2
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["1f"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Meowth (a back-of-envelope estimate)"
+    stakes: "Meowth averaged three conditional rates to 'estimate' an overall flee rate."
+    consequence: "Ignoring the case weights gives an answer outside the valid range -- a tell it's wrong."
+    quest_step: 11
+    narrative_hook: "AUDIT: Meowth reports the overall flee rate as the plain average 0.50."
+    statement: |
+      A wild Pokemon is Goldeen (50%), Seaking (30%), or Horsea (20%), fleeing
+      with rates 0.2, 0.5, 0.8. Meowth reports the overall flee rate as the plain
+      average (0.2+0.5+0.8)/3 = 0.50. Find the true overall P(flee) and name his
+      error.
+    solution: |
+      Law of total probability (weight by the species shares):
+      P(flee) = 0.50*0.2 + 0.30*0.5 + 0.20*0.8 = 0.10 + 0.15 + 0.16 = 0.41.
+      Meowth's error: he took the unweighted average (0.50), valid only if the
+      three species were equally likely. The correct weighted average is 0.41.
+    answer: 0.41
+    shortcut_used: ["total probability weights conditional rates by case probabilities"]
+    verify: "(abs((0.50*0.2 + 0.30*0.5 + 0.20*0.8) - 0.41) < 1e-9) and (abs((0.2+0.5+0.8)/3 - 0.50) < 1e-9)"
+
+  - id: C2.26
+    chapter: 2
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["1c", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Ash"
+    stakes: "One catch needed: draw two balls from a mixed bag, or buy a single guaranteed Poke Ball?"
+    consequence: "The two options are the same probability object -- with vs. without the safe pick."
+    quest_step: 23
+    narrative_hook: "DECISION: chance both draws are Poke Balls vs. a guaranteed single."
+    statement: |
+      A bag has 7 Poke Balls and 3 Great Balls. Option A: draw two without
+      replacement and you 'win' only if BOTH are Poke Balls. Option B: a vendor
+      sells one guaranteed Poke Ball. Compute P(win) for Option A, and state
+      which option more reliably yields a Poke Ball in hand.
+    solution: |
+      Option A: P(both Poke) = (7/10)(6/9) = 42/90 = 7/15 = 0.4667.
+      Option B: a guaranteed Poke Ball is P = 1.
+      Since 0.4667 < 1, Option B (the guaranteed single) more reliably yields a
+      Poke Ball. The 'two draws' framing tempts you to over-value a 70% first
+      draw, but the without-replacement second factor (6/9) drags it below half.
+    answer: "A: 7/15 = 0.4667; B is more reliable (1 > 0.4667)"
+    shortcut_used: ["multiplication rule without replacement; compare to the certain option"]
+    verify: "(abs((7/10)*(6/9) - 7/15) < 1e-9) and ((7/10)*(6/9) < 1.0)"

@@ -1,0 +1,70 @@
+/* ============================================================================
+   workbook.css — overrides for the reMarkable Paper Pro WORKBOOK edition.
+   Layered AFTER theme.css. Adds dot-grid work areas after each problem and
+   re-geometries the page for a digital (non-bound) e-ink device.
+   ============================================================================ */
+
+/* ---- Page geometry: digital, not bound -----------------------------------
+   No binding gutter (no spine), symmetric margins to maximize the writing
+   column, page number centered, and chapters start on the next page (not
+   forced recto) so no blank versos waste screen real estate. Letter (0.773)
+   ≈ the reMarkable Paper Pro's 0.75 portrait ratio, so it fills the screen. */
+@page {
+    size: 8.5in 11in;
+    margin: 0.55in 0.5in 0.6in 0.5in;
+}
+@page :left  { margin: 0.55in 0.5in 0.6in 0.5in;
+    @bottom-center { content: counter(page); font-family: 'Georgia', serif; font-size: 9pt; color: #888; }
+    @top-center    { content: string(chapter-title); font-family: 'Press Start 2P', monospace; font-size: 6.5pt; color: #aaa; }
+    @bottom-left { content: ""; } @top-left { content: ""; } }
+@page :right { margin: 0.55in 0.5in 0.6in 0.5in;
+    @bottom-center { content: counter(page); font-family: 'Georgia', serif; font-size: 9pt; color: #888; }
+    @top-center    { content: string(chapter-title); font-family: 'Press Start 2P', monospace; font-size: 6.5pt; color: #aaa; }
+    @bottom-right { content: ""; } @top-right { content: ""; } }
+@page :first { @top-center { content: ""; } @bottom-center { content: ""; } }
+
+h1 { break-before: page; }              /* no forced recto -> no blank pages */
+@media screen { h1 { break-before: page; } }
+
+/* ---- The dot-grid work area ----------------------------------------------
+   Inserted by tools/workbook.lua after each problem. A faint 5 mm dot grid for
+   handwriting math; a small labelled rule on top so each space is clearly
+   tied to its problem. */
+.workspace {
+    margin: 6pt 0 14pt 0;
+    border-top: 1px solid #d9d9d9;
+    padding-top: 14pt;                  /* room for the label, above the dots */
+    background-color: #fff;
+    background-image: radial-gradient(circle at center, #9aa0a6 0 1.1px, transparent 1.3px);
+    background-size: 5mm 5mm;
+    background-position: 2.5mm 16pt;    /* inset grid origin below the label */
+    background-repeat: repeat;
+    -webkit-print-color-adjust: exact;  /* force Chrome to paint the grid */
+    print-color-adjust: exact;
+    position: relative;
+}
+.workspace::before {
+    content: "\270E  Work \2014 " attr(data-label);   /* ✎  Work — C5.3 */
+    position: absolute; top: 2pt; left: 0;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    font-size: 6.5pt; letter-spacing: 0.5px; color: #b0b0b0;
+    background: #fff; padding-right: 6px;
+}
+
+/* size classes (tunable; the workflow assigns per problem by solution length) */
+.ws-sm { height: 3.5cm; }
+.ws-md { height: 7cm; }
+.ws-lg { height: 12cm; }
+.ws-xl { height: 19cm; }
+
+/* ---- White-space formatting quality --------------------------------------
+   Keep a problem with its small/medium work area so a problem never orphans
+   from its space; large/extra-large areas may flow across a page break with
+   the dot grid simply continuing. No collapsed or stray gaps. */
+.problem-set > p { break-after: avoid; }          /* problem stays with its space start */
+.workspace.ws-sm, .workspace.ws-md { break-inside: avoid; }
+.workspace.ws-lg, .workspace.ws-xl { break-inside: auto; }
+.problem-set h3 { break-after: avoid; }
+
+/* slightly larger body in the workbook for stylus-era legibility */
+body { font-size: 11.5pt; }
