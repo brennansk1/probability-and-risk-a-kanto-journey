@@ -9,7 +9,10 @@
      after Where You Are; weave the cold-open/beats to track that episode; label any
      embellishment as an in-world extension. Use the locked §29 episode map.
    • VISUAL IMMERSION 10/10 (§30, rubric dim 12 must be >=9): visuals are a primary
-     immersion channel. Embed, all inline <figure><img ... alt> with real alt text:
+     immersion channel. HARD RULE: never generate/draw sprite/character/badge art —
+     use REAL online assets only (assets/... from PokeAPI/pret/Showdown); you may only
+     GENERATE math figures (which may composite real sprites). Embed, all inline
+     <figure><img ... alt> with real alt text:
        - concept figures (>=1 per spatial/multi-step concept) via figures/src/gen_chNN.py;
        - CAST portraits at their beats (Oak @ Briefing; gym leader @ Gym Battle; Team Rocket
          @ Trap; Gary @ rival-trap) from assets/characters|vs/;
