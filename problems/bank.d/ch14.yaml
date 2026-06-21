@@ -1,0 +1,603 @@
+# Problem bank — Chapter 14 (Cinnabar Island, the Pokemon Mansion logs):
+# Joint distributions — joint pmf/pdf/cdf, marginals, conditional distributions,
+# double integrals over general (non-rectangular) regions, independence of RVs.
+# Outcomes 3a, 3b.  Tier-A chapter.  Locale: Cinnabar / Blaine / Volcano Badge.
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes,
+#   distributions/structural_tags (joint_continuous|joint_discrete), difficulty (1-5),
+#   actor, stakes, consequence, quest_step, narrative_hook, statement, solution,
+#   answer, shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval. It exposes
+# math, st (scipy.stats), and __import__; chained problems RESTATE the prior value as
+# a given so verify never depends on another problem's answer.
+#
+# Immersion quotas met: audit >=3 (C14.10, C14.23, C14.25); rival_trap >=2
+# (C14.16, C14.24); decision >=1 (C14.5).
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C14.1
+    chapter: 14
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["joint_pdf", "normalizing_constant", "marginal"]
+    provenance: original
+    difficulty: 1
+    actor: "Blaine"
+    stakes: "Blaine won't open the gym until the burnt Ponyta log is calibrated."
+    consequence: "A calibrated density lets the whole investigation read probabilities off the page."
+    quest_step: 1
+    narrative_hook: "Calibrating a researcher's Ponyta speed-vs-temperature log in the Mansion."
+    statement: |
+      A researcher's joint density for a Ponyta's speed X and temperature Y, both
+      on [0,1], is f(x,y) = c*x*y on the unit square 0<x<1, 0<y<1. Find the
+      constant c and the marginal density f_X(x).
+    solution: |
+      Integral of x*y over the unit square = (int_0^1 x dx)(int_0^1 y dy)
+      = (1/2)(1/2) = 1/4, so c = 4. Then f_X(x) = int_0^1 4xy dy = 4x*(1/2)
+      = 2x on 0<x<1 (and X,Y are independent, since 4xy = (2x)(2y) on a rectangle).
+    answer: "c = 4, f_X(x) = 2x"
+    shortcut_used: ["double integral = 1 pins the constant; integrate out y for the marginal"]
+    verify: "abs((lambda I: 1.0/I)(__import__('scipy.integrate').integrate.dblquad(lambda y,x: x*y, 0,1, 0,1)[0]) - 4) < 1e-9"
+
+  - id: C14.2
+    chapter: 14
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3a"]
+    distributions: ["joint_discrete"]
+    structural_tags: ["joint_pmf", "verify_pmf", "marginal"]
+    provenance: original
+    difficulty: 1
+    actor: "Brock"
+    stakes: "Brock needs the Growlithe table verified before trusting its numbers."
+    consequence: "A valid pmf confirms the recovered log is intact, not a forgery."
+    quest_step: 2
+    narrative_hook: "Reading a recovered Growlithe loyalty-vs-bark-volume table."
+    statement: |
+      A log records a Growlithe's loyalty X in {1,2} and bark-volume Y in {1,2,3}
+      with joint pmf p(x,y) = (1/21)(x+y) on those values. Verify it is a pmf and
+      find P(X=1).
+    solution: |
+      Sum over x in {1,2}, y in {1,2,3} of (x+y): values 2,3,4,3,4,5 sum to 21,
+      so sum p = 21/21 = 1 (a valid pmf). P(X=1) = (1/21)[(1+1)+(1+2)+(1+3)]
+      = 9/21 = 3/7 ≈ 0.4286.
+    answer: "valid pmf; P(X=1) = 3/7 ≈ 0.4286"
+    shortcut_used: ["row sum of the joint pmf = marginal of X"]
+    verify: "abs(sum((1/21)*(1+y) for y in (1,2,3)) - 3/7) < 1e-9 and abs(sum((1/21)*(x+y) for x in (1,2) for y in (1,2,3)) - 1) < 1e-9"
+
+  - id: C14.3
+    chapter: 14
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["uniform_square", "region_probability", "marginal"]
+    provenance: original
+    difficulty: 1
+    actor: "Ash"
+    stakes: "Two markers must be dropped on the lab floor grid to map the blast pattern."
+    consequence: "Knowing P(Y>X) tells the team which half of the room took the hit."
+    quest_step: 3
+    narrative_hook: "Dropping two markers uniformly on the Mansion lab floor grid."
+    statement: |
+      Two markers are dropped independently and uniformly on the unit square, so
+      (X,Y) has joint density f(x,y) = 1 on [0,1]^2. Find P(Y>X) and state the
+      marginal of X.
+    solution: |
+      P(Y>X) is the area above the diagonal of the unit square = 1/2. Marginal
+      f_X(x) = int_0^1 1 dy = 1 on 0<x<1, i.e. X ~ Uniform(0,1).
+    answer: "P(Y>X) = 1/2; X ~ Uniform(0,1)"
+    shortcut_used: ["uniform density: probability = area of the region"]
+    verify: "abs(0.5 - 1/2) < 1e-12"
+
+  - id: C14.4
+    chapter: 14
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["triangular_support", "marginal", "inner_limit"]
+    provenance: original
+    difficulty: 2
+    actor: "Brock"
+    stakes: "The Vulpix ledger only survived on a triangular scrap; the marginal must be reconstructed."
+    consequence: "A correct marginal recovers the first attribute's law from the half-burnt page."
+    quest_step: 4
+    narrative_hook: "Reconstructing a Vulpix attribute marginal from a triangular ledger fragment."
+    statement: |
+      A Vulpix's joint density of two attributes on the triangle 0<x<y<1 is
+      f(x,y) = 6(1-y). Find the marginal density f_X(x) of the first attribute.
+    solution: |
+      For fixed x, y runs x -> 1: f_X(x) = int_x^1 6(1-y) dy = 6*(1-x)^2/2
+      = 3(1-x)^2 on 0<x<1. Check: int_0^1 3(1-x)^2 dx = 1.
+    answer: "f_X(x) = 3(1-x)^2 on 0<x<1"
+    shortcut_used: ["over a triangle the inner limit is the slanted edge (x->1), not 0->1"]
+    verify: "abs(__import__('scipy.integrate').integrate.quad(lambda x: 3*(1-x)**2, 0,1)[0] - 1) < 1e-9 and abs(__import__('scipy.integrate').integrate.quad(lambda y: 6*(1-y), 0.3, 1)[0] - 3*(1-0.3)**2) < 1e-9"
+
+  - id: C14.5
+    chapter: 14
+    tier: route_trainer
+    archetype: decision
+    outcomes: ["3b"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["independence", "factoring", "rectangular_support"]
+    provenance: original
+    difficulty: 2
+    actor: "Ash"
+    stakes: "Two ember timers must be modelled — separately if independent, jointly if not."
+    consequence: "Confirming independence means the two timers can be priced one at a time."
+    quest_step: 5
+    narrative_hook: "Deciding whether two ember burn-timers can be read separately or only together."
+    statement: |
+      Two independent embers have joint density f(x,y) = 2*e^(-x)*e^(-2y) for x>0,
+      y>0. You may either (i) confirm independence and read each marginal
+      separately, or (ii) work the joint directly. Confirm X and Y are independent
+      and identify each marginal distribution.
+    solution: |
+      Support is the product set {x>0} x {y>0} and f factors as (e^-x)(2e^-2y),
+      so X is independent of Y. Marginals: f_X(x)=e^-x (Exponential, mean 1),
+      f_Y(y)=2e^-2y (Exponential, mean 1/2). Both routes agree: independent.
+    answer: "independent; X~Exp(mean 1), Y~Exp(mean 1/2)"
+    shortcut_used: ["rectangular support + density factors => independent; the factors are the marginals"]
+    verify: "abs(__import__('scipy.integrate').integrate.quad(lambda x: __import__('math').exp(-x),0,50)[0] - 1) < 1e-6 and abs(__import__('scipy.integrate').integrate.quad(lambda y: 2*__import__('math').exp(-2*y),0,50)[0] - 1) < 1e-6"
+
+  - id: C14.6
+    chapter: 14
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3b"]
+    distributions: ["joint_discrete"]
+    structural_tags: ["conditional", "discrete_table", "row_sum"]
+    provenance: original
+    difficulty: 2
+    actor: "Brock"
+    stakes: "The team needs the conditional bark-volume of a known-loyal Growlithe."
+    consequence: "The conditional pins down what a loyal Growlithe is likely to sound like."
+    quest_step: 6
+    narrative_hook: "Slicing the Growlithe table to condition on a known loyalty."
+    statement: |
+      Using the Growlithe table p(x,y) = (1/21)(x+y) on X in {1,2}, Y in {1,2,3},
+      find the conditional probability P(Y=2 | X=2).
+    solution: |
+      p_X(2) = (1/21)[(2+1)+(2+2)+(2+3)] = 12/21. P(Y=2|X=2) = p(2,2)/p_X(2)
+      = (4/21)/(12/21) = 1/3 ≈ 0.3333.
+    answer: "P(Y=2 | X=2) = 1/3"
+    shortcut_used: ["conditional = joint cell / row sum of the conditioning variable"]
+    verify: "abs(((1/21)*(2+2))/sum((1/21)*(2+y) for y in (1,2,3)) - 1/3) < 1e-9"
+
+  - id: C14.23
+    chapter: 14
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["normalizing_constant", "rectangular_support", "audit"]
+    provenance: original
+    difficulty: 2
+    actor: "A predecessor researcher (audit foil)"
+    stakes: "An old calibration note must be checked before its constant is trusted in the vault math."
+    consequence: "An un-normalized density would corrupt every downstream probability."
+    quest_step: 7
+    narrative_hook: "Auditing a predecessor's claim that a density is already normalized."
+    statement: |
+      An old researcher's note claims f(x,y) = k(x+y) on 0<x<2, 0<y<1 is "already
+      normalized, so k=1." Find the true k from the double integral = 1 and name
+      the error in the note.
+    solution: |
+      Integral of k(x+y) over 0<x<2,0<y<1 = k*int_0^2 (x + 1/2) dx
+      = k*[x^2/2 + x/2]_0^2 = k*(2+1) = 3k. Set 3k = 1 => k = 1/3, not 1.
+      Error: assuming "it looks like a density" means k=1; you must always run
+      the double integral = 1, especially off the unit square.
+    answer: "k = 1/3 (the note is wrong)"
+    shortcut_used: ["always normalize via double integral = 1; the unit square is not assumed"]
+    verify: "abs((lambda I: 1.0/I)(__import__('scipy.integrate').integrate.dblquad(lambda y,x: x+y, 0,2, 0,1)[0]) - 1/3) < 1e-9"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C14.7
+    chapter: 14
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3a", "3b"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["normalizing_check", "marginal", "independence", "expectation"]
+    provenance: original
+    difficulty: 3
+    actor: "Blaine"
+    stakes: "The Charmander twin-attribute log is the first real boss-room riddle."
+    consequence: "A full workout proves you can normalize, marginalize, and test independence in one pass."
+    quest_step: 8
+    narrative_hook: "Working a Charmander twin-attribute density end to end."
+    statement: |
+      A Charmander research log gives f(x,y) = (3/2)*x^2*y on 0<x<1, 0<y<2.
+      (a) Verify it integrates to 1. (b) Find both marginals and determine whether
+      X and Y are independent. (c) Find E[X].
+    solution: |
+      (a) int_0^2 int_0^1 (3/2)x^2 y dx dy = (3/2)(1/3)(2^2/2) = (3/2)(1/3)(2) = 1.
+      (b) f_X(x) = int_0^2 (3/2)x^2 y dy = (3/2)x^2 * 2 = 3x^2 (0<x<1);
+      f_Y(y) = int_0^1 (3/2)x^2 y dx = (3/2)y*(1/3) = y/2 (0<y<2). Product
+      (3x^2)(y/2) = (3/2)x^2 y = f on the rectangle, so independent.
+      (c) E[X] = int_0^1 x*3x^2 dx = 3/4 = 0.75.
+    answer: "integrates to 1; independent; E[X] = 0.75"
+    shortcut_used: ["factoring on a rectangle => independent; E[X] from the marginal"]
+    verify: "abs(__import__('scipy.integrate').integrate.dblquad(lambda y,x: 1.5*x*x*y, 0,1, 0,2)[0] - 1) < 1e-9 and abs(__import__('scipy.integrate').integrate.quad(lambda x: x*3*x*x,0,1)[0] - 0.75) < 1e-9"
+
+  - id: C14.8
+    chapter: 14
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["marginal", "region_probability", "rectangular_support"]
+    provenance: original
+    difficulty: 3
+    actor: "Blaine"
+    stakes: "Two flame readings must be cleared below a safety threshold."
+    consequence: "The tail probability tells Blaine whether the chamber stays under spec."
+    quest_step: 9
+    narrative_hook: "Computing a flame-reading tail probability from a rectangular joint density."
+    statement: |
+      The joint density of two flame readings is f(x,y) = (1/3)(x+y) on 0<x<2,
+      0<y<1. Find P(Y < 1/2).
+    solution: |
+      f_Y(y) = int_0^2 (1/3)(x+y) dx = (1/3)[x^2/2 + xy]_0^2 = (1/3)(2+2y)
+      = (2/3)(1+y) on 0<y<1. P(Y<1/2) = int_0^{1/2} (2/3)(1+y) dy
+      = (2/3)[1/2 + 1/8] = (2/3)(5/8) = 5/12 ≈ 0.4167.
+    answer: "P(Y < 1/2) = 5/12 ≈ 0.4167"
+    shortcut_used: ["reduce to the marginal of Y, then integrate the tail"]
+    verify: "abs(__import__('scipy.integrate').integrate.quad(lambda y: (2/3)*(1+y),0,0.5)[0] - 5/12) < 1e-9"
+
+  - id: C14.9
+    chapter: 14
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3b"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["conditional", "triangular_support", "conditional_probability"]
+    provenance: original
+    difficulty: 4
+    actor: "Blaine"
+    stakes: "The vault sub-key is a conditional probability on the Mewtwo triangle."
+    consequence: "Getting the conditional right is one of four tumblers on the vault lock."
+    quest_step: 10
+    narrative_hook: "Conditioning the Mewtwo triangle on a known power to read the vault sub-key."
+    statement: |
+      For the Mewtwo triangle f(x,y) = 8xy on 0<x<y<1, find P(Y > 1/2 | X = 1/4)
+      from the conditional density.
+    solution: |
+      f_X(x) = int_x^1 8xy dy = 4x(1-x^2). f_{Y|X}(y|1/4) = 8*(1/4)*y /
+      (4*(1/4)(1-1/16)) = 2y/(15/16) = 32y/15 for 1/4<y<1.
+      P(Y>1/2|X=1/4) = int_{1/2}^1 (32y/15) dy = (16/15)(1-1/4) = 4/5 = 0.80.
+    answer: "P(Y > 1/2 | X = 1/4) = 4/5 = 0.80"
+    shortcut_used: ["conditional density = joint / marginal; conditional support inherited from the triangle"]
+    verify: "abs(__import__('scipy.integrate').integrate.quad(lambda y: 32*y/15, 0.5,1)[0] - 0.8) < 1e-9"
+
+  - id: C14.10
+    chapter: 14
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["3a", "3b"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["triangular_support", "region_probability", "independence", "audit"]
+    provenance: original
+    difficulty: 4
+    actor: "Team Rocket (audit foil)"
+    stakes: "Team Rocket's stolen worksheet was used to set the vault code; it must be audited."
+    consequence: "Their factoring blunder doubled the answer and jammed the vault — the true value reopens it."
+    quest_step: 11
+    narrative_hook: "Auditing Team Rocket's claim that 8xy factors into independent variables on a triangle."
+    statement: |
+      Team Rocket's worksheet declares: "f(x,y)=8xy on 0<x<y<1 factors into 8x*y,
+      so X and Y are independent, and P(X<1/2, Y<1/2) is just the product of
+      marginal probabilities." Find the TRUE P(X<1/2, Y<1/2) by integrating over
+      the correct region, and name where the worksheet went wrong.
+    solution: |
+      The support 0<x<y<1 is a TRIANGLE, not a rectangle, so X,Y are dependent no
+      matter how 8xy factors. "Both below 1/2" inside the support is the
+      sub-triangle 0<x<y<1/2:
+      P = int_0^{1/2} int_0^y 8xy dx dy = int_0^{1/2} 4y^3 dy = [y^4]_0^{1/2}
+      = 1/16 = 0.0625. (The product-of-marginals route gives the square's 1/8,
+      double the truth.) Error: mistaking algebraic factoring for independence on
+      a non-rectangular support, then integrating over a square not the sub-triangle.
+    answer: "1/16 = 0.0625 (Team Rocket's product route is wrong)"
+    shortcut_used: ["support first: a triangle kills independence; integrate the true sub-triangle"]
+    verify: "abs(__import__('scipy.integrate').integrate.dblquad(lambda x,y: 8*x*y, 0,0.5, 0, lambda y: y)[0] - 1/16) < 1e-9"
+
+  - id: C14.11
+    chapter: 14
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["capped_support", "marginal", "expectation", "inner_limit"]
+    provenance: original
+    difficulty: 4
+    actor: "Blaine"
+    stakes: "A capped-support dual reading must be marginalized for the reserve estimate."
+    consequence: "The marginal mean feeds Blaine's expected-strength tally for the chamber."
+    quest_step: 12
+    narrative_hook: "Marginalizing a dual reading over the capped region x+y<1."
+    statement: |
+      The joint density is f(x,y) = 24xy on the region x>0, y>0, x+y<1.
+      (a) Find the marginal f_X(x). (b) Find E[X].
+    solution: |
+      (a) For fixed x in (0,1), y runs 0 -> 1-x: f_X(x) = int_0^{1-x} 24xy dy
+      = 24x*(1-x)^2/2 = 12x(1-x)^2.
+      (b) E[X] = int_0^1 x*12x(1-x)^2 dx = 12*int_0^1 x^2(1-2x+x^2) dx
+      = 12(1/3 - 2/4 + 1/5) = 12*(1/30) = 2/5 = 0.40.
+    answer: "f_X(x) = 12x(1-x)^2; E[X] = 0.40"
+    shortcut_used: ["capped support: inner limit is the line y = 1-x"]
+    verify: "abs(__import__('scipy.integrate').integrate.quad(lambda x: x*12*x*(1-x)**2,0,1)[0] - 0.4) < 1e-9"
+
+  - id: C14.12
+    chapter: 14
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["joint_cdf", "density_from_cdf", "mixed_partial"]
+    provenance: original
+    difficulty: 3
+    actor: "Brock"
+    stakes: "One ledger survived only as a cumulative chart; the density must be recovered."
+    consequence: "Recovering f from F lets the team reuse the salvaged cumulative page."
+    quest_step: 13
+    narrative_hook: "Recovering a density from a salvaged joint cdf page."
+    statement: |
+      A pair of normalized attributes has joint cdf F(x,y) = (1/2)*x*y*(x+y) on
+      0<=x<=1, 0<=y<=1. Find the joint density f(x,y) and verify it integrates to 1.
+    solution: |
+      f = d2F/(dx dy). dF/dx = (1/2)y(2x+y) = xy + (1/2)y^2;
+      d/dy (xy + (1/2)y^2) = x + y. So f(x,y) = x+y on [0,1]^2, and
+      int_0^1 int_0^1 (x+y) dx dy = 1.
+    answer: "f(x,y) = x + y on [0,1]^2"
+    shortcut_used: ["density from cdf: differentiate once in each variable"]
+    verify: "abs(__import__('scipy.integrate').integrate.dblquad(lambda y,x: x+y, 0,1, 0,1)[0] - 1) < 1e-9"
+
+  - id: C14.15
+    chapter: 14
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["triangular_support", "region_probability", "order_reversal"]
+    provenance: original
+    difficulty: 4
+    actor: "Blaine"
+    stakes: "A region probability over the Mewtwo triangle must be confirmed both integration orders."
+    consequence: "Matching both orders proves the limits were set off the picture, not by autopilot."
+    quest_step: 14
+    narrative_hook: "Computing a triangle region probability and confirming it by reversing the order."
+    statement: |
+      For f(x,y) = 8xy on 0<x<y<1, find P(X < 1/2) (the marginal-tail of X over the
+      whole triangle), setting up the inner limit off the slanted edge.
+    solution: |
+      f_X(x) = int_x^1 8xy dy = 4x(1-x^2) on 0<x<1. Then
+      P(X<1/2) = int_0^{1/2} 4x(1-x^2) dx = int_0^{1/2}(4x - 4x^3) dx
+      = [2x^2 - x^4]_0^{1/2} = 2*(1/4) - 1/16 = 1/2 - 1/16 = 7/16 = 0.4375.
+    answer: "P(X < 1/2) = 7/16 = 0.4375"
+    shortcut_used: ["marginal of X over a triangle has inner limit x->1"]
+    verify: "abs(__import__('scipy.integrate').integrate.quad(lambda x: 4*x*(1-x*x),0,0.5)[0] - 7/16) < 1e-9"
+
+  - id: C14.16
+    chapter: 14
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["3b"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["independence", "rectangular_support", "factoring", "rival_trap"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak (rival)"
+    stakes: "Gary brags he can call independence by a glance at the support shape alone."
+    consequence: "Calling out Gary's shortcut keeps you from copying a half-right rule into the boss fight."
+    quest_step: 15
+    narrative_hook: "Checking Gary's claim that a rectangular support alone proves independence."
+    statement: |
+      The joint density is f(x,y) = x+y on the unit square 0<x<1, 0<y<1. Gary
+      glances at it and says: "Rectangular support, so X and Y are independent."
+      Decide whether X and Y are independent and say where Gary is wrong.
+    solution: |
+      Marginals: f_X(x) = int_0^1 (x+y) dy = x + 1/2; f_Y(y) = y + 1/2. The product
+      (x+1/2)(y+1/2) = xy + x/2 + y/2 + 1/4 does NOT equal x+y. So f != f_X*f_Y and
+      X,Y are DEPENDENT. Gary is wrong: a rectangular support is necessary but NOT
+      sufficient — you must still check the density factors, and x+y does not.
+    answer: "dependent (Gary is wrong; rectangle is necessary, not sufficient)"
+    shortcut_used: ["two-part independence test: rectangle AND factoring both required"]
+    verify: "(lambda fx,fy,f: abs(f(0.3,0.7) - fx(0.3)*fy(0.7)) > 1e-6)((lambda x: x+0.5),(lambda y: y+0.5),(lambda x,y: x+y))"
+
+  - id: C14.24
+    chapter: 14
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["3b"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["conditional", "triangular_support", "conditional_expectation", "rival_trap"]
+    provenance: original
+    difficulty: 4
+    actor: "Gary Oak (rival)"
+    stakes: "Gary calls the conditional mean by assuming the slice is uniform."
+    consequence: "Disproving Gary's uniform assumption protects the final vault tumbler."
+    quest_step: 16
+    narrative_hook: "Disputing Gary's claim that the conditional of Y given X is uniform on the Mewtwo triangle."
+    statement: |
+      For the Mewtwo triangle f(x,y)=8xy on 0<x<y<1, Gary brags: "Given X=1/4,
+      stability Y is just uniform on (1/4,1), so E[Y|X=1/4] = (1/4 + 1)/2 = 0.625."
+      Find the true E[Y | X = 1/4] and say where Gary is wrong.
+    solution: |
+      The conditional density f_{Y|X}(y|1/4) = 32y/15 on 1/4<y<1 RISES with y, so
+      it is NOT uniform. E[Y|X=1/4] = int_{1/4}^1 y*(32y/15) dy
+      = (32/15)[y^3/3]_{1/4}^1 = (32/45)(1 - 1/64) = (32/45)(63/64) = 63/90 = 7/10
+      = 0.70. Gary is wrong (0.625 vs. 0.70): the conditional is proportional to y,
+      not flat, so it leans toward higher stability and the mean exceeds the midpoint.
+    answer: "E[Y | X = 1/4] = 7/10 = 0.70 (Gary is wrong)"
+    shortcut_used: ["conditional density need not be uniform; integrate y * f_{Y|X}"]
+    verify: "abs(__import__('scipy.integrate').integrate.quad(lambda y: y*32*y/15, 0.25,1)[0] - 0.7) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =====================
+
+  - id: C14.13
+    chapter: 14
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["3a", "3b"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["triangular_support", "conditional", "uniform_conditional", "expectation"]
+    provenance: original
+    difficulty: 4
+    actor: "Brock"
+    stakes: "An asymmetric ledger hides a clean uniform conditional worth exploiting."
+    consequence: "Spotting the uniform conditional gives E[Y] almost for free via double expectation preview."
+    quest_step: 17
+    narrative_hook: "Mining an asymmetric ledger whose conditional turns out uniform."
+    statement: |
+      A log uses density f(x,y) = (3/8)x on the triangle 0<y<x<2. (a) Find the
+      marginal f_X(x). (b) Show the conditional of Y given X=x is uniform on (0,x),
+      and use it to find E[Y] via E[Y] = E[X/2].
+    solution: |
+      (a) For fixed x, y runs 0->x: f_X(x) = int_0^x (3/8)x dy = (3/8)x*x = (3/8)x^2
+      on 0<x<2. Check: int_0^2 (3/8)x^2 dx = (3/8)(8/3) = 1.
+      (b) f_{Y|X}(y|x) = (3/8)x / ((3/8)x^2) = 1/x for 0<y<x — Uniform(0,x), so
+      E[Y|X=x] = x/2. Then E[Y] = E[X/2] = (1/2)E[X]
+      = (1/2)int_0^2 x*(3/8)x^2 dx = (1/2)(3/8)(16/4) = (1/2)(3/2) = 3/4 = 0.75.
+    answer: "f_X(x) = (3/8)x^2; E[Y] = 0.75"
+    shortcut_used: ["uniform conditional => E[Y|X]=X/2; tower property gives E[Y]"]
+    verify: "abs(0.5*__import__('scipy.integrate').integrate.quad(lambda x: x*(3/8)*x*x,0,2)[0] - 0.75) < 1e-9"
+
+  - id: C14.14
+    chapter: 14
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["3a", "3b"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["independent_exponentials", "region_probability", "capped_support"]
+    provenance: original
+    difficulty: 5
+    actor: "The Warden (commissioner)"
+    stakes: "The reinsurer needs the chance total fire+smoke damage stays under 2."
+    consequence: "The region integral is the reinsurer's expected-payout footprint for the treaty."
+    quest_step: 18
+    narrative_hook: "Pricing a low-loss day as a region integral over independent exponentials."
+    statement: |
+      Fire damage X and smoke damage Y (in thousands) are independent exponentials
+      each with mean 1. Find P(X+Y < 2), the chance total damage stays under 2.
+    solution: |
+      f(x,y) = e^-x e^-y. P(X+Y<2) = int_0^2 int_0^{2-x} e^-x e^-y dy dx
+      = int_0^2 e^-x (1 - e^-(2-x)) dx = int_0^2 (e^-x - e^-2) dx
+      = (1 - e^-2) - 2e^-2 = 1 - 3e^-2 ≈ 0.5940. (Equivalently X+Y ~ Gamma(2,1),
+      cdf 1 - e^-2(1+2).)
+    answer: "P(X+Y < 2) = 1 - 3*e^(-2) ≈ 0.5940"
+    shortcut_used: ["sum of independent exponentials = Gamma; or integrate over x+y<2"]
+    verify: "abs((1 - 3*__import__('math').exp(-2)) - __import__('scipy.integrate').integrate.dblquad(lambda y,x: __import__('math').exp(-x-y), 0,2, 0, lambda x: 2-x)[0]) < 1e-9"
+
+  - id: C14.17
+    chapter: 14
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["triangular_support", "expectation", "double_integral"]
+    provenance: original
+    difficulty: 5
+    actor: "Blaine"
+    stakes: "The cross-moment E[XY] previews the covariance Victory Road will demand."
+    consequence: "A correct E[XY] sets up next chapter's dependence check before you leave the island."
+    quest_step: 19
+    narrative_hook: "Computing the cross-moment E[XY] on the Mewtwo triangle as a covariance preview."
+    statement: |
+      For the Mewtwo triangle f(x,y) = 8xy on 0<x<y<1, find the cross-moment
+      E[XY] = double integral of x*y*f over the support.
+    solution: |
+      E[XY] = int_0^1 int_x^1 x*y*8xy dy dx = int_0^1 8x^2 [y^3/3]_x^1 dx
+      = int_0^1 (8/3)x^2 (1 - x^3) dx = (8/3)(1/3 - 1/6) = (8/3)(1/6) = 4/9 ≈ 0.4444.
+    answer: "E[XY] = 4/9 ≈ 0.4444"
+    shortcut_used: ["E[XY] = double integral of xy*f over the triangular support"]
+    verify: "abs(__import__('scipy.integrate').integrate.dblquad(lambda y,x: x*y*8*x*y, 0,1, lambda x: x, 1)[0] - 4/9) < 1e-9"
+
+  - id: C14.18
+    chapter: 14
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["uniform_square", "region_probability", "geometry"]
+    provenance: original
+    difficulty: 4
+    actor: "Ash"
+    stakes: "A geometric probability over the lab grid checks the blast-spread model."
+    consequence: "The area answer calibrates how far apart the two markers usually land."
+    quest_step: 20
+    narrative_hook: "Computing a geometric probability that the two lab-floor markers land close together."
+    statement: |
+      Two markers are dropped independently and uniformly on the unit square,
+      f(x,y) = 1 on [0,1]^2. Find P(|X - Y| < 1/2).
+    solution: |
+      P(|X-Y|<1/2) = 1 - P(|X-Y|>=1/2). The two corner triangles where |X-Y|>=1/2
+      each have legs 1/2, so each area = (1/2)(1/2)(1/2) = 1/8; together 1/4. Thus
+      P(|X-Y|<1/2) = 1 - 1/4 = 3/4 = 0.75.
+    answer: "P(|X - Y| < 1/2) = 3/4 = 0.75"
+    shortcut_used: ["uniform square: probability = area; complement the two corner triangles"]
+    verify: "abs((1 - 2*0.5*0.5*0.5) - 0.75) < 1e-12"
+
+  - id: C14.19
+    chapter: 14
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["3b"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["independent_exponentials", "race_probability"]
+    provenance: original
+    difficulty: 4
+    actor: "Brock"
+    stakes: "Two fainted Pokemon are reviving; which recovers first sets the battle order."
+    consequence: "The race probability decides who Brock sends out first after the Mansion skirmish."
+    quest_step: 21
+    narrative_hook: "Finding which of two independent exponential recovery timers finishes first."
+    statement: |
+      Two Pokemon's recovery times are independent exponentials, X with mean 2
+      minutes and Y with mean 3 minutes. Find P(X < Y), the chance the first
+      recovers before the second.
+    solution: |
+      For independent exponentials with rates lam_X = 1/2 (mean 2) and lam_Y = 1/3
+      (mean 3), P(X<Y) = lam_X/(lam_X+lam_Y) = (1/2)/(1/2+1/3) = (1/2)/(5/6)
+      = 3/5 = 0.60.
+    answer: "P(X < Y) = 3/5 = 0.60"
+    shortcut_used: ["race of independent exponentials: P(X<Y) = rate_X/(rate_X+rate_Y)"]
+    verify: "abs(((1/2)/((1/2)+(1/3))) - 0.6) < 1e-9"
+
+  - id: C14.25
+    chapter: 14
+    tier: elite_challenge
+    archetype: audit
+    outcomes: ["3a"]
+    distributions: ["joint_continuous"]
+    structural_tags: ["uniform_square", "region_probability", "audit", "decision"]
+    provenance: original
+    difficulty: 4
+    actor: "The Warden's clerk (audit foil)"
+    stakes: "A clerk's reserve calc rewrote a sum-threshold event as a product of tails."
+    consequence: "The clerk under-reserves by half; the true region integral fixes the reserve."
+    quest_step: 22
+    narrative_hook: "Auditing a clerk who turned P(X+Y > 3/2) into a product of one-variable tails."
+    statement: |
+      Two independent loss components are Uniform(0,1) each, so f(x,y) = 1 on the
+      unit square. The clerk reserves against "P(X+Y > 3/2)" but writes it as
+      "P(X>3/4)*P(Y>3/4) = 1/16." Find the TRUE P(X+Y > 3/2) as a region integral,
+      name the clerk's error, and decide which reserve is larger.
+    solution: |
+      The region X+Y>3/2 on the unit square is the upper-right triangle with corners
+      (1/2,1),(1,1/2),(1,1): a right triangle with legs 1/2, area = (1/2)(1/2)(1/2)
+      = 1/8 = 0.125. Error: rewriting a SUM-threshold event as a product of separate
+      tail events. The true reserve 1/8 is LARGER than the clerk's 1/16 — the clerk
+      under-reserves by half.
+    answer: "P(X+Y > 3/2) = 1/8 = 0.125 (clerk under-reserves)"
+    shortcut_used: ["a sum-threshold event is a region integral, not a product of tails"]
+    verify: "abs(__import__('scipy.integrate').integrate.dblquad(lambda y,x: 1.0, 0.5,1, lambda x: max(0,1.5-x), 1)[0] - 0.125) < 1e-9"

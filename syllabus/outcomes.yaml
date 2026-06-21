@@ -1,52 +1,53 @@
-# SOA/CAS Exam P (2026) learning outcomes — source of truth for coverage checks.
+# SOA Exam P (Sept 2026) learning outcomes — source of truth for coverage checks.
 # Topic weights: General Probability 23-30%, Univariate RV 44-50%, Multivariate RV 23-30%.
-# Each outcome lists the chapter that primarily discharges it. tools/check_coverage.py
-# asserts each outcome has >= MIN_PER_OUTCOME problems and each distribution >= MIN_PER_DIST.
+# `chapter:` is the PRIMARY V3 chapter that discharges the outcome (informational);
+# tools/check_coverage.py counts problems by their `outcomes:` tags across the whole bank
+# and asserts each outcome has >= min_per_outcome problems and each distribution >= min_per_distribution.
 
 topics:
   - id: "1"
     name: General Probability
     weight: "23-30%"
-    chapters: [2, 3, 4]
+    chapters: [1, 2, 4]
     outcomes:
-      - {id: "1a", chapter: 2, desc: "Sample spaces, events, set operations, Kolmogorov axioms"}
-      - {id: "1b", chapter: 3, desc: "Combinatorics: permutations, combinations, multinomial"}
-      - {id: "1c", chapter: 4, desc: "Conditional probability"}
-      - {id: "1d", chapter: 4, desc: "Independence (pairwise vs mutual)"}
-      - {id: "1e", chapter: 4, desc: "Multiplication and addition rules"}
-      - {id: "1f", chapter: 4, desc: "Law of total probability"}
-      - {id: "1g", chapter: 4, desc: "Bayes' theorem"}
+      - {id: "1a", chapter: 1, desc: "Sample spaces, events, set operations, Venn, De Morgan, inclusion-exclusion, Kolmogorov axioms"}
+      - {id: "1b", chapter: 4, desc: "Combinatorics: permutations, combinations, multinomial"}
+      - {id: "1c", chapter: 2, desc: "Conditional probability"}
+      - {id: "1d", chapter: 2, desc: "Independence (pairwise vs mutual)"}
+      - {id: "1e", chapter: 2, desc: "Multiplication and addition rules"}
+      - {id: "1f", chapter: 2, desc: "Law of total probability"}
+      - {id: "1g", chapter: 2, desc: "Bayes' theorem"}
 
   - id: "2"
     name: Univariate Random Variables
     weight: "44-50%"
-    chapters: [5, 6, 7, 8]
+    chapters: [3, 5, 6, 9, 10, 11, 12, 13]
     outcomes:
-      - {id: "2a", chapter: 5, desc: "Random variables; pmf/pdf/cdf/survival; valid distributions"}
-      - {id: "2b", chapter: 5, desc: "Expectation, moments, mode/median/percentiles"}
-      - {id: "2c", chapter: 5, desc: "Variance, SD, coefficient of variation; Var(aX+b)"}
-      - {id: "2d", chapter: 5, desc: "Moment generating functions"}
-      - {id: "2d2", chapter: 6, desc: "Discrete distributions: Bernoulli, binomial, geometric, neg-binomial, hypergeometric, Poisson, discrete uniform"}
-      - {id: "2d3", chapter: 7, desc: "Continuous distributions: uniform, exponential, gamma, beta, normal; transformations"}
-      - {id: "2e", chapter: 8, desc: "Deductibles, limits, coinsurance; E[X^u]; loss vs payment"}
-      - {id: "2f", chapter: 8, desc: "Per-loss vs per-payment; inflation; loss elimination ratio"}
+      - {id: "2a", chapter: 3, desc: "Random variables; pmf/pdf/cdf/survival; valid distributions (discrete ch3, continuous ch9)"}
+      - {id: "2b", chapter: 3, desc: "Expectation, moments, mode/median/percentiles (discrete ch3, continuous ch10)"}
+      - {id: "2c", chapter: 3, desc: "Variance, SD, coefficient of variation; Var(aX+b)"}
+      - {id: "2d", chapter: 3, desc: "Moment generating functions"}
+      - {id: "2d2", chapter: 5, desc: "Discrete distributions: Bernoulli, binomial, geometric, neg-binomial, hypergeometric, Poisson, discrete uniform (combinatorics-led families ch4)"}
+      - {id: "2d3", chapter: 11, desc: "Continuous distributions: uniform, exponential, gamma, beta, normal"}
+      - {id: "2e", chapter: 6, desc: "Deductibles, limits, coinsurance; E[X^u]; loss vs payment (discrete ch6, continuous ch13)"}
+      - {id: "2f", chapter: 6, desc: "Per-loss vs per-payment; inflation; loss elimination ratio"}
 
   - id: "3"
     name: Multivariate Random Variables
     weight: "23-30%"
-    chapters: [9, 10, 11, 12]
+    chapters: [14, 15, 16, 17]
     outcomes:
-      - {id: "3a", chapter: 9, desc: "Joint pmf/pdf/cdf; marginal and conditional distributions"}
-      - {id: "3b", chapter: 9, desc: "Independence of RVs; double integrals over general regions"}
-      - {id: "3c", chapter: 10, desc: "Conditional expectation E[X|Y]; law of total expectation"}
-      - {id: "3d", chapter: 10, desc: "Conditional variance; law of total variance; compound distributions"}
-      - {id: "3e", chapter: 11, desc: "Covariance and correlation"}
-      - {id: "3f", chapter: 12, desc: "Order statistics; min/max distributions"}
-      - {id: "3g", chapter: 11, desc: "Linear combinations; variance of sums"}
-      - {id: "3h", chapter: 11, desc: "Moments of linear combinations; sums staying in-family; MGF method"}
-      - {id: "3i", chapter: 12, desc: "Central Limit Theorem; continuity correction"}
+      - {id: "3a", chapter: 14, desc: "Joint pmf/pdf/cdf; marginal and conditional distributions"}
+      - {id: "3b", chapter: 14, desc: "Independence of RVs; double integrals over general regions"}
+      - {id: "3c", chapter: 16, desc: "Conditional expectation E[X|Y]; law of total expectation"}
+      - {id: "3d", chapter: 16, desc: "Conditional variance; law of total variance; compound distributions"}
+      - {id: "3e", chapter: 15, desc: "Covariance and correlation"}
+      - {id: "3f", chapter: 17, desc: "Order statistics; min/max distributions"}
+      - {id: "3g", chapter: 15, desc: "Linear combinations; variance of sums"}
+      - {id: "3h", chapter: 15, desc: "Moments of linear combinations; sums staying in-family; MGF method"}
+      - {id: "3i", chapter: 12, desc: "Central Limit Theorem; continuity correction (taught with the Normal, continuous act)"}
 
-# In-scope distributions (each must appear in >= MIN_PER_DIST problems).
+# In-scope distributions (each must appear in >= min_per_distribution problems).
 distributions:
   discrete:   [bernoulli, binomial, geometric, negative_binomial, hypergeometric, poisson, discrete_uniform]
   continuous: [uniform, exponential, gamma, beta, normal]
@@ -54,9 +55,8 @@ distributions:
 # Out of scope (enrichment only — flag, do not require).
 enrichment: [lognormal, pareto, weibull, chi_square]
 
-# Structural / category tags that are valid on a problem but are NOT named
-# distributions (so they are accepted by the coverage check but not subject to the
-# per-distribution minimum). Used by joint/compound/order-statistic problems.
+# Structural / category tags valid on a problem but NOT named distributions
+# (accepted by the coverage check, exempt from the per-distribution minimum).
 structural_tags:
   - joint_continuous
   - joint_discrete
@@ -68,13 +68,13 @@ structural_tags:
   - none
   - other
 
-# Accepted outcome tags that are not weighted SOA outcomes (Chapter 1 is the
-# prerequisite "Trainer School" — calculus/algebra, no SOA outcome of its own).
+# Accepted outcome tags that are not weighted SOA outcomes.
+# ch08 (Calculus Toolkit) is a prerequisite with no SOA outcome of its own.
 extra_outcomes: [prereq]
 
 coverage_thresholds:
   min_per_outcome: 8
   min_per_distribution: 6
 
-# Chapter 13 mock-exam weight split per 30 questions.
+# ch19 mock-exam weight split per 30 questions.
 mock_split: {general: 8, univariate: 14, multivariate: 8}

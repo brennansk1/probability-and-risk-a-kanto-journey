@@ -1,0 +1,26 @@
+# Trainer Rank ladder (V3 §28 Fix B). progress_strip()/vs_banner() read this to
+# render the cumulative rank label from the number of badges earned so far.
+# Badges are earned at chapters: 2(Cascade) 3(Thunder) 4(Boulder) 5(Rainbow)
+# 6(Soul) 9(Marsh) 14(Volcano) 16(Earth) -> 8 total; ch17 clears the Plateau.
+
+ranks:
+  - {min_badges: 0, label: "Rookie Trainer"}
+  - {min_badges: 3, label: "Junior Trainer"}
+  - {min_badges: 5, label: "Ace Trainer"}
+  - {min_badges: 7, label: "Veteran Trainer"}
+  - {min_badges: 8, label: "Champion-ready"}
+
+# Badge order (chapter that earns it -> badge asset name).
+badge_by_chapter:
+  2:  cascade
+  3:  thunder
+  4:  boulder
+  5:  rainbow
+  6:  soul
+  9:  marsh
+  14: volcano
+  16: earth
+
+# Exam-Readiness % is computed at runtime from outcomes mastered + checkpoint
+# scores; the strip shows "{earned}/8 badges - {rank} - ~{readiness}% to exam-ready".
+total_badges: 8

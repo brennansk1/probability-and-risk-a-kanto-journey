@@ -1,0 +1,528 @@
+# Problem bank — Chapter 16 (Viridian Gym, Giovanni unmasked): Conditional &
+# Double Expectation, Conditional & Total Variance, Compound/mixture variables.
+# Outcomes 3c, 3d.  Tier-A chapter.  Locale: Viridian Gym (Giovanni / Earth).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28), mirroring problems/bank.d/ch02.yaml:
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes,
+#   distributions, structural_tags, provenance, difficulty (1-5),
+#   actor, stakes, consequence, quest_step, narrative_hook, statement, solution,
+#   answer, shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval. It exposes
+# math, st (scipy.stats), and __import__; chained problems RESTATE the prior value as
+# a given so verify never depends on another problem's answer.
+#
+# Immersion quotas met: audit >=3 (C16.7, C16.15, C16.17); rival_trap >=2
+# (C16.13, C16.16); decision >=1 (C16.8, C16.18). The chapter's Team Rocket error
+# (using E[X|Y] as a number via Jensen's trap) is recycled into the audit C16.7.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C16.1
+    chapter: 16
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3c"]
+    distributions: [discrete]
+    structural_tags: ["total_expectation"]
+    provenance: original
+    difficulty: 1
+    actor: "A Rocket scout"
+    stakes: "Giovanni's first trial: predict the grunt count before the scout names its camp."
+    consequence: "A correct forecast lets you brace for the right squad size."
+    quest_step: 1
+    narrative_hook: "Predict the grunt count before a Rocket scout reports its camp."
+    statement: |
+      A Rocket scout reports from one of two camps: forest (P=0.6) or cave
+      (P=0.4). The grunt count X has E[X|forest]=4 and E[X|cave]=9. Find E[X].
+    solution: |
+      Law of total expectation: E[X] = sum_y E[X|Y=y] P(Y=y)
+      = 4(0.6) + 9(0.4) = 2.4 + 3.6 = 6.
+    answer: 6
+    shortcut_used: ["weighted average of conditional means"]
+    verify: "abs((4*0.6 + 9*0.4) - 6) < 1e-9"
+
+  - id: C16.2
+    chapter: 16
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3c"]
+    distributions: [discrete]
+    structural_tags: ["total_expectation"]
+    provenance: original
+    difficulty: 1
+    actor: "A wild Diglett"
+    stakes: "Mapping the tunnel network under the gym needs the expected burrow depth."
+    consequence: "A good depth estimate tells you where Diglett can ambush from below."
+    quest_step: 2
+    narrative_hook: "Log a wild Diglett's expected burrow depth across soil types."
+    statement: |
+      A Diglett's burrow depth X given soil type Y: soft (P=0.7) with
+      E[X|soft]=30 cm, rocky (P=0.3) with E[X|rocky]=12 cm. Find E[X].
+    solution: |
+      E[X] = 30(0.7) + 12(0.3) = 21 + 3.6 = 24.6 cm.
+    answer: 24.6
+    shortcut_used: ["weighted average of conditional means"]
+    verify: "abs((30*0.7 + 12*0.3) - 24.6) < 1e-9"
+
+  - id: C16.3
+    chapter: 16
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3c"]
+    distributions: [discrete]
+    structural_tags: ["total_expectation"]
+    provenance: original
+    difficulty: 1
+    actor: "Marowak floor guards"
+    stakes: "You must know how many Marowak guard each gym floor on average."
+    consequence: "The expected count sets how many Potions you carry per floor."
+    quest_step: 3
+    narrative_hook: "Tally hourly Marowak sightings across gym floors."
+    statement: |
+      Hourly Marowak count X given floor Y has conditional means 20, 35, 50 on
+      floors with probabilities 0.5, 0.3, 0.2. Find E[X].
+    solution: |
+      E[X] = 20(0.5) + 35(0.3) + 50(0.2) = 10 + 10.5 + 10 = 30.5.
+    answer: 30.5
+    shortcut_used: ["weighted average of conditional means"]
+    verify: "abs((20*0.5 + 35*0.3 + 50*0.2) - 30.5) < 1e-9"
+
+  - id: C16.4
+    chapter: 16
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3d"]
+    distributions: [discrete]
+    structural_tags: ["total_variance", "expected_conditional_variance"]
+    provenance: original
+    difficulty: 2
+    actor: "A wild Rhyhorn"
+    stakes: "You need the within-anger spread of a Rhyhorn's charge to time a dodge."
+    consequence: "Term 1 alone tells you the irreducible charge noise at fixed anger."
+    quest_step: 4
+    narrative_hook: "Gauge a Rhyhorn's charge spread within each anger level (Term 1 only)."
+    statement: |
+      A Rhyhorn's charge distance X given anger Y in {1,2,3} (each P=1/3) has
+      conditional variances 4, 9, 16. Find E[Var(X|Y)] (Term 1 of total variance).
+    solution: |
+      Term 1 = E[Var(X|Y)] = (1/3)(4) + (1/3)(9) + (1/3)(16)
+      = (4+9+16)/3 = 29/3 ≈ 9.667.
+    answer: 9.667
+    shortcut_used: ["expected conditional variance = weighted avg of within-group variances"]
+    verify: "abs(((4+9+16)/3) - 29/3) < 1e-9 and abs(29/3 - 9.6667) < 1e-3"
+
+  - id: C16.5
+    chapter: 16
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3d"]
+    distributions: [discrete]
+    structural_tags: ["total_variance", "variance_of_conditional_mean"]
+    provenance: original
+    difficulty: 2
+    actor: "A wild Rhyhorn"
+    stakes: "Now you need the full charge-distance variance, not just the within-anger piece."
+    consequence: "Both terms together tell you the true unpredictability of the charge."
+    quest_step: 5
+    narrative_hook: "Add the between-anger term to finish the Rhyhorn charge variance."
+    statement: |
+      For the same Rhyhorn, the conditional means are 5, 11, 20 (each P=1/3) and
+      conditional variances 4, 9, 16. Find Var(E[X|Y]) (Term 2), then state Var(X).
+    solution: |
+      Means 5, 11, 20 each weight 1/3: E[g] = (5+11+20)/3 = 12;
+      E[g^2] = (25+121+400)/3 = 546/3 = 182; Var(g) = 182 - 12^2 = 38 (Term 2).
+      Term 1 = (4+9+16)/3 = 29/3 ≈ 9.667.
+      Var(X) = 9.667 + 38 = 47.667.
+    answer: "Var(g)=38, Var(X)=47.667"
+    shortcut_used: ["Term 2 = variance of the conditional means", "total variance = Term1 + Term2"]
+    verify: "abs(((25+121+400)/3 - ((5+11+20)/3)**2) - 38) < 1e-9 and abs((29/3 + 38) - 47.6667) < 1e-3"
+
+  - id: C16.6
+    chapter: 16
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3c"]
+    distributions: [exponential, discrete]
+    structural_tags: ["mixture", "total_expectation", "random_parameter"]
+    provenance: original
+    difficulty: 2
+    actor: "A captured Nidoran"
+    stakes: "A Nidoran's recovery time depends on a hidden injury rate you must average out."
+    consequence: "The expected recovery time tells Nurse Joy how long to hold the bay."
+    quest_step: 6
+    narrative_hook: "Average an exponential recovery time over a random rate."
+    statement: |
+      A Nidoran's recovery time is X|Lambda ~ Expo(mean=Lambda) with Lambda
+      equal to 4 or 8, each w.p. 1/2. Find E[X].
+    solution: |
+      Exponential with mean Lambda gives E[X|Lambda] = Lambda, so by total
+      expectation E[X] = E[Lambda] = (1/2)(4) + (1/2)(8) = 6.
+    answer: 6
+    shortcut_used: ["E[X|Lambda]=Lambda for Expo(mean=Lambda)", "total expectation"]
+    verify: "abs((0.5*4 + 0.5*8) - 6) < 1e-9"
+
+  - id: C16.7
+    chapter: 16
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["3c"]
+    distributions: [discrete]
+    structural_tags: ["total_expectation", "jensen_trap", "recycled_team_rocket_error"]
+    provenance: original
+    difficulty: 2
+    actor: "Meowth"
+    stakes: "Meowth's payroll memo to Giovanni reports the expected Pokemon strength."
+    consequence: "If the memo is wrong, Team Rocket under-prepares and gets flattened."
+    quest_step: 7
+    narrative_hook: "Audit Meowth's 'average squad' shortcut for the expected strength."
+    statement: |
+      Meowth must report the expected strength of Giovanni's Pokemon for squads Y
+      with P(Y)=0.5,0.3,0.2 and conditional means E[X|Y]=40,70,120. His note
+      reads: "Average squad is 0.5(1)+0.3(2)+0.2(3)=1.7, so the answer's the
+      strength of squad 1.7 ≈ 55." Compute the correct E[X] and name his error.
+    solution: |
+      Correct: average the conditional MEANS weighted by P(Y=y):
+      E[X] = 40(0.5) + 70(0.3) + 120(0.2) = 20 + 21 + 24 = 65.
+      Meowth computed E[X | Y=E[Y]] — collapsing the random Y to its mean 1.7
+      BEFORE applying the conditional-mean rule. But E[X|Y] is a random variable;
+      you must average g(Y) itself, not plug E[Y] into g. This is Jensen's trap,
+      and there is no squad 1.7. His 55 understates the true 65.
+    answer: 65
+    shortcut_used: ["total expectation averages conditional means, never E[X|Y=E[Y]]"]
+    verify: "abs((40*0.5 + 70*0.3 + 120*0.2) - 65) < 1e-9"
+
+  - id: C16.8
+    chapter: 16
+    tier: route_trainer
+    archetype: decision
+    outcomes: ["3c"]
+    distributions: [discrete]
+    structural_tags: ["compound", "compound_mean", "decision_rule"]
+    provenance: original
+    difficulty: 2
+    actor: "Your shield"
+    stakes: "A random number of attacks may overwhelm a fixed 36-damage shield budget."
+    consequence: "If expected damage exceeds the budget, you must reinforce before the round."
+    quest_step: 8
+    narrative_hook: "Decide whether a random number of attacks overruns the shield on average."
+    statement: |
+      A team lands N attacks with E[N]=5; each attack does i.i.d. damage with mean
+      mu=8, independent of N. Your shield absorbs a budget of 36 total damage.
+      Find E[S] for S = sum_{i=1}^N X_i, and decide whether it exceeds the budget.
+    solution: |
+      Compound mean: E[S] = E[N] mu = 5(8) = 40. Since 40 > 36, the expected
+      total damage exceeds the shield budget — reinforce it.
+    answer: "E[S]=40 > 36 (over budget)"
+    shortcut_used: ["E[S] = E[N] mu"]
+    verify: "abs((5*8) - 40) < 1e-9 and ((5*8) > 36)"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C16.9
+    chapter: 16
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3d"]
+    distributions: [discrete]
+    structural_tags: ["total_variance", "mixture", "process_vs_parameter"]
+    provenance: original
+    difficulty: 3
+    actor: "A rigged Game-Corner wheel"
+    stakes: "A hidden setting drives a rigged wheel; you must size the payout's true spread."
+    consequence: "Knowing which source dominates tells you whether to chase the setting or the noise."
+    quest_step: 9
+    narrative_hook: "Decompose a rigged wheel's payout variance into setting vs. within-setting."
+    statement: |
+      The payout X given setting Y: setting A (P=0.5) has E[X|A]=2, Var(X|A)=1;
+      setting B (P=0.5) has E[X|B]=10, Var(X|B)=4. Find E[X], Var(X), and state
+      whether within-setting noise or setting choice dominates.
+    solution: |
+      E[X] = 2(0.5) + 10(0.5) = 6.
+      Term 1 = E[Var(X|Y)] = 1(0.5) + 4(0.5) = 2.5.
+      Term 2: means 2, 10 -> E[g^2] = 4(0.5) + 100(0.5) = 52; Var(g) = 52 - 36 = 16.
+      Var(X) = 2.5 + 16 = 18.5. Setting choice (16) dominates within-setting noise (2.5).
+    answer: "E[X]=6, Var(X)=18.5 (setting choice dominates)"
+    shortcut_used: ["total variance = E[Var] + Var(E)"]
+    verify: "abs(((1*0.5 + 4*0.5) + ((4*0.5 + 100*0.5) - (2*0.5 + 10*0.5)**2)) - 18.5) < 1e-9 and (((4*0.5 + 100*0.5) - (2*0.5 + 10*0.5)**2) > (1*0.5 + 4*0.5))"
+
+  - id: C16.10
+    chapter: 16
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3c", "3d"]
+    distributions: [exponential, uniform]
+    structural_tags: ["mixture", "total_variance", "random_parameter", "continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "A wild Sandslash"
+    stakes: "A Sandslash's daily foraging mass has both exponential noise and a random scale."
+    consequence: "The total variance sets the error bars on the gym's food-supply model."
+    quest_step: 10
+    narrative_hook: "Find mean and variance of an exponential with a uniform random scale."
+    statement: |
+      A Sandslash's daily foraging mass X|Theta ~ Expo(mean=Theta) with scale
+      Theta ~ Unif(2,6). Find E[X] and Var(X).
+    solution: |
+      Exponential: E[X|Theta]=Theta, Var(X|Theta)=Theta^2.
+      Theta ~ Unif(2,6): E[Theta]=4, Var(Theta)=(6-2)^2/12 = 16/12 = 1.333,
+      E[Theta^2] = Var + mean^2 = 1.333 + 16 = 17.333.
+      E[X] = E[Theta] = 4.
+      Var(X) = E[Var(X|Theta)] + Var(E[X|Theta]) = E[Theta^2] + Var(Theta)
+      = 17.333 + 1.333 = 18.667.
+    answer: "E[X]=4, Var(X)=18.667"
+    shortcut_used: ["E[X|Theta]=Theta, Var(X|Theta)=Theta^2 for Expo(mean=Theta)", "total variance"]
+    verify: "abs(4.0-4)<1e-9 and abs(((((6-2)**2/12)+4.0**2)+((6-2)**2/12))-18.6667)<1e-3"
+
+  - id: C16.11
+    chapter: 16
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3c", "3d"]
+    distributions: [poisson]
+    structural_tags: ["compound", "compound_poisson"]
+    provenance: original
+    difficulty: 3
+    actor: "A Rocket grunt"
+    stakes: "A grunt's smoke screen stacks a random Poisson number of obscuring bombs."
+    consequence: "The total-obscuration variance tells you how blind you might be mid-battle."
+    quest_step: 11
+    narrative_hook: "Compute mean and variance of a compound-Poisson smoke screen."
+    statement: |
+      A grunt fires N ~ Poisson(lambda=4) smoke bombs; each obscures by an i.i.d.
+      amount with mu=3, sigma^2=5. Let S be total obscuration. Find E[S], Var(S).
+    solution: |
+      E[S] = lambda mu = 4(3) = 12.
+      Var(S) = lambda(sigma^2 + mu^2) = 4(5 + 9) = 4(14) = 56.
+      (Equivalently E[N]sigma^2 + Var(N)mu^2 = 4(5) + 4(9) = 20 + 36 = 56.)
+    answer: "E[S]=12, Var(S)=56"
+    shortcut_used: ["compound Poisson: Var(S) = lambda E[X^2] = lambda(sigma^2+mu^2)"]
+    verify: "abs((4*3) - 12) < 1e-9 and abs((4*(5+9)) - 56) < 1e-9"
+
+  - id: C16.12
+    chapter: 16
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3c", "3d"]
+    distributions: [poisson, gamma]
+    structural_tags: ["mixture", "poisson_gamma", "negative_binomial", "overdispersion"]
+    provenance: original
+    difficulty: 4
+    actor: "Wild-encounter density"
+    stakes: "Encounters per hour follow a Poisson whose rate is itself a random Gamma density."
+    consequence: "Overdispersion means more variable encounters than a plain Poisson predicts."
+    quest_step: 12
+    narrative_hook: "Mix a Poisson count over a Gamma density (negative-binomial setup)."
+    statement: |
+      Encounters per hour N|Lambda ~ Poisson(Lambda), where the local density
+      Lambda ~ Gamma(alpha=3, theta=2), so E[Lambda]=6, Var(Lambda)=12. Find E[N]
+      and Var(N), and say what the result implies about the spread.
+    solution: |
+      Poisson inner: E[N|Lambda] = Var(N|Lambda) = Lambda.
+      E[N] = E[Lambda] = 6.
+      Var(N) = E[Var(N|Lambda)] + Var(E[N|Lambda]) = E[Lambda] + Var(Lambda)
+      = 6 + 12 = 18.
+      Var(N)=18 > E[N]=6: overdispersion, the negative-binomial signature — the
+      random density spreads the count far wider than a plain Poisson would.
+    answer: "E[N]=6, Var(N)=18 (overdispersed)"
+    shortcut_used: ["Poisson-Gamma mixture: Var(N) = E[Lambda] + Var(Lambda)"]
+    verify: "abs(6 - 6) < 1e-9 and abs((6 + 12) - 18) < 1e-9 and ((6 + 12) > 6)"
+
+  - id: C16.13
+    chapter: 16
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["3d"]
+    distributions: [poisson]
+    structural_tags: ["total_variance", "dropped_term2", "linear_conditional_moments"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary (rival)"
+    stakes: "Gary brags he can do the prize variance in one step, skipping a whole term."
+    consequence: "Trusting his shortcut understates the prize's true risk by a factor of 26."
+    quest_step: 13
+    narrative_hook: "Catch Gary dropping Term 2 of total variance on a scaling prize."
+    statement: |
+      A trainer's prize X given round Y has E[X|Y]=100Y and Var(X|Y)=400Y, with
+      Y ~ Poisson(lambda=2). Gary scoffs: "Variance is easy — it's just
+      E[400Y]=800, done." Find the true E[X] and Var(X) and say where he erred.
+    solution: |
+      E[X] = E[100Y] = 100(2) = 200.
+      Term 1 = E[Var(X|Y)] = E[400Y] = 400(2) = 800.
+      Term 2 = Var(E[X|Y]) = Var(100Y) = 100^2 Var(Y) = 10000(2) = 20000.
+      Var(X) = 800 + 20000 = 20800.
+      Gary kept only Term 1 and dropped Term 2 (the variance of the conditional
+      means). Because the prize center 100Y swings with the round, Term 2 dwarfs
+      Term 1 — his "800" is off by a factor of 26.
+    answer: "E[X]=200, Var(X)=20800 (Gary dropped Term 2)"
+    shortcut_used: ["total variance keeps BOTH terms; Var(100Y)=100^2 Var(Y)"]
+    verify: "abs(((400*2) + (100**2 * 2)) - 20800) < 1e-9 and ((100**2 * 2) != 800)"
+
+  - id: C16.14
+    chapter: 16
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3c", "3d"]
+    distributions: [uniform, discrete_uniform]
+    structural_tags: ["mixture", "total_variance", "continuous_inner_discrete_outer"]
+    provenance: original
+    difficulty: 4
+    actor: "A rigged slot draw"
+    stakes: "A die roll sets the range of a uniform card draw — a two-stage gamble."
+    consequence: "The card's true variance decides whether the slot game is worth a pull."
+    quest_step: 14
+    narrative_hook: "Roll a die, draw a Unif(0,Y) card, and find X's mean and variance."
+    statement: |
+      Roll a fair die Y in {1,...,6}, then draw a card worth X ~ Unif(0,Y), so
+      E[X|Y]=Y/2 and Var(X|Y)=Y^2/12. Find E[X] and Var(X).
+    solution: |
+      Die: E[Y]=3.5, E[Y^2]=91/6=15.1667, Var(Y)=15.1667-12.25=2.9167.
+      E[X] = E[Y/2] = 1.75.
+      Term 1 = E[Y^2/12] = 15.1667/12 = 1.2639.
+      Term 2 = Var(Y/2) = (1/4)Var(Y) = 0.7292.
+      Var(X) = 1.2639 + 0.7292 ≈ 1.993.
+    answer: "E[X]=1.75, Var(X)≈1.993"
+    shortcut_used: ["total expectation + total variance with continuous inner, discrete outer"]
+    verify: "abs((3.5/2)-1.75)<1e-9 and abs((((91/6)/12)+(((91/6)-3.5**2)/4))-1.9931)<1e-3"
+
+  - id: C16.15
+    chapter: 16
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["3c", "3d"]
+    distributions: [geometric]
+    structural_tags: ["compound", "dropped_count_term", "geometric_count"]
+    provenance: original
+    difficulty: 4
+    actor: "A Rocket grunt"
+    stakes: "A grunt boasts about his squad's strength variance, citing only one term."
+    consequence: "Believing his number leaves you 54x under-prepared for the squad's spread."
+    quest_step: 15
+    narrative_hook: "Audit a grunt's compound-variance boast with a geometric squad size."
+    statement: |
+      Each grunt commands N Pokemon, N geometric on {1,2,3,...} with
+      P(N=n)=(0.4)(0.6)^(n-1), so E[N]=2.5, Var(N)=3.75. Each Pokemon's strength
+      is i.i.d. with mu=60, sigma^2=100. The grunt boasts total squad strength has
+      variance "E[N]sigma^2 = 250." Find the true E[S], Var(S) and name the
+      dropped term.
+    solution: |
+      E[S] = E[N] mu = 2.5(60) = 150.
+      Var(S) = E[N]sigma^2 + Var(N)mu^2 = 2.5(100) + 3.75(3600)
+      = 250 + 13500 = 13,750.
+      Dropped term: the count-noise term Var(N)mu^2 = 13,500 (54x larger than the
+      size-noise term he kept), since squad SIZE varies far more than individual
+      strength. True variance is 13,750, not 250.
+    answer: "E[S]=150, Var(S)=13750 (dropped Var(N)mu^2=13500)"
+    shortcut_used: ["compound Var(S) = E[N]sigma^2 + Var(N)mu^2"]
+    verify: "abs((2.5*60) - 150) < 1e-9 and abs((2.5*100 + 3.75*3600) - 13750) < 1e-9 and ((2.5*100 + 3.75*3600) != 250)"
+
+  - id: C16.16
+    chapter: 16
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["3d"]
+    distributions: [discrete]
+    structural_tags: ["mixture", "total_variance", "between_group_term"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary (rival)"
+    stakes: "Gary assumes equal-mean components make the between-group term vanish forever."
+    consequence: "When the means differ, his rule misses 96% of the variance."
+    quest_step: 16
+    narrative_hook: "Show Gary that the between-group term reappears when means differ."
+    statement: |
+      A wild Pokemon's level X given habitat Y: meadow (P=0.5) has E[X|meadow]=15,
+      Var=4; cave (P=0.5) has E[X|cave]=15, Var=4. Gary says "same mean and
+      variance both habitats, so overall variance is just 4." Now change the cave
+      mean to 35 (variance still 4). Recompute Var(X) for the changed case and
+      explain Gary's blind spot.
+    solution: |
+      Original (both means 15): conditional means don't move, so Term 2 = 0 and
+      Var(X) = E[Var(X|Y)] = 4 — Gary is right only because the means coincide.
+      Changed (means 15 and 35, each Var=4, weights 0.5):
+      E[X] = 15(0.5) + 35(0.5) = 25; E[g^2] = 225(0.5) + 1225(0.5) = 725;
+      Var(g) = 725 - 625 = 100 (Term 2). Term 1 = 4.
+      Var(X) = 4 + 100 = 104.
+      Blind spot: the between-group term is zero ONLY when the conditional means
+      are equal; once they differ (15 vs 35), Var of the means (100) dominates.
+    answer: "Var(X)=104 (changed case)"
+    shortcut_used: ["Term 2 = Var of conditional means; nonzero whenever means differ"]
+    verify: "abs((4 + ((225*0.5 + 1225*0.5) - (15*0.5 + 35*0.5)**2)) - 104) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =================
+
+  - id: C16.17
+    chapter: 16
+    tier: elite_challenge
+    archetype: audit
+    outcomes: ["3c", "3d"]
+    distributions: [poisson, discrete]
+    structural_tags: ["compound", "mixture", "two_layer", "process_vs_parameter"]
+    provenance: original
+    difficulty: 5
+    actor: "A Rocket dossier"
+    stakes: "A dossier claims tier choice drives over 80% of Giovanni's threat variance."
+    consequence: "Believing it makes you over-fixate on the tier and ignore within-tier noise."
+    quest_step: 17
+    narrative_hook: "Audit a dossier's claim about a two-layer compound-mixture threat."
+    statement: |
+      Tier Y: P(Y=1)=0.5, P(Y=2)=0.3, P(Y=3)=0.2. Given tier y, damage X is
+      compound-Poisson with attack-count mean lambda_y and per-attack severity
+      mean mu_y, variance sigma_y^2:
+        y=1: lambda=2, mu=12, sigma^2=36
+        y=2: lambda=4, mu=18, sigma^2=81
+        y=3: lambda=5, mu=25, sigma^2=144
+      A dossier claims "tier choice drives over 80% of the threat's variance."
+      Find E[X], Var(X), and the fraction of total variance from which tier fights,
+      and rule on the dossier.
+    solution: |
+      Conditional means lambda_y mu_y: 2(12)=24, 4(18)=72, 5(25)=125.
+      E[X] = 24(0.5) + 72(0.3) + 125(0.2) = 12 + 21.6 + 25 = 58.6.
+      Conditional variances lambda_y(sigma_y^2 + mu_y^2):
+        2(36+144)=360, 4(81+324)=1620, 5(144+625)=3845.
+      Term 1 = 360(0.5) + 1620(0.3) + 3845(0.2) = 180 + 486 + 769 = 1435.
+      Term 2: E[g^2] = 24^2(0.5) + 72^2(0.3) + 125^2(0.2)
+      = 288 + 1555.2 + 3125 = 4968.2; Var(g) = 4968.2 - 58.6^2 = 1534.24.
+      Var(X) = 1435 + 1534.24 = 2969.24.
+      Tier fraction = 1534.24 / 2969.24 ≈ 0.517 (≈ 52%).
+      Dossier overstates it: tier choice drives ≈ 52%, not "over 80%"; within-tier
+      compound noise carries the other ≈ 48%.
+    answer: "E[X]=58.6, Var(X)≈2969.24, ≈52% from tier (dossier wrong)"
+    shortcut_used: ["compound-Poisson conditional moments lambda mu and lambda(sigma^2+mu^2)", "total variance across the tier layer"]
+    verify: "abs((24*0.5+72*0.3+125*0.2)-58.6)<1e-6 and abs(((360*0.5+1620*0.3+3845*0.2)+((24**2*0.5+72**2*0.3+125**2*0.2)-(24*0.5+72*0.3+125*0.2)**2))-2969.24)<1e-2 and abs((((24**2*0.5+72**2*0.3+125**2*0.2)-(24*0.5+72*0.3+125*0.2)**2)/((360*0.5+1620*0.3+3845*0.2)+((24**2*0.5+72**2*0.3+125**2*0.2)-(24*0.5+72*0.3+125*0.2)**2)))-0.517)<1e-3"
+
+  - id: C16.18
+    chapter: 16
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["3c", "3d"]
+    distributions: [poisson, exponential, normal]
+    structural_tags: ["compound", "compound_poisson", "clt", "decision_rule"]
+    provenance: original
+    difficulty: 5
+    actor: "A Rocket insurance scam"
+    stakes: "Aggregate annual claims may breach a thin $2600 reserve on a Rocket scam."
+    consequence: "If a breach is likelier than 1 in 4, the reserve must be raised now."
+    quest_step: 18
+    narrative_hook: "Price aggregate losses, then use the CLT to decide on a reserve breach."
+    statement: |
+      Aggregate annual claims: N ~ Poisson(lambda=10) claims, each severity
+      X_i ~ Expo(mean=200), independent. Find E[S], Var(S), the coefficient of
+      variation SD(S)/E[S], and — treating S as approximately normal (CLT for
+      aggregate losses) — estimate P(S > 2600). The reserve is $2600; decide
+      whether a breach is more or less likely than 1 in 4.
+    solution: |
+      Exponential mean 200: mu=200, sigma^2=40000, E[X^2]=sigma^2+mu^2=80000 (=2 theta^2).
+      E[S] = lambda mu = 10(200) = 2000.
+      Var(S) = lambda E[X^2] = 10(80000) = 800,000; SD(S) = sqrt(800000) = 894.4.
+      CV = 894.4 / 2000 = 0.447.
+      P(S > 2600) ≈ 1 - Phi((2600-2000)/894.4) = 1 - Phi(0.671)
+      ≈ 1 - 0.7488 = 0.2512.
+      Decision: P(breach) ≈ 0.251 > 0.25, so a breach is slightly more likely than
+      1 in 4 — the reserve is thin; raise it.
+    answer: "E[S]=2000, Var(S)=800000, CV=0.447, P(S>2600)≈0.251 (breach > 1 in 4)"
+    shortcut_used: ["compound Poisson Var(S)=lambda E[X^2]; E[X^2]=2 theta^2 for exponential", "CLT normal approximation"]
+    verify: "abs((10*200)-2000)<1e-9 and abs((10*80000)-800000)<1e-9 and abs((1-st.norm.cdf((2600-2000)/(800000**0.5)))-0.2512)<5e-3 and ((1-st.norm.cdf((2600-2000)/(800000**0.5))) > 0.25)"

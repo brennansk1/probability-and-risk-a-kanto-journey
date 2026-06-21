@@ -27,9 +27,9 @@ Live status of the V3 build (*Probability & Risk: A Kanto Journey*). One row per
 | 11 | Key Continuous Distributions | B | ☐ |
 | 12 | Normal & the CLT | A | ☐ |
 | 13 | Continuous Deductibles & Review | B | ☐ |
-| 14 | Joint Distributions | A | ☐ |
-| 15 | Joint Moments & Covariance | A | ☐ |
-| 16 | Conditional & Double Expectation | A | ☐ |
+| 14 | Joint Distributions | A | ✅ **grade A** — harness 22/22 · blind re-derivation 22/22 + WEs · build clean · no compression |
+| 15 | Joint Moments & Covariance | A | ✅ **grade A** — harness 22/22 · blind re-derivation 36/36 · build clean · no compression |
+| 16 | Conditional & Double Expectation | A | ✅ **grade A** — harness 18/18 · blind re-derivation 30/30 · build clean · no compression |
 | 17 | Order Statistics | B | ☐ |
 | 18 | Checkpoint B | — | ☐ |
 | 19 | Champion's Challenge (3 mocks) | — | ☐ |
