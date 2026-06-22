@@ -53,6 +53,8 @@ All three instant? You're ready — the binomial reflex and "probabilities sum t
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP023 "The Tower of Terror" + EP024 "Haunter Versus Kadabra" + EP026 "Pokémon Scent-sation!"**
 
+<figure><img src="../../assets/stills/ch05_now_playing.jpg" alt="Ash and Pikachu lifted off the floor by a Haunter inside the haunted Pokémon Tower (Indigo League EP023)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Pokémon Tower, EP023 — ghosts arriving one by one at random: the Poisson count and the geometric wait.</figcaption></figure>
+
 In **EP023** Ash climbs the haunted **Pokémon Tower** of Lavender Town, where **Gastly** (and a mischievous **Haunter**) flit in and out of the dark — the ghost *count* our cold open dramatizes (the caretaker's "three a minute" log is an in-world extension for the math, not an on-screen line). In **EP024** that **Haunter** follows Ash to Saffron and turns the tide of a gym battle, our living picture of *one more independent ghost added to the stream* (the Poisson-superposition beat). In **EP026** Ash reaches **Celadon City** and meets **Erika**, the Grass-type Gym Leader of the perfumed gym — the **Rainbow Badge** is the prize this chapter ends on, and the Game Corner next door is where every *waiting game* (slot pulls, rounds until a win) plays out. *Watch EP023 → EP024 → EP026 right before this chapter* — the ghost swarm, the extra Haunter, and Erika's gym are the three scenes the math lives in.
 :::
 

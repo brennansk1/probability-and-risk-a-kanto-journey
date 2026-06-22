@@ -25,8 +25,8 @@ This workbook is built to be read **with the first-generation Pokémon anime —
 | 10 | **EP022–EP024** (Sabrina arc) | Silph Co. | measuring continuous quantities — integrals for moments |
 | 11 | *cross-Kanto travel episodes* | the smooth wilds | named continuous families — uniform, exponential, gamma, beta |
 | 12 | **EP077** *Round One – Begin!* | the League opens before a field of thousands | the bell of thousands — the Normal & the CLT |
-| 13 | **EP056** *Volcanic Panic* | Cinnabar's research lab | deductibles, the calculus way |
-| 14 | **EP056** *Volcanic Panic* | Blaine's gym; paired research logs | two variables moving together — joint distributions |
+| 13 | **EP059** *Volcanic Panic* | Cinnabar's research lab | deductibles, the calculus way |
+| 14 | **EP059** *Volcanic Panic* | Blaine's gym; paired research logs | two variables moving together — joint distributions |
 | 15 | *the road to the Plateau (~EP075–076)* | Victory Road | a team as a sum of correlated parts — covariance |
 | 16 | **EP063** *The Battle of the Badge* | Giovanni unmasked; the Earth Badge | a value hidden inside another — conditional & double expectation |
 | 17 | **EP077–EP080** (League rounds) | the tournament bracket | extremes of a field — order statistics |

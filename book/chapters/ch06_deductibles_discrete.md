@@ -53,6 +53,8 @@ Answer from memory; if any feels shaky, flip back to the S.S. Anne chapter befor
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP032 "The Ninja Poké-Showdown" (with Safari Zone EP035 "The Legend of Dratini")**
 
+<figure><img src="../../assets/stills/ch06_now_playing.jpg" alt="Koga, the ninja Gym Leader of Fuchsia City, in his trap-rigged gym (Indigo League EP032)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Fuchsia Gym, EP032 — Koga's trap gym, where a deductible is the loss you absorb before coverage answers.</figcaption></figure>
+
 In **EP032** Ash reaches **Fuchsia City** and faces **Koga**, the ninja Gym Leader, in a gym rigged with traps, hidden walls, and poison-type Pokémon (our cold-open's "Warden with a ledger" and the gate-fee insurance scheme are an *in-world extension* invented for the math — the on-screen events are Koga's trap-gym battle for the Soul Badge). **EP035** takes the heroes into the **Safari Zone**, where wild Pokémon — including the famous herd of Tauros and the elusive Dratini — roam a fenced reserve and trainers must catch them with limited Safari Balls rather than battling (the perfect setting for "losses you can't fully control, so you insure against them"). *Watch EP032 right before this chapter for Koga and the Soul Badge, and EP035 for the Safari Zone the drills live in.*
 :::
 

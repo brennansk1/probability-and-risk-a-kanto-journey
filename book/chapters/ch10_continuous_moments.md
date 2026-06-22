@@ -52,6 +52,8 @@ All three instant? Then you're ready: this chapter swaps the sum for an integral
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP022 "Abra and the Psychic Showdown," EP023 "The Tower of Terror," EP024 "Haunter versus Kadabra" (the Saffron / Sabrina arc)**
 
+<figure><img src="../../assets/stills/ch10_now_playing.jpg" alt="Sabrina, the psychic Gym Leader of Saffron City, holding her doll (Indigo League EP024)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Saffron Gym, EP024 — Sabrina bends the solid into the fluid: the discrete bars melt into a smooth density.</figcaption></figure>
+
 Across these three episodes Ash arrives at **Saffron City**, meets **Sabrina** — a Gym Leader whose raw psychic power warps the world around her — and is sent away to find a Ghost-type before he can win the Marsh Badge; the detour through Lavender's tower (EP023–024) is all about a single *Haunter* that finally unsettles Sabrina. *Watch EP022 then EP024 alongside this chapter.* On screen, the throughline is **psychic force bending what's solid into something fluid** — exactly this chapter's move, where the countable bars of the discrete world melt into a smooth density you must integrate. (The Silph Co. claims model, the spiked mixed-loss curve, and the "expected loss" framing are **in-world extensions** built to carry the math — they dramatize the integral, not a specific on-screen line. No badge is on the table this leg; you already hold the Marsh Badge.)
 :::
 

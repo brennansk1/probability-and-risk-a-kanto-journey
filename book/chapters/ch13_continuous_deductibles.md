@@ -59,9 +59,11 @@ Answer from memory; if any feels shaky, flip back before continuing.
 :::
 
 ::: now-playing
-**📺 NOW PLAYING — Indigo League EP056 "Volcanic Panic"**
+**📺 NOW PLAYING — Indigo League EP059 "Volcanic Panic"**
 
-In **EP056** Ash and friends reach **Cinnabar Island** and its rumbling volcano; the heroes explore the island and its scientific facilities while the volcano's activity drives the danger of the episode. (Our cold-open's "Lab insures its field gear against the volcano" coverage commission is an *in-world extension* invented to motivate the math — the on-screen events are the island visit and the volcanic threat, not an insurance bench. Blaine's fire gym and the Volcano Badge are the focus of the **next** chapter, ch14.) *Watch EP056 before this chapter for the Cinnabar setting and the live-volcano stakes the whole pricing problem rides on.*
+<figure><img src="../../assets/stills/ch13_now_playing.jpg" alt="The live volcano venting steam and ash over Cinnabar Island (Indigo League EP059)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Cinnabar's live volcano, EP059 — the uncapped loss the deductible and the policy limit are built to tame.</figcaption></figure>
+
+In **EP059** Ash and friends reach **Cinnabar Island** and its rumbling volcano; the heroes explore the island and its scientific facilities while the volcano's activity drives the danger of the episode. (Our cold-open's "Lab insures its field gear against the volcano" coverage commission is an *in-world extension* invented to motivate the math — the on-screen events are the island visit and the volcanic threat, not an insurance bench. Blaine's fire gym and the Volcano Badge are the focus of the **next** chapter, ch14.) *Watch EP059 before this chapter for the Cinnabar setting and the live-volcano stakes the whole pricing problem rides on.*
 :::
 
 ## Oak's Briefing — Learning Outcomes & Test-Out Gate

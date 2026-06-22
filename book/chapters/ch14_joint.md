@@ -32,7 +32,9 @@ So how do you pull *one* variable's behavior out of a *two*-variable law — and
 :::
 
 ::: now-playing
-**📺 NOW PLAYING — Indigo League EP056 "Volcanic Panic"**
+**📺 NOW PLAYING — Indigo League EP059 "Volcanic Panic"**
+
+<figure><img src="../../assets/stills/ch14_now_playing.jpg" alt="A Magmar on the lava-pit battlefield of Blaine's Cinnabar Gym (Indigo League EP059)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Blaine's gym, EP059 — two readings off one battlefield, moving together: the heart of joint distributions.</figcaption></figure>
 
 Ash reaches Cinnabar Island for Blaine's Volcano-Badge gym beneath a live volcano. Two quantities measured *together* — read off paired research logs — moving as one is the heart of joint distributions. Watch before reading. *(The Pokémon-Mansion paired ledgers are our in-world extension; the Mansion's research diary is film/game lore, not in this episode.)*
 :::
