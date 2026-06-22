@@ -651,8 +651,8 @@ The questline is a **narrative ordering over a required coverage manifest**, not
 | 10 | Saffron / Silph Co. | EP022–024 (Sabrina arc) |
 | 11 | the smooth wilds | cross-Kanto travel episodes (no single gym) |
 | 12 | the Grand Gathering (CLT) | EP077 *Round One – Begin!* (the League crowd = the bell of thousands) |
-| 13 | Cinnabar Lab | EP056 *Volcanic Panic* (Cinnabar arc) |
-| 14 | Cinnabar Mansion / Blaine | EP056 *Volcanic Panic* (Blaine/Volcano; Mansion logs = in-world extension) |
+| 13 | Cinnabar Lab | EP059 *Volcanic Panic* (Cinnabar arc) |
+| 14 | Cinnabar Mansion / Blaine | EP059 *Volcanic Panic* (Blaine/Volcano; Mansion logs = in-world extension) |
 | 15 | Victory Road | the road to the Plateau (~EP075–076) |
 | 16 | Viridian Gym / Giovanni | EP063 *The Battle of the Badge* |
 | 17 | Indigo Plateau / Elite Four | EP077–080 (League rounds) |

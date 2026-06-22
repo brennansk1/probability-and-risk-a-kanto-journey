@@ -12,7 +12,7 @@
 
 > **What this is.** A set of lookup tables for the reader studying this book *alongside* a commercial resource — a TIA seminar, a study manual, or a probability textbook. It lines up each chapter of *Probability & Risk: A Kanto Journey* (ch00–ch19) with (1) the **TIA lesson handout** sections it follows, (2) the **SOA Exam P syllabus topic and weight** it serves, and (3) the **chapter-level topic** you would turn to in the standard manuals and texts. Everything here is an **original tabulation**: it cites only section *names* and *numbers* and general topic *labels* — it reproduces no part of any manual, seminar, or textbook. Use it as a switchboard, not as a substitute for those resources.
 >
-> **How to read it.** This book's spine *is* TIA's lesson order — the chapter↔TIA map is 1:1 (ch01 = lesson group A.1, … ch17 = C.3), so Table F.1 is the master key; the other tables hang off it. "TIA leaf" means the finest-grained handout subsection (e.g. A.2.4 *Bayes' theorem*), in TIA's own numbering. "SOA outcome" uses the syllabus's letter codes (1a … 3i) as tracked in this book's `outcomes.yaml`.
+> **How to read it.** This book's spine *is* TIA's lesson order — the chapter↔TIA map follows TIA's lesson order (ch01 = lesson group A.1, … ch17 = C.3), so Table F.1 is the master key; the other tables hang off it. "TIA leaf" means the finest-grained handout subsection (e.g. A.2.4 *Bayes' theorem*), in TIA's own numbering. "SOA outcome" uses the syllabus's letter codes (1a … 3i) as tracked in this book's `outcomes.yaml`.
 
 ---
 

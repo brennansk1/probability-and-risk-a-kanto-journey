@@ -38,7 +38,7 @@ The intercom clicks. "So. Before I open this door — prove you can wield the in
 
 ## Where You Are — 60-Second Retrieval
 
-**Rank: Ace Trainer · Badges: 5.** Five badges ride in your case — Boulder, Cascade, Thunder, Rainbow, and Soul. There is **no sixth to win here**: the lighthouse hands out no badge. What it hands out is an **HM** — a tool you carry forever, the calculus that every continuous chapter ahead silently assumes.
+**Rank: Ace Trainer · Badges: 5.** Five badges ride in your case — Cascade, Thunder, Boulder, Rainbow, and Soul. There is **no sixth to win here**: the lighthouse hands out no badge. What it hands out is an **HM** — a tool you carry forever, the calculus that every continuous chapter ahead silently assumes.
 
 Look back at the road you walked. Across all of **Act I** you worked with *discrete* random variables: things you could **count**. A pmf assigned a lump of probability to each whole-number outcome, and every quantity you wanted — a mean, a variance, a moment generating function — was a **sum** over those lumps, $E[X] = \sum_x x\,p(x)$. That machine works perfectly as long as the outcomes are countable.
 

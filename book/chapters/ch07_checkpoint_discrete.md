@@ -21,7 +21,7 @@
 
 The trail south of Fuchsia opens onto a wide grassy clearing, and for the first time in a long while there is nothing to *do*. No gym waits at the end of this route; no leader has issued a challenge. Just a campfire, a kettle, and a circle of trainers who — like you — have come this far on the **Countable Road.**
 
-You count your badges by firelight: **Boulder, Cascade, Thunder, Rainbow, Soul** — five. You are an **Ace Trainer** now. But the road bends ahead toward country the older trainers only describe in hushed terms: the *smooth wilds*, where things can no longer be counted one by one, where probability **flows** instead of stacking on whole numbers. Whatever you carry into that country, you carry *fluently* or not at all.
+You count your badges by firelight: **Cascade, Thunder, Boulder, Rainbow, Soul** — five. You are an **Ace Trainer** now. But the road bends ahead toward country the older trainers only describe in hushed terms: the *smooth wilds*, where things can no longer be counted one by one, where probability **flows** instead of stacking on whole numbers. Whatever you carry into that country, you carry *fluently* or not at all.
 
 A veteran by the fire runs an informal **qualifier** every recap night — twelve cards, drawn from every leg of the road behind you, mixed so you never know which chapter the next card tests. "The wilds don't announce themselves," she says, shuffling. "A real problem doesn't tell you it's a Bayes problem or a Poisson problem. You have to *recognize* it cold. So: no warning, no theme. Clear ten of twelve and you qualify for the crossing. Miss too many and you camp here two more days and run the highlights again."
 
@@ -30,7 +30,7 @@ A veteran by the fire runs an informal **qualifier** every recap night — twelv
 
 ## Where You Are — Rank, Badges, and What This Night Is
 
-**Rank: Ace Trainer · Badges: 5 (Boulder · Cascade · Thunder · Rainbow · Soul).** You have crossed all six legs of Act I — the *discrete* world, where every random quantity lives on whole numbers you can list and count. This is a **checkpoint**, not a chapter: there is **no new theory**, no concept, no gym, no badge. Its only job is **spaced retrieval** — pulling each chapter's load-bearing idea back out of memory under mixed, no-warning conditions, which is exactly how the exam (and the wilds) will ask for it.
+**Rank: Ace Trainer · Badges: 5 (Cascade · Thunder · Boulder · Rainbow · Soul).** You have crossed all six legs of Act I — the *discrete* world, where every random quantity lives on whole numbers you can list and count. This is a **checkpoint**, not a chapter: there is **no new theory**, no concept, no gym, no badge. Its only job is **spaced retrieval** — pulling each chapter's load-bearing idea back out of memory under mixed, no-warning conditions, which is exactly how the exam (and the wilds) will ask for it.
 
 Why a checkpoint at all? Because the single most reliable way to *keep* what you have learned is to **retrieve it after a gap**, interleaved with other material so your brain has to first decide *which tool this is* before applying it. Re-reading feels productive and isn't; cold mixed retrieval feels hard and is. Tonight is built to feel hard.
 

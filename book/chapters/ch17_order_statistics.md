@@ -38,7 +38,7 @@ The officer's pen hovers. **How strong is the strongest of a thousand, how soon 
 
 ## Where You Are — 60-Second Retrieval
 
-**Rank: Champion-ready · Badges: 8.** All eight badges are in your case — Boulder, Cascade, Thunder, Rainbow, Soul, Marsh, Volcano, and Giovanni's Earth Badge, earned on the climb through ch16. There is no ninth badge to win: the Indigo Plateau is the **League**, not a gym. What you carry into this final content chapter is exactly the machinery the extremes are built from.
+**Rank: Champion-ready · Badges: 8.** All eight badges are in your case — Cascade, Thunder, Boulder, Rainbow, Soul, Marsh, Volcano, and Giovanni's Earth Badge, earned on the climb through ch16. There is no ninth badge to win: the Indigo Plateau is the **League**, not a gym. What you carry into this final content chapter is exactly the machinery the extremes are built from.
 
 From the joint-distribution chapters (**ch14**) you carry **independence**: independent events *multiply*,
 
