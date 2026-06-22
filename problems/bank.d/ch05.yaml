@@ -1,0 +1,599 @@
+# Problem bank — Chapter 5 (Lavender Town / Pokemon Tower -> Celadon City Game
+# Corner): Key discrete distributions. Geometric series & Taylor e^x toolkit;
+# geometric (wait for first success); memorylessness; negative binomial (wait for
+# r-th success); Poisson (counts over a window, rescaling, binomial limit); sums of
+# independent Poissons (superposition) & thinning.  Outcome 2d.  Tier-B chapter.
+# Locale: Lavender Town (ghost counts) + Celadon Game Corner (waiting games) + Erika
+# (Rainbow Badge).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   provenance, difficulty (1-5), actor, stakes, consequence, quest_step,
+#   narrative_hook, statement, solution, answer, shortcut_used, calc_skill (opt), verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes math,
+# st (scipy.stats), __import__). Chained problems RESTATE the prior value as a given so
+# verify never depends on another problem's answer.
+#
+# Immersion quotas met: audit >=3 (C5.8, C5.16, C5.24); rival_trap >=2 (C5.13, C5.23);
+# decision >=1 (C5.21, C5.26).
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C5.1
+    chapter: 5
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "the Tower caretaker"
+    stakes: "He needs the total of a ghost's failing-streak tail to size the visitor's log."
+    consequence: "Misapplying the formula outside |r|<1 returns a nonsense (even negative) sum."
+    quest_step: 1
+    tia_section: "A.5.0a"
+    narrative_hook: "Summing the caretaker's geometric failing-streak tail."
+    statement: |
+      Evaluate sum_{k=0}^{infty} (0.7)^k and state the convergence condition.
+    solution: |
+      Geometric series with a=1, r=0.7: sum = 1/(1-r) = 1/(1-0.7) = 1/0.3 = 3.333.
+      Valid because |r| = 0.7 < 1; for |r| >= 1 the series diverges.
+    answer: "1/0.3 = 3.333 (valid since |r| < 1)"
+    shortcut_used: ["geometric series sum a/(1-r) for |r|<1"]
+    verify: "abs((1/(1-0.7)) - 3.3333333333) < 1e-6"
+
+  - id: C5.2
+    chapter: 5
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "the Pokedex Actuary Mode"
+    stakes: "The ghost-count pmf is legal only if this factorial sum collapses to an exponential."
+    consequence: "Dropping the factorials would treat e^x like a geometric series and break the Poisson."
+    quest_step: 2
+    tia_section: "A.5.0b"
+    narrative_hook: "Collapsing the Taylor sum behind the ghost count to e^2."
+    statement: |
+      Use the Taylor series for e^x to evaluate sum_{k=0}^{infty} 2^k / k!.
+    solution: |
+      e^x = sum_{k>=0} x^k / k!, so setting x = 2 gives sum_{k>=0} 2^k/k! = e^2 = 7.389.
+    answer: "e^2 = 7.389"
+    shortcut_used: ["e^x = sum x^k/k!, set x=2"]
+    verify: "abs(__import__('math').exp(2) - 7.3890560989) < 1e-6"
+
+  - id: C5.3
+    chapter: 5
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 1
+    actor: "a vengeful Tower ghost"
+    stakes: "You return pass after pass until the ghost manifests and you need the chance it takes a while."
+    consequence: "The survival q^m sets how many trips up the Tower to budget for."
+    quest_step: 3
+    tia_section: "A.5.1"
+    narrative_hook: "Geometric survival: more than five passes to the first ghost."
+    statement: |
+      A ghost manifests on each pass w.p. 0.15. Find P(more than 5 passes) to the
+      first ghost.
+    solution: |
+      Geometric survival: P(X > 5) = q^5 = 0.85^5 = 0.4437 -- all five passes fail.
+    answer: "0.85^5 = 0.4437"
+    shortcut_used: ["geometric survival P(X>m) = q^m"]
+    verify: "abs((0.85**5) - 0.4437053125) < 1e-6"
+
+  - id: C5.4
+    chapter: 5
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 2
+    actor: "the Pokedex Actuary Mode"
+    stakes: "You need the mean and spread of the first-ghost wait to plan the climb."
+    consequence: "Mean 1/p and variance q/p^2 calibrate how long the party waits."
+    quest_step: 4
+    tia_section: "A.5.1"
+    narrative_hook: "Geometric mean and variance for the first-ghost wait."
+    statement: |
+      For the first-ghost wait (p = 0.15, trials convention), find E[X] and Var(X).
+    solution: |
+      Trials convention: E[X] = 1/p = 1/0.15 = 6.667;
+      Var(X) = q/p^2 = 0.85/0.0225 = 37.78.
+    answer: "E = 6.667, Var = 37.78"
+    shortcut_used: ["geometric trials mean 1/p, variance q/p^2"]
+    verify: "abs((1/0.15) - 6.6666666667) < 1e-6 and abs((0.85/0.15**2) - 37.7777777778) < 1e-4"
+
+  - id: C5.5
+    chapter: 5
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 1
+    actor: "the caretaker's ghost log"
+    stakes: "You want the chance of exactly two Gastly winking in during one minute."
+    consequence: "The single-minute pmf value anchors every later ghost-count question."
+    quest_step: 5
+    tia_section: "A.5.4"
+    narrative_hook: "Poisson pmf: exactly two Gastly in one minute."
+    statement: |
+      Gastly appear at lambda = 3/min (Poisson). Find P(X = 2) in one minute.
+    solution: |
+      P(X = 2) = e^{-3} 3^2 / 2! = (9/2) e^{-3} = 4.5(0.049787) = 0.2240.
+    answer: 0.2240
+    shortcut_used: ["Poisson pmf e^{-lambda} lambda^k / k!"]
+    verify: "abs((__import__('math').exp(-3)*3**2/2) - 0.2240) < 1e-4"
+
+  - id: C5.6
+    chapter: 5
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 2
+    actor: "the Pokedex Actuary Mode"
+    stakes: "The climb spans four minutes, so the per-minute rate must be rescaled to the window."
+    consequence: "Failing to rescale lambda is the single most-punished Poisson error."
+    quest_step: 6
+    tia_section: "A.5.4"
+    narrative_hook: "Rescaling the Gastly rate to a four-minute climb."
+    statement: |
+      For the same Gastly stream (lambda = 3/min), find the expected number and the
+      variance of Gastly over a 4-minute climb.
+    solution: |
+      Rescale: over 4 min, lambda = 3 x 4 = 12. For a Poisson, mean = variance =
+      lambda = 12.
+    answer: "mean 12, variance 12"
+    shortcut_used: ["Poisson lambda scales with window", "Poisson mean = variance = lambda"]
+    verify: "abs((3*4) - 12) < 1e-9"
+
+  - id: C5.7
+    chapter: 5
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["negative_binomial"]
+    provenance: original
+    difficulty: 2
+    actor: "the Game Corner token counter"
+    stakes: "You wait for the 3rd petal-token and want the chance of exactly two losses first."
+    consequence: "The clinching 3rd win is locked last; only earlier trials permute."
+    quest_step: 7
+    tia_section: "A.5.3"
+    narrative_hook: "Negative binomial: exactly two losses before the third token."
+    statement: |
+      Each Game Corner round wins w.p. 0.4; you wait for the 3rd win. Find
+      P(exactly 2 losses before the 3rd win).
+    solution: |
+      Failures version: P(X = 2) = C(2+3-1, 2) p^3 q^2 = C(4,2)(0.4)^3(0.6)^2
+      = 6(0.064)(0.36) = 0.1382.
+    answer: 0.1382
+    shortcut_used: ["negbin pmf C(k+r-1,k) p^r q^k, r-th win locked last"]
+    verify: "abs((math.comb(4,2)*0.4**3*0.6**2) - 0.1382) < 1e-4"
+
+  - id: C5.26
+    chapter: 5
+    tier: route_trainer
+    archetype: decision
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 2
+    actor: "the Tower caretaker"
+    stakes: "Two independent ghost streams must be merged; add rates or add probabilities?"
+    consequence: "Adding probabilities is a category error; only rates compose."
+    quest_step: 8
+    tia_section: "A.5.5"
+    narrative_hook: "Deciding to add Poisson rates, not probabilities, to merge two streams."
+    statement: |
+      Gastly arrive at 2/min and Haunter at 1/min, independently. To get the total
+      per minute, do you add the rates or the probabilities? Give the distribution of
+      the total and its mean, and name the principle.
+    solution: |
+      Add the RATES, not the probabilities. By superposition, total per minute
+      ~ Poisson(2+1) = Poisson(3), mean 3. Independent Poisson streams merge into a
+      Poisson at the summed rate; adding probabilities would be a category error.
+    answer: "add rates: Poisson(3), mean 3"
+    shortcut_used: ["superposition: independent Poissons add rates"]
+    verify: "abs((2+1) - 3) < 1e-9"
+
+  # ===================== GYM BATTLES (the boss fight) =====================
+
+  - id: C5.8
+    chapter: 5
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2d"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 2
+    actor: "Team Rocket (Meowth)"
+    stakes: "After nine cold pulls Meowth bets the team's stash that a win is now overdue."
+    consequence: "Reading a memoryless wait as 'due' busts the budget on a fresh-p bet."
+    quest_step: 9
+    tia_section: "A.5.2"
+    narrative_hook: "Catching Meowth's gambler's fallacy on a memoryless slot."
+    statement: |
+      A slot wins w.p. 0.2 per pull (geometric). After 9 straight losses, Meowth
+      claims "a win on the next pull is now overdue -- way more than 20%." Find the
+      true P(win on pull 10 | 9 losses) and name his error.
+    solution: |
+      The slot is geometric (memoryless): P(win on pull 10 | 9 losses) =
+      P(win on pull 1) = p = 0.2. Meowth committed the GAMBLER'S FALLACY -- treating
+      past losses as building toward a win. A memoryless wait has no memory; the next
+      pull is always a fresh p = 0.2, never "overdue."
+    answer: "0.2 (memoryless; gambler's fallacy)"
+    shortcut_used: ["memorylessness: next trial is always a fresh p"]
+    verify: "abs(0.2 - 0.2) < 1e-9"
+
+  - id: C5.9
+    chapter: 5
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 2
+    actor: "the Pokedex Actuary Mode"
+    stakes: "You need the chance of at least two Gastly in a minute to judge the danger."
+    consequence: "Complementing the small end beats summing an infinite tail."
+    quest_step: 10
+    tia_section: "A.5.4"
+    narrative_hook: "Poisson tail by complement: at least two Gastly in a minute."
+    statement: |
+      Gastly at lambda = 3/min. Find P(X >= 2) in one minute.
+    solution: |
+      P(X >= 2) = 1 - p(0) - p(1) = 1 - e^{-3} - 3 e^{-3} = 1 - 4 e^{-3}
+      = 1 - 4(0.049787) = 0.8009.
+    answer: "1 - 4 e^{-3} = 0.8009"
+    shortcut_used: ["tail by complement 1 - p(0) - p(1)"]
+    verify: "abs((1 - 4*__import__('math').exp(-3)) - 0.8009) < 1e-4"
+
+  - id: C5.10
+    chapter: 5
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 3
+    actor: "the Pokedex Actuary Mode"
+    stakes: "You must clear the floor on a lull -- fewer than ten Gastly over five minutes."
+    consequence: "The window forces lambda = 15, not 3; the wrong lambda mislabels a rare lull as certain."
+    quest_step: 11
+    tia_section: "A.5.4"
+    narrative_hook: "The five-minute lull: cumulative Poisson at the rescaled lambda."
+    statement: |
+      Gastly at 3/min. Find P(Y < 10) over five minutes -- and state the lambda you
+      used.
+    solution: |
+      Five minutes at 3/min => lambda = 15. P(Y < 10) = P(Y <= 9) =
+      sum_{k=0}^{9} e^{-15} 15^k / k! = 0.0699. The window forces lambda = 15, not 3.
+    answer: "0.0699 (lambda = 15)"
+    shortcut_used: ["rescale lambda = rate x window", "cumulative Poisson"]
+    verify: "abs(sum(__import__('math').exp(-15)*15**k/math.factorial(k) for k in range(10)) - 0.0699) < 1e-4"
+
+  - id: C5.11
+    chapter: 5
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 2
+    actor: "the Tower caretaker"
+    stakes: "Two ghost streams over a two-minute stretch must be merged and rescaled."
+    consequence: "Superpose first, then rescale the window -- either order gives the same Poisson."
+    quest_step: 12
+    tia_section: "A.5.5"
+    narrative_hook: "Superposition then rescaling over a two-minute stretch."
+    statement: |
+      Gastly at 3/min and Haunter at 1/min, independently. Find the distribution of
+      total ghosts over a two-minute stretch and its mean.
+    solution: |
+      Per minute, total ~ Poisson(3+1) = Poisson(4). Over two minutes,
+      lambda = 4 x 2 = 8, so total ~ Poisson(8), mean 8.
+    answer: "Poisson(8), mean 8"
+    shortcut_used: ["superposition (add rates)", "rescale lambda to window"]
+    verify: "abs(((3+1)*2) - 8) < 1e-9"
+
+  - id: C5.12
+    chapter: 5
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 2
+    actor: "a cold Game Corner slot"
+    stakes: "After six losing pulls you want the chance of more than four further losses."
+    consequence: "Memorylessness discards the six prior pulls -- only the gap of four matters."
+    quest_step: 13
+    tia_section: "A.5.2"
+    narrative_hook: "Memoryless conditional: four more losing pulls after six cold ones."
+    statement: |
+      A slot wins w.p. 0.2. Given you have pulled 6 times with no win, find
+      P(more than 4 further losing pulls).
+    solution: |
+      Memorylessness: P(X > 10 | X > 6) = P(X > 4) = q^4 = 0.8^4 = 0.4096 -- the 6
+      prior pulls are discarded.
+    answer: "0.8^4 = 0.4096"
+    shortcut_used: ["memorylessness P(X>m+n|X>m) = q^n"]
+    verify: "abs((0.8**4) - 0.4096) < 1e-9"
+
+  - id: C5.13
+    chapter: 5
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2d"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary attaches a binomial coefficient to a first-success wait, freeing the locked win."
+    consequence: "A binomial coefficient over-counts arrangements that finish too soon."
+    quest_step: 14
+    tia_section: "A.5.1"
+    narrative_hook: "Catching Gary's spurious binomial coefficient on a geometric wait."
+    statement: |
+      Gary models "the number of pulls until my first win" with a binomial
+      coefficient, writing P(first win on pull 3) = C(3,1) p q^2. With p = 0.25, find
+      the correct P(first win on pull 3) and name Gary's error.
+    solution: |
+      The wait for the first win is GEOMETRIC, success locked last:
+      P(first win on pull 3) = q^2 p = (0.75)^2 (0.25) = 0.1406. Gary's error: he
+      attached C(3,1) as if the single win could land in any of three slots -- but for
+      the FIRST win its position is forced to be last, so there is exactly one
+      arrangement (no coefficient).
+    answer: "0.1406 (geometric, not binomial)"
+    shortcut_used: ["geometric pmf q^{k-1} p -- first success locked last, no coefficient"]
+    verify: "abs((0.75**2 * 0.25) - 0.1406) < 1e-4"
+
+  - id: C5.14
+    chapter: 5
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 2
+    actor: "Erika"
+    stakes: "Only the rare perfume-grade spores matter; the swarm must be thinned by p."
+    consequence: "Thinning preserves the Poisson family at the reduced rate lambda p."
+    quest_step: 15
+    tia_section: "A.5.5"
+    narrative_hook: "Thinning a Poisson pollen swarm to its perfume-grade spores."
+    statement: |
+      Pollen drifts at lambda = 10/min (Poisson); each spore is perfume-grade w.p.
+      0.2 independently. Find the distribution and mean of perfume-grade spores per
+      minute.
+    solution: |
+      Thinning: keeping each spore w.p. 0.2 gives perfume-grade ~ Poisson(10 x 0.2)
+      = Poisson(2), mean 2. Thinning preserves the Poisson family.
+    answer: "Poisson(2), mean 2"
+    shortcut_used: ["thinning: kept count ~ Poisson(lambda p)"]
+    verify: "abs((10*0.2) - 2) < 1e-9"
+
+  - id: C5.15
+    chapter: 5
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["negative_binomial"]
+    provenance: original
+    difficulty: 3
+    actor: "the Game Corner token counter"
+    stakes: "You wait for the 4th win and need both the mean loss count and a single pmf value."
+    consequence: "Mean rq/p and one pmf term together summarize the waiting game."
+    quest_step: 16
+    tia_section: "A.5.3"
+    narrative_hook: "Negative binomial mean plus a single pmf value, waiting for the 4th win."
+    statement: |
+      You wait for the 4th win; each round wins w.p. 0.3. Find E[losses before the
+      4th win] and P(exactly 1 loss before the 4th win).
+    solution: |
+      With r = 4, p = 0.3, q = 0.7: E[losses] = rq/p = 4(0.7)/0.3 = 9.333.
+      P(X = 1) = C(1+4-1, 1) p^4 q^1 = C(4,1)(0.3)^4(0.7) = 4(0.0081)(0.7) = 0.02268
+      (rounded 0.0227).
+    answer: "E = 9.33; P(X=1) = 0.0227"
+    shortcut_used: ["negbin mean rq/p", "negbin pmf C(k+r-1,k) p^r q^k"]
+    verify: "abs((4*0.7/0.3) - 9.3333333333) < 1e-4 and abs((math.comb(4,1)*0.3**4*0.7) - 0.02268) < 1e-4"
+
+  - id: C5.16
+    chapter: 5
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2d"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 2
+    actor: "Team Rocket (Jessie)"
+    stakes: "Jessie argues 20 failures make success within five more trials near-certain."
+    consequence: "The 20 failures change nothing; the fresh-start answer is far below certainty."
+    quest_step: 17
+    tia_section: "A.5.2"
+    narrative_hook: "Catching Jessie's gambler's fallacy on a low-p geometric wait."
+    statement: |
+      A geometric wait has p = 0.1. Jessie argues "after 20 failures the chance of
+      success within the next 5 trials must be near certain." Find the true
+      P(success within the next 5 | 20 failures) and name the error.
+    solution: |
+      Memorylessness: P(success within next 5 | 20 failures) =
+      P(X <= 5 from a fresh start) = 1 - q^5 = 1 - 0.9^5 = 1 - 0.59049 = 0.4095.
+      Jessie's error: the 20 failures do not raise the future chance -- the answer is
+      the same 0.4095 as from a cold start, nowhere near certain.
+    answer: "1 - 0.9^5 = 0.4095 (not ~1)"
+    shortcut_used: ["memorylessness discards the past; 1 - q^n"]
+    verify: "abs((1 - 0.9**5) - 0.4095) < 1e-4"
+
+  - id: C5.18
+    chapter: 5
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 3
+    actor: "the Pokedex Actuary Mode"
+    stakes: "A 50-pull slot at small p is a textbook many-rare-trials Poisson approximation."
+    consequence: "The binomial-to-Poisson limit replaces a heavy binomial with lambda = np."
+    quest_step: 18
+    tia_section: "A.5.4"
+    narrative_hook: "Binomial-to-Poisson limit: approximating exactly two wins in 50 pulls."
+    statement: |
+      A slot pulled n = 50 times wins each pull w.p. p = 0.04. Approximate
+      P(exactly 2 wins) with a Poisson, and state the lambda.
+    solution: |
+      lambda = np = 50(0.04) = 2. P(exactly 2) ~ e^{-2} 2^2 / 2! = 2 e^{-2}
+      = 2(0.135335) = 0.2707.
+    answer: "Poisson(2), P(2) = 0.2707"
+    shortcut_used: ["Binom(n,p) ~ Poisson(np) for large n, small p"]
+    verify: "abs((__import__('math').exp(-2)*2**2/2) - 0.2707) < 1e-4"
+
+  - id: C5.24
+    chapter: 5
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 3
+    actor: "Team Rocket (Jessie)"
+    stakes: "Jessie computes a five-minute lull with the per-minute lambda and gets near 1."
+    consequence: "Skipping the rescale mislabels a below-average lull as near-certain."
+    quest_step: 19
+    tia_section: "A.5.4"
+    narrative_hook: "Catching Jessie skip the Poisson window rescaling."
+    statement: |
+      Gastly at 3/min. Jessie computes P(fewer than 10 over five minutes) using
+      lambda = 3 and gets ~1. Find the correct probability and name the error.
+    solution: |
+      Correct lambda = 3 x 5 = 15, giving P(Y < 10) = sum_{k=0}^{9} e^{-15} 15^k/k!
+      = 0.0699. Jessie's error: she used the per-minute lambda = 3 for a five-minute
+      window; that sum_{k=0}^{9} e^{-3} 3^k/k! ~ 0.9989 ~ 1 wrongly calls a
+      below-average lull near-certain. Always rescale lambda = rate x window.
+    answer: "0.0699 (not ~1; rescale to lambda = 15)"
+    shortcut_used: ["rescale lambda = rate x window before the pmf"]
+    verify: "abs(sum(__import__('math').exp(-15)*15**k/math.factorial(k) for k in range(10)) - 0.0699) < 1e-4 and sum(__import__('math').exp(-3)*3**k/math.factorial(k) for k in range(10)) > 0.99"
+
+  # ===================== ELITE CHALLENGE (post-game) =====================
+
+  - id: C5.19
+    chapter: 5
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 4
+    actor: "Erika"
+    stakes: "Thin the swarm, rescale to three minutes, then complement for at-least-one."
+    consequence: "Chaining thinning, rescaling, and complement gives the bloom probability."
+    quest_step: 20
+    tia_section: "A.5.4, A.5.5"
+    narrative_hook: "Thinning plus window plus complement, chained for the three-minute bloom."
+    statement: |
+      Pollen at lambda = 10/min; perfume-grade w.p. 0.2. (a) Distribution of
+      perfume-grade per minute. (b) Over three minutes, P(>= 1 perfume-grade).
+    solution: |
+      (a) Thinning: perfume-grade per minute ~ Poisson(10 x 0.2) = Poisson(2).
+      (b) Over 3 min, lambda = 2 x 3 = 6; P(>= 1) = 1 - e^{-6} = 1 - 0.002479
+      = 0.9975.
+    answer: "Poisson(2); 1 - e^{-6} = 0.9975"
+    shortcut_used: ["thinning lambda p", "rescale to window", "P(>=1) = 1 - e^{-lambda}"]
+    verify: "abs((10*0.2) - 2) < 1e-9 and abs((1 - __import__('math').exp(-6)) - 0.9975) < 1e-4"
+
+  - id: C5.20
+    chapter: 5
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 4
+    actor: "Professor Oak"
+    stakes: "Oak asks you to derive the geometric mean from the survival sum, not quote it."
+    consequence: "A from-scratch derivation proves you own q/p under exam pressure."
+    quest_step: 21
+    tia_section: "A.5.0a, A.5.1"
+    narrative_hook: "Deriving the geometric (failures) mean from the survival-sum and the series."
+    statement: |
+      For X ~ Geom(p) (failures version), derive E[X] = q/p using
+      E[X] = sum_{k>=0} P(X > k) and the geometric series. Evaluate at p = 0.2.
+    solution: |
+      Failures version: P(X > k) = q^{k+1} (more than k failures means >= k+1).
+      E[X] = sum_{k>=0} q^{k+1} = q sum_{k>=0} q^k = q/(1-q) = q/p.
+      At p = 0.2: E[X] = 0.8/0.2 = 4.0.
+    answer: "q/p; 4.0"
+    shortcut_used: ["E[X] = sum P(X>k)", "geometric series sum"]
+    verify: "abs((0.8/0.2) - 4.0) < 1e-9 and abs(sum(0.8**(k+1) for k in range(100000)) - 4.0) < 1e-3"
+
+  - id: C5.21
+    chapter: 5
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["2d"]
+    distributions: ["geometric", "negative_binomial"]
+    provenance: original
+    difficulty: 4
+    actor: "Erika"
+    stakes: "How many qualifying minutes you need decides geometric versus negative binomial."
+    consequence: "The required number of successes forces the waiting-game family."
+    quest_step: 22
+    tia_section: "A.5.1, A.5.3"
+    narrative_hook: "Choosing geometric (first) vs negative binomial (third) for the qualifying-minute wait."
+    statement: |
+      A minute "qualifies" (has >= 1 perfume-grade spore) w.p. p_min = 1 - e^{-2}
+      = 0.8647. (a) Expected minutes to the first qualifying minute. (b) Expected
+      minutes to the third. Name the family in each and justify which model the
+      question forces.
+    solution: |
+      (a) "First qualifying minute" => GEOMETRIC over minutes: E = 1/p_min
+      = 1/0.8647 = 1.156 minutes.
+      (b) "Third qualifying minute" => NEGATIVE BINOMIAL with r = 3 (trials
+      convention): E = r/p_min = 3/0.8647 = 3.470 minutes.
+      The number of required successes forces the family -- one success is geometric,
+      r successes is negative binomial.
+    answer: "(a) 1.156 (geometric); (b) 3.47 (negbin)"
+    shortcut_used: ["geometric mean 1/p (trials)", "negbin trials mean r/p"]
+    verify: "(lambda pm: abs(1/pm - 1.156) < 1e-3 and abs(3/pm - 3.470) < 1e-3)(1 - __import__('math').exp(-2))"
+
+  - id: C5.23
+    chapter: 5
+    tier: elite_challenge
+    archetype: rival_trap
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 4
+    actor: "Gary Oak"
+    stakes: "Gary adds two Poisson probabilities to get the total-count pmf."
+    consequence: "Adding masses isn't even a valid pmf; you add parameters, not probabilities."
+    quest_step: 23
+    tia_section: "A.5.5"
+    narrative_hook: "Catching Gary add Poisson probabilities instead of superposing rates."
+    statement: |
+      Gary has Gastly ~ Poisson(3) and Haunter ~ Poisson(1) independent, and computes
+      P(total = 2) = P(G = 2) + P(H = 2). Explain why this is wrong, and give the
+      correct distribution of the total and P(total = 2).
+    solution: |
+      Independent Poissons add their RATES: total ~ Poisson(3+1) = Poisson(4), so
+      P(total = 2) = e^{-4} 4^2 / 2! = 8 e^{-4} = 8(0.018316) = 0.1465. Gary's error:
+      P(G=2) + P(H=2) adds probabilities, which is meaningless (not even a valid pmf)
+      -- you add the parameters, not the masses.
+    answer: "Poisson(4), P(2) = 0.1465"
+    shortcut_used: ["superposition: add rates then Poisson pmf"]
+    verify: "abs((__import__('math').exp(-4)*4**2/2) - 0.1465) < 1e-4"

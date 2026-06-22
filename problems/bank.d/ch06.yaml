@@ -1,0 +1,526 @@
+# Problem bank — Chapter 6 (Fuchsia City / Safari Zone): Deductibles & limits,
+# discrete. Ordinary deductible (X-d)+, policy limit / limited expected value
+# X^u = min(X,u), coinsurance alpha, the budget identity E[X^u]+E[(X-u)+]=E[X],
+# per-loss vs per-payment (divide by P(X>d)), and the deductible->limit->coinsurance
+# order. Outcomes 2e, 2f. Tier-B chapter. Locale: Fuchsia (Koga / Soul Badge) and
+# the Safari Zone Warden's coverage commission.
+#
+# The chapter loss runs through the whole set: X in {0,1,2,3,4,5} with pmf
+# p = 0.30,0.25,0.20,0.13,0.08,0.04, survival S = 0.70,0.45,0.25,0.12,0.04,0,
+# and E[X] = 1.56.
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   structural_tags, provenance, difficulty (1-5), actor, stakes, consequence,
+#   quest_step, narrative_hook, statement, solution, answer, shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes
+# math, st=scipy.stats, and builtins incl. next/enumerate/zip/sum/max/range/abs).
+# Deductible/limit expectations are encoded directly as finite sums over the pmf.
+# Chained problems RESTATE the prior value as a given so verify never depends on
+# another problem's answer.
+#
+# Immersion quotas met: audit >= 3 (C6.8 Meowth's cap-then-deduct order error,
+# C6.16 the mean-minus-d apprentice error, plus the recycled cap-then-deduct audit
+# carried in C6.8 against the Team-Rocket Trap -- exactly as ch03's header counted
+# C3.8 twice); rival_trap >= 2 (C6.13, C6.18, both Gary); decision >= 1 (C6.15).
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C6.1
+    chapter: 6
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "ordinary_deductible"]
+    provenance: original
+    difficulty: 1
+    actor: "the Safari Zone Warden"
+    stakes: "Her first quote sets a flat deductible; she needs the average payout per flee to price the gate fee."
+    consequence: "Misprice the per-loss payment and the whole gate-fee insurance scheme runs at a loss."
+    quest_step: 1
+    tia_section: "A.6.1"
+    narrative_hook: "Averaging the per-loss payment under the Warden's flat deductible d=1."
+    statement: |
+      For the Safari loss X in {0,1,2,3,4,5} with survival S = 0.70,0.45,0.25,
+      0.12,0.04,0, an ordinary deductible d=1 applies. Find the expected payment
+      per loss, E[(X-1)+].
+    solution: |
+      E[(X-1)+] = sum_{k>=1} S(k) = S(1)+S(2)+S(3)+S(4) = 0.45+0.25+0.12+0.04
+      = 0.86. (Direct check: (k-1)+ = 0,0,1,2,3,4, so 1(0.20)+2(0.13)+3(0.08)+
+      4(0.04) = 0.86.)
+    answer: 0.86
+    shortcut_used: ["E[(X-d)+] = sum_{k>=d} S(k)"]
+    verify: "(lambda S:abs((S[1]+S[2]+S[3]+S[4]) - 0.86) < 1e-9)([0.70,0.45,0.25,0.12,0.04,0.0])"
+
+  - id: C6.2
+    chapter: 6
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2f"]
+    distributions: []
+    structural_tags: ["discrete", "per_payment"]
+    provenance: original
+    difficulty: 2
+    actor: "a Safari claimant"
+    stakes: "A trainer who files wants the size of an actual cheque, not the average over every flee."
+    consequence: "Quoting the per-loss figure as the cheque size badly understates what a payer receives."
+    quest_step: 2
+    tia_section: "A.6.3"
+    narrative_hook: "Converting a per-loss expectation into the size of an actual cheque."
+    statement: |
+      For the d=1 policy on the Safari loss (E[(X-1)+]=0.86 given, survival
+      S(1)=P(X>1)=0.45), find the expected payment per payment.
+    solution: |
+      A payment occurs iff X>1, so divide the per-loss expectation by
+      P(X>1)=S(1)=0.45: E[X-1 | X>1] = 0.86 / 0.45 = 1.911.
+    answer: 1.911
+    shortcut_used: ["per payment = per loss / P(X>d)"]
+    verify: "abs((0.86 / 0.45) - 1.911) < 1e-3"
+
+  - id: C6.3
+    chapter: 6
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "policy_limit"]
+    provenance: original
+    difficulty: 1
+    actor: "the Safari Zone Warden"
+    stakes: "Her reserve fund can't absorb a freak loss, so she caps recorded losses at 3 and needs the limited mean."
+    consequence: "The limited expected value sets how much the capped layer costs the reserve."
+    quest_step: 3
+    tia_section: "A.6.2"
+    narrative_hook: "Finding the limited expected value of the Safari loss capped at 3."
+    statement: |
+      For the Safari loss X with survival S = 0.70,0.45,0.25,0.12,0.04,0, find the
+      limited expected value E[X^3] = E[min(X,3)].
+    solution: |
+      E[X^3] = sum_{k=0}^{2} S(k) = S(0)+S(1)+S(2) = 0.70+0.45+0.25 = 1.40.
+    answer: 1.40
+    shortcut_used: ["E[X^u] = sum_{k=0}^{u-1} S(k)"]
+    verify: "(lambda S:abs((S[0]+S[1]+S[2]) - 1.40) < 1e-9)([0.70,0.45,0.25,0.12,0.04,0.0])"
+
+  - id: C6.4
+    chapter: 6
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "policy_limit"]
+    provenance: original
+    difficulty: 1
+    actor: "the Safari Zone Warden"
+    stakes: "A tighter cap of 2 is on the table; she needs its limited mean to compare reserve costs."
+    consequence: "The wrong limited value would mis-rank the two candidate caps."
+    quest_step: 4
+    tia_section: "A.6.2"
+    narrative_hook: "Limited expected value of the Safari loss under a tighter cap of 2."
+    statement: |
+      For the Safari loss X with survival S = 0.70,0.45,0.25,0.12,0.04,0, find
+      E[X^2] = E[min(X,2)].
+    solution: |
+      E[X^2] = sum_{k=0}^{1} S(k) = S(0)+S(1) = 0.70+0.45 = 1.15.
+    answer: 1.15
+    shortcut_used: ["E[X^u] = sum_{k=0}^{u-1} S(k)"]
+    verify: "(lambda S:abs((S[0]+S[1]) - 1.15) < 1e-9)([0.70,0.45,0.25,0.12,0.04,0.0])"
+
+  - id: C6.5
+    chapter: 6
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "ordinary_deductible", "policy_limit", "coinsurance"]
+    provenance: original
+    difficulty: 2
+    actor: "the Safari Zone Warden"
+    stakes: "Her trial policy stacks a deductible, a cap, and coinsurance; she needs the full per-loss payment."
+    consequence: "The scaled covered-layer figure is the number the gate fee is built on."
+    quest_step: 5
+    tia_section: "A.6.2"
+    narrative_hook: "Assembling a full policy: deductible, limit, and coinsurance in order."
+    statement: |
+      A policy has deductible d=1, maximum covered loss u=3, coinsurance
+      alpha=0.9. Given E[X^3]=1.40 and E[X^1]=0.70, find the expected payment
+      per loss.
+    solution: |
+      Full policy: E[Y_L] = alpha (E[X^u] - E[X^d]) = 0.9(1.40 - 0.70)
+      = 0.9(0.70) = 0.63.
+    answer: 0.63
+    shortcut_used: ["E[Y_L] = alpha (E[X^u] - E[X^d])"]
+    verify: "abs(0.9*(1.40 - 0.70) - 0.63) < 1e-9"
+
+  - id: C6.6
+    chapter: 6
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: ["discrete_uniform"]
+    structural_tags: ["discrete", "ordinary_deductible"]
+    provenance: original
+    difficulty: 2
+    actor: "the Safari Zone Warden"
+    stakes: "A different critter's gear-loss is uniform; she needs the deductible payout on it too."
+    consequence: "A uniform loss must run through the same floor-at-zero machinery as the main loss."
+    quest_step: 6
+    tia_section: "A.6.1"
+    narrative_hook: "Applying an ordinary deductible to a discrete-uniform loss."
+    statement: |
+      A loss Y is discrete uniform on {0,1,2,3,4} (each w.p. 0.2). With deductible
+      d=2, find the expected payment per loss, E[(Y-2)+].
+    solution: |
+      (Y-2)+ = 0,0,0,1,2 across the five values, so E[(Y-2)+] = 1(0.2)+2(0.2)
+      = 0.2+0.4 = 0.60.
+    answer: 0.60
+    shortcut_used: ["E[(Y-d)+] = sum (k-d)+ p(k)"]
+    verify: "(lambda k:abs(sum(max(x-2,0)*0.2 for x in k) - 0.60) < 1e-9)([0,1,2,3,4])"
+
+  - id: C6.7
+    chapter: 6
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "budget_identity"]
+    provenance: original
+    difficulty: 2
+    actor: "the Safari Zone Warden"
+    stakes: "She already has E[X] and a limited value and wants the excess without grinding a new sum."
+    consequence: "The budget identity hands over the third value for free -- a one-line short-circuit."
+    quest_step: 7
+    tia_section: "A.6.2"
+    narrative_hook: "Getting the expected excess for free via the budget identity."
+    statement: |
+      Given E[X]=1.56 and E[X^4]=1.52 for the Safari loss, find the expected
+      excess E[(X-4)+] using the budget identity.
+    solution: |
+      Budget identity: E[X^u] + E[(X-u)+] = E[X], so E[(X-4)+] = E[X] - E[X^4]
+      = 1.56 - 1.52 = 0.04. No new sum needed.
+    answer: 0.04
+    shortcut_used: ["E[(X-u)+] = E[X] - E[X^u]"]
+    verify: "abs((1.56 - 1.52) - 0.04) < 1e-9"
+
+  # ===================== GYM BATTLES (the boss fight) =====================
+
+  - id: C6.8
+    chapter: 6
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "ordinary_deductible", "payment_limit", "order_of_operations"]
+    provenance: original
+    difficulty: 3
+    actor: "Team Rocket (Meowth)"
+    stakes: "Meowth's knock-off policy claims it pays 0 per flee, so the team collects gate fees free."
+    consequence: "Capping the loss before the deductible wrongly zeros the payout and misprices the scam cover."
+    quest_step: 8
+    tia_section: "A.6.1-A.6.2"
+    narrative_hook: "Catching Meowth apply the deductible after a payment cap instead of before."
+    statement: |
+      Team Rocket's policy has deductible d=2 and a maximum PAYMENT of u=2. Meowth
+      caps the loss at 2 first, then subtracts the deductible, and declares "the
+      policy pays 0 per flee." With the Safari pmf p = 0.30,0.25,0.20,0.13,0.08,
+      0.04, find the CORRECT expected payment per loss (deductible first, then cap
+      the payment) and name Meowth's error.
+    solution: |
+      Correct order is deductible first, then cap the PAYMENT at u=2:
+      payment = min((X-2)+, 2). The values (X-2)+ = 0,0,0,1,2,3 capped at 2 give
+      0,0,0,1,2,2, so E[Y_L] = 1(0.13)+2(0.08)+2(0.04) = 0.13+0.16+0.08 = 0.37.
+      Meowth's error: he capped the LOSS at 2 first (min(X,2)=0,1,2,2,2,2), then
+      subtracted the deductible and floored, getting 0 for every loss. Deductible
+      must come BEFORE the payment cap; the true per-loss payment is 0.37, not 0.
+    answer: "0.37 (not 0)"
+    shortcut_used: ["payment = min((X-d)+, u): deductible BEFORE the payment cap"]
+    verify: "(lambda p:abs(sum(min(max(k-2,0),2)*p[k] for k in range(6)) - 0.37) < 1e-9)([0.30,0.25,0.20,0.13,0.08,0.04])"
+
+  - id: C6.9
+    chapter: 6
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "ordinary_deductible", "policy_limit", "coinsurance"]
+    provenance: original
+    difficulty: 3
+    actor: "Koga"
+    stakes: "The Soul-Badge policy stacks all three modifications; Koga wants the per-loss payment in one pass."
+    consequence: "Falter on the deductible->limit->coinsurance order and you leave the gym empty-handed."
+    quest_step: 9
+    tia_section: "A.6.2"
+    narrative_hook: "The full Soul-Badge policy: per-loss payment from two limited values."
+    statement: |
+      The Soul-Badge policy has d=2, maximum covered loss u=4, coinsurance
+      alpha=0.8. Given E[X^4]=1.52 and E[X^2]=1.15, find the expected payment
+      per loss.
+    solution: |
+      E[Y_L] = alpha (E[X^4] - E[X^2]) = 0.8(1.52 - 1.15) = 0.8(0.37) = 0.296.
+    answer: 0.296
+    shortcut_used: ["E[Y_L] = alpha (E[X^u] - E[X^d])"]
+    verify: "abs(0.8*(1.52 - 1.15) - 0.296) < 1e-9"
+
+  - id: C6.10
+    chapter: 6
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2f"]
+    distributions: []
+    structural_tags: ["discrete", "per_payment"]
+    provenance: original
+    difficulty: 3
+    actor: "Koga"
+    stakes: "A claimant needs the typical cheque under the full policy; the divisor must be the deductible's probability."
+    consequence: "Dividing by the limit's probability instead of the deductible's misstates the cheque."
+    quest_step: 10
+    tia_section: "A.6.3"
+    narrative_hook: "Per-payment under a full policy -- dividing by P(X>d), not P(X>u)."
+    statement: |
+      For the policy in C6.9 (d=2, E[Y_L]=0.296 given), find the expected payment
+      per payment. Use the deductible's probability P(X>2)=S(2)=0.25.
+    solution: |
+      A cheque is written iff X>d=2, so divide by P(X>2)=S(2)=0.25 (the deductible,
+      NOT the limit): E[Y_P] = 0.296 / 0.25 = 1.184.
+    answer: 1.184
+    shortcut_used: ["per payment = E[Y_L] / P(X>d)"]
+    verify: "abs((0.296 / 0.25) - 1.184) < 1e-9"
+
+  - id: C6.11
+    chapter: 6
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "ordinary_deductible", "policy_limit"]
+    provenance: original
+    difficulty: 4
+    actor: "the Pokedex Actuary Mode"
+    stakes: "You must show the limited-value layer equals the direct LOTUS sum, both roads agreeing."
+    consequence: "A mismatch between the two roads would flag a bookkeeping slip in the layer."
+    quest_step: 11
+    tia_section: "A.6.1-A.6.2"
+    narrative_hook: "The covered layer between d and u, computed two equal ways."
+    statement: |
+      For the Safari loss with pmf p = 0.30,0.25,0.20,0.13,0.08,0.04, deductible
+      d=2 and maximum covered loss u=4 (no coinsurance), find the per-loss payment
+      E[X^4]-E[X^2], and verify it equals the direct sum
+      sum_k (min(k,4)-min(k,2)) p(k).
+    solution: |
+      Via limited values: E[X^4]-E[X^2] = 1.52 - 1.15 = 0.37. Direct sum:
+      min(k,4)-min(k,2) = 0,0,0,1,2,2, so 1(0.13)+2(0.08)+2(0.04)
+      = 0.13+0.16+0.08 = 0.37. Both roads agree.
+    answer: "0.37 (both roads)"
+    shortcut_used: ["covered layer = E[X^u] - E[X^d] = sum (min(k,u)-min(k,d)) p(k)"]
+    verify: "(lambda p:abs(sum((min(k,4)-min(k,2))*p[k] for k in range(6)) - 0.37) < 1e-9)([0.30,0.25,0.20,0.13,0.08,0.04])"
+
+  - id: C6.12
+    chapter: 6
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "coinsurance"]
+    provenance: original
+    difficulty: 2
+    actor: "the Safari Zone Warden"
+    stakes: "A bare-bones co-pay plan scales every loss; she needs its per-loss cost."
+    consequence: "Coinsurance with no deductible or cap is just a clean scale of the mean."
+    quest_step: 12
+    tia_section: "A.6.2"
+    narrative_hook: "Coinsurance only -- scaling the whole mean by alpha."
+    statement: |
+      A co-pay plan covers alpha=0.75 of every loss with no deductible and no cap.
+      Given E[X]=1.56, find the expected payment per loss.
+    solution: |
+      No deductible, no cap, so the payment is alpha X and E[alpha X] = alpha E[X]
+      = 0.75(1.56) = 1.17.
+    answer: 1.17
+    shortcut_used: ["E[alpha X] = alpha E[X]"]
+    verify: "abs(0.75*1.56 - 1.17) < 1e-9"
+
+  - id: C6.13
+    chapter: 6
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2f"]
+    distributions: []
+    structural_tags: ["discrete", "per_payment"]
+    provenance: original
+    difficulty: 4
+    actor: "Gary Oak"
+    stakes: "Gary reads his per-loss figure as the size of an actual cheque and calls the policy barely worth it."
+    consequence: "Confusing per-loss with per-payment understates the typical cheque fourfold."
+    quest_step: 13
+    tia_section: "A.6.3"
+    narrative_hook: "Catching Gary quote the per-loss average as the size of an actual cheque."
+    statement: |
+      Gary buys the deductible-2 policy and crows: "My expected payment per loss is
+      0.41, so when I file a claim I'll average a 0.41-thousand cheque." With
+      P(X>2)=S(2)=0.25, find the true expected payment per payment and explain
+      Gary's error.
+    solution: |
+      The 0.41 is the PER-LOSS average -- it already includes the 75% of flees that
+      pay 0. The actual cheque is the PER-PAYMENT average:
+      E[X-2 | X>2] = 0.41 / P(X>2) = 0.41 / 0.25 = 1.64. Gary's error: he read the
+      per-loss figure (which averages over the zeros) as the typical cheque. The
+      typical cheque is 1.64 thousand -- four times larger.
+    answer: "1.64 (per payment); Gary confused per-loss with per-payment"
+    shortcut_used: ["per payment = per loss / P(X>d)"]
+    verify: "abs((0.41 / 0.25) - 1.64) < 1e-9"
+
+  - id: C6.14
+    chapter: 6
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "ordinary_deductible", "policy_limit"]
+    provenance: original
+    difficulty: 3
+    actor: "the Safari Zone Warden"
+    stakes: "She wants the cost of insuring only the layer between a deductible of 1 and a cap of 4."
+    consequence: "The layer cost is the difference of two limited expected values."
+    quest_step: 14
+    tia_section: "A.6.2"
+    narrative_hook: "The full covered layer between d=1 and u=4 at full coinsurance."
+    statement: |
+      For the Safari loss with pmf p = 0.30,0.25,0.20,0.13,0.08,0.04, a policy pays
+      the layer between d=1 and u=4 at full coinsurance (alpha=1). Find the expected
+      payment per loss, E[X^4]-E[X^1].
+    solution: |
+      E[X^4]-E[X^1] = 1.52 - 0.70 = 0.82. (Direct: min(k,4)-min(k,1)
+      = 0,0,1,2,3,3, so 1(0.20)+2(0.13)+3(0.08)+3(0.04) = 0.20+0.26+0.24+0.12
+      = 0.82.)
+    answer: 0.82
+    shortcut_used: ["layer = E[X^u] - E[X^d]"]
+    verify: "(lambda p:abs(sum((min(k,4)-min(k,1))*p[k] for k in range(6)) - 0.82) < 1e-9)([0.30,0.25,0.20,0.13,0.08,0.04])"
+
+  - id: C6.15
+    chapter: 6
+    tier: gym_battle
+    archetype: decision
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "ordinary_deductible", "policy_limit"]
+    provenance: original
+    difficulty: 4
+    actor: "the Safari Zone Warden"
+    stakes: "She must pick the cheaper of a deductible plan and a low-cap plan for the same loss."
+    consequence: "Choosing the costlier plan over-charges the reserve for the same coverage promise."
+    quest_step: 15
+    tia_section: "A.6.1-A.6.2"
+    narrative_hook: "Comparing a deductible plan against a low-cap plan for insurer cost."
+    statement: |
+      The Warden must choose one plan for the loss X (survival S = 0.70,0.45,0.25,
+      0.12,0.04,0). Plan A: deductible d=2, no limit, alpha=1. Plan B: no
+      deductible, maximum covered loss u=2, alpha=1. Compute the expected payment
+      per loss for each and recommend the cheaper plan.
+    solution: |
+      Plan A: E[(X-2)+] = S(2)+S(3)+S(4) = 0.25+0.12+0.04 = 0.41.
+      Plan B: E[X^2] = S(0)+S(1) = 0.70+0.45 = 1.15.
+      Plan A costs 0.41 per flee, Plan B costs 1.15. Recommend Plan A: the
+      deductible (trainer absorbs the bottom) is far cheaper than a low cap (still
+      pays on every flee).
+    answer: "A 0.41, B 1.15; choose A"
+    shortcut_used: ["E[(X-d)+] = sum_{k>=d} S(k)", "E[X^u] = sum_{k=0}^{u-1} S(k)"]
+    verify: "(lambda S:abs((S[2]+S[3]+S[4]) - 0.41) < 1e-9 and abs((S[0]+S[1]) - 1.15) < 1e-9 and (S[2]+S[3]+S[4]) < (S[0]+S[1]))([0.70,0.45,0.25,0.12,0.04,0.0])"
+
+  - id: C6.16
+    chapter: 6
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "ordinary_deductible"]
+    provenance: original
+    difficulty: 2
+    actor: "a Safari apprentice"
+    stakes: "The apprentice records the per-loss payment as E[X]-d, a negative number."
+    consequence: "Subtracting the deductible from the mean yields a nonsensical negative payout."
+    quest_step: 16
+    tia_section: "A.6.1"
+    narrative_hook: "Catching the mean-minus-deductible error that produces a negative payment."
+    statement: |
+      An apprentice records "deductible d=2, so expected per-loss payment
+      = E[X]-d = 1.56-2 = -0.44." For the Safari loss with survival S = 0.70,0.45,
+      0.25,0.12,0.04,0, find the true per-loss payment and name the error.
+    solution: |
+      True payment: E[(X-2)+] = S(2)+S(3)+S(4) = 0.25+0.12+0.04 = 0.41. The error:
+      E[X]-d = -0.44 assumes every loss clears the deductible, giving an impossible
+      negative payment. Losses of 0,1,2 pay 0, not a negative amount; you must floor
+      at zero before averaging. True payment 0.41.
+    answer: "0.41 (not -0.44)"
+    shortcut_used: ["E[(X-d)+] = sum_{k>=d} S(k), NOT E[X]-d"]
+    verify: "(lambda S:abs((S[2]+S[3]+S[4]) - 0.41) < 1e-9 and abs((1.56-2) - (-0.44)) < 1e-9)([0.70,0.45,0.25,0.12,0.04,0.0])"
+
+  # ===================== ELITE CHALLENGE (post-game) =====================
+
+  - id: C6.17
+    chapter: 6
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2e", "2f"]
+    distributions: []
+    structural_tags: ["discrete", "ordinary_deductible", "policy_limit", "coinsurance", "per_payment", "budget_identity"]
+    provenance: original
+    difficulty: 5
+    actor: "the Safari Zone Warden"
+    stakes: "A full policy from scratch -- both averages and the identity, all from the survival row."
+    consequence: "Integrating all four tools in one pass is the capstone the commission demands."
+    quest_step: 17
+    tia_section: "A.6.1-A.6.3"
+    narrative_hook: "A full policy from scratch: both averages and the budget-identity cross-check."
+    statement: |
+      For the Safari loss with survival S = 0.70,0.45,0.25,0.12,0.04,0, pmf
+      p = 0.30,0.25,0.20,0.13,0.08,0.04 and E[X]=1.56, a policy has d=1, maximum
+      covered loss u=4, coinsurance alpha=0.9. (a) Find E[X^4] and E[X^1].
+      (b) Find the per-loss payment. (c) Find the per-payment payment.
+      (d) Confirm E[X^4]+E[(X-4)+] = E[X].
+    solution: |
+      (a) E[X^4] = S(0)+S(1)+S(2)+S(3) = 0.70+0.45+0.25+0.12 = 1.52;
+          E[X^1] = S(0) = 0.70.
+      (b) Per loss: E[Y_L] = 0.9(1.52-0.70) = 0.9(0.82) = 0.738.
+      (c) Per payment: a cheque is written iff X>1, so divide by P(X>1)=S(1)=0.45:
+          E[Y_P] = 0.738 / 0.45 = 1.64.
+      (d) E[(X-4)+] = (5-4)(0.04) = 0.04, and E[X^4]+E[(X-4)+] = 1.52+0.04 = 1.56
+          = E[X]. Checks.
+    answer: "E[X^4]=1.52, E[X^1]=0.70; per loss 0.738; per payment 1.64; identity 1.52+0.04=1.56"
+    shortcut_used: ["E[Y_L]=alpha(E[X^u]-E[X^d])", "per payment = E[Y_L]/P(X>d)", "E[X^u]+E[(X-u)+]=E[X]"]
+    verify: "(lambda S,p:abs((S[0]+S[1]+S[2]+S[3]) - 1.52) < 1e-9 and abs(S[0] - 0.70) < 1e-9 and abs(0.9*(1.52-0.70) - 0.738) < 1e-9 and abs((0.9*(1.52-0.70))/0.45 - 1.64) < 1e-3 and abs((1.52 + (5-4)*p[5]) - 1.56) < 1e-9)([0.70,0.45,0.25,0.12,0.04,0.0],[0.30,0.25,0.20,0.13,0.08,0.04])"
+
+  - id: C6.18
+    chapter: 6
+    tier: elite_challenge
+    archetype: rival_trap
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["discrete", "ordinary_deductible", "policy_limit", "budget_identity"]
+    provenance: original
+    difficulty: 5
+    actor: "Gary Oak"
+    stakes: "Gary 'removes' a deductible from a capped loss with a bogus d*P(X>d) shortcut."
+    consequence: "Subtracting d*P(X>d) instead of the limited value E[X^d] mis-states the covered layer."
+    quest_step: 18
+    tia_section: "A.6.2"
+    narrative_hook: "Catching Gary remove a deductible with d*P(X>d) instead of the limited value."
+    statement: |
+      Gary prices a policy with deductible d=1 and maximum covered loss u=3 by
+      capping the loss at 3, then computing E[X^3] - d*P(X>d) "to remove the
+      deductible." Given E[X^3]=1.40, E[X^1]=0.70, and P(X>1)=0.45, find the
+      CORRECT per-loss payment E[X^3]-E[X^1] and explain why Gary's shortcut is
+      wrong.
+    solution: |
+      Correct layer between d=1 and u=3: E[X^3]-E[X^1] = 1.40-0.70 = 0.70.
+      Gary's shortcut E[X^3] - d*P(X>d) = 1.40 - 1(0.45) = 0.95 is wrong:
+      subtracting d*P(X>d) is not how a deductible removes the bottom of a capped
+      loss. The deductible removes the limited value E[X^d]=E[X^1]=0.70, not
+      d*P(X>d)=0.45. The correct covered layer is the difference of two limited
+      expected values, 0.70.
+    answer: "0.70; Gary's d*P(X>d) shortcut wrong"
+    shortcut_used: ["layer = E[X^u] - E[X^d], NOT E[X^u] - d*P(X>d)"]
+    verify: "abs((1.40 - 0.70) - 0.70) < 1e-9 and abs((1.40 - 1*0.45) - 0.95) < 1e-9"

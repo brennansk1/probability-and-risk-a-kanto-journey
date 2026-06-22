@@ -63,6 +63,7 @@ structural_tags:
   - compound
   - mixture
   - order_statistic
+  - multinomial
   - discrete
   - continuous
   - none

@@ -1,0 +1,523 @@
+# Problem bank — Chapter 4 (Viridian Forest -> Pewter City): Combinatorics —
+# fundamental counting principle, permutations, combinations, the binomial,
+# multinomial arrangements, and the hypergeometric (without-replacement)
+# probability. Outcomes 1b, 2d. Tier-B chapter. Locale: Pewter (Brock / Boulder).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   difficulty (1-5), actor, stakes, consequence, quest_step, narrative_hook,
+#   statement, solution, answer, shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval. It exposes
+# math (comb/perm/factorial), st (scipy.stats), and __import__; chained problems
+# RESTATE the prior value as a given so verify never depends on another answer.
+#
+# Immersion quotas met: audit >=3 (C4.8, C4.14, C4.24); rival_trap >=2
+# (C4.13, C4.17); decision >=1 (C4.26).
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C4.1
+    chapter: 4
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Ash (at the forest gate)"
+    stakes: "The forest gate is locked and nightfall is coming; he must know the worst-case number of codes."
+    consequence: "Sizing the search tells him whether brute-forcing the lock is even feasible before dark."
+    quest_step: 1
+    narrative_hook: "Brute-forcing the forest gate's 4-dial lock."
+    statement: |
+      The forest gate's lock has 4 dial positions, each an independent digit
+      0-9 with repeats allowed. How many distinct codes must you be prepared
+      to try in the worst case?
+    solution: |
+      Four independent stages, 10 choices each, repeats allowed:
+      10 * 10 * 10 * 10 = 10^4 = 10000 codes.
+    answer: 10000
+    shortcut_used: ["multiply equal menus -> n^k"]
+    verify: "10**4 == 10000"
+
+  - id: C4.2
+    chapter: 4
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Professor Oak (by Pokedex)"
+    stakes: "Oak wants a labelled photo line-up of three caught Pokemon, left-to-right, for his field log."
+    consequence: "A correctly ordered photo lets Oak catalogue which Pokemon was caught in which order."
+    quest_step: 2
+    narrative_hook: "Posing 3 of your 7 caught Pokemon left-to-right for a photo."
+    statement: |
+      You have caught 7 distinct Pokemon and display 3 of them left-to-right in
+      a photo (order is part of the picture). How many distinct photos?
+    solution: |
+      Ordered, no reuse: P(7,3) = 7*6*5 = 210 photos.
+    answer: 210
+    shortcut_used: ["shrinking-menu permutation"]
+    verify: "math.perm(7, 3) == 210"
+
+  - id: C4.3
+    chapter: 4
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 1
+    actor: "Ash (registering a team)"
+    stakes: "Gym registration wants a 3-Pokemon team; the sheet order is irrelevant."
+    consequence: "Knowing the team count tells him how many distinct line-ups he could legally register."
+    quest_step: 3
+    narrative_hook: "Picking a 3-Pokemon team where the sheet order is irrelevant."
+    statement: |
+      From the same 7 caught Pokemon you select a 3-Pokemon team for a battle
+      (order on the team sheet is irrelevant). How many distinct teams?
+    solution: |
+      Unordered, no reuse: C(7,3) = 7*6*5 / 3! = 210/6 = 35 teams.
+      (= P(7,3)/3! — the same scene as C4.2 with order discarded.)
+    answer: 35
+    shortcut_used: ["divide the permutation count by k!"]
+    verify: "math.comb(7, 3) == 35 and math.comb(7,3) == math.perm(7,3)//math.factorial(3)"
+
+  - id: C4.4
+    chapter: 4
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1b"]
+    distributions: ["multinomial"]
+    provenance: original
+    difficulty: 1
+    actor: "The Pokedex cipher"
+    stakes: "The Pokedex scrambles a name into a registration cipher and needs the keyspace."
+    consequence: "Counting distinguishable scrambles sizes how secure the cipher is."
+    quest_step: 4
+    narrative_hook: "Scrambling the letters of WEEDLE into a cipher."
+    statement: |
+      How many distinguishable arrangements of the letters in WEEDLE are there?
+      (W, E, E, D, L, E — the letter E repeats 3 times.)
+    solution: |
+      6 letters with E repeated 3 times: 6!/3! = 720/6 = 120.
+    answer: 120
+    shortcut_used: ["divide n! by the factorial of each identical block"]
+    verify: "math.factorial(6)//math.factorial(3) == 120"
+
+  - id: C4.5
+    chapter: 4
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1b"]
+    distributions: ["multinomial"]
+    provenance: original
+    difficulty: 2
+    actor: "Misty (packing her bag)"
+    stakes: "Misty lines up her evolution stones in a row of six bag slots and wonders how many distinct layouts exist."
+    consequence: "Counting the distinguishable line-ups confirms she is not double-counting identical stones."
+    quest_step: 5
+    narrative_hook: "Lining up Misty's evolution stones in a row of 6 bag slots."
+    statement: |
+      Misty packs 3 identical Water Stones, 2 identical Thunder Stones, and 1
+      Leaf Stone into a row of 6 slots. How many distinguishable line-ups?
+    solution: |
+      Multinomial with blocks 3, 2, 1: 6!/(3! 2! 1!) = 720/12 = 60 ways.
+    answer: 60
+    shortcut_used: ["multinomial coefficient"]
+    verify: "math.factorial(6)//(math.factorial(3)*math.factorial(2)*math.factorial(1)) == 60"
+
+  - id: C4.6
+    chapter: 4
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["1b", "2d"]
+    distributions: ["binomial"]
+    provenance: original
+    difficulty: 2
+    actor: "Ash (flushing a flock)"
+    stakes: "He claps to flush a flock of Pidgey and wants the chance exactly two take flight."
+    consequence: "Knowing the flush odds tells him whether to expect an opening to catch one."
+    quest_step: 6
+    narrative_hook: "Clapping to flush a flock of 5 independent Pidgey."
+    statement: |
+      A flock of 5 Pidgey each independently flushes (takes flight) with
+      probability p = 0.4. Find P(exactly 2 flush).
+    solution: |
+      Independent, identical, with-replacement trials -> binomial:
+      C(5,2)(0.4)^2(0.6)^3 = 10*(0.16)*(0.216) = 0.3456.
+    answer: 0.3456
+    shortcut_used: ["binomial: choose which x succeed times one pattern"]
+    verify: "abs(math.comb(5,2)*0.4**2*0.6**3 - 0.3456) < 1e-9"
+
+  - id: C4.26
+    chapter: 4
+    tier: route_trainer
+    archetype: decision
+    outcomes: ["1b", "2d"]
+    distributions: ["binomial", "hypergeometric"]
+    provenance: original
+    difficulty: 2
+    actor: "Ash (choosing a model)"
+    stakes: "Two superficially identical 'exactly 2 Caterpie' questions need opposite counting machines."
+    consequence: "Picking the right machine (deplete -> hypergeometric, replace -> binomial) is the load-bearing exam skill."
+    quest_step: 7
+    narrative_hook: "Deciding which counter fits a without-replacement grab vs. independent sightings."
+    statement: |
+      You must find "P(exactly 2 Caterpie)" in two scenarios:
+      (i) grab 3 from a cluster of 10 (4 Caterpie) WITHOUT replacement;
+      (ii) record 3 sightings, each independently Caterpie with probability 0.4.
+      State which machine each scenario needs (hypergeometric vs. binomial) and
+      why. (Then, as a check, the values are 0.30 and 0.288 respectively.)
+    solution: |
+      (i) Without replacement the pool depletes -> the success rate shifts each
+          draw -> HYPERGEOMETRIC: C(4,2)C(6,1)/C(10,3) = 36/120 = 0.30.
+      (ii) Independent trials with a fixed p = 0.4 -> BINOMIAL:
+          C(3,2)(0.4)^2(0.6) = 3*0.16*0.6 = 0.288.
+      Deciding question: "does the pool deplete?" Yes -> hypergeometric;
+      no -> binomial.
+    answer: "(i) hypergeometric = 0.30; (ii) binomial = 0.288"
+    shortcut_used: ["classify by replacement: deplete -> hypergeometric, replace -> binomial"]
+    verify: "abs(math.comb(4,2)*math.comb(6,1)/math.comb(10,3) - 0.30) < 1e-9 and abs(math.comb(3,2)*0.4**2*0.6 - 0.288) < 1e-9"
+
+  # ===================== GYM BATTLES (SOA difficulty) =====================
+
+  - id: C4.7
+    chapter: 4
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1b", "2d"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 3
+    actor: "Ash (scooping a cluster)"
+    stakes: "He scoops three grass Pokemon blind and hopes for exactly one Oddish to fill his Pokedex."
+    consequence: "The exact-count probability tells him how likely a single scoop completes the entry."
+    quest_step: 8
+    narrative_hook: "Scooping 3 grass Pokemon and hoping for exactly one Oddish."
+    statement: |
+      A cluster of 9 grass Pokemon holds 4 Oddish and 5 Bellsprout. You scoop 3
+      at random without replacement. Find P(exactly 1 Oddish).
+    solution: |
+      Favorable = (1 of 4 Oddish)*(2 of 5 Bellsprout); total = C(9,3) = 84.
+      P = C(4,1)C(5,2)/C(9,3) = (4*10)/84 = 40/84 = 10/21 ~= 0.4762.
+    answer: 0.4762
+    shortcut_used: ["choose successes AND choose failures over all hands"]
+    verify: "abs(math.comb(4,1)*math.comb(5,2)/math.comb(9,3) - 10/21) < 1e-9"
+
+  - id: C4.8
+    chapter: 4
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "James (Team Rocket)"
+    stakes: "James brags he has 120 distinct ambush squads and wants to bet the team's budget on the count."
+    consequence: "Auditing his count exposes a factor-of-six over-count before they commit to a doomed plan."
+    quest_step: 9
+    narrative_hook: "Auditing James's claim of 120 simultaneous-ambush squads."
+    statement: |
+      James boasts that picking 3 of Team Rocket's 6 Pokemon for a SIMULTANEOUS
+      ambush gives P(6,3) = 120 "schemes." Find the correct number of distinct
+      squads and name James's error.
+    solution: |
+      A simultaneous squad is a SET — order does not matter — so the count is
+      C(6,3) = 6*5*4/3! = 20 squads, not P(6,3) = 120.
+      James's error: he used a permutation (ordered) for an unordered choice,
+      over-counting each squad by 3! = 6 (120 = 20*6).
+    answer: 20
+    shortcut_used: ["unordered choice -> divide the permutation by k!"]
+    verify: "math.comb(6,3) == 20 and math.perm(6,3) == 120 and math.perm(6,3)//math.factorial(3) == 20"
+
+  - id: C4.9
+    chapter: 4
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1b", "2d"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 3
+    actor: "A Pewter study group"
+    stakes: "A study group needs at least one Boulder-Badge holder on its random review panel."
+    consequence: "The complement probability tells them how reliably a random panel includes expertise."
+    quest_step: 10
+    narrative_hook: "Will a random 3-trainer panel include any badge holders?"
+    statement: |
+      A study group of 10 trainers — 6 Boulder-Badge holders and 4 without —
+      randomly selects a 3-trainer panel. Find P(at least 1 holder) using the
+      complement.
+    solution: |
+      Complement = panel drawn entirely from the 4 non-holders:
+      P(at least 1) = 1 - C(4,3)/C(10,3) = 1 - 4/120 = 1 - 1/30 = 29/30
+      ~= 0.9667.
+    answer: 0.9667
+    shortcut_used: ["1 - P(none)"]
+    verify: "abs((1 - math.comb(4,3)/math.comb(10,3)) - 29/30) < 1e-9"
+
+  - id: C4.10
+    chapter: 4
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1b"]
+    distributions: ["multinomial"]
+    provenance: original
+    difficulty: 3
+    actor: "Ash (navigating the grid)"
+    stakes: "He wants the number of shortest walks from camp to Pewter so he can choose among them."
+    consequence: "Counting the paths confirms how many equally-short routes the grid offers."
+    quest_step: 11
+    narrative_hook: "Counting shortest grid walks from camp to Pewter."
+    statement: |
+      You walk a grid from camp (bottom-left) to Pewter (top-right) taking only
+      steps East or North, on a 4-block-East by 3-block-North grid. How many
+      distinct shortest paths? (Each path is an arrangement of 4 E's and 3 N's.)
+    solution: |
+      Arrange 4 E's and 3 N's: 7!/(4! 3!) = C(7,3) = 35 paths.
+    answer: 35
+    shortcut_used: ["lattice path is a combination in disguise"]
+    verify: "math.factorial(7)//(math.factorial(4)*math.factorial(3)) == math.comb(7,3) == 35"
+
+  - id: C4.11
+    chapter: 4
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Ash (building a balanced team)"
+    stakes: "He wants a type-balanced team with fixed counts per type and needs the number of such teams."
+    consequence: "Counting the balanced teams tells him how much room he has to vary the roster."
+    quest_step: 12
+    narrative_hook: "Building a type-balanced team with fixed counts per type."
+    statement: |
+      From 5 Fire, 4 Water, and 3 Grass distinct Pokemon (12 total), you
+      assemble a team of 5 with exactly 2 Fire, 2 Water, and 1 Grass. How many
+      such teams?
+    solution: |
+      Choose within each type and multiply (fundamental counting principle):
+      C(5,2)*C(4,2)*C(3,1) = 10*6*3 = 180 teams.
+    answer: 180
+    shortcut_used: ["multiply independent unordered choices"]
+    verify: "math.comb(5,2)*math.comb(4,2)*math.comb(3,1) == 180"
+
+  - id: C4.12
+    chapter: 4
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1b", "2d"]
+    distributions: ["binomial"]
+    provenance: original
+    difficulty: 3
+    actor: "Ash (flushing a flock)"
+    stakes: "He needs at least one Pidgey of six to take flight to open a catching chance."
+    consequence: "The 'at least one' probability tells him whether a single clap is likely to flush the flock."
+    quest_step: 13
+    narrative_hook: "Will at least one of six independent Pidgey flush?"
+    statement: |
+      A flock of 6 Pidgey each independently flushes with probability p = 0.3.
+      Find P(at least one flushes) by the complement.
+    solution: |
+      P(at least one) = 1 - P(none) = 1 - (0.7)^6 = 1 - 0.117649 ~= 0.8824.
+    answer: 0.8824
+    shortcut_used: ["binomial at-least-one = 1 - (1-p)^n"]
+    verify: "round(1 - 0.7**6, 4) == 0.8824"
+
+  - id: C4.13
+    chapter: 4
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["1b", "2d"]
+    distributions: ["binomial", "hypergeometric"]
+    provenance: original
+    difficulty: 4
+    actor: "Gary (rival)"
+    stakes: "Gary insists a without-replacement draw is binomial; the wrong model misprices the odds."
+    consequence: "Correcting Gary to the hypergeometric is the chapter's core distribution-recognition skill."
+    quest_step: 14
+    narrative_hook: "Gary applies a binomial to a draw that actually depletes the box."
+    statement: |
+      A box holds 10 Poke Balls: 3 Master and 7 regular. You draw 4 WITHOUT
+      replacement. Gary insists "each draw is Master with probability 0.3, so
+      P(exactly 2 Master) = C(4,2)(0.3)^2(0.7)^2." Compute Gary's binomial value
+      AND the correct hypergeometric value, and name his error.
+    solution: |
+      Gary's binomial: C(4,2)(0.3)^2(0.7)^2 = 6*0.09*0.49 = 0.2646.
+      Correct hypergeometric (the draw depletes the box):
+      C(3,2)C(7,2)/C(10,4) = (3*21)/210 = 63/210 = 0.30.
+      Gary's error: he used the binomial (fixed p, with replacement) for a
+      without-replacement draw; the success probability shifts as Master Balls
+      are removed, so the right model is the hypergeometric (0.2646 != 0.30).
+    answer: "Gary 0.2646 (binomial, wrong); correct 0.30 (hypergeometric)"
+    shortcut_used: ["deplete the pool -> hypergeometric, not binomial"]
+    verify: "abs(math.comb(4,2)*0.3**2*0.7**2 - 0.2646) < 1e-9 and abs(math.comb(3,2)*math.comb(7,2)/math.comb(10,4) - 0.30) < 1e-9"
+
+  - id: C4.14
+    chapter: 4
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "A trainer's field notes"
+    stakes: "A logbook claims 504 distinct 3-trainer panels from 9 people; an inflated count misleads planning."
+    consequence: "The audit catches an ordered count masquerading as an unordered committee."
+    quest_step: 15
+    narrative_hook: "Auditing a panel count that used a permutation for a committee."
+    statement: |
+      A trainer's notes claim "the number of 3-trainer panels from 9 people is
+      P(9,3) = 504." Find the correct count and name the error.
+    solution: |
+      A panel is unordered: C(9,3) = 9*8*7/3! = 504/6 = 84.
+      The error: the note used P(9,3) = 504 — the ordered count — over-counting
+      each panel by 3! = 6 (504/6 = 84).
+    answer: 84
+    shortcut_used: ["committee is unordered -> divide P(n,k) by k!"]
+    verify: "math.comb(9,3) == 84 and math.perm(9,3) == 504 and math.perm(9,3)//math.factorial(3) == 84"
+
+  - id: C4.15
+    chapter: 4
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Brock (Gym Leader)"
+    stakes: "Brock must choose 4 of 9 Pokemon and assign them to 4 distinct battle positions."
+    consequence: "The choose-then-assign count tells him how many distinct battle plans he can field."
+    quest_step: 16
+    narrative_hook: "Brock choosing 4 of 9 Pokemon and assigning 4 battle positions."
+    statement: |
+      Brock fields 9 Pokemon, chooses 4 to battle, then assigns them to 4
+      distinct positions (Lead, Second, Third, Anchor). In how many ways can he
+      both choose and assign?
+    solution: |
+      Choose 4 then arrange: C(9,4)*4! = 126*24 = 3024, equivalently
+      P(9,4) = 9*8*7*6 = 3024.
+    answer: 3024
+    shortcut_used: ["P(n,k) = C(n,k) * k!"]
+    verify: "math.comb(9,4)*math.factorial(4) == 3024 and math.perm(9,4) == 3024"
+
+  - id: C4.24
+    chapter: 4
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["1b", "2d"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 3
+    actor: "A trainer's field notes"
+    stakes: "A note reports an 'at least 2' probability as a single exact-count term, understating the risk."
+    consequence: "The audit shows 'at least' must sum the disjoint cases, not report one term."
+    quest_step: 17
+    narrative_hook: "Auditing an 'at least 2' that was computed as one combination."
+    statement: |
+      A note computes "P(at least 2 Caterpie)" from the cluster of 10 (4
+      Caterpie, grab 3 without replacement) as the single term
+      C(4,2)C(6,1)/C(10,3) = 0.30. Find the correct P(at least 2) and name the
+      error.
+    solution: |
+      "At least 2" is exact-2 plus exact-3:
+      P(>=2) = C(4,2)C(6,1)/C(10,3) + C(4,3)C(6,0)/C(10,3)
+             = (36 + 4)/120 = 40/120 = 1/3 ~= 0.333.
+      The error: the note reported only the exact-2 term (0.30); sum the disjoint
+      cases (or complement) for "at least."
+    answer: 0.3333
+    shortcut_used: ["at least = sum disjoint exact-counts"]
+    verify: "abs((math.comb(4,2)*math.comb(6,1)+math.comb(4,3)*math.comb(6,0))/math.comb(10,3) - 1/3) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative) =====================
+
+  - id: C4.16
+    chapter: 4
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["1b", "2d"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 4
+    actor: "Ash (drawing from a ball box)"
+    stakes: "He counts the rare Master Balls among five drawn and checks his two cases partition the total."
+    consequence: "Confirming the cases sum to 1 proves the at-least/at-most split is complete."
+    quest_step: 18
+    narrative_hook: "Drawing 5 balls and counting the rare Master Balls."
+    statement: |
+      A box holds 13 Poke Balls: 3 Master, 4 Ultra, 6 Great. Draw 5 at random
+      without replacement. Find P(at least 2 Master) and P(at most 1 Master),
+      and confirm they sum to 1.
+    solution: |
+      Total = C(13,5) = 1287. Let M = Master Balls drawn (M <= 3).
+      P(M<=1) = [C(3,0)C(10,5) + C(3,1)C(10,4)]/1287 = (252 + 630)/1287
+      = 882/1287 ~= 0.6853.
+      P(M>=2) = [C(3,2)C(10,3) + C(3,3)C(10,2)]/1287 = (360 + 45)/1287
+      = 405/1287 ~= 0.3147.
+      Check: 882 + 405 = 1287, so the two sum to 1.
+    answer: "P(>=2)=405/1287~=0.3147; P(<=1)=882/1287~=0.6853"
+    shortcut_used: ["sum disjoint exact-counts", "complement sums to 1"]
+    verify: "abs((math.comb(3,2)*math.comb(10,3)+math.comb(3,3)*math.comb(10,2))/math.comb(13,5) - 405/1287) < 1e-9 and abs((math.comb(3,0)*math.comb(10,5)+math.comb(3,1)*math.comb(10,4))/math.comb(13,5) - 882/1287) < 1e-9 and (405+882) == math.comb(13,5)"
+
+  - id: C4.17
+    chapter: 4
+    tier: elite_challenge
+    archetype: rival_trap
+    outcomes: ["1b"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "Gary (rival)"
+    stakes: "Gary confuses one specific seating with an event, claiming the 'sit together' chance is nearly zero."
+    consequence: "Correcting him fixes the sample-space slip behind the glued-block trick."
+    quest_step: 19
+    narrative_hook: "Gary computes a single seating's probability for a whole event."
+    statement: |
+      Ten distinct trainers, including you and Gary, are seated at random in a
+      row of 10 chairs. Gary claims "P(we sit together) needs permutations of
+      all 10, so it's 1/10! — basically zero." Find the correct probability and
+      name Gary's error.
+    solution: |
+      Total seatings = 10!. Glue you-and-Gary into one block (2 internal
+      orders), arranging 9 units: favorable = 2*9!.
+      P = 2*9!/10! = 2/10 = 1/5 = 0.2.
+      Gary's error: 1/10! is the chance of one specific full seating, not the
+      event "we sit together," which spans 2*9! equally likely seatings.
+    answer: 0.2
+    shortcut_used: ["treat the adjacent pair as a single block"]
+    verify: "abs(2*math.factorial(9)/math.factorial(10) - 1/5) < 1e-9"
+
+  - id: C4.18
+    chapter: 4
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["1b", "2d"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 4
+    actor: "Brock (final riddle)"
+    stakes: "Brock's closing challenge fuses choose-then-seat counting with two without-replacement probabilities."
+    consequence: "Clearing all three parts proves end-to-end mastery of the chapter's machines."
+    quest_step: 20
+    narrative_hook: "Brock's final riddle: choose a squad, seat it, price the draw."
+    statement: |
+      From 6 Rock-type and 6 non-Rock distinct trainers (12 total), a 4-person
+      squad is chosen at random and seated in 4 labeled chairs. (a) How many
+      seated arrangements in total? (b) P(all 4 chairs filled by Rock-types)?
+      (c) P(the squad contains exactly 2 Rock-types)? (Seating irrelevant for c.)
+    solution: |
+      (a) Choose 4 of 12 and seat them: C(12,4)*4! = 495*24 = 11880 = P(12,4).
+      (b) Seating cancels, so it equals the unordered version:
+          P(all Rock) = C(6,4)/C(12,4) = 15/495 = 1/33 ~= 0.0303.
+      (c) P(exactly 2 Rock) = C(6,2)C(6,2)/C(12,4) = (15*15)/495 = 225/495
+          = 5/11 ~= 0.4545.
+    answer: "(a) 11880; (b) 1/33~=0.0303; (c) 5/11~=0.4545"
+    shortcut_used: ["seating cancels in a ratio", "exact type-count hypergeometric"]
+    verify: "math.comb(12,4)*math.factorial(4) == 11880 == math.perm(12,4) and abs(math.comb(6,4)/math.comb(12,4) - 1/33) < 1e-9 and abs(math.comb(6,2)*math.comb(6,2)/math.comb(12,4) - 5/11) < 1e-9"
