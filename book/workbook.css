@@ -52,9 +52,9 @@ h1 { break-before: page; }              /* no forced recto -> no blank pages */
 }
 
 /* size classes (tunable; the workflow assigns per problem by solution length) */
-.ws-sm { height: 3.5cm; }
-.ws-md { height: 7cm; }
-.ws-lg { height: 12cm; }
+.ws-sm { height: 4.5cm; }
+.ws-md { height: 8.5cm; }
+.ws-lg { height: 13cm; }
 .ws-xl { height: 19cm; }
 
 /* ---- White-space formatting quality --------------------------------------

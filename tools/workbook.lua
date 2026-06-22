@@ -12,18 +12,18 @@ local function load_sizes()
   if not f then return end
   local s = f:read("*a"); f:close()
   -- tiny JSON-ish scan: "C5.3":"md"  (values restricted to sm/md/lg/xl)
-  for id, sz in s:gmatch('"([Cc]%d+%.%d+)"%s*:%s*"(%a%a)"') do
+  for id, sz in s:gmatch('"([CMcm]%d+%.%d+)"%s*:%s*"(%a%a)"') do
     sizes[id:upper()] = sz:lower()
   end
 end
 load_sizes()
 
--- problem label like **C5.3.** -> "C5.3"
+-- problem label like **C5.3.** -> "C5.3", or mock label **M1.5.** -> "M1.5"
 local function problem_id(para)
   local first = para.content[1]
   if not first or first.t ~= "Strong" then return nil end
   local txt = pandoc.utils.stringify(first)
-  return txt:match("^(C%d+%.%d+)%.")
+  return txt:match("^([CM]%d+%.%d+)%.")
 end
 
 -- classify the current tier from the most recent H3 heading text
