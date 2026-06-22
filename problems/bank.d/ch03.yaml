@@ -25,7 +25,7 @@ problems:
     chapter: 3
     tier: route_trainer
     archetype: standard
-    outcomes: ["2a", "2c"]
+    outcomes: ["2a", "2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 1
@@ -49,7 +49,7 @@ problems:
     chapter: 3
     tier: route_trainer
     archetype: standard
-    outcomes: ["2c"]
+    outcomes: ["2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 1
@@ -72,7 +72,7 @@ problems:
     chapter: 3
     tier: route_trainer
     archetype: standard
-    outcomes: ["2a", "2c"]
+    outcomes: ["2a", "2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 2
@@ -168,7 +168,7 @@ problems:
     chapter: 3
     tier: route_trainer
     archetype: standard
-    outcomes: ["2a", "2c"]
+    outcomes: ["2a", "2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 2
@@ -221,7 +221,7 @@ problems:
     chapter: 3
     tier: gym_battle
     archetype: audit
-    outcomes: ["2a", "2c"]
+    outcomes: ["2a", "2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 3
@@ -249,7 +249,7 @@ problems:
     chapter: 3
     tier: gym_battle
     archetype: standard
-    outcomes: ["2c"]
+    outcomes: ["2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 3
@@ -275,7 +275,7 @@ problems:
     chapter: 3
     tier: gym_battle
     archetype: standard
-    outcomes: ["2a", "2c"]
+    outcomes: ["2a", "2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 3
@@ -350,7 +350,7 @@ problems:
     chapter: 3
     tier: gym_battle
     archetype: rival_trap
-    outcomes: ["2c"]
+    outcomes: ["2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 3
@@ -380,7 +380,7 @@ problems:
     chapter: 3
     tier: gym_battle
     archetype: standard
-    outcomes: ["2c"]
+    outcomes: ["2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 3
@@ -405,7 +405,7 @@ problems:
     chapter: 3
     tier: gym_battle
     archetype: standard
-    outcomes: ["2a", "2c"]
+    outcomes: ["2a", "2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 3
@@ -504,7 +504,7 @@ problems:
     chapter: 3
     tier: elite_challenge
     archetype: standard
-    outcomes: ["2a", "2c"]
+    outcomes: ["2a", "2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 4
@@ -610,7 +610,7 @@ problems:
     chapter: 3
     tier: gym_battle
     archetype: audit
-    outcomes: ["2a", "2c"]
+    outcomes: ["2a", "2b", "2c"]
     distributions: []
     provenance: original
     difficulty: 3

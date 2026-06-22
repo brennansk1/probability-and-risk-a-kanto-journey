@@ -26,9 +26,7 @@ topics:
       - {id: "2a", chapter: 3, desc: "Random variables; pmf/pdf/cdf/survival; valid distributions (discrete ch3, continuous ch9)"}
       - {id: "2b", chapter: 3, desc: "Expectation, moments, mode/median/percentiles (discrete ch3, continuous ch10)"}
       - {id: "2c", chapter: 3, desc: "Variance, SD, coefficient of variation; Var(aX+b)"}
-      - {id: "2d", chapter: 3, desc: "Moment generating functions"}
-      - {id: "2d2", chapter: 5, desc: "Discrete distributions: Bernoulli, binomial, geometric, neg-binomial, hypergeometric, Poisson, discrete uniform (combinatorics-led families ch4)"}
-      - {id: "2d3", chapter: 11, desc: "Continuous distributions: uniform, exponential, gamma, beta, normal"}
+      - {id: "2d", chapter: 3, desc: "Moment generating functions; named distributions (discrete ch4/ch5, continuous ch11) — per-distribution minimums enforce family coverage"}
       - {id: "2e", chapter: 6, desc: "Deductibles, limits, coinsurance; E[X^u]; loss vs payment (discrete ch6, continuous ch13)"}
       - {id: "2f", chapter: 6, desc: "Per-loss vs per-payment; inflation; loss elimination ratio"}
 
@@ -49,7 +47,8 @@ topics:
 
 # In-scope distributions (each must appear in >= min_per_distribution problems).
 distributions:
-  discrete:   [bernoulli, binomial, geometric, negative_binomial, hypergeometric, poisson, discrete_uniform]
+  # Bernoulli is the degenerate n=1 binomial (SOA scope) — covered under binomial, not separately required.
+  discrete:   [binomial, geometric, negative_binomial, hypergeometric, poisson, discrete_uniform]
   continuous: [uniform, exponential, gamma, beta, normal]
 
 # Out of scope (enrichment only — flag, do not require).

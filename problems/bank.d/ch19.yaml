@@ -997,7 +997,7 @@ problems:
     chapter: 19
     tier: mock
     outcomes: ["3c", "3d"]
-    distributions: ["uniform"]
+    distributions: ["uniform", "beta"]
     structural_tags: ["topic3", "bayes-continuous", "posterior-mean"]
     difficulty: 4
     statement: |
