@@ -27,7 +27,7 @@ PREAMBLE    := $(BOOK_DIR)/mathjax-preamble.md
 TITLE_HTML  := $(FRONT_DIR)/title.html
 
 # Inputs in reading order: math macros first, then front matter, chapters, appendices.
-FRONT    := $(FRONT_DIR)/episode-guide.md
+FRONT    := $(FRONT_DIR)/episode-guide.md $(FRONT_DIR)/study-schedule.md
 CHAPTERS := $(sort $(wildcard $(CH_DIR)/ch*.md))
 APPENDIX := $(sort $(wildcard $(APX_DIR)/appendix_*.md))
 CONTENT  := $(PREAMBLE) $(FRONT) $(CHAPTERS) $(APPENDIX)
@@ -66,6 +66,7 @@ assets:
 figures:
 	$(PYTHON) figures/src/generate_figures.py
 	@for f in figures/src/gen_*.py; do echo "  -> $$f"; $(PYTHON) "$$f" || exit 1; done
+	$(PYTHON) tools/optimize_figures.py   # cap to 1700px + palette PNG (print-right, keeps PDFs small)
 
 embed:
 	$(PYTHON) $(BOOK_DIR)/embed_visuals.py

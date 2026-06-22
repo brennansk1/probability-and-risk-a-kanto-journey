@@ -178,91 +178,84 @@ def fig_calc_keypad():
             fontsize=7.6, family="monospace", color="#3a4a36", va="center", style="italic")
 
     # ---- key grid ----
-    # A key is (col, row, label, spotlight?, spotlight-note).
     # rows counted from the TOP of the key area downward.
     SPOT = NORMAL  # spotlight fill (normal-type accent for ch00)
     DARK = "#3a3f47"
-    GREY = "#5b616b"
 
     # layout grid geometry
     x0, y0 = 1.2, 8.4      # top-left of first key
     kw, kh = 1.32, 0.78    # key width/height
     gx, gy = 0.20, 0.30    # gaps
 
-    def key(c, r, label, spotlight=False, small=False):
+    def key(c, r, label, badge=None, small=False):
+        """Draw a key. `badge=(n, color)` marks a spotlighted key: colored border +
+        a small numbered chip in its corner, keyed to the matching legend row below."""
         x = x0 + c * (kw + gx)
         y = y0 - r * (kh + gy)
+        spotlight = badge is not None
         fc = SPOT if spotlight else DARK
         tc = INK if spotlight else "#e8e8ea"
+        ec = badge[1] if spotlight else "#15171b"
         ax.add_patch(FancyBboxPatch((x, y), kw, kh,
                                     boxstyle="round,pad=0.02,rounding_size=0.10",
-                                    fc=fc, ec="#15171b", lw=1.3,
+                                    fc=fc, ec=ec, lw=2.6 if spotlight else 1.3,
                                     zorder=3 + (1 if spotlight else 0)))
         ax.text(x + kw / 2, y + kh / 2, label, ha="center", va="center",
                 fontsize=8.0 if small else 9.2,
                 color=tc, fontweight="bold", zorder=5)
-        return (x + kw / 2, y + kh / 2, x + kw, y + kh / 2)  # center + right-edge anchor
+        if spotlight:
+            n, col = badge
+            bx, by = x + kw - 0.16, y + kh - 0.16      # top-right corner chip
+            ax.add_patch(Circle((bx, by), 0.20, fc=col, ec="white", lw=1.4, zorder=7))
+            ax.text(bx, by, str(n), ha="center", va="center",
+                    fontsize=8.5, color="white", fontweight="bold", zorder=8)
 
-    # Row 0 — 2nd (spotlight), mode, delete, clear, on
-    a2nd = key(0, 0, "2nd", spotlight=True)
-    key(1, 0, "mode")
-    key(2, 0, "delete")
-    key(3, 0, "clear")
-    key(4, 0, "on")
+    # spotlight set, numbered in reading order (matches the legend below)
+    BLUE, GREEN, RED, CYAN, ORANGE, GOLD, PURPLE = (
+        KANTO_BLUE, KANTO_GREEN, KANTO_RED, "#00BCD4", "#FF7043", "#B8860B", "#7B61FF")
 
-    # Row 1 — prb (spotlight), data (spotlight), x^2, ^, STO> (spotlight)
-    aprb = key(0, 1, "prb", spotlight=True)
-    adata = key(1, 1, "data", spotlight=True)
-    key(2, 1, "x²")
-    key(3, 1, "^")
-    asto = key(4, 1, "STO▸", spotlight=True)
-
-    # Row 2 — F<>D (spotlight), ln, e^x via 2nd-ln (spotlight), (, )
-    afd = key(0, 2, "F◂▸D", spotlight=True, small=True)
+    # Row 0 — 2nd(1), mode, delete, clear, on
+    key(0, 0, "2nd", badge=(1, BLUE))
+    key(1, 0, "mode"); key(2, 0, "delete"); key(3, 0, "clear"); key(4, 0, "on")
+    # Row 1 — prb(2), data(3), x^2, ^, STO>(4)
+    key(0, 1, "prb", badge=(2, GREEN))
+    key(1, 1, "data", badge=(3, RED))
+    key(2, 1, "x²"); key(3, 1, "^")
+    key(4, 1, "STO▸", badge=(4, CYAN))
+    # Row 2 — F<>D(5), ln, e^x via 2nd-ln(6), (, )
+    key(0, 2, "F◂▸D", badge=(5, ORANGE), small=True)
     key(1, 2, "ln")
-    aex = key(2, 2, "[2nd] ln\n= eˣ", spotlight=True, small=True)
-    key(3, 2, "(")
-    key(4, 2, ")")
-
-    # Row 3 — stat via 2nd (spotlight), data⁠/⁠list label, +/-, %, ÷
-    astat = key(0, 3, "[2nd]\n= stat", spotlight=True, small=True)
-    key(1, 3, "(-)")
-    key(2, 3, "÷")
-    key(3, 3, "×")
-    key(4, 3, "−")
-
+    key(2, 2, "[2nd] ln\n= eˣ", badge=(6, GOLD), small=True)
+    key(3, 2, "("); key(4, 2, ")")
+    # Row 3 — stat via 2nd(7), (-), /, x, -
+    key(0, 3, "[2nd]\n= stat", badge=(7, PURPLE), small=True)
+    key(1, 3, "(-)"); key(2, 3, "÷"); key(3, 3, "×"); key(4, 3, "−")
     # Row 4 — number pad sample + enter
     key(0, 4, "7"); key(1, 4, "8"); key(2, 4, "9")
     key(3, 4, "."); key(4, 4, "enter")
 
-    # ---- spotlight callouts on the RIGHT margin (a math-diagram legend) ----
+    # ---- numbered legend down the right margin (no connector lines: the corner
+    #      chip on each key carries the number, so nothing crosses the keypad) ----
     notes = [
-        (a2nd,  KANTO_BLUE,  "[2nd]  — the gateway key: turns a key into its small label above it"),
-        (aprb,  KANTO_GREEN, "[prb]  — nCr / nPr / !  (binomial coefficients, ch04)"),
-        (adata, KANTO_RED,   "[data] — the list editor: type the pmf into L1, L2 (ch03)"),
-        (astat, "#7B61FF",   "[2nd][stat] — 1-Var Stats: read x̄ = E[X], σx (Var = σx²)"),
-        (asto,  "#00BCD4",   "[STO▸] — store, don't retype: kill rounding drift (7 memories)"),
-        (afd,   "#FF7043",   "[F◂▸D] — toggle a fraction ↔ its decimal"),
-        (aex,   "#B8A038",   "[2nd][ln] = eˣ — Poisson / exponential in one keystroke (ch05+)"),
+        (1, BLUE,   "[2nd] — the gateway key: turns a key into its small label above it"),
+        (2, GREEN,  "[prb] — nCr / nPr / !  (binomial coefficients, ch04)"),
+        (3, RED,    "[data] — the list editor: type the pmf into L1, L2 (ch03)"),
+        (4, CYAN,   "[STO▸] — store, don't retype: kill rounding drift (7 memories)"),
+        (5, ORANGE, "[F◂▸D] — toggle a fraction ↔ its decimal"),
+        (6, GOLD,   "[2nd][ln] = eˣ — Poisson / exponential in one keystroke (ch05+)"),
+        (7, PURPLE, "[2nd][stat] — 1-Var Stats: read x̄ = E[X], σx (Var = σx²)"),
     ]
-    # stack the legend lines down the right side
-    ly = 8.7
-    for (anchor, col, text) in notes:
-        cx, cy, rx, ry = anchor
-        ax.annotate("", xy=(9.55, ly), xytext=(rx + 0.02, ry),
-                    arrowprops=dict(arrowstyle="-", color=col, lw=1.4,
-                                    connectionstyle="arc3,rad=-0.15"),
-                    zorder=2)
-    # draw legend text in a column to the right of the body
-    ax.set_xlim(0, 16.5)
-    ly = 8.9
-    for (anchor, col, text) in notes:
-        ax.add_patch(Circle((9.85, ly), 0.10, fc=col, ec=INK, lw=1.0, zorder=4))
-        ax.text(10.1, ly, text, ha="left", va="center", fontsize=9.4,
+    ax.set_xlim(0, 16.6)
+    lx, ly, dy = 10.0, 8.55, 1.0
+    for (n, col, text) in notes:
+        ax.add_patch(Circle((lx, ly), 0.21, fc=col, ec="white", lw=1.4, zorder=4))
+        ax.text(lx, ly, str(n), ha="center", va="center", fontsize=8.5,
+                color="white", fontweight="bold", zorder=5)
+        ax.text(lx + 0.42, ly, text, ha="left", va="center", fontsize=9.6,
                 color=INK, zorder=4)
-        ly -= 1.18
+        ly -= dy
 
-    ax.text(13.2, 0.9,
+    ax.text(13.3, 0.85,
             "Setup once, then clear before every problem:\n"
             "[mode] set the display · store with [STO▸] · wipe scratch memory with\n"
             "[2nd][clear var]. Your two calculators leave for the exam memory-cleared.",

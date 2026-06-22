@@ -114,6 +114,10 @@ ul.pokeball > li::before {
 /* ---- Figures ---- */
 figure { text-align: center; margin: 12pt 0; page-break-inside: avoid; }
 figcaption { font-size: 9pt; color: #666; font-style: italic; margin-top: 4pt; }
+/* Safety cap: any image without an explicit inline width still fits the content
+   column (matplotlib diagrams are ~3000px native; uncapped they overflow the page).
+   Inline `style="width:.."` has higher specificity, so styled figures keep their size. */
+figure img, p img, img { max-width: 100%; height: auto; }
 
 /* ===========================================================================
    The five Pokemon-styled callout boxes (authored as Pandoc fenced divs :::)

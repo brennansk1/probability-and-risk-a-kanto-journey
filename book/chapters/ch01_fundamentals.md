@@ -134,7 +134,7 @@ We say "**event $A$ occurs**" exactly when the realized outcome $s$ lands inside
 **Beat 8 — Picture it.** Think of $S$ as a box and each outcome as a labeled chip dropped inside. The space is exhaustive exactly when no chip is missing — including the dull "nothing" chip it is so easy to forget.
 
 <figure>
-<img src="../../assets/diagrams/ch01_sample_space_box.png" alt="A rounded rectangle labeled 'S — the sample space (every outcome, nothing missing)' containing four labeled outcome chips in a row: Pidgey, Rattata, Spearow, and nothing. Each Pokemon chip shows its sprite; the 'nothing' chip reads '(no encounter)'. A red arrow points up at the 'nothing' chip with the warning 'don't drop the boring outcome', stressing that the easy-to-forget no-encounter outcome still belongs inside the space.">
+<img src="../../assets/diagrams/ch01_sample_space_box.png" alt="A rounded rectangle labeled 'S — the sample space (every outcome, nothing missing)' containing four labeled outcome chips in a row: Pidgey, Rattata, Spearow, and nothing. Each Pokemon chip shows its sprite; the 'nothing' chip reads '(no encounter)'. A red arrow points up at the 'nothing' chip with the warning 'don't drop the boring outcome', stressing that the easy-to-forget no-encounter outcome still belongs inside the space." style="width:80%; max-width:600px; display:block; margin:1em auto;">
 <figcaption>The world $S$ as a box of outcome chips. Every chip that <em>can</em> happen must be in the box — drop the boring "nothing" chip and your probabilities no longer sum to $1$.</figcaption>
 </figure>
 
@@ -229,7 +229,7 @@ $$\boxed{(A\cup B)^c = A^c\cap B^c, \qquad (A\cap B)^c = A^c\cup B^c.}$$
 **Beat 8 — Picture it.** A Venn diagram makes "or," "and," and "neither" literal regions inside the rectangle $S$.
 
 <figure>
-<img src="../../assets/diagrams/ch01_venn_two.png" alt="A two-circle Venn diagram inside a rectangle labeled S. The left circle is event A, the right circle is event B, their lens-shaped overlap is A-intersect-B ('and'), the combined shaded area is A-union-B ('or'), and the region outside both circles is the complement of the union, labeled (A union B)-complement = A-complement intersect B-complement, the 'neither' region.">
+<img src="../../assets/diagrams/ch01_venn_two.png" alt="A two-circle Venn diagram inside a rectangle labeled S. The left circle is event A, the right circle is event B, their lens-shaped overlap is A-intersect-B ('and'), the combined shaded area is A-union-B ('or'), and the region outside both circles is the complement of the union, labeled (A union B)-complement = A-complement intersect B-complement, the 'neither' region." style="width:80%; max-width:600px; display:block; margin:1em auto;">
 <figcaption>Two events in $S$. "Or" is both circles together; "and" is the overlap; "neither" is the region <em>outside</em> both — which De Morgan names $A^c\cap B^c$.</figcaption>
 </figure>
 
@@ -281,7 +281,7 @@ When $A,B$ are **mutually exclusive** ($A\cap B=\varnothing$, so $P(A\cap B)=0$)
 **Beat 6 — Derive it from the Venn partition (don't just assert it).** Split the union into three *disjoint* regions: "$A$ only" $(A\cap B^c)$, "$B$ only" $(A^c\cap B)$, and "both" $(A\cap B)$. Because they're disjoint, A3 lets their probabilities add: $P(A\cup B) = P(A\cap B^c) + P(A^c\cap B) + P(A\cap B)$. Now $P(A) = P(A\cap B^c) + P(A\cap B)$ and $P(B) = P(A^c\cap B) + P(A\cap B)$ — each single event is "its own-only part plus the shared middle." Add those two and the middle gets counted **twice**; subtract one copy to recover the union. The "$-P(A\cap B)$" isn't a rule to memorize — it's exactly the over-count you created.
 
 <figure>
-<img src="../../assets/diagrams/ch01_incl_excl.png" alt="Two overlapping circles for 100 Route 24 logs: a Water-type circle holding 40 (28 alone plus 12 shared) and a grass circle holding 30 (18 alone plus 12 shared), the 12 in the lens labelled 'both'. To the right the arithmetic 40 + 30 - 12 = 58 gives P(Water union grass) = 58/100 = 0.58, with a green box stating the addition rule P(A or B) = P(A) + P(B) - P(A and B): add both piles, then remove the 12 counted in both.">
+<img src="../../assets/diagrams/ch01_incl_excl.png" alt="Two overlapping circles for 100 Route 24 logs: a Water-type circle holding 40 (28 alone plus 12 shared) and a grass circle holding 30 (18 alone plus 12 shared), the 12 in the lens labelled 'both'. To the right the arithmetic 40 + 30 - 12 = 58 gives P(Water union grass) = 58/100 = 0.58, with a green box stating the addition rule P(A or B) = P(A) + P(B) - P(A and B): add both piles, then remove the 12 counted in both." style="width:80%; max-width:600px; display:block; margin:1em auto;">
 <figcaption>Add the two piles ($40+30$), then subtract the $12$ counted in both. The overlap term in the addition rule is exactly that over-count.</figcaption>
 </figure>
 
@@ -294,7 +294,7 @@ $$P(A\cup B\cup C) = P(A)+P(B)+P(C) - P(A\cap B) - P(A\cap C) - P(B\cap C) + P(A
 **Beat 8 — Picture it.** A three-circle diagram has **seven** cells: three "only," three pair-overlaps, and one triple-overlap. Inclusion–exclusion's $+$singles $-$pairs $+$triple is precisely the bookkeeping that counts each of those seven cells exactly once.
 
 <figure>
-<img src="../../assets/diagrams/ch01_venn_three.png" alt="A three-circle Venn diagram inside rectangle S, with circles A, B, C. Seven labeled cells: three 'only' regions (A only, B only, C only), three pairwise-overlap lens regions (A intersect B, A intersect C, B intersect C), and the central triple-overlap region A intersect B intersect C. A caption notes that +singles -pairs +triple counts every cell exactly once.">
+<img src="../../assets/diagrams/ch01_venn_three.png" alt="A three-circle Venn diagram inside rectangle S, with circles A, B, C. Seven labeled cells: three 'only' regions (A only, B only, C only), three pairwise-overlap lens regions (A intersect B, A intersect C, B intersect C), and the central triple-overlap region A intersect B intersect C. A caption notes that +singles -pairs +triple counts every cell exactly once." style="width:80%; max-width:600px; display:block; margin:1em auto;">
 <figcaption>The seven cells of a three-event diagram. Inclusion–exclusion's $+$singles $-$pairs $+$triple guarantees every cell is counted exactly once.</figcaption>
 </figure>
 
@@ -345,7 +345,7 @@ Read the second aloud: "the chance both happen equals the chance of one *times* 
 **Beat 8 — Picture it.** The Venn picture nails the contrast: mutually exclusive circles *don't touch*; independent circles *overlap by exactly $P(A)P(B)$* — the overlap is forced to a specific size, not zero.
 
 <figure>
-<img src="../../assets/diagrams/ch01_me_vs_indep.png" alt="Two side-by-side Venn panels inside rectangle S. Left panel, 'Mutually exclusive': two non-touching circles A and B with no overlap, labeled P(A and B)=0, captioned 'no overlap, you may ADD' and 'if A happens, B is impossible, so maximally DEPENDENT'. Right panel, 'Independent': two overlapping circles whose lens area equals exactly P(A) times P(B), labeled P(A and B)=P(A)P(B), captioned 'overlap FORCED nonzero, you may MULTIPLY', emphasizing the overlap is a forced specific size, not empty.">
+<img src="../../assets/diagrams/ch01_me_vs_indep.png" alt="Two side-by-side Venn panels inside rectangle S. Left panel, 'Mutually exclusive': two non-touching circles A and B with no overlap, labeled P(A and B)=0, captioned 'no overlap, you may ADD' and 'if A happens, B is impossible, so maximally DEPENDENT'. Right panel, 'Independent': two overlapping circles whose lens area equals exactly P(A) times P(B), labeled P(A and B)=P(A)P(B), captioned 'overlap FORCED nonzero, you may MULTIPLY', emphasizing the overlap is a forced specific size, not empty." style="width:80%; max-width:600px; display:block; margin:1em auto;">
 <figcaption>Mutually exclusive (no overlap, so you may add) versus independent (overlap forced to $P(A)P(B)$, so you may multiply). They are opposite situations, never the same.</figcaption>
 </figure>
 

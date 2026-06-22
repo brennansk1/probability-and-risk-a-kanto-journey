@@ -35,7 +35,7 @@ h1 { break-before: page; }              /* no forced recto -> no blank pages */
     border-top: 1px solid #d9d9d9;
     padding-top: 14pt;                  /* room for the label, above the dots */
     background-color: #fff;
-    background-image: radial-gradient(circle at center, #9aa0a6 0 1.1px, transparent 1.3px);
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAATUlEQVR42u3ToRHAIAxAUWDMKlSHQqFYky6AqIjIte+pHCL3RSgFAAD+Ysy1x1w7cmeLjDvNKQJPQVGRLfvZhATe/apv3j75SQAAILUH9MwZQw2cpGgAAAAASUVORK5CYII=);
     background-size: 5mm 5mm;
     background-position: 2.5mm 16pt;    /* inset grid origin below the label */
     background-repeat: repeat;

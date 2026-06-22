@@ -241,7 +241,7 @@ It is the law of total probability with $x$-weights — nothing more exotic.
 **Beat 8 — Picture it.** Total expectation is a one-stage tree: each leaf is layer-weight $\times$ in-layer mean; sum the leaves.
 
 <figure>
-<img src="../../assets/diagrams/ch16_total_expectation_tree.png" alt="A one-stage fan diagram. A root node, 'before the ball is thrown,' branches to three squad leaves: Squad 1 (0.5), Squad 2 (0.3), Squad 3 (0.2). Each leaf carries its conditional mean (40, 70, 120) and the product on its branch: 20, 21, 24. The three products are summed in a box at the bottom to E[X] = 65.">
+<img src="../../assets/diagrams/ch16_total_expectation_tree.png" alt="A one-stage fan diagram. A root node, 'before the ball is thrown,' branches to three squad leaves: Squad 1 (0.5), Squad 2 (0.3), Squad 3 (0.2). Each leaf carries its conditional mean (40, 70, 120) and the product on its branch: 20, 21, 24. The three products are summed in a box at the bottom to E[X] = 65." style="width:80%; max-width:600px; display:block; margin:1em auto;">
 <figcaption>Total expectation as a one-stage tree: each leaf is $P(Y{=}y)\times\E[X\mid Y{=}y]$; the leaves sum to $\E[X]=65$.</figcaption>
 </figure>
 
@@ -332,7 +332,7 @@ $$\boxed{\;\Var(X) = \underbrace{\E\!\big[\Var(X \mid Y)\big]}_{\text{expected w
 **Beat 8 — Picture it.** A two-row table is the entire method: row of conditional means (its *variance* is Term 2), row of conditional variances (its *weighted average* is Term 1).
 
 <figure>
-<img src="../../assets/diagrams/ch16_total_variance_decomp.png" alt="A table with weights 0.5, 0.3, 0.2 across the top, one column per squad. Row 1 holds conditional means 40, 70, 120; an arrow labels its variance as Term 2 (parameter) = 925. Row 2 holds conditional variances 25, 64, 400; an arrow labels its weighted average as Term 1 (process) = 111.7. A stacked bar on the right shows a small segment (111.7, within-squad noise) beneath a large segment (925, which-squad spread), summing to 1036.7, illustrating that the between-squad parameter term dominates.">
+<img src="../../assets/diagrams/ch16_total_variance_decomp.png" alt="A table with weights 0.5, 0.3, 0.2 across the top, one column per squad. Row 1 holds conditional means 40, 70, 120; an arrow labels its variance as Term 2 (parameter) = 925. Row 2 holds conditional variances 25, 64, 400; an arrow labels its weighted average as Term 1 (process) = 111.7. A stacked bar on the right shows a small segment (111.7, within-squad noise) beneath a large segment (925, which-squad spread), summing to 1036.7, illustrating that the between-squad parameter term dominates." style="width:80%; max-width:600px; display:block; margin:1em auto;">
 <figcaption>Total variance from a two-row table: Term 1 is the weighted average of the conditional variances ($111.7$, the process piece); Term 2 is the variance of the conditional means ($925$, the parameter piece). The stacked bar shows that here $\approx 89\%$ of the fear is *which squad shows up*, not the Pokémon's own noise.</figcaption>
 </figure>
 
@@ -420,7 +420,7 @@ Here $\E[X^2] = \sigma^2+\mu^2 = 900+2500 = 3400$, so $\Var(S) = 3(3400) = 10{,}
 **Beat 8 — Picture it.** A mixture blends the hidden slices into one unconditional distribution; a compound sum is a tree whose *number* of branches is itself random — and its variance splits into size-noise and count-noise.
 
 <figure>
-<img src="../../assets/diagrams/ch16_mixture.png" alt="Left panel: three dashed component densities centered at 40, 70, 120, each scaled by its weight 0.5, 0.3, 0.2, summing to one solid unconditional mixture density f_X(x) with a marked overall mean E[X] = 65. Right panel: a stacked bar decomposing Var(S) of a compound sum into size-noise E[N] sigma^2 = 2700 (how big each hit is) and count-noise Var(N) mu^2 = 7500 (how many hits land), summing to 10,200, with the count term dominating.">
+<img src="../../assets/diagrams/ch16_mixture.png" alt="Left panel: three dashed component densities centered at 40, 70, 120, each scaled by its weight 0.5, 0.3, 0.2, summing to one solid unconditional mixture density f_X(x) with a marked overall mean E[X] = 65. Right panel: a stacked bar decomposing Var(S) of a compound sum into size-noise E[N] sigma^2 = 2700 (how big each hit is) and count-noise Var(N) mu^2 = 7500 (how many hits land), summing to 10,200, with the count term dominating." style="width:80%; max-width:600px; display:block; margin:1em auto;">
 <figcaption>Two faces of one idea. <em>Left:</em> a mixture — a hidden layer $Y$ blends three component slices into one unconditional distribution of $X$, mean $65$. <em>Right:</em> a compound sum's variance splits into size-noise $\E[N]\sigma^2 = 2700$ and count-noise $\Var(N)\mu^2 = 7500$, summing to $10{,}200$ — the count term dominates.</figcaption>
 </figure>
 
@@ -569,7 +569,7 @@ The decomposition $\Var(X)=\E[\Var(X\mid Y)]+\Var(\E[X\mid Y])$ splits a risk's 
 **Compound models** — a random *number* of claims, each of random *size* — are exactly how insurers price and reserve **aggregate annual losses**. The compound Poisson $\Var(S)=\lambda\E[X^2]$ you derived is the standard frequency-severity model for a year of claims on a policy.
 
 <figure>
-<img src="../../assets/diagrams/ch16_mixture.png" alt="The same mixture and compound-variance figure: a hidden risk level blends component slices into one unconditional loss distribution (the mixture insurers actually observe), and a compound sum's variance splits into size-noise and count-noise — the frequency-severity decomposition.">
+<img src="../../assets/diagrams/ch16_mixture.png" alt="The same mixture and compound-variance figure: a hidden risk level blends component slices into one unconditional loss distribution (the mixture insurers actually observe), and a compound sum's variance splits into size-noise and count-noise — the frequency-severity decomposition." style="width:80%; max-width:600px; display:block; margin:1em auto;">
 <figcaption>What the insurer actually sees is the blended (mixture) loss distribution on the left; pricing it correctly means recovering the hidden process- and parameter-variance pieces — the same split Giovanni was testing.</figcaption>
 </figure>
 
