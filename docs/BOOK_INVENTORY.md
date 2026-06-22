@@ -22,9 +22,9 @@ Live status of the V3 build (*Probability & Risk: A Kanto Journey*). One row per
 | 06 | Deductibles & Limits (Discrete) | B | ✅ **grade A** — blind re-derivation clean · 3rd audit drill added to meet quota · build clean |
 | 07 | Checkpoint A | — | ☐ |
 | 08 | The Calculus Toolkit | C | ☐ |
-| 09 | Densities & CDFs | B | ☐ |
-| 10 | Continuous Moments | B | ☐ |
-| 11 | Key Continuous Distributions | B | ☐ |
+| 09 | Densities & CDFs | B | ✅ **grade A** — blind re-derivation 19/19 · mixed distributions fully built · C9.16 statement fixed · build clean |
+| 10 | Continuous Moments | B | ✅ **grade A** — blind re-derivation 30/30 · survival method derived via integral-swap · build clean |
+| 11 | Key Continuous Distributions | B | ✅ **grade A** — blind re-derivation 30/30 · Pareto correctly enrichment · build clean |
 | 12 | Normal & the CLT | A | ✅ **grade A** — harness 39/39 re-derived · CLT + continuity correction fully derived · build clean |
 | 13 | Continuous Deductibles & Review | B | ☐ |
 | 14 | Joint Distributions | A | ✅ **grade A** — harness 22/22 · blind re-derivation 22/22 + WEs · build clean · no compression |

@@ -486,7 +486,7 @@ Each problem is numbered C9.k, archetype-tagged, and mirrors `problems/bank.d/ch
 
 **C9.6.** 🔴 *(AUDIT — catch the height-as-probability slip.)* A note claims that for $X\sim$ density $f(x)=\tfrac12$ on $(0,2)$, "$P(X=1)=f(1)=0.5$." State the true $P(X=1)$ and name the error.
 
-**C9.7.** 🔴 *(DECISION — which world are you in?)* You must report $P(X<2)$ for two different variables: (i) a continuous $X$ with cdf $F$, and (ii) a discrete $X$ with a mass at $2$. For which does it matter whether you wrote $<$ or $\le$, and why?
+**C9.7.** 🔴 *(DECISION — which world are you in?)* You must report $P(X<2)$ for two different variables: (i) a continuous $X$ with cdf $F$, and (ii) a discrete $X$ with a probability mass of $0.2$ at $2$. For which does it matter whether you wrote $<$ or $\le$, and by how much?
 
 > *Questline beat: the dial reads clean and your area-tools are warm. Sabrina is waiting at the gym. The boss fights begin.*
 
@@ -513,7 +513,7 @@ Each problem is numbered C9.k, archetype-tagged, and mirrors `problems/bank.d/ch
 
 **C9.15.** 🟡 *(AUDIT — a point mass reported as zero.)* A claims note says that for the payout $Y$ (mass $0.4$ at $0$, density $0.15$ on $(0,4]$), "since $Y$ is continuous, $P(Y=0)=0$." Find the true $P(Y=0)$ and $P(Y\le 0)$, and name the error.
 
-**C9.16.** 🟡 *(Solve a constant from a given probability.)* $f(x)=c$ on $(0,m)$ and it is known that $P(X<2)=0.5$ with $m=6$. Find $c$ and confirm the total area is $1$.
+**C9.16.** 🟡 *(Spot the inconsistency.)* $f(x)=c$ on $(0,6)$. A note also claims $P(X<2)=0.5$. Find $c$ from normalization, compute the **true** $P(X<2)$, and explain why the note's claim cannot hold.
 
 ### Elite Challenge (post-game — integrative / stretch)
 
