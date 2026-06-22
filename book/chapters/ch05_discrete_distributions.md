@@ -799,6 +799,10 @@ Several Tower problems share the ghost rate $\lambda=3$ Gastly/min (Poisson); se
 **C5.21.** 🔵 *(DECISION — first qualifying minute vs. third.)* A minute "qualifies" (has $\ge1$ perfume-grade spore) w.p. $p_{\min}=1-e^{-2}=0.8647$. (a) Expected minutes to the **first** qualifying minute. (b) Expected minutes to the **third**. Name the family in each and justify which model the question forces.
 
 **C5.23.** 🔵 *(RIVAL TRAP — Gary adds Poisson probabilities.)* Gary has Gastly $\sim\Poisson(3)$ and Haunter $\sim\Poisson(1)$ independent, and computes $P(\text{total}=2)=P(G=2)+P(H=2)$. Explain why this is wrong, and give the correct distribution of the total and $P(\text{total}=2)$.
+
+**C5.22.** 🔵 *(Wait for the 2nd Gastly captured.)* Each Gastly is captured w.p. $0.25$ per throw (independent throws); you hunt until the **2nd** capture. Find $P(\text{exactly }3\text{ escapes before the 2nd Gastly is captured})$.
+
+**C5.25.** 🔵 *(DECISION — geometric or negative binomial?)* Each Game Corner round wins w.p. $0.4$; you wait for the **5th** win. Treating the count as losses before the 5th win, name the family, then find $E[\text{losses before the 5th win}]$ and $\Var(\text{losses})$.
 :::
 
 ## Answers
@@ -821,7 +825,8 @@ Several Tower problems share the ghost rate $\lambda=3$ Gastly/min (Poisson); se
 | C5.9 | $1-4e^{-3}=0.8009$ | standard | | C5.21 | (a) $1.156$ geom; (b) $3.47$ negbin | decision |
 | C5.10 | $0.0699$, $\lambda=15$ | standard | | C5.23 | $\Poisson(4)$, $P(2)=0.1465$ | rival_trap |
 | C5.11 | $\Poisson(8)$, mean $8$ | standard | | C5.26 | add rates: $\Poisson(3)$, mean $3$ | decision |
-| C5.12 | $0.8^4=0.4096$ | standard | | | | |
+| C5.12 | $0.8^4=0.4096$ | standard | | C5.22 | $0.1055$ | standard |
+| | | | | C5.25 | negbin: $E=7.5$, $\Var=18.75$ | decision |
 
 **C5.1** — *(standard) Geometric series (Entry №01).* $\sum_{k\ge0}(0.7)^k=\frac{1}{1-0.7}=\frac{1}{0.3}=3.333$. Valid because $|r|=0.7<1$; for $|r|\ge1$ it diverges.
 
@@ -867,6 +872,10 @@ Several Tower problems share the ghost rate $\lambda=3$ Gastly/min (Poisson); se
 
 **C5.23** — *(rival_trap) Poisson superposition, not probability addition (Entry №07).* Independent Poissons add their **rates**: total $\sim\Poisson(3+1)=\Poisson(4)$, so $P(\text{total}=2)=\frac{e^{-4}4^2}{2!}=8e^{-4}=8(0.018316)=0.1465$. **Gary's error:** $P(G=2)+P(H=2)$ adds *probabilities*, which is meaningless (it isn't even a valid pmf) — you add the parameters, not the masses.
 
+**C5.22** — *(standard) Negative binomial pmf (Entry №05).* Failures version with $r=2,\ p=0.25,\ q=0.75$: $P(X=3)=\binom{3+2-1}{3}p^2q^3=\binom{4}{3}(0.25)^2(0.75)^3=4(0.0625)(0.421875)=0.1055$. The clinching $2$nd capture is locked in the last throw; among the first four throws the single earlier capture can sit in any of $\binom{4}{3}=4$ positions, so there is no coefficient beyond $\binom{k+r-1}{k}$.
+
+**C5.25** — *(decision) Negative binomial mean and variance (Entry №05).* Five required wins $\Rightarrow$ **negative binomial** (the geometric is just the $r=1$ special case). With $r=5,\ p=0.4,\ q=0.6$: $E[\text{losses}]=rq/p=5(0.6)/0.4=7.5$; $\Var(\text{losses})=rq/p^2=5(0.6)/0.16=18.75$.
+
 **C5.26** — *(decision) Superposition principle (Entry №07).* Add the **rates**, not the probabilities: total per minute $\sim\Poisson(2+1)=\Poisson(3)$, mean $3$. The principle is superposition — independent Poisson streams merge into a Poisson at the summed rate. (Adding probabilities would be a category error; rates are what compose.)
 :::
 
@@ -884,7 +893,7 @@ You thinned Erika's pollen swarm, scaled the window, and waited for the bloom �
 - ☐ **(A.5.0a/b)** I can **sum a geometric series** ($\frac{a}{1-r}$, $|r|<1$) and use the **$e^x$ Taylor series** ($\sum\lambda^k/k!=e^\lambda$) — the two algebraic tools the named laws stand on. *(Rematch: Concepts 0a–0b, Problems C5.1, C5.2, C5.20.)*
 - ☐ **(A.5.1)** I can recognize and compute a **geometric** wait (pmf $q^{k-1}p$, survival $q^m$, mean $1/p$ or $q/p$), and state my convention. *(Rematch: Concept 1, WE 2, Problems C5.3, C5.4, C5.13.)*
 - ☐ **(A.5.2)** I can apply **memorylessness** ($P(X>m+n\mid X>m)=q^n$) and refuse the gambler's "we're due." *(Rematch: Concept 2, WE 2, Problems C5.8, C5.12, C5.16.)*
-- ☐ **(A.5.3)** I can recognize and compute a **negative binomial** (pmf $\binom{k+r-1}{k}p^rq^k$, mean $rq/p$) with the $r$-th success locked last. *(Rematch: Concept 3, WE 3, Problems C5.7, C5.15.)*
+- ☐ **(A.5.3)** I can recognize and compute a **negative binomial** (pmf $\binom{k+r-1}{k}p^rq^k$, mean $rq/p$) with the $r$-th success locked last. *(Rematch: Concept 3, WE 3, Problems C5.7, C5.15, C5.22, C5.25.)*
 - ☐ **(A.5.4)** I can recognize and compute a **Poisson** (pmf $e^{-\lambda}\lambda^k/k!$, mean $=$ var $=\lambda$), **rescale $\lambda$ to the window**, and use the binomial limit. *(Rematch: Concept 4, WE 1, Problems C5.5, C5.6, C5.9, C5.10, C5.18, C5.24.)*
 - ☐ **(A.5.5)** I can **add independent Poissons** by superposition ($\sum\lambda_i$) and **thin** a stream ($\lambda p$). *(Rematch: Concept 5, WE 1, 4, Problems C5.11, C5.14, C5.19, C5.23, C5.26.)*
 

@@ -17,7 +17,7 @@
 # verify never depends on another problem's answer.
 #
 # Immersion quotas met: audit >=3 (C5.8, C5.16, C5.24); rival_trap >=2 (C5.13, C5.23);
-# decision >=1 (C5.21, C5.26).
+# decision >=1 (C5.21, C5.25, C5.26).
 
 problems:
 
@@ -597,3 +597,58 @@ problems:
     answer: "Poisson(4), P(2) = 0.1465"
     shortcut_used: ["superposition: add rates then Poisson pmf"]
     verify: "abs((__import__('math').exp(-4)*4**2/2) - 0.1465) < 1e-4"
+
+  - id: C5.22
+    chapter: 5
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["negative_binomial"]
+    provenance: original
+    difficulty: 4
+    actor: "the Pokedex Actuary Mode"
+    stakes: "You hunt until the 2nd Gastly is captured and want the chance of exactly three escapes first."
+    consequence: "The clinching 2nd capture is locked last; only the three earlier escapes permute."
+    quest_step: 24
+    tia_section: "A.5.3"
+    narrative_hook: "Negative binomial pmf: exactly three escapes before the 2nd Gastly is captured."
+    statement: |
+      Each Gastly is captured w.p. 0.25 per throw (independent throws); you hunt until
+      the 2nd capture. Find P(exactly 3 escapes before the 2nd Gastly is captured).
+    solution: |
+      Failures version with r = 2, p = 0.25, q = 0.75:
+      P(X = 3) = C(3+2-1, 3) p^2 q^3 = C(4,3)(0.25)^2(0.75)^3
+      = 4(0.0625)(0.421875) = 0.1055. The clinching 2nd capture is locked in the last
+      throw; among the first 4 throws the single earlier capture can sit in any of
+      C(4,3) = 4 positions (equivalently, place the 3 escapes), so no extra coefficient
+      beyond C(k+r-1, k).
+    answer: 0.1055
+    shortcut_used: ["negbin pmf C(k+r-1,k) p^r q^k, r-th success locked last"]
+    verify: "abs((math.comb(4,3)*0.25**2*0.75**3) - 0.1055) < 1e-4 and abs(st.nbinom.pmf(3,2,0.25) - 0.1055) < 1e-4"
+
+  - id: C5.25
+    chapter: 5
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["2d", "2b"]
+    distributions: ["negative_binomial"]
+    provenance: original
+    difficulty: 4
+    actor: "the Game Corner token counter"
+    stakes: "You wait for the 5th petal-token; budgeting the run needs both the mean and spread of the losses."
+    consequence: "Mean rq/p sizes the wait; variance rq/p^2 sets how wildly it can swing."
+    quest_step: 25
+    tia_section: "A.5.3"
+    narrative_hook: "Negative binomial mean rq/p and variance rq/p^2 for the wait to the 5th token."
+    statement: |
+      Each Game Corner round wins w.p. 0.4; you wait for the 5th win. Treating the
+      count as losses before the 5th win, is this geometric or negative binomial?
+      Name the family, then find E[losses before the 5th win] and Var(losses).
+    solution: |
+      Five required wins => NEGATIVE BINOMIAL (geometric is the single-success r = 1
+      special case). With r = 5, p = 0.4, q = 0.6:
+      E[losses] = rq/p = 5(0.6)/0.4 = 7.5;
+      Var(losses) = rq/p^2 = 5(0.6)/0.16 = 18.75.
+    answer: "negbin: E = 7.5, Var = 18.75"
+    shortcut_used: ["negbin mean rq/p", "negbin variance rq/p^2"]
+    verify: "abs((5*0.6/0.4) - 7.5) < 1e-6 and abs((5*0.6/0.4**2) - 18.75) < 1e-4 and abs(st.nbinom.mean(5,0.4) - 7.5) < 1e-6 and abs(st.nbinom.var(5,0.4) - 18.75) < 1e-4"
