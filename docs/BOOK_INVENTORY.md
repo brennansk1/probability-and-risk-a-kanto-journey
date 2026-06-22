@@ -2,6 +2,15 @@
 
 Live status of the V3 build (*Probability & Risk: A Kanto Journey*). One row per chapter; updated as waves complete. Status legend: ☐ not started · ✍ authoring · 🔬 in QA (harness/blind/re-grade) · ✅ done (all four verification layers + DoD).
 
+## Final assembly — ✅ COMPLETE (whole-book grade A)
+- ✅ All 20 chapters + 9 appendices + episode-guide front matter authored to grade A.
+- ✅ **Harness 450/450** (seed 151) · **check_format PASS** · **check_coverage PASS (full coverage)**.
+- ✅ **Episode stills** (real Indigo League frames, 6-shot panel-picked) embedded in 19/20 now-playing boxes — ch07 intentionally text-only (recap); source episodes streamed and deleted locally (stills gitignored).
+- ✅ **Real Kanto region map** (labeled FRLG-style) replaces the 32×32 stub, with a **per-chapter "you are here" pin** on every opener (ch11 keeps the un-pinned full map by design).
+- ✅ **Whole-book independent tutor grade: A** — A− on first pass, four defects fixed (EP059 source-of-truth, badge earning-order normalization, ch16 alt-text, appendix-F wording), re-confirmed clean A.
+- ✅ **Final PDFs rendered** (Chrome headless for MathJax; `build/output/`, gitignored): **book = 477 pp / 35 MB**, **workbook = 550 pp / 37 MB**, 0 "could not fetch". Workbook injects 409 work-space grids (146 lg / 145 md / 118 sm).
+- Render note: PDFs **must** be rendered with Chrome headless, not WeasyPrint — WeasyPrint cannot run the MathJax JS, so equations would ship as raw TeX. Makefile FRONT corrected to the V3 set (episode-guide only; ch00 carries orientation).
+
 ## Foundation
 - ✅ Pipeline ported to repo root (Makefile, tools, book chrome, figures helpers, sims, syllabus, assets)
 - ✅ V3 deltas: pandoc `+bracketed_spans`; `.kbd`/`.keystroke`/`.enrichment`/`.dex-profile` CSS
