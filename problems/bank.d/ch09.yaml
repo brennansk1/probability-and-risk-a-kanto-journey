@@ -1,0 +1,515 @@
+# Problem bank — Chapter 9 (Saffron City / Sabrina / Marsh Badge): Densities & CDFs.
+# Continuous overview (probability as AREA); densities & CDFs (f=F', the normalizing
+# constant, P(a<=X<=b)=integral); mixed distributions (a point mass + continuous part).
+# Outcome 2a.  Tier-B chapter.  Locale: Saffron (Sabrina / Marsh / psychic).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   provenance, difficulty (1-5), actor, stakes, consequence, quest_step,
+#   tia_section, narrative_hook, statement, solution, answer, shortcut_used,
+#   verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes math,
+# st (scipy.stats), __import__). Chained problems RESTATE the prior value as a given so
+# verify never depends on another problem's answer.
+#
+# distributions tag: "continuous" (structural — densities/CDFs are the continuous-RV
+# machinery, not a named family).
+#
+# Immersion quotas met: audit >=3 (C9.6, C9.10, C9.15; C9.10 RECYCLES the Team-Rocket
+# "integrate before normalizing" error); rival_trap >=2 (C9.11, C9.14);
+# decision >=1 (C9.7, C9.17).
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C9.1
+    chapter: 9
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 1
+    actor: "Sabrina's psychic dial"
+    stakes: "Sabrina wants the chance a flat-band reading lands in a chosen window before she will battle."
+    consequence: "Misreading area for height fails the challenge and traps you in the doll-dimension."
+    quest_step: 1
+    tia_section: "B.1.1"
+    narrative_hook: "Reading a band probability off a flat density as an area."
+    statement: |
+      A continuous X has density f(x)=1/2 on 0<x<2 (and 0 elsewhere). Find
+      P(0.5<X<1.5) and P(X=1).
+    solution: |
+      Area is probability: P(0.5<X<1.5) = height x width = 0.5 x (1.5-0.5) = 0.5.
+      A single point has zero width, so P(X=1) = 0.
+    answer: "P(0.5<X<1.5)=0.5; P(X=1)=0"
+    shortcut_used: ["P(a<X<b)=area=height x width", "P(X=c)=0"]
+    verify: "abs(0.5*(1.5-0.5) - 0.5) < 1e-9"
+
+  - id: C9.2
+    chapter: 9
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "the Pokedex Actuary Mode"
+    stakes: "A sloped density carries an unknown constant; nothing can be priced until it is solved."
+    consequence: "Skipping the normalizer makes every probability that follows wrong."
+    quest_step: 2
+    tia_section: "B.1.2"
+    narrative_hook: "Solving a normalizing constant, then reading a left-tail probability."
+    statement: |
+      f(x)=c*x on 0<x<3 (and 0 elsewhere). Find c, then P(X<2).
+    solution: |
+      Normalize: integral_0^3 c*x dx = c*(9/2) = 1 -> c = 2/9.
+      P(X<2) = integral_0^2 (2/9)x dx = (2/9)*(4/2) = 4/9 ~ 0.444.
+    answer: "c=2/9; P(X<2)=4/9~0.444"
+    shortcut_used: ["normalize first: integral f = 1", "then integrate the band"]
+    verify: "(lambda c: abs(c-2/9)<1e-9 and abs(c*(2**2/2) - 4/9)<1e-9)(2/9)"
+
+  - id: C9.3
+    chapter: 9
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "the dial's logbook"
+    stakes: "Only the running-total cdf is wanted; a band probability must come from differencing it."
+    consequence: "Building F once lets every later band be read as F(b)-F(a) with no new integral."
+    quest_step: 3
+    tia_section: "B.1.2"
+    narrative_hook: "Constructing the cdf and differencing it for a band probability."
+    statement: |
+      For f(x)=2x on 0<x<1, write F(x) on (0,1) and find P(0.3<X<0.6).
+    solution: |
+      F(x) = integral_0^x 2t dt = x^2 on (0,1).
+      P(0.3<X<0.6) = F(0.6)-F(0.3) = 0.36 - 0.09 = 0.27.
+    answer: "F(x)=x^2; P(0.3<X<0.6)=0.27"
+    shortcut_used: ["F=integral f", "P(a<X<b)=F(b)-F(a)"]
+    verify: "abs((0.6**2 - 0.3**2) - 0.27) < 1e-9"
+
+  - id: C9.4
+    chapter: 9
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "Professor Oak"
+    stakes: "Only the cdf survived a psychic surge; Oak needs the density and a survival probability back."
+    consequence: "Recovering f from F by differentiation reopens the rest of the analysis."
+    quest_step: 4
+    tia_section: "B.1.2"
+    narrative_hook: "Differentiating a cdf to recover the density (f=F'), then a survival."
+    statement: |
+      A reading has cdf F(x)=1-e^{-x/5} for x>=0 (and 0 below). Find the density
+      f(x) and P(X>5).
+    solution: |
+      f(x) = F'(x) = d/dx(1 - e^{-x/5}) = (1/5)e^{-x/5}, x>=0.
+      Survival: P(X>5) = 1 - F(5) = e^{-5/5} = e^{-1} ~ 0.3679.
+    answer: "f(x)=(1/5)e^{-x/5}; P(X>5)=e^{-1}~0.3679"
+    shortcut_used: ["f = F'", "P(X>x) = 1 - F(x)"]
+    verify: "abs((1 - (1 - __import__('math').exp(-5/5))) - __import__('math').exp(-1)) < 1e-9"
+
+  - id: C9.5
+    chapter: 9
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "a Silph Co. underwriter"
+    stakes: "A payout is zero unless feedback occurs; the underwriter must confirm the law is valid."
+    consequence: "If the mass and the continuous area don't total 1, the whole pricing model is malformed."
+    quest_step: 5
+    tia_section: "B.1.3"
+    narrative_hook: "Validating a mixed law (mass + area = 1) and reading off the mass."
+    statement: |
+      A payout Y is exactly 0 with probability 0.3, otherwise uniform on (0,5] with
+      density 0.14. Confirm the law totals 1, then find P(Y<=5) and P(Y=0).
+    solution: |
+      Continuous area = 0.14 x 5 = 0.70; with the mass 0.30 the total is
+      0.30 + 0.70 = 1 (valid). P(Y<=5) collects all of it = 1. P(Y=0) = 0.30 (mass).
+    answer: "total=1; P(Y<=5)=1; P(Y=0)=0.3"
+    shortcut_used: ["mixed law totals: masses + area = 1", "point mass is a real probability"]
+    verify: "abs((0.3 + 0.14*5) - 1.0) < 1e-9 and abs(0.3 - 0.3) < 1e-12"
+
+  - id: C9.6
+    chapter: 9
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "a sloppy field recorder"
+    stakes: "The recorder's note reads a density's height as the probability of a single value."
+    consequence: "Reporting a positive probability for an impossible single point corrupts the model."
+    quest_step: 6
+    tia_section: "B.1.1"
+    narrative_hook: "Catching a density height reported as a probability."
+    statement: |
+      A note claims that for X with density f(x)=1/2 on (0,2), "P(X=1)=f(1)=0.5."
+      State the true P(X=1) and name the error.
+    solution: |
+      For a continuous X, P(X=1) = 0 -- a single point has zero width, hence zero
+      area. The value f(1)=0.5 is a density (probability per unit length), not a
+      probability; only an AREA is a probability. The note read the height as a
+      chance.
+    answer: "P(X=1)=0 (height read as probability)"
+    shortcut_used: ["P(X=c)=0", "density height is a rate, not a probability"]
+    verify: "abs(0.0 - 0.0) < 1e-12"
+
+  - id: C9.7
+    chapter: 9
+    tier: route_trainer
+    archetype: decision
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "Ash (you)"
+    stakes: "Two reports both ask for P(X<2); you must decide where the < vs <= wording changes the answer."
+    consequence: "Using the wrong endpoint convention silently mis-states one report."
+    quest_step: 7
+    tia_section: "B.1.1, B.1.3"
+    narrative_hook: "Deciding when < vs <= matters: continuous point (no mass) vs a mass at 2."
+    statement: |
+      You must report P(X<2) for two variables: (i) a continuous X with cdf F, and
+      (ii) a discrete X with a probability mass of 0.2 at the value 2. For which does
+      it matter whether you wrote < or <=, and by how much?
+    solution: |
+      (i) Continuous: P(X<2)=P(X<=2) because the single point 2 carries zero
+          probability -- < vs <= does NOT matter (difference 0).
+      (ii) Discrete with mass 0.2 at 2: P(X<=2)=P(X<2)+P(X=2), so they differ by the
+          mass 0.2 -- < vs <= DOES matter.
+    answer: "matters only for (ii), the discrete one, by the mass 0.2"
+    shortcut_used: ["continuous point has zero probability", "a mass makes <,<= differ by the mass"]
+    verify: "abs(0.0 - 0.0) < 1e-12 and abs(0.2 - 0.2) < 1e-12"
+
+  # ===================== GYM BATTLES (the boss fight) =====================
+
+  - id: C9.8
+    chapter: 9
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "Sabrina"
+    stakes: "Sabrina demands the constant, the cdf, a band, and a point value from one sloped curve."
+    consequence: "A full f->F->band->point pass is the gym's core competency test."
+    quest_step: 8
+    tia_section: "B.1.1, B.1.2"
+    narrative_hook: "Normalize, build the cdf, difference a band, and read a point probability."
+    statement: |
+      f(x)=c*x on 0<x<4 (and 0 elsewhere). Find c, the cdf F(x) on (0,4),
+      P(1<X<3), and P(X=3).
+    solution: |
+      Normalize: integral_0^4 c*x dx = 8c = 1 -> c = 1/8.
+      F(x) = integral_0^x (1/8)t dt = x^2/16 on [0,4].
+      P(1<X<3) = F(3)-F(1) = 9/16 - 1/16 = 8/16 = 0.5. P(X=3) = 0.
+    answer: "c=1/8; F=x^2/16; P(1<X<3)=0.5; P(X=3)=0"
+    shortcut_used: ["normalize first", "F=integral f", "P(a<X<b)=F(b)-F(a)", "P(X=c)=0"]
+    verify: "(lambda c: abs(c-1/8)<1e-9 and abs((3**2/16) - (1**2/16) - 0.5)<1e-9)(1/8)"
+
+  - id: C9.9
+    chapter: 9
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "the Pokedex Actuary Mode"
+    stakes: "A density's height exceeds 1; you must judge whether the law is even valid."
+    consequence: "Rejecting a legal density (or accepting an illegal one) breaks the analysis."
+    quest_step: 9
+    tia_section: "B.1.1"
+    narrative_hook: "Validating a density whose height is above 1, then reading area probabilities."
+    statement: |
+      X has density f(x)=4 on 0<x<0.25 (and 0 elsewhere). Show it is a valid
+      density, then find P(X<0.1) and P(X=0.1).
+    solution: |
+      Valid: f>=0 and the area is 4 x 0.25 = 1, even though the HEIGHT 4 exceeds 1
+      (a density is a rate, not a probability). P(X<0.1) = 4 x 0.1 = 0.4;
+      P(X=0.1) = 0.
+    answer: "valid (area=1); P(X<0.1)=0.4; P(X=0.1)=0"
+    shortcut_used: ["density height may exceed 1", "only area is capped at 1", "P(X=c)=0"]
+    verify: "abs(4*0.25 - 1.0) < 1e-9 and abs(4*0.1 - 0.4) < 1e-9"
+
+  - id: C9.10
+    chapter: 9
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "Team Rocket (James)"
+    stakes: "James computes a probability from a stolen loss curve without solving its constant."
+    consequence: "His 'probability' exceeds 1 and busts the scheme -- the canonical normalize-first error."
+    quest_step: 10
+    tia_section: "B.1.2"
+    narrative_hook: "Catching Team Rocket integrate before normalizing (recycled canonical error)."
+    statement: |
+      Team Rocket computes P(X<2) for f(x)=c*x on (0,3) as integral_0^2 x dx = 2.
+      Find the true value and name the error.
+    solution: |
+      They INTEGRATED BEFORE NORMALIZING. Solve integral_0^3 c*x dx = 9c/2 = 1 ->
+      c = 2/9, THEN P(X<2) = integral_0^2 (2/9)x dx = (2/9)*2 = 4/9 ~ 0.444. Their
+      bare integral 2 ignores c and even exceeds 1 -- the giveaway.
+    answer: "true 4/9~0.444 (integrated before normalizing)"
+    shortcut_used: ["normalize first", "a 'probability' > 1 means you skipped the constant"]
+    verify: "(lambda c: abs(c-2/9)<1e-9 and abs(c*2 - 4/9)<1e-9 and (2 > 1))(2/9)"
+
+  - id: C9.11
+    chapter: 9
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary integrates an un-normalized kernel and reports it as a probability to beat you."
+    consequence: "Skipping the constant gives a wrong, too-large probability."
+    quest_step: 11
+    tia_section: "B.1.2"
+    narrative_hook: "Catching Gary skip the normalizing constant on a quadratic density."
+    statement: |
+      Gary says that for f(x)=k*x^2 on 0<x<2, P(X<1) = integral_0^1 x^2 dx = 1/3.
+      Find k first, then the true P(X<1), and name Gary's error.
+    solution: |
+      Normalize: integral_0^2 k*x^2 dx = k*(8/3) = 1 -> k = 3/8.
+      P(X<1) = integral_0^1 (3/8)x^2 dx = (3/8)*(1/3) = 1/8 = 0.125, not 1/3.
+      Gary integrated the un-normalized kernel (he dropped k).
+    answer: "k=3/8; P(X<1)=1/8=0.125 (Gary skipped the constant)"
+    shortcut_used: ["normalize first: integral f = 1", "then integrate the band"]
+    verify: "(lambda k: abs(k-3/8)<1e-9 and abs(k*(1/3) - 1/8)<1e-9)(3/8)"
+
+  - id: C9.12
+    chapter: 9
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "a Silph Co. actuary"
+    stakes: "A feedback payout mixes a zero-mass with a sloped continuous part; the full cdf is needed."
+    consequence: "The cdf's jump-then-ramp shape drives every downstream payout probability."
+    quest_step: 12
+    tia_section: "B.1.3"
+    narrative_hook: "Normalizing a mixed law's continuous part and writing its jump-then-ramp cdf."
+    statement: |
+      A payout Y is exactly 0 with probability 0.4, otherwise has density f(y)=k*y on
+      (0,2]. Find k, write the cdf F(y), and find P(Y<=1).
+    solution: |
+      Continuous part carries leftover 1-0.4 = 0.6: integral_0^2 k*y dy = 2k = 0.6 ->
+      k = 0.3. F(y) = 0 (y<0); jumps to 0.4 at 0; = 0.4 + integral_0^y 0.3 t dt =
+      0.4 + 0.15 y^2 on (0,2]; = 1 for y>=2 (since 0.4 + 0.15*4 = 1).
+      P(Y<=1) = F(1) = 0.4 + 0.15 = 0.55.
+    answer: "k=0.3; F=0.4+0.15y^2 on (0,2]; P(Y<=1)=0.55"
+    shortcut_used: ["continuous part carries leftover probability", "cdf jumps by the mass then ramps"]
+    verify: "(lambda k: abs(2*k - 0.6)<1e-9 and abs((0.4 + 0.15*1) - 0.55)<1e-9)(0.3)"
+
+  - id: C9.13
+    chapter: 9
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "a loss assessor"
+    stakes: "Only the loss cdf is recorded; the assessor needs the density and a tail probability."
+    consequence: "The right-tail probability sets the chance of a large loss."
+    quest_step: 13
+    tia_section: "B.1.2"
+    narrative_hook: "Differentiating a power-law cdf for the density, then a survival."
+    statement: |
+      A loss has F(x)=1-(1+x)^{-2} for x>=0. Find the density f(x) and the survival
+      P(X>1).
+    solution: |
+      f(x) = F'(x) = d/dx(1 - (1+x)^{-2}) = 2(1+x)^{-3}, x>=0.
+      P(X>1) = 1 - F(1) = (1+1)^{-2} = 2^{-2} = 0.25.
+    answer: "f(x)=2(1+x)^{-3}; P(X>1)=0.25"
+    shortcut_used: ["f = F'", "P(X>x) = 1 - F(x)"]
+    verify: "abs((1 - (1 - (1+1)**-2)) - 0.25) < 1e-9"
+
+  - id: C9.14
+    chapter: 9
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "Gary Oak"
+    stakes: "Gary names a 'most likely value' and quotes the density height as its probability."
+    consequence: "Both halves of his claim are false; trusting them mis-prices the risk."
+    quest_step: 14
+    tia_section: "B.1.1"
+    narrative_hook: "Catching Gary read a density height as the probability of a single value."
+    statement: |
+      For f(x)=3x^2 on (0,1), Gary says "the most likely value is 1, and its
+      probability is f(1)=3." State the true P(X=1) and name both errors.
+    solution: |
+      P(X=1) = 0 -- a single point in a continuous law carries no area, so there is no
+      positive 'probability of the most likely value.' And f(1)=3 is a density HEIGHT
+      (a rate per unit length) that can exceed 1 -- never a probability. Two errors:
+      a point given positive probability, and a height read as a chance.
+    answer: "P(X=1)=0 (height isn't a probability; a point carries none)"
+    shortcut_used: ["P(X=c)=0", "density height is a rate, can exceed 1"]
+    verify: "abs(0.0 - 0.0) < 1e-12 and (3 > 1)"
+
+  - id: C9.15
+    chapter: 9
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "a claims note"
+    stakes: "The note applies the continuous 'points have probability zero' rule to a real point mass."
+    consequence: "Erasing the mass at 0 mis-states the most common payout outcome."
+    quest_step: 15
+    tia_section: "B.1.3"
+    narrative_hook: "Catching a point mass reported as zero because the law was called continuous."
+    statement: |
+      A note says that for the payout Y (mass 0.4 at 0, density 0.15 on (0,4]),
+      "since Y is continuous, P(Y=0)=0." Find the true P(Y=0) and P(Y<=0), and name
+      the error.
+    solution: |
+      The law is MIXED, not purely continuous: a genuine point mass of 0.4 sits at 0.
+      So P(Y=0) = 0.4, and P(Y<=0) = 0.4 too (nothing below 0). The note wrongly
+      applied the continuous rule P(point)=0 to a value that carries a real mass.
+    answer: "P(Y=0)=P(Y<=0)=0.4 (mixed law: the mass is real)"
+    shortcut_used: ["a point mass carries real probability", "mixed != purely continuous"]
+    verify: "abs(0.4 - 0.4) < 1e-12 and abs((0.4 + 0.15*4) - 1.0) < 1e-9"
+
+  - id: C9.16
+    chapter: 9
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "the Pokedex Actuary Mode"
+    stakes: "A flat density is over-specified; you must let the normalizer settle the constant."
+    consequence: "Trusting a probability that contradicts the total-area rule yields an invalid density."
+    quest_step: 16
+    tia_section: "B.1.2"
+    narrative_hook: "Letting integral f = 1 bind the constant and rejecting an inconsistent given."
+    statement: |
+      A flat density is f(x)=c on (0,6). A note also claims P(X<2)=0.5. Find c from
+      normalization and the true P(X<2), and explain the inconsistency.
+    solution: |
+      The binding condition is normalization: c x 6 = 1 -> c = 1/6. That forces
+      P(X<2) = c x 2 = 2/6 = 1/3. The claimed 0.5 would need c=0.25, whose total area
+      0.25 x 6 = 1.5 != 1 is not a valid density. integral f = 1 governs; reject the
+      inconsistent given. c = 1/6, P(X<2) = 1/3.
+    answer: "c=1/6; P(X<2)=1/3 (the claimed 0.5 is inconsistent)"
+    shortcut_used: ["integral f = 1 always binds", "reject a given that breaks total area"]
+    verify: "(lambda c: abs(c - 1/6)<1e-9 and abs(c*2 - 1/3)<1e-9 and abs(0.25*6 - 1.5)<1e-9)(1/6)"
+
+  # ===================== ELITE CHALLENGE (post-game) =====================
+
+  - id: C9.17
+    chapter: 9
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 4
+    actor: "a Silph Co. underwriter"
+    stakes: "A capped payout piles excess loss onto a point mass at the limit; the full law must balance."
+    consequence: "Mishandling the cap mass mis-prices the policy and the limit endpoint."
+    quest_step: 17
+    tia_section: "B.1.3"
+    narrative_hook: "Building a capped mixed payout: a zero-mass, a continuous middle, and a limit mass."
+    statement: |
+      A payout pays 0 with probability 0.5; otherwise it equals the loss, continuous
+      with density f(y)=0.2 on (0,2), CAPPED at 2 so all loss probability above 2
+      piles onto a point mass at y=2. (a) Find the mass at 2. (b) Find P(Y=0),
+      P(0<Y<2), P(Y=2) and confirm they total 1. (c) Does P(Y<=2) depend on <= vs <?
+    solution: |
+      (a) Continuous area on (0,2) is 0.2 x 2 = 0.4; the total non-zero-loss
+          probability is 0.5, so the leftover 0.5 - 0.4 = 0.1 piles on the cap:
+          mass at 2 is 0.1.
+      (b) P(Y=0)=0.5, P(0<Y<2)=0.4, P(Y=2)=0.1; total 0.5+0.4+0.1 = 1.
+      (c) YES it depends: a real mass sits at 2, so P(Y<=2)=1 but P(Y<2)=0.9 --
+          they differ by the 0.1 cap mass. At a point mass, <= vs < matters.
+    answer: "mass2=0.1; (0.5,0.4,0.1) total 1; yes, P(Y<=2)=1 vs P(Y<2)=0.9"
+    shortcut_used: ["cap mass = leftover loss probability", "masses + area = 1", "<= vs < differ by a mass"]
+    verify: "abs((0.5 - 0.2*2) - 0.1) < 1e-9 and abs((0.5 + 0.4 + 0.1) - 1.0) < 1e-9 and abs((1.0 - 0.9) - 0.1) < 1e-9"
+
+  - id: C9.18
+    chapter: 9
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 4
+    actor: "Professor Oak"
+    stakes: "A two-piece density must be normalized as one whole, then a band split at its kink."
+    consequence: "Normalizing the pieces separately, or ignoring the kink, gives the wrong area."
+    quest_step: 18
+    tia_section: "B.1.2"
+    narrative_hook: "Normalizing a piecewise density and integrating a band across its kink."
+    statement: |
+      f(x)=c on (0,1) and f(x)=c(2-x) on [1,2) (and 0 elsewhere). Find c, F(1), and
+      P(0.5<X<1.5).
+    solution: |
+      Normalize the whole: integral_0^1 c dx + integral_1^2 c(2-x) dx = c + c/2 =
+      3c/2 = 1 -> c = 2/3.
+      F(1) = integral_0^1 (2/3) dx = 2/3.
+      Split the band at the kink x=1:
+        first  integral_{0.5}^1 (2/3) dx = (2/3)(0.5) = 1/3,
+        second integral_1^{1.5} (2/3)(2-x) dx = (2/3)[2x - x^2/2]_1^{1.5}
+               = (2/3)(0.375) = 0.25.
+      P(0.5<X<1.5) = 1/3 + 0.25 = 7/12 ~ 0.583.
+    answer: "c=2/3; F(1)=2/3; P(0.5<X<1.5)=7/12~0.583"
+    shortcut_used: ["normalize the whole piecewise density", "split a band at the kink"]
+    verify: "(lambda c: abs(c - 2/3)<1e-9 and abs((c*0.5 + c*((2*1.5 - 1.5**2/2) - (2*1 - 1**2/2))) - 7/12)<1e-9)(2/3)"
+
+  - id: C9.19
+    chapter: 9
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2a"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 4
+    actor: "Sabrina"
+    stakes: "Sabrina demands a from-scratch derivation: verify, build F, check f=F', find the median."
+    consequence: "A full round-trip derivation proves you own the f<->F machinery under pressure."
+    quest_step: 19
+    tia_section: "B.1.1, B.1.2"
+    narrative_hook: "Verifying a density, deriving its cdf, checking f=F', and solving for the median."
+    statement: |
+      A density is f(x)=(3/8)x^2 on 0<x<2. Verify it integrates to 1, derive F(x) on
+      (0,2), confirm f=F', and find the median m (where F(m)=0.5).
+    solution: |
+      Area: integral_0^2 (3/8)x^2 dx = (3/8)(8/3) = 1 (valid).
+      F(x) = integral_0^x (3/8)t^2 dt = x^3/8 on (0,2); F(2)=1.
+      Check: F'(x) = (3/8)x^2 = f(x).
+      Median: x^3/8 = 0.5 -> x^3 = 4 -> m = 4^{1/3} = 2^{2/3} ~ 1.587.
+    answer: "area=1; F=x^3/8; f=F' ok; median=2^{2/3}~1.587"
+    shortcut_used: ["normalize check", "F=integral f", "f=F'", "median solves F(m)=0.5"]
+    verify: "(lambda: abs((3/8)*(8/3) - 1.0)<1e-9 and abs(((4**(1/3))**3)/8 - 0.5)<1e-9)()"

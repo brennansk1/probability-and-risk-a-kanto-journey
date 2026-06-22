@@ -1,0 +1,589 @@
+# Problem bank — Chapter 10 (Saffron City / Silph Co.): Continuous moments.
+# Moments of continuous distributions (E[X]=int x f, E[g(X)]=int g f, Var=int x^2 f
+# - mu^2); moments of MIXED distributions (sum the point masses + integrate the
+# smooth part); the continuous survival-function (Darth-Vader) method
+# E[X]=int_0^inf S(x) dx.  Outcomes 2c, 2d.  Tier-B chapter.  Locale: Saffron /
+# Silph Co. (Sabrina arc continued; type psychic; no new badge).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   provenance, difficulty (1-5), actor, stakes, consequence, quest_step,
+#   tia_section, narrative_hook, statement, solution, answer, shortcut_used,
+#   calc_skill (opt), verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes
+# math, st (scipy.stats), __import__). Chained problems RESTATE the prior value as
+# a given so verify never depends on another problem's answer.
+#
+# Immersion quotas met: audit >=3 (C10.8, C10.16, C10.24 -- C10.8 recycles the
+# Team-Rocket ignore-the-point-mass error); rival_trap >=2 (C10.13, C10.23);
+# decision >=1 (C10.21, C10.26).  Tags: continuous, mixture.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C10.1
+    chapter: 10
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous", "uniform"]
+    provenance: original
+    difficulty: 1
+    actor: "a Silph Co. pricing analyst"
+    stakes: "She needs the expected size of a simple uniform claim to set a baseline premium."
+    consequence: "Get the center wrong and every premium built on it is mispriced."
+    quest_step: 1
+    tia_section: "B.2.1"
+    narrative_hook: "Warming up continuous moments on the flattest possible severity."
+    statement: |
+      A loss X is uniform on [0,6] (in $thousands), f(x)=1/6. Find E[X] and Var(X).
+    solution: |
+      E[X] = int_0^6 x (1/6) dx = (1/6)(18) = 3.
+      E[X^2] = int_0^6 x^2 (1/6) dx = (1/6)(72) = 12, so Var = 12 - 3^2 = 3.
+      (Matches (b-a)^2/12 = 36/12 = 3.)
+    answer: "E[X]=3, Var(X)=3"
+    shortcut_used: ["E[X]=int x f", "Var=E[X^2]-(E[X])^2"]
+    verify: "abs((1/6)*18 - 3) < 1e-9 and abs(((1/6)*72) - 12) < 1e-9 and abs((12 - 3**2) - 3) < 1e-9"
+
+  - id: C10.2
+    chapter: 10
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 1
+    actor: "a Silph Co. underwriter"
+    stakes: "The triangular severity model needs its average before it can be quoted."
+    consequence: "An off-center mean skews the whole rate table."
+    quest_step: 2
+    tia_section: "B.2.1"
+    narrative_hook: "Integrating x times a rising triangular density."
+    statement: |
+      X has density f(x) = x/2 on 0 <= x <= 2. Find E[X].
+    solution: |
+      E[X] = int_0^2 x (x/2) dx = (1/2) int_0^2 x^2 dx = (1/2)(8/3) = 4/3 ~ 1.333.
+    answer: "4/3 ~ 1.333"
+    shortcut_used: ["E[X]=int x f"]
+    verify: "abs(((1/2)*(8/3)) - 4/3) < 1e-9"
+
+  - id: C10.3
+    chapter: 10
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous", "exponential"]
+    provenance: original
+    difficulty: 1
+    actor: "a Silph Co. reliability engineer"
+    stakes: "She has only the survival curve of a part and wants its expected lifetime."
+    consequence: "The expected lifetime sets the warranty reserve."
+    quest_step: 3
+    tia_section: "B.2.3"
+    narrative_hook: "Reading the expected loss straight off the survival curve."
+    statement: |
+      A non-negative loss has survival S(x) = e^{-x/5} for x >= 0. Find E[X] by the
+      survival (Darth-Vader) method.
+    solution: |
+      E[X] = int_0^inf S(x) dx = int_0^inf e^{-x/5} dx = [-5 e^{-x/5}]_0^inf = 5.
+    answer: 5
+    shortcut_used: ["E[X]=int_0^inf S(x) dx"]
+    verify: "abs(__import__('scipy.integrate', fromlist=['quad']).quad(lambda x: __import__('math').exp(-x/5), 0, 1e4)[0] - 5) < 1e-3"
+
+  - id: C10.4
+    chapter: 10
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "a Silph Co. analyst"
+    stakes: "The Silph severity model needs its spread, not just its center."
+    consequence: "The variance drives the capital held against a bad year."
+    quest_step: 4
+    tia_section: "B.2.1"
+    narrative_hook: "Getting the second moment of the Silph density, then the variance."
+    statement: |
+      For the Silph density f(x) = (3/8) x^2 on [0,2] (given E[X]=1.5), find E[X^2]
+      and Var(X).
+    solution: |
+      E[X^2] = int_0^2 x^2 (3/8) x^2 dx = (3/8)(32/5) = 12/5 = 2.4.
+      Var(X) = E[X^2] - (E[X])^2 = 2.4 - 1.5^2 = 2.4 - 2.25 = 0.15.
+    answer: "E[X^2]=2.4, Var(X)=0.15"
+    shortcut_used: ["E[X^2]=int x^2 f", "Var=E[X^2]-(E[X])^2"]
+    verify: "abs(((3/8)*(32/5)) - 2.4) < 1e-9 and abs((2.4 - 1.5**2) - 0.15) < 1e-9"
+
+  - id: C10.5
+    chapter: 10
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "a Silph Co. reinsurance desk"
+    stakes: "A rescaled payout Y=4X+2 needs its mean and variance for the treaty."
+    consequence: "Mis-scaling the variance misprices the reinsurance layer."
+    quest_step: 5
+    tia_section: "B.2.1"
+    narrative_hook: "Transforming a continuous payout without re-integrating."
+    statement: |
+      For the Silph loss (E[X]=1.5, Var(X)=0.15 -- both given), a payout is Y=4X+2.
+      Find E[Y] and Var(Y) without re-integrating.
+    solution: |
+      E[Y] = 4 E[X] + 2 = 4(1.5)+2 = 8. Var(Y) = 4^2 Var(X) = 16(0.15) = 2.4.
+      (The +2 adds no variance; the 4 is squared.)
+    answer: "E[Y]=8, Var(Y)=2.4"
+    shortcut_used: ["E[aX+b]=aE[X]+b", "Var(aX+b)=a^2 Var(X)"]
+    verify: "abs((4*1.5+2) - 8) < 1e-9 and abs((16*0.15) - 2.4) < 1e-9"
+
+  - id: C10.6
+    chapter: 10
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c", "2d"]
+    distributions: ["mixture", "uniform"]
+    provenance: original
+    difficulty: 2
+    actor: "a Silph Co. claims clerk"
+    stakes: "Half the policies pay nothing; the clerk needs the true average payout."
+    consequence: "Ignoring the no-pay half doubles the apparent expected loss."
+    quest_step: 6
+    tia_section: "B.2.2"
+    narrative_hook: "A bare point mass at zero glued to a uniform slab."
+    statement: |
+      X is 0 with probability 0.5 and uniform on [0,4] with probability 0.5. Find E[X].
+    solution: |
+      Atom: 0 * 0.5 = 0. Smooth: 0.5 * (mean of [0,4] = 2) = 1.0. E[X] = 0 + 1.0 = 1.0.
+    answer: 1.0
+    shortcut_used: ["mixed mean = sum atoms + integrate smooth"]
+    verify: "abs((0.5*0 + 0.5*2) - 1.0) < 1e-9"
+
+  - id: C10.7
+    chapter: 10
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous", "uniform"]
+    provenance: original
+    difficulty: 2
+    actor: "a Silph Co. analyst"
+    stakes: "A squared-loss bonus needs E[X^2], and the analyst is tempted to square the mean."
+    consequence: "Squaring the mean undercounts the bonus and the variance."
+    quest_step: 7
+    tia_section: "B.2.1"
+    narrative_hook: "LOTUS on a uniform: average the square, not the average squared."
+    statement: |
+      For X uniform on [0,3], find E[X^2] by LOTUS, and note it is NOT (E[X])^2.
+    solution: |
+      E[X^2] = int_0^3 x^2 (1/3) dx = (1/3)(9) = 3. (E[X])^2 = 1.5^2 = 2.25 != 3.
+      Their gap, 0.75, is the variance.
+    answer: "E[X^2]=3 (not 2.25)"
+    shortcut_used: ["E[g(X)]=int g f", "E[X^2] != (E[X])^2"]
+    verify: "abs(((1/3)*9) - 3) < 1e-9 and abs(((1/3)*9) - (1.5**2)) > 0.5"
+
+  - id: C10.26
+    chapter: 10
+    tier: route_trainer
+    archetype: decision
+    outcomes: ["2c"]
+    distributions: ["continuous", "uniform"]
+    provenance: original
+    difficulty: 2
+    actor: "a Silph Co. portfolio manager"
+    stakes: "Two severities have the same mean; he must pick the one with steadier losses."
+    consequence: "Choosing the wider spread means more volatile results and higher capital."
+    quest_step: 8
+    tia_section: "B.2.1"
+    narrative_hook: "Equal-mean severities decided by variance -- magnitude vs reliability, continuous."
+    statement: |
+      Loss A is uniform on [2,6]; loss B is uniform on [0,8]. Find each mean (they
+      match) and each variance, then say which an insurer prefers for predictability.
+    solution: |
+      Means: A -> (2+6)/2 = 4; B -> (0+8)/2 = 4 (identical). Variances:
+      Var_A = (6-2)^2/12 = 16/12 = 4/3 ~ 1.33; Var_B = (8-0)^2/12 = 64/12 = 16/3 ~ 5.33.
+      Prefer loss A -- same mean, one-quarter the variance, so more predictable.
+    answer: "mean 4; Var_A=4/3 < Var_B=16/3; pick A"
+    shortcut_used: ["uniform mean (a+b)/2", "uniform var (b-a)^2/12"]
+    verify: "abs(((2+6)/2) - 4) < 1e-9 and abs(((0+8)/2) - 4) < 1e-9 and (((6-2)**2/12) < ((8-0)**2/12))"
+
+  # ===================== GYM BATTLES (the boss fight) =====================
+
+  - id: C10.8
+    chapter: 10
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2c", "2d"]
+    distributions: ["mixture", "uniform"]
+    provenance: original
+    difficulty: 3
+    actor: "Team Rocket (Meowth)"
+    stakes: "Meowth prices a 'protection' scheme off the smooth curve, ignoring the spike of zero-payouts."
+    consequence: "Pricing off $5k instead of $3k overstates the expected loss by two-thirds."
+    quest_step: 9
+    tia_section: "B.2.2"
+    narrative_hook: "Auditing the recycled Team-Rocket error: ignoring the point mass in a mixed loss."
+    statement: |
+      The mixed loss is 0 with probability 0.4 and uniform on [0,10] with probability
+      0.6. Meowth's note declares "the loss is uniform, so the average is $5k." Find
+      the true E[X] and name Meowth's error.
+    solution: |
+      Atom 0.4*0 = 0; smooth 0.6 * (mean of [0,10] = 5) = 3. So E[X] = 3, not 5.
+      Meowth's error: he treated the smooth uniform as the whole distribution and
+      ignored the 0.4 atom of zero-payouts; the smooth part is only 60% of the
+      probability, so its mean of 5 must be weighted by 0.6.
+    answer: "E[X]=3 (not 5)"
+    shortcut_used: ["mixed mean = sum atoms + integrate smooth", "never ignore a point mass"]
+    verify: "abs((0.4*0 + 0.6*5) - 3) < 1e-9 and abs((0.4*0 + 0.6*5) - 5) > 1.5"
+
+  - id: C10.9
+    chapter: 10
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "a Silph Co. analyst"
+    stakes: "A declining severity model needs full center and spread for a filing."
+    consequence: "An incomplete moment set fails the rate filing."
+    quest_step: 10
+    tia_section: "B.2.1"
+    narrative_hook: "Full center + spread of a declining triangular density."
+    statement: |
+      A loss has density f(x) = 2(1-x) on 0 <= x <= 1. Find E[X], E[X^2], Var(X).
+    solution: |
+      E[X] = int_0^1 x*2(1-x) dx = 2(1/2 - 1/3) = 2(1/6) = 1/3.
+      E[X^2] = int_0^1 x^2*2(1-x) dx = 2(1/3 - 1/4) = 2(1/12) = 1/6.
+      Var(X) = 1/6 - (1/3)^2 = 1/6 - 1/9 = 1/18 ~ 0.0556.
+    answer: "E=1/3, E[X^2]=1/6, Var=1/18"
+    shortcut_used: ["E[X]=int x f", "Var=E[X^2]-(E[X])^2"]
+    verify: "abs((2*(1/2-1/3)) - 1/3) < 1e-9 and abs((2*(1/3-1/4)) - 1/6) < 1e-9 and abs((1/6 - (1/3)**2) - 1/18) < 1e-9"
+
+  - id: C10.10
+    chapter: 10
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous", "exponential"]
+    provenance: original
+    difficulty: 3
+    actor: "a Silph Co. analyst"
+    stakes: "Only the cdf is on file; the analyst needs the mean without recovering the density."
+    consequence: "Re-deriving the density wastes time and invites slips."
+    quest_step: 11
+    tia_section: "B.2.3"
+    narrative_hook: "Survival method when handed the cdf -- convert S=1-F first."
+    statement: |
+      A loss has cdf F(x) = 1 - e^{-x/4} on x >= 0. Find E[X] by the survival method
+      (convert S = 1 - F first).
+    solution: |
+      S(x) = 1 - F(x) = e^{-x/4}; E[X] = int_0^inf e^{-x/4} dx = 4.
+    answer: 4
+    shortcut_used: ["S=1-F", "E[X]=int_0^inf S(x) dx"]
+    verify: "abs(__import__('scipy.integrate', fromlist=['quad']).quad(lambda x: __import__('math').exp(-x/4), 0, 1e4)[0] - 4) < 1e-3"
+
+  - id: C10.11
+    chapter: 10
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c", "2d"]
+    distributions: ["mixture", "exponential"]
+    provenance: original
+    difficulty: 4
+    actor: "a Silph Co. analyst"
+    stakes: "A loss that often pays nothing, else exponential, needs full mean AND variance."
+    consequence: "A wrong variance under-reserves the volatile tail."
+    quest_step: 12
+    tia_section: "B.2.2"
+    narrative_hook: "Mixed mean and variance: atom plus an exponential smooth part."
+    statement: |
+      A loss is 0 with probability 0.3 and exponential with mean 10 with probability
+      0.7. Find E[X] and E[X^2], then Var(X). (Use E[Exp]=theta, E[Exp^2]=2 theta^2.)
+    solution: |
+      Atom 0; exponential mean theta=10 on share 0.7: E[X] = 0.7*10 = 7.
+      E[Exp^2] = 2*10^2 = 200 on share 0.7: E[X^2] = 0.7*200 = 140.
+      Var(X) = 140 - 7^2 = 140 - 49 = 91.
+    answer: "E=7, E[X^2]=140, Var=91"
+    shortcut_used: ["mixed moments = sum atoms + integrate smooth", "E[Exp^2]=2 theta^2"]
+    verify: "abs((0.7*10) - 7) < 1e-9 and abs((0.7*2*10**2) - 140) < 1e-9 and abs((140 - 7**2) - 91) < 1e-9"
+
+  - id: C10.12
+    chapter: 10
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "a Silph Co. analyst"
+    stakes: "A bounded loss is given by its survival; the analyst must stop the integral at the support's edge."
+    consequence: "Running the integral past the support adds a spurious tail to the mean."
+    quest_step: 13
+    tia_section: "B.2.3"
+    narrative_hook: "Survival method on a bounded support -- integrate S only where it is positive."
+    statement: |
+      A loss lives on [0,3] with survival S(x) = 1 - x^2/9. Find E[X] = int_0^3 S(x) dx.
+    solution: |
+      int_0^3 (1 - x^2/9) dx = 3 - (1/9)(27/3) = 3 - 1 = 2.0.
+    answer: 2.0
+    shortcut_used: ["E[X]=int_0^b S(x) dx on bounded support"]
+    verify: "abs((3 - (1/9)*(27/3)) - 2.0) < 1e-9"
+
+  - id: C10.13
+    chapter: 10
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary (rival)"
+    stakes: "Gary prices a loss off the density's peak, mistaking the mode for the mean."
+    consequence: "Pricing at the mode (2) overstates the expected loss (1.5)."
+    quest_step: 14
+    tia_section: "B.2.1"
+    narrative_hook: "Rival trap: the peak of the density is not the expected value (continuous mode-vs-mean)."
+    statement: |
+      Gary's loss model has density f(x) = (3/8) x^2 on [0,2]. He says "the density
+      peaks at x=2, so the expected loss is about 2 -- price it there." Find the true
+      E[X], compare to his 2, and name his error.
+    solution: |
+      E[X] = int_0^2 x (3/8) x^2 dx = (3/8)(16/4) = 1.5. Gary is wrong: the peak
+      (mode) of the density is not the mean; E[X] = 1.5, not 2. Pricing at the mode
+      overstates the expected loss. (Continuous echo of the mode-as-mean trap.)
+    answer: "E[X]=1.5 < 2; Gary wrong (mode != mean)"
+    shortcut_used: ["E[X]=int x f", "mode != mean"]
+    verify: "abs(((3/8)*(16/4)) - 1.5) < 1e-9 and (1.5 < 2)"
+
+  - id: C10.14
+    chapter: 10
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "a Silph Co. analyst"
+    stakes: "A squared-loss bonus on the Silph severity needs E[X^2], not (E[X])^2."
+    consequence: "Squaring the mean undercounts the bonus."
+    quest_step: 15
+    tia_section: "B.2.1"
+    narrative_hook: "LOTUS on the Silph density: average the square."
+    statement: |
+      For the Silph loss f(x) = (3/8) x^2 on [0,2], a bonus pays g(X) = X^2. Find
+      E[g(X)] = E[X^2] and note why it is NOT (E[X])^2.
+    solution: |
+      E[X^2] = int_0^2 x^2 (3/8) x^2 dx = (3/8)(32/5) = 2.4. This is NOT (E[X])^2 =
+      1.5^2 = 2.25 -- average the squares, not square the average. The gap 0.15 is the
+      variance.
+    answer: "2.4 (not 2.25)"
+    shortcut_used: ["E[g(X)]=int g f", "E[X^2] != (E[X])^2"]
+    verify: "abs(((3/8)*(32/5)) - 2.4) < 1e-9 and abs(2.4 - 1.5**2 - 0.15) < 1e-9"
+
+  - id: C10.15
+    chapter: 10
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c", "2d"]
+    distributions: ["mixture", "uniform"]
+    provenance: original
+    difficulty: 4
+    actor: "a Silph Co. policy designer"
+    stakes: "A policy cap creates an atom at the limit; the expected payout must include it."
+    consequence: "Forgetting the atom at the cap understates the expected payout badly."
+    quest_step: 16
+    tia_section: "B.2.2"
+    narrative_hook: "Capped loss as a mixed payout -- atom at the cap plus the smooth body."
+    statement: |
+      Losses are uniform on [0,12] but the payout is capped at $9k (loss above 9 pays
+      9). Find the expected payout E[X wedge 9].
+    solution: |
+      Smooth int_0^9 x (1/12) dx = (1/12)(81/2) = 3.375; atom at 9 of mass
+      P(loss>9)=3/12=0.25 gives 9(0.25)=2.25. E[X wedge 9] = 3.375 + 2.25 = 5.625.
+      Cross-check: int_0^9 (1 - x/12) dx = 9 - 3.375 = 5.625.
+    answer: "E[X wedge 9] = 5.625"
+    shortcut_used: ["mixed payout = smooth body + atom at cap", "E[X wedge u]=int_0^u S dx"]
+    verify: "abs(((1/12)*(81/2) + 9*0.25) - 5.625) < 1e-9 and abs((9 - (1/12)*(81/2)) - 5.625) < 1e-9"
+
+  - id: C10.16
+    chapter: 10
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "a careless Silph Co. analyst"
+    stakes: "The analyst reports the raw second moment as the variance."
+    consequence: "Over-stating the variance by an order of magnitude inflates required capital."
+    quest_step: 17
+    tia_section: "B.2.1"
+    narrative_hook: "Auditing a dropped (E[X])^2 term in a continuous variance."
+    statement: |
+      An analyst computes E[X]=1.5 and E[X^2]=2.4 for a severity, then writes "so
+      Var(X)=2.4." Find the true variance and name the error.
+    solution: |
+      Var(X) = E[X^2] - (E[X])^2 = 2.4 - 1.5^2 = 2.4 - 2.25 = 0.15. The analyst
+      reported the raw second moment 2.4 as the variance, forgetting to subtract
+      (E[X])^2. True Var = 0.15.
+    answer: "Var=0.15 (not 2.4)"
+    shortcut_used: ["Var=E[X^2]-(E[X])^2"]
+    verify: "abs((2.4 - 1.5**2) - 0.15) < 1e-9"
+
+  - id: C10.17
+    chapter: 10
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 2
+    actor: "a Silph Co. reinsurance desk"
+    stakes: "A coinsurance-plus-fee payment Y=0.8X+1 needs its mean and variance."
+    consequence: "Mis-scaling the variance misprices the treaty."
+    quest_step: 18
+    tia_section: "B.2.1"
+    narrative_hook: "Transform of a known mean/variance -- scale squares, shift vanishes."
+    statement: |
+      For a loss with E[X]=10 and Var(X)=25 (both given), a reinsurance payment is
+      Y = 0.8X + 1. Find E[Y] and Var(Y).
+    solution: |
+      E[Y] = 0.8*10 + 1 = 9. Var(Y) = 0.8^2 * 25 = 0.64*25 = 16. (The +1 adds no
+      variance.)
+    answer: "E[Y]=9, Var(Y)=16"
+    shortcut_used: ["E[aX+b]=aE[X]+b", "Var(aX+b)=a^2 Var(X)"]
+    verify: "abs((0.8*10+1) - 9) < 1e-9 and abs((0.64*25) - 16) < 1e-9"
+
+  - id: C10.24
+    chapter: 10
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2c"]
+    distributions: ["continuous", "exponential"]
+    provenance: original
+    difficulty: 3
+    actor: "Team Rocket (Jessie)"
+    stakes: "Jessie integrates the cdf instead of the survival and gets a divergent mean."
+    consequence: "Integrating the cdf blows up; the mean is never recovered."
+    quest_step: 19
+    tia_section: "B.2.3"
+    narrative_hook: "Auditing the survival-method pitfall: integrate S, not F."
+    statement: |
+      A non-negative loss has S(x) = e^{-x/6}. Jessie computes "int_0^inf F(x) dx" to
+      get the mean and finds it blows up. Find the true E[X] and name Jessie's error.
+    solution: |
+      E[X] = int_0^inf S(x) dx = int_0^inf e^{-x/6} dx = 6. Jessie's error: she
+      integrated the cdf F(x)=1-e^{-x/6}, which grows toward 1 and diverges -- you
+      integrate the survival S, not F. True E[X] = 6.
+    answer: "E[X]=6 (integrate S, not F)"
+    shortcut_used: ["E[X]=int_0^inf S(x) dx", "integrate survival not cdf"]
+    verify: "abs(__import__('scipy.integrate', fromlist=['quad']).quad(lambda x: __import__('math').exp(-x/6), 0, 1e4)[0] - 6) < 1e-3"
+
+  # ===================== ELITE CHALLENGE (post-game) =====================
+
+  - id: C10.19
+    chapter: 10
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous", "exponential"]
+    provenance: original
+    difficulty: 4
+    actor: "a Silph Co. senior actuary"
+    stakes: "A survival-given severity is rescaled; she needs the full transformed moments."
+    consequence: "A wrong transformed variance misprices the layered cover."
+    quest_step: 20
+    tia_section: "B.2.1-B.2.3"
+    narrative_hook: "Survival mean, then a scale transform on mean and variance together."
+    statement: |
+      A non-negative loss has S(x) = e^{-x/4}, x >= 0. (a) Find E[X] by the survival
+      method. (b) If Y = 3X, find E[Y]. (c) Given additionally E[X^2]=32, find Var(Y).
+    solution: |
+      (a) E[X] = int_0^inf e^{-x/4} dx = 4. (b) E[Y] = 3 E[X] = 12.
+      (c) Var(X) = E[X^2] - (E[X])^2 = 32 - 16 = 16; Var(Y) = 3^2 Var(X) = 9(16) = 144.
+    answer: "4; 12; 144"
+    shortcut_used: ["E[X]=int S", "E[aX]=aE[X]", "Var(aX)=a^2 Var(X)"]
+    verify: "abs(__import__('scipy.integrate', fromlist=['quad']).quad(lambda x: __import__('math').exp(-x/4), 0, 1e4)[0] - 4) < 1e-3 and abs((3*4) - 12) < 1e-9 and abs((9*(32-16)) - 144) < 1e-9"
+
+  - id: C10.20
+    chapter: 10
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 4
+    actor: "a Silph Co. senior actuary"
+    stakes: "She demands the same mean computed two independent ways as a consistency check."
+    consequence: "If the two roads disagree, a moment was mis-integrated."
+    quest_step: 21
+    tia_section: "B.2.1-B.2.3"
+    narrative_hook: "Two roads to one mean: density integral vs survival integral, must agree."
+    statement: |
+      For f(x) = (3/8) x^2 on [0,2], its survival is S(x) = 1 - x^3/8 on [0,2]. Find
+      E[X] both by int_0^2 x f(x) dx and by int_0^2 S(x) dx, and confirm they agree.
+    solution: |
+      Density road: int_0^2 x (3/8) x^2 dx = (3/8)(16/4) = 1.5.
+      Survival road: int_0^2 (1 - x^3/8) dx = 2 - (1/8)(16/4) = 2 - 0.5 = 1.5. Agree.
+    answer: "1.5 both ways"
+    shortcut_used: ["E[X]=int x f", "E[X]=int_0^b S dx"]
+    verify: "abs(((3/8)*(16/4)) - 1.5) < 1e-9 and abs((2 - (1/8)*(16/4)) - 1.5) < 1e-9"
+
+  - id: C10.21
+    chapter: 10
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["2c", "2d"]
+    distributions: ["mixture", "exponential"]
+    provenance: original
+    difficulty: 5
+    actor: "a Silph Co. pricing committee"
+    stakes: "A deductible creates an atom of zero-payouts; pricing off the full mean is wrong."
+    consequence: "Pricing the deductible policy at the full $8k mean overcharges by ~$5k per policy."
+    quest_step: 22
+    tia_section: "B.2.2-B.2.3"
+    narrative_hook: "Decision: a deductible's atom drags the expected payment far below the full mean."
+    statement: |
+      A loss is exponential with mean 8. A policy pays the loss minus an $8k deductible,
+      0 if the loss is smaller. Given E[(X-8)_+] = int_8^inf e^{-x/8} dx, find the
+      expected payment, and decide: is pricing off the full mean ($8k) too high or too
+      low, and by how much?
+    solution: |
+      E[(X-8)_+] = int_8^inf e^{-x/8} dx = [-8 e^{-x/8}]_8^inf = 8 e^{-1} ~ 2.943.
+      Decision: pricing off the full mean $8k is far too HIGH -- the deductible creates
+      an atom of zero-payouts (about 63% of losses pay nothing), so the expected
+      payment is only ~$2.94k. Pricing at $8k overstates it by about $5.06k per policy.
+    answer: "~2.94; full mean too high by ~5.06"
+    shortcut_used: ["E[(X-d)_+]=int_d^inf S dx", "deductible atom drags payment down"]
+    verify: "abs(__import__('scipy.integrate', fromlist=['quad']).quad(lambda x: __import__('math').exp(-x/8), 8, 1e4)[0] - 8*__import__('math').exp(-1)) < 1e-3 and (8*__import__('math').exp(-1) < 8)"
+
+  - id: C10.23
+    chapter: 10
+    tier: elite_challenge
+    archetype: rival_trap
+    outcomes: ["2c"]
+    distributions: ["continuous"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary (rival)"
+    stakes: "Gary doubles every payout and forgets to square the scale in the variance."
+    consequence: "Reporting Var=18 instead of 36 halves the apparent risk."
+    quest_step: 23
+    tia_section: "B.2.1"
+    narrative_hook: "Rival trap: a scale multiplies the variance by a^2, not a (continuous)."
+    statement: |
+      A continuous severity has Var(X)=9. Gary doubles every payout, Y=2X, and says
+      "the variance just doubles too, so Var(Y)=18." Find the true Var(Y) and name
+      Gary's error.
+    solution: |
+      Var(2X) = 2^2 Var(X) = 4(9) = 36, not 18. Gary's error: a scale factor a
+      multiplies the variance by a^2, not by a -- he doubled when he should have
+      multiplied by four.
+    answer: "Var(Y)=36 (Gary forgot the square)"
+    shortcut_used: ["Var(aX)=a^2 Var(X)"]
+    verify: "abs((4*9) - 36) < 1e-9 and (36 != 18)"

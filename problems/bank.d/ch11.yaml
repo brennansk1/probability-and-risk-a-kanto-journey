@@ -1,0 +1,516 @@
+# Problem bank — Chapter 11 (the smooth continuous wilds): key continuous
+# distributions. Continuous uniform, exponential (memorylessness), gamma (sum of
+# exponentials; exponential/gamma/Poisson link), beta, plus a Pareto ENRICHMENT
+# item. Outcome 2d. Tier-B chapter. Locale: the smooth continuous wilds (no gym,
+# no badge — cross-Kanto travel).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   provenance, difficulty (1-5), actor, stakes, consequence, quest_step,
+#   tia_section, narrative_hook, statement, solution, answer, shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes
+# math, st (scipy.stats), __import__). Chained problems RESTATE the prior value as a
+# given so verify never depends on another problem's answer.
+#
+# distributions tags counted toward the syllabus: uniform / exponential / gamma /
+# beta. Pareto (C11.19) is ENRICHMENT and is NOT counted.
+#
+# Immersion quotas met: audit >=3 (C11.5, C11.10, C11.15, C11.18); rival_trap >=2
+# (C11.12, C11.14); decision >=1 (C11.7, C11.17). The canonical Team-Rocket error
+# (reading a density f(x) as a probability) is recycled into the audit drill C11.10;
+# the corridor-endpoint slip is recycled into audit C11.5.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C11.1
+    chapter: 11
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["uniform"]
+    provenance: original
+    difficulty: 1
+    actor: "a wild Porygon"
+    stakes: "You must size the catch-net band before the glitching Porygon settles somewhere on the corridor."
+    consequence: "Miss the band probability and the net is placed over the wrong stretch."
+    quest_step: 1
+    tia_section: "B.3.1-B.3.2"
+    narrative_hook: "Dodging a Porygon that spawns uniformly along the travel corridor."
+    statement: |
+      A glitching Porygon spawns at X ~ Uniform(2, 10). Find P(4 < X < 7), E[X],
+      and Var(X).
+    solution: |
+      Length ratio from the true lower endpoint a=2: P(4<X<7) = (7-4)/(10-2)
+      = 3/8 = 0.375. E[X] = (a+b)/2 = 6. Var(X) = (b-a)^2/12 = 64/12 = 5.3333.
+    answer: "P=0.375; E[X]=6; Var(X)=64/12=5.3333"
+    shortcut_used: ["uniform band = length ratio", "mean midpoint", "variance (b-a)^2/12"]
+    verify: "abs((7-4)/(10-2) - 0.375) < 1e-9 and abs((2+10)/2 - 6) < 1e-9 and abs((10-2)**2/12 - 5.3333) < 1e-3"
+
+  - id: C11.2
+    chapter: 11
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 1
+    actor: "the ferry navigator"
+    stakes: "The navigator needs the chance the next sonar gap runs long, and the chance it has already closed."
+    consequence: "Misreading the gap distribution throws off the contact-tracking schedule."
+    quest_step: 2
+    tia_section: "B.3.3"
+    narrative_hook: "Timing the random sonar gap on the ferry crossing."
+    statement: |
+      A sonar gap is X ~ Exponential(theta = 6) seconds. Find P(X > 6) and
+      P(X <= 3).
+    solution: |
+      S(x) = e^{-x/theta}. P(X>6) = e^{-6/6} = e^{-1} = 0.3679.
+      P(X<=3) = 1 - e^{-3/6} = 1 - e^{-0.5} = 0.3935.
+    answer: "P(X>6)=0.3679; P(X<=3)=0.3935"
+    shortcut_used: ["exponential survival e^{-x/theta}", "cdf 1 - e^{-x/theta}"]
+    verify: "abs(math.exp(-6/6) - 0.3679) < 1e-4 and abs((1 - math.exp(-3/6)) - 0.3935) < 1e-4"
+
+  - id: C11.3
+    chapter: 11
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["gamma"]
+    provenance: original
+    difficulty: 1
+    actor: "a wild Magneton"
+    stakes: "The Magneton's full charge is the sum of two random pulses; you need its mean and spread."
+    consequence: "The charge-time estimate decides whether you can dash past before it fires."
+    quest_step: 3
+    tia_section: "B.3.4"
+    narrative_hook: "Reading a Magneton's two-pulse charge time as a gamma wait."
+    statement: |
+      A Magneton's charge time is X ~ Gamma(alpha = 2, theta = 3). State E[X],
+      Var(X), and write the density f(x).
+    solution: |
+      E[X] = alpha*theta = 2*3 = 6. Var(X) = alpha*theta^2 = 2*9 = 18.
+      f(x) = 1/(Gamma(2) 3^2) x^1 e^{-x/3} = (1/9) x e^{-x/3}, x > 0 (Gamma(2)=1).
+    answer: "E[X]=6; Var(X)=18; f(x)=(1/9) x e^{-x/3}"
+    shortcut_used: ["gamma mean alpha*theta", "gamma variance alpha*theta^2", "Gamma(2)=1"]
+    verify: "abs(2*3 - 6) < 1e-9 and abs(2*3**2 - 18) < 1e-9 and abs(1/(math.gamma(2)*3**2) - 1/9) < 1e-12"
+
+  - id: C11.4
+    chapter: 11
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["beta"]
+    provenance: original
+    difficulty: 2
+    actor: "the ferry's hull inspector"
+    stakes: "The inspector needs the average barnacle coverage and whether it tends below half the hull."
+    consequence: "The coverage mean sets the cleaning budget before the next crossing."
+    quest_step: 4
+    tia_section: "B.3.5"
+    narrative_hook: "The fraction of the hull the barnacles cover as a beta proportion."
+    statement: |
+      The fraction X of the hull covered by barnacles is X ~ Beta(alpha = 2,
+      beta = 3). Find E[X] and Var(X), and say whether the mean is below or above
+      1/2.
+    solution: |
+      E[X] = alpha/(alpha+beta) = 2/5 = 0.4 (below 1/2, leaning toward 0).
+      Var(X) = alpha*beta / ((alpha+beta)^2 (alpha+beta+1)) = 6/(25*6) = 0.04.
+    answer: "E[X]=0.4 (below 1/2); Var(X)=0.04"
+    shortcut_used: ["beta mean alpha/(alpha+beta)", "beta variance formula"]
+    verify: "abs(2/(2+3) - 0.4) < 1e-9 and abs((2*3)/((2+3)**2*(2+3+1)) - 0.04) < 1e-9 and 2/(2+3) < 0.5"
+
+  - id: C11.5
+    chapter: 11
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["2d"]
+    distributions: ["uniform"]
+    provenance: original
+    difficulty: 2
+    actor: "a sloppy field recorder"
+    stakes: "The recorder's catch-net log divides by the wrong corridor length and reports too low a hit rate."
+    consequence: "An understated band probability under-stocks the catch nets."
+    quest_step: 5
+    tia_section: "B.3.1-B.3.2"
+    narrative_hook: "Catching the corridor-endpoint slip in a uniform band probability."
+    statement: |
+      For X ~ Uniform(2, 10), a recorder writes "P(4 < X < 7) = (7-4)/10 = 0.30."
+      Find the true probability and name the error.
+    solution: |
+      The total width is b - a = 10 - 2 = 8, not 10. True P(4<X<7)
+      = (7-4)/(10-2) = 3/8 = 0.375. The recorder divided by the upper endpoint 10
+      instead of the width 8.
+    answer: "true 0.375 (recorder divided by 10, not the width 8)"
+    shortcut_used: ["uniform band = length / (b - a)", "measure from the true lower endpoint a"]
+    verify: "abs((7-4)/(10-2) - 0.375) < 1e-9 and abs((7-4)/10 - 0.30) < 1e-9"
+
+  - id: C11.6
+    chapter: 11
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["uniform"]
+    provenance: original
+    difficulty: 1
+    actor: "a reality-warp dial"
+    stakes: "A random coordinate is stretched through a linear dial; you must name the warped distribution."
+    consequence: "Get the warped range wrong and the dial calibration is off."
+    quest_step: 6
+    tia_section: "B.3.1-B.3.2"
+    narrative_hook: "Warping a uniform coordinate through a linear transform."
+    statement: |
+      A coordinate X ~ Uniform(0, 1) is rescaled to Y = 8X + 2. Name Y's
+      distribution and give E[Y] and Var(Y).
+    solution: |
+      A positive linear map of a uniform is uniform: Y runs 0*8+2=2 to 1*8+2=10,
+      so Y ~ Uniform(2, 10). E[Y] = 8*(1/2) + 2 = 6. Var(Y) = 8^2 * (1/12)
+      = 64/12 = 5.3333.
+    answer: "Y~Uniform(2,10); E[Y]=6; Var(Y)=64/12=5.3333"
+    shortcut_used: ["linear map of uniform", "E[aX+b]=aE+b", "Var(aX+b)=a^2 Var"]
+    verify: "abs(8*0.5 + 2 - 6) < 1e-9 and abs(8**2*(1/12) - 5.3333) < 1e-3"
+
+  - id: C11.7
+    chapter: 11
+    tier: route_trainer
+    archetype: decision
+    outcomes: ["2d"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 2
+    actor: "the ferry engineer"
+    stakes: "Two equal-mean-life parts have been running 8 hours; the engineer must keep the one with more life left."
+    consequence: "Swapping out the wrong part wastes a part that is actually as-good-as-new."
+    quest_step: 7
+    tia_section: "B.3.3"
+    narrative_hook: "Choosing between a memoryless part and a fixed-life part after 8 hours of use."
+    statement: |
+      Part A is Exponential(theta = 10) hours; Part B has a FIXED 10-hour life.
+      Both have run 8 hours. Find each part's expected REMAINING life and say which
+      to keep.
+    solution: |
+      Part A is memoryless: expected remaining = theta = 10 hours (as good as new).
+      Part B is fixed: remaining = 10 - 8 = 2 hours. Keep Part A -- it has the
+      longer expected remaining life despite the same mean life.
+    answer: "A remaining = 10; B remaining = 2; keep A"
+    shortcut_used: ["memoryless remaining = theta", "fixed life burns down"]
+    verify: "abs(10 - 10) < 1e-9 and abs((10 - 8) - 2) < 1e-9 and 10 > 2"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C11.8
+    chapter: 11
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 3
+    actor: "a fainted Pokemon's recovery clock"
+    stakes: "The recovery clock has run 8 minutes; you must know the chance of a long wait and the expected extra time."
+    consequence: "A bad remaining-time estimate strands you mid-route without a healthy team."
+    quest_step: 8
+    tia_section: "B.3.3"
+    narrative_hook: "A recovery clock that refuses to drop, by memorylessness."
+    statement: |
+      A recovery time is Exponential with mean 20 minutes; it has rested 8 minutes.
+      Find the probability it needs more than 15 additional minutes, and the
+      expected additional time. (Use memorylessness.)
+    solution: |
+      theta = 20. Memoryless: the extra wait is a fresh Exponential(20).
+      P(extra > 15) = e^{-15/20} = e^{-0.75} = 0.4724.
+      Expected additional time = theta = 20 minutes.
+    answer: "P(extra>15)=0.4724; expected additional=20 min"
+    shortcut_used: ["memorylessness collapses elapsed time", "remaining mean = theta"]
+    verify: "abs(math.exp(-15/20) - 0.4724) < 1e-4 and abs(math.exp(-(8+15)/20)/math.exp(-8/20) - math.exp(-15/20)) < 1e-12"
+
+  - id: C11.9
+    chapter: 11
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["gamma"]
+    provenance: original
+    difficulty: 3
+    actor: "a wild interference field"
+    stakes: "Only the shape of the interference density survived; you must normalize it and read its mean."
+    consequence: "Without the normalizing constant the whole interference model is unusable."
+    quest_step: 9
+    tia_section: "B.3.4"
+    narrative_hook: "Identifying a gamma density from its bare kernel."
+    statement: |
+      An interference time X has density f(x) = c x e^{-x/4} for x > 0. Find c,
+      identify the named distribution and its parameters, and compute E[X].
+    solution: |
+      f(x) ∝ x^1 e^{-x/4} is the kernel of a Gamma(alpha = 2, theta = 4).
+      Normalize via the Master-Ball integral: integral_0^inf x e^{-x/4} dx
+      = Gamma(2) 4^2 = 16, so c = 1/16. E[X] = alpha*theta = 2*4 = 8.
+    answer: "c=1/16; Gamma(2,4); E[X]=8"
+    shortcut_used: ["Master-Ball integral Gamma(alpha)theta^alpha", "gamma mean alpha*theta"]
+    verify: "abs(1/(math.gamma(2)*4**2) - 1/16) < 1e-12 and abs(2*4 - 8) < 1e-9"
+
+  - id: C11.10
+    chapter: 11
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2d"]
+    distributions: ["uniform"]
+    provenance: original
+    difficulty: 2
+    actor: "Team Rocket (Meowth)"
+    stakes: "Meowth bets the loss table on the chance the Porygon sits at exactly position 5 -- read off the density."
+    consequence: "Treating a density height as a probability busts Team Rocket's whole plan."
+    quest_step: 10
+    tia_section: "B.3.1"
+    narrative_hook: "Catching Meowth read a continuous density f(5) as the probability P(X=5)."
+    statement: |
+      A Porygon spawns at X ~ Uniform(2, 10), with density f(x) = 1/8. Meowth says
+      "the chance it's exactly at position 5 is f(5) = 1/8 = 0.125." State the true
+      P(X = 5) and name Meowth's error.
+    solution: |
+      For any continuous X, a single point has zero width, so P(X = 5) = 0. The
+      value f(5) = 1/8 is a DENSITY (probability per unit length), not a
+      probability; only an AREA (height times width) is a probability. Meowth read
+      a density height as a probability.
+    answer: "P(X=5)=0 (Meowth read a density as a probability)"
+    shortcut_used: ["P(X=point)=0 for continuous X", "density is probability per unit length, not a probability"]
+    verify: "abs(1/(10-2) - 0.125) < 1e-9 and abs(0.0 - 0.0) < 1e-12"
+
+  - id: C11.11
+    chapter: 11
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 3
+    actor: "two racing sonar contacts"
+    stakes: "Two independent contacts race to ping first; you must model the time to the earliest."
+    consequence: "The earliest-ping law sets when the alarm should be armed."
+    quest_step: 11
+    tia_section: "B.3.3"
+    narrative_hook: "Two independent exponential contacts; the first to fire wins."
+    statement: |
+      Two independent contacts are each Exponential(theta = 12). Let T be the time
+      until the first one pings. Identify the distribution of T and find E[T].
+      (Hint: minimum of independent exponentials.)
+    solution: |
+      Rates add: S_T(t) = e^{-t/12} e^{-t/12} = e^{-2t/12} = e^{-t/6}.
+      So T ~ Exponential(theta = 6) and E[T] = 6 seconds.
+    answer: "T~Exponential(6); E[T]=6"
+    shortcut_used: ["min of exponentials: add rates", "1/theta = 1/12 + 1/12"]
+    verify: "abs(1/(1/12 + 1/12) - 6) < 1e-9 and abs((1/6) - (1/12 + 1/12)) < 1e-12"
+
+  - id: C11.12
+    chapter: 11
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2d"]
+    distributions: ["gamma"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary boasts he knows the spread of a 3-tick gamma wait, but quotes only the tick count."
+    consequence: "Dropping the theta^2 factor understates the spread and mis-times the dash."
+    quest_step: 12
+    tia_section: "B.3.4"
+    narrative_hook: "Catching Gary quote the tick COUNT as the gamma variance."
+    statement: |
+      The total time to the 3rd of three independent Exponential(theta = 2) ticks
+      is X. Gary says "three ticks, so the variance is 3 -- wait, 2 -- the count
+      basically." Find the true E[X] and Var(X) and name Gary's error.
+    solution: |
+      X ~ Gamma(alpha = 3, theta = 2). E[X] = alpha*theta = 6. Variances of
+      independent waits add: Var(X) = alpha*theta^2 = 3*4 = 12. Gary used the count
+      of waits and dropped the theta^2 factor.
+    answer: "E[X]=6, Var(X)=12 (Gary dropped theta^2)"
+    shortcut_used: ["gamma variance alpha*theta^2", "independent variances add"]
+    verify: "abs(3*2 - 6) < 1e-9 and abs(3*2**2 - 12) < 1e-9"
+
+  - id: C11.13
+    chapter: 11
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["beta"]
+    provenance: original
+    difficulty: 2
+    actor: "the controlled-deck surveyor"
+    stakes: "The surveyor needs the chance the glitch controls over half the deck, and the average share."
+    consequence: "The control-share estimate decides whether the deck is still passable."
+    quest_step: 13
+    tia_section: "B.3.5"
+    narrative_hook: "The share of the deck a glitch controls, as a pure-power beta."
+    statement: |
+      The controlled share X is Beta(alpha = 3, beta = 1), i.e. f(x) = 3x^2 on
+      (0,1). Find P(X > 0.5) and E[X].
+    solution: |
+      P(X>0.5) = integral_0.5^1 3x^2 dx = [x^3]_0.5^1 = 1 - 0.125 = 0.875.
+      E[X] = alpha/(alpha+beta) = 3/4 = 0.75.
+    answer: "P(X>0.5)=0.875; E[X]=0.75"
+    shortcut_used: ["integrate pure-power beta density", "beta mean alpha/(alpha+beta)"]
+    verify: "abs((1 - 0.5**3) - 0.875) < 1e-9 and abs(3/(3+1) - 0.75) < 1e-9"
+
+  - id: C11.14
+    chapter: 11
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2d"]
+    distributions: ["exponential"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary insists a memoryless wait burns down like a fixed appointment after time elapses."
+    consequence: "Treating the remaining wait as shrinking sends Gary off too early and into the trap."
+    quest_step: 14
+    tia_section: "B.3.3"
+    narrative_hook: "Catching Gary burn down a memoryless exponential wait."
+    statement: |
+      An event time is Exponential(theta = 6) minutes. You have waited 4 minutes
+      with no event. Gary says "you've used 4 of an expected 6, so only 2 minutes
+      remain on average." Find the true expected remaining wait and name the error.
+    solution: |
+      The exponential is memoryless: the remaining wait is a fresh Exponential(6),
+      so the expected remaining time is the full mean theta = 6 minutes, regardless
+      of the 4 elapsed. Gary applied fixed-appointment intuition (6 - 4 = 2) to a
+      memoryless wait.
+    answer: "expected remaining = 6 (not 2; memoryless, not fixed)"
+    shortcut_used: ["memoryless remaining mean = theta", "elapsed time is irrelevant"]
+    verify: "abs(6 - 6) < 1e-9 and abs((6 - 4) - 2) < 1e-9 and 6 != 2"
+
+  - id: C11.15
+    chapter: 11
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2d"]
+    distributions: ["gamma"]
+    provenance: original
+    difficulty: 2
+    actor: "a sloppy log-keeper"
+    stakes: "The log swaps the gamma mean and variance formulas and reports a wrong center."
+    consequence: "A mean inflated by an extra theta corrupts every downstream estimate."
+    quest_step: 15
+    tia_section: "B.3.4"
+    narrative_hook: "Catching a swapped gamma mean/variance in a field log."
+    statement: |
+      A log states "X ~ Gamma(3, 2) has mean 3*2^2 = 12." Find the true E[X] and
+      Var(X) and name the slip.
+    solution: |
+      The gamma MEAN is alpha*theta = 3*2 = 6; the VARIANCE is alpha*theta^2
+      = 3*4 = 12. The log used the variance formula for the mean (an extra theta).
+    answer: "E[X]=6, Var(X)=12 (log swapped mean and variance)"
+    shortcut_used: ["gamma mean alpha*theta", "gamma variance alpha*theta^2"]
+    verify: "abs(3*2 - 6) < 1e-9 and abs(3*2**2 - 12) < 1e-9"
+
+  - id: C11.16
+    chapter: 11
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["uniform"]
+    provenance: original
+    difficulty: 2
+    actor: "the corridor cartographer"
+    stakes: "The cartographer marks the quartile cut-points of the Porygon spawn zone on the map."
+    consequence: "Wrong quartiles mislabel where the Porygon is most likely to be found."
+    quest_step: 16
+    tia_section: "B.3.2"
+    narrative_hook: "Reading the quartiles of a uniform spawn zone by inverting the cdf."
+    statement: |
+      For X ~ Uniform(2, 10), find the 25th and 75th percentiles.
+    solution: |
+      Invert F(x) = (x - 2)/8. F(x) = 0.25 => x = 2 + 0.25*8 = 4.
+      F(x) = 0.75 => x = 2 + 0.75*8 = 8. Quartiles are 4 and 8.
+    answer: "25th = 4; 75th = 8"
+    shortcut_used: ["invert uniform cdf x = a + p*(b - a)"]
+    verify: "abs((2 + 0.25*(10-2)) - 4) < 1e-9 and abs((2 + 0.75*(10-2)) - 8) < 1e-9"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =====================
+
+  - id: C11.17
+    chapter: 11
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["2d"]
+    distributions: ["uniform", "exponential", "beta"]
+    provenance: original
+    difficulty: 4
+    actor: "Ash (you)"
+    stakes: "Your action window needs three independent conditions to align; you must price the joint chance and decide if waiting helps."
+    consequence: "Misjudging the memoryless wait wastes the window and the leg's progress."
+    quest_step: 17
+    tia_section: "B.3.1-B.3.5"
+    narrative_hook: "Braiding a uniform position, a memoryless sonar wait, and a beta jam fraction into one window."
+    statement: |
+      Porygon position X ~ Uniform(0, 20); sonar gap T ~ Exponential(theta = 5)
+      already running 3 seconds; jam fraction J ~ Beta(2, 2). All independent. You
+      may act only if X < 10 AND T lasts at least 5 more seconds AND J < 0.5. Find
+      P(X<10), P(T>5 | T>3), P(J<0.5), the joint window probability, and decide
+      whether elapsed sonar time helps you.
+    solution: |
+      P(X<10) = (10-0)/(20-0) = 0.5.
+      Memoryless: P(T>3+5 | T>3) = P(T>5) = e^{-5/5} = e^{-1} = 0.3679.
+      Beta(2,2) symmetric => P(J<0.5) = 0.5 (and integral_0^{0.5} 6x(1-x) dx = 0.5).
+      Independent => window = 0.5 * 0.3679 * 0.5 = 0.0920.
+      Elapsed sonar time is IRRELEVANT (memorylessness), so waiting does not help.
+    answer: "0.5; 0.3679; 0.5; window=0.0920; elapsed time irrelevant"
+    shortcut_used: ["uniform length ratio", "memorylessness", "beta symmetry", "independence multiplies"]
+    verify: "abs((10-0)/(20-0) - 0.5) < 1e-9 and abs(math.exp(-5/5) - 0.3679) < 1e-4 and abs(0.5*math.exp(-1)*0.5 - 0.0920) < 1e-3"
+
+  - id: C11.18
+    chapter: 11
+    tier: elite_challenge
+    archetype: audit
+    outcomes: ["2d"]
+    distributions: ["gamma", "exponential"]
+    provenance: original
+    difficulty: 4
+    actor: "the navigation log"
+    stakes: "Only the integer-shape gamma cdf can recover the chance the 3rd ping is early, with no integration by parts."
+    consequence: "A wrong cdf value mis-times the gate-opening dash."
+    quest_step: 18
+    tia_section: "B.3.4"
+    narrative_hook: "Using the exponential/gamma/Poisson link to evaluate a gamma cdf as a Poisson sum."
+    statement: |
+      The total time S to the 3rd of three independent Exponential(theta = 2)
+      ticks. (a) Name S's distribution and give E[S], Var(S). (b) Evaluate P(S < 2)
+      using the integer-shape gamma cdf (a Poisson sum). (c) Compare E[S] to a
+      single Exponential(2) mean.
+    solution: |
+      (a) S ~ Gamma(alpha = 3, theta = 2). E[S] = alpha*theta = 6;
+          Var(S) = alpha*theta^2 = 12.
+      (b) Poisson-sum cdf with t/theta = 2/2 = 1:
+          P(S<2) = 1 - e^{-1}(1 + 1 + 1^2/2) = 1 - 2.5 e^{-1}
+                 = 1 - 0.9197 = 0.0803.
+      (c) E[S] = 6 = 3 * E[Exponential(2)] = 3*2: means add over the 3 waits.
+    answer: "(a) Gamma(3,2), E=6, Var=12; (b) 0.0803; (c) 6 = 3*2 (means add)"
+    shortcut_used: ["sum of exponentials is gamma", "means/independent variances add", "integer-shape gamma cdf via Poisson sum"]
+    verify: "abs(3*2 - 6) < 1e-9 and abs(3*2**2 - 12) < 1e-9 and abs((1 - 2.5*math.exp(-1)) - 0.0803) < 1e-4"
+
+  - id: C11.19
+    chapter: 11
+    tier: elite_challenge
+    archetype: standard
+    outcomes: []
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "the reinsurance desk"
+    stakes: "ENRICHMENT (off-syllabus): a heavy-tailed catastrophe loss needs its tail probability and mean."
+    consequence: "Pricing the catastrophe layer hinges on whether the Pareto mean even exists."
+    quest_step: 19
+    tia_section: "ENRICHMENT (off-syllabus Pareto; not counted)"
+    narrative_hook: "A rare-but-enormous loss modeled by a heavy-tailed Pareto (enrichment)."
+    statement: |
+      ENRICHMENT (not Exam P). A loss has Pareto survival S(x) = (1/x)^{2.5} for
+      x >= 1 (x_m = 1, alpha = 2.5). Find P(X > 4) and E[X].
+    solution: |
+      P(X>4) = (1/4)^{2.5} = 4^{-2.5} = 0.03125.
+      Since alpha = 2.5 > 1, the mean exists: E[X] = alpha*x_m/(alpha-1)
+      = 2.5*1/1.5 = 5/3 = 1.6667.
+    answer: "P(X>4)=0.03125; E[X]=5/3=1.6667"
+    shortcut_used: ["Pareto survival (x_m/x)^alpha", "Pareto mean alpha*x_m/(alpha-1) for alpha>1"]
+    verify: "abs(4**(-2.5) - 0.03125) < 1e-9 and abs(2.5*1/(2.5-1) - 5/3) < 1e-9"
