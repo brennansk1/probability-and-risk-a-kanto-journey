@@ -12,7 +12,7 @@
 # Checkpoint A — The Countable Road, Reviewed {.type-normal}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the five badges of Act I earned, the route south of Fuchsia marked as a rest stop before the road bends toward the smooth continuous wilds of Act II." style="width:70%; max-width:520px; display:block; margin:1em auto; image-rendering: pixelated;">
+<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the five badges of Act I earned, the route south of Fuchsia marked as a rest stop before the road bends toward the smooth continuous wilds of Act II." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>A rest stop, not a destination. Five badges are pinned to your case; the road ahead leaves the countable world behind. Tonight is for consolidating what got you here.</figcaption>
 </figure>
 

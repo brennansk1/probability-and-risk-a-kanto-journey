@@ -14,7 +14,7 @@
 # The Waiting Games and the Ghost Count {.type-ghost}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the route from Cerulean through Lavender Town to Celadon City highlighted; the haunted Pokemon Tower and Erika's gym at the Celadon Game Corner district are marked as the current destination." style="width:70%; max-width:520px; display:block; margin:1em auto; image-rendering: pixelated;">
+<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the route from Cerulean through Lavender Town to Celadon City highlighted; the haunted Pokemon Tower and Erika's gym at the Celadon Game Corner district are marked as the current destination." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Route to a 10 — past the haunted Pokémon Tower of Lavender Town to Celadon City, home of the Game Corner and the Rainbow Badge: the city of <em>named chance</em>.</figcaption>
 </figure>
 

@@ -12,7 +12,7 @@
 # Probability as Area — Densities & CDFs {.type-psychic}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with Saffron City at the center of the region circled as the current destination; Celadon lies to the west, Vermilion to the south, and the Silph Co. tower rises at Saffron's heart. The five earned badges are noted along the route from Cerulean." style="width:70%; max-width:520px; display:block; margin:1em auto; image-rendering: pixelated;">
+<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with Saffron City at the center of the region circled as the current destination; Celadon lies to the west, Vermilion to the south, and the Silph Co. tower rises at Saffron's heart. The five earned badges are noted along the route from Cerulean." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Route to a 10 — five badges behind you, you reach <strong>Saffron City</strong>, the central hub of Kanto: the Silph Co. tower, Sabrina's Psychic gym, and the home of the <em>Marsh Badge</em> — where the countable world melts into a <em>smooth, continuous</em> one.</figcaption>
 </figure>
 

@@ -10,7 +10,7 @@
 # Reasoning From Evidence {.type-water}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the road from Viridian City north to Cerulean City highlighted; Cerulean, home of the Cascade Badge, is marked as the current destination." style="width:70%; max-width:520px; display:block; margin:1em auto; image-rendering: pixelated;">
+<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the road from Viridian City north to Cerulean City highlighted; Cerulean, home of the Cascade Badge, is marked as the current destination." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Route to a 10 — you have left Viridian, followed the river north, and reached Cerulean City: home of the Cascade Badge and the city of <em>inference</em>.</figcaption>
 </figure>
 

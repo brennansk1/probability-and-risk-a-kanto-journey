@@ -12,7 +12,7 @@
 # The Four Wild Shapes — Key Continuous Distributions {.type-water}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with no single city circled; instead the long cross-region routes between towns are highlighted, the open water and wild roads you travel between gyms, labelled 'the smooth continuous wilds'." style="width:70%; max-width:520px; display:block; margin:1em auto; image-rendering: pixelated;">
+<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with no single city circled; instead the long cross-region routes between towns are highlighted, the open water and wild roads you travel between gyms, labelled 'the smooth continuous wilds'." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>No gym this leg — just the open road. You are crossing <em>the smooth continuous wilds</em>: the long water-routes and wild stretches between Kanto's cities, where every quantity glides instead of ticking.</figcaption>
 </figure>
 

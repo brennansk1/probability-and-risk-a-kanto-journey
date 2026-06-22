@@ -10,7 +10,7 @@
 # Champion's Challenge — Exam Strategy & Three Mock Exams {.type-dragon}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="The Kanto region map, every town and route cleared, the path running from Pallet Town all the way to the Indigo Plateau." style="width:70%; max-width:520px; display:block; margin:1em auto; image-rendering: pixelated;">
+<img src="../../assets/maps/kanto_town_map.png" alt="The Kanto region map, every town and route cleared, the path running from Pallet Town all the way to the Indigo Plateau." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Kanto, end to end — eight badges earned, the whole region behind you. One chamber left: the Indigo Plateau, where everything you learned is tested at once.</figcaption>
 </figure>
 

@@ -15,7 +15,7 @@
 # A Payment Is a Reshaped Loss {.type-poison}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the southern coast highlighted: Fuchsia City, home of Koga's poison-type gym, the Soul Badge, and the great fenced Safari Zone, marked as the current destination after Celadon." style="width:70%; max-width:520px; display:block; margin:1em auto; image-rendering: pixelated;">
+<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the southern coast highlighted: Fuchsia City, home of Koga's poison-type gym, the Soul Badge, and the great fenced Safari Zone, marked as the current destination after Celadon." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Route to a 5th badge — you have left Celadon with the Rainbow Badge and reached <strong>Fuchsia City</strong>: Koga's ninja gym, the <strong>Soul Badge</strong>, and the sprawling, fenced <strong>Safari Zone</strong> where Pokémon flee instead of fight.</figcaption>
 </figure>
 

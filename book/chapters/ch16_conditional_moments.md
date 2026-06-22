@@ -12,7 +12,7 @@
 # Expectation Within Expectation {.type-ground}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with Viridian City highlighted; seven badges already earned, the route now looping back to the gym that was skipped at the very start." style="width:70%; max-width:520px; display:block; margin:1em auto; image-rendering: pixelated;">
+<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with Viridian City highlighted; seven badges already earned, the route now looping back to the gym that was skipped at the very start." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Route to a 10 — seven badges in hand, you double back to Viridian City, the one gym you skipped on the way out of Pallet. Behind its doors waits the eighth leader, and the last idea that stands between you and the Plateau: averaging over a layer you cannot see.</figcaption>
 </figure>
 

@@ -16,7 +16,7 @@
 # The Extreme of Many — Order Statistics {.type-ice}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the journey at its end: beyond Victory Road, at the northwest tip of the region, the Indigo Plateau, where the Pokémon League and the Elite Four await; all eight gym badges collected." style="width:72%; max-width:520px; display:block; margin:1em auto; image-rendering: pixelated;">
+<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the journey at its end: beyond Victory Road, at the northwest tip of the region, the Indigo Plateau, where the Pokémon League and the Elite Four await; all eight gym badges collected." style="width:72%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>The end of the road. Beyond Victory Road waits the <strong>Indigo Plateau</strong> — the Pokémon League itself, where the <em>Elite Four</em> stand between you and the Champion. No badge is handed out here; this is the League. The question now is never the typical challenger, but the <em>extreme</em> one.</figcaption>
 </figure>
 
