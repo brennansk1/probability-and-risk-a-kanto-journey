@@ -21,7 +21,7 @@ except ImportError:
     sys.exit("PyYAML required: pip install pyyaml")
 
 ROOT = Path(__file__).resolve().parent.parent
-TIERS = {"route_trainer", "gym_battle", "elite_challenge"}
+TIERS = {"route_trainer", "gym_battle", "elite_challenge", "mock"}
 
 
 def main() -> int:

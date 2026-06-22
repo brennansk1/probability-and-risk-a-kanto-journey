@@ -159,12 +159,13 @@ def audit_file(path: Path):
     # ch00 = orientation (no problem set); chNNx_* = checkpoints (review template).
     is_orientation = path.name.startswith("ch00")
     is_checkpoint = "checkpoint" in path.name.lower()
+    is_finale = path.name.startswith("ch19")  # mock-exam finale: non-standard structure
 
     def heading_pos(name):
         m = re.search(rf"^#{{1,3}}\s+.*{re.escape(name)}.*$", text, re.I | re.M)
         return m.start() if m else -1
 
-    if path.parent == CH_DIR and not is_stub and not is_orientation and not is_checkpoint:
+    if path.parent == CH_DIR and not is_stub and not is_orientation and not is_checkpoint and not is_finale:
         missing = [h for h in REQUIRED_HEADINGS if h.lower() not in text.lower()]
         if missing:
             warnings.append(f"{rel}: missing sections {missing}")

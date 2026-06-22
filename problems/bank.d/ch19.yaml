@@ -1,0 +1,1629 @@
+# Problem bank — Chapter 19 (Indigo Plateau / the Championship = the exam):
+# THREE full weight-matched mock exams. No new theory; this is execution under the
+# clock. Outcomes: all (1a-1g, 2a-2f, 3a-3i).  Tier: mock.  Locale: Indigo Plateau
+# (Gary, the rival, as the final opponent).  TIA: exam finale (not a TIA leaf).
+#
+# Blueprint (MASTER_PLAN_V3 §24): each mock = 30 questions / 3 hours / scored 0-10,
+# weight-matched ~8 General (Topic 1) / ~14 Univariate (Topic 2) / ~8 Multivariate
+# (Topic 3), five options A-E with exactly one correct, spanning every outcome and
+# in-scope distribution at true SOA difficulty.
+#
+# Per-mock weight split (verified): Mock A (M1) 8/14/8; Mock B (M2) 8/14/8;
+# Mock C (M3) 8/14/8.  Topic tag lives in structural_tags as "topic1|topic2|topic3".
+#
+# Schema per problem: id, chapter, tier (mock), outcomes, distributions,
+# structural_tags, difficulty (1-5), statement (with options A-E), solution,
+# answer (the correct letter + value), shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes
+# math, st=scipy.stats, and builtins incl. next/enumerate/zip). Each recomputes the
+# numeric answer and checks the lettered option matches it. Normal-table problems
+# use the Z-table 2-dp values the chapter prints (e.g. Phi(1.5)=0.9332).
+
+problems:
+
+  # =====================================================================
+  # ============================ MOCK A (M1) ============================
+  # =====================================================================
+
+  # ---- Topic 1 — General Probability (8) ----
+
+  - id: M1.1
+    chapter: 19
+    tier: mock
+    outcomes: ["1a", "1d"]
+    distributions: []
+    structural_tags: ["topic1", "axioms", "complement"]
+    difficulty: 2
+    statement: |
+      In a wild encounter, P(grass-type) = 0.5, P(bug-type) = 0.3, and
+      P(grass and bug) = 0.2. Find P(neither grass nor bug).
+      (A) 0.20  (B) 0.30  (C) 0.40  (D) 0.50  (E) 0.60
+    solution: |
+      Inclusion-exclusion: P(grass or bug) = 0.5 + 0.3 - 0.2 = 0.6, so
+      P(neither) = 1 - 0.6 = 0.4.  Answer C.
+    answer: "C (0.40)"
+    shortcut_used: ["inclusion-exclusion", "complement"]
+    verify: "abs((1 - (0.5 + 0.3 - 0.2)) - 0.40) < 1e-9"
+
+  - id: M1.2
+    chapter: 19
+    tier: mock
+    outcomes: ["1c", "1f"]
+    distributions: []
+    structural_tags: ["topic1", "bayes", "false-positive"]
+    difficulty: 3
+    statement: |
+      A wild Pokemon is Ghost-type with prior 0.02. A scanner flags a true Ghost
+      with probability 0.95 and false-flags a non-Ghost with probability 0.10. It
+      just flagged one. Find P(Ghost | flagged).
+      (A) 0.095  (B) 0.162  (C) 0.500  (D) 0.760  (E) 0.950
+    solution: |
+      Bayes: P(G|+) = .95(.02) / [.95(.02) + .10(.98)] = .0190/.1170 = 0.1624.
+      Answer B.
+    answer: "B (0.162)"
+    shortcut_used: ["Bayes grid", "low base rate => posterior stays small"]
+    verify: "abs((0.95*0.02)/(0.95*0.02 + 0.10*0.98) - 0.162) < 1e-3"
+
+  - id: M1.3
+    chapter: 19
+    tier: mock
+    outcomes: ["1b"]
+    distributions: []
+    structural_tags: ["topic1", "combinatorics", "permutation"]
+    difficulty: 2
+    statement: |
+      From 8 caught Pokemon, how many distinct ORDERED battle line-ups of 3 can
+      Ash field?
+      (A) 56  (B) 112  (C) 168  (D) 336  (E) 512
+    solution: |
+      Ordered selection => permutation P(8,3) = 8*7*6 = 336.  Answer D.
+    answer: "D (336)"
+    shortcut_used: ["nPr = ordered count"]
+    verify: "8*7*6 == 336"
+
+  - id: M1.4
+    chapter: 19
+    tier: mock
+    outcomes: ["1a", "1d"]
+    distributions: []
+    structural_tags: ["topic1", "equally-likely", "disjoint-union"]
+    difficulty: 1
+    statement: |
+      Roll two fair six-sided dice at the Game Corner. Find P(sum = 7 or sum = 11).
+      (A) 1/9  (B) 1/6  (C) 2/9  (D) 1/4  (E) 1/3
+    solution: |
+      Sum 7: 6 ways; sum 11: 2 ways; disjoint, over 36 => (6+2)/36 = 8/36 = 2/9.
+      Answer C.
+    answer: "C (2/9 ~ 0.2222)"
+    shortcut_used: ["count favorable / 36", "disjoint events add"]
+    verify: "abs((6+2)/36 - 2/9) < 1e-9"
+
+  - id: M1.5
+    chapter: 19
+    tier: mock
+    outcomes: ["1f", "1g"]
+    distributions: []
+    structural_tags: ["topic1", "independence"]
+    difficulty: 2
+    statement: |
+      Three independent Poke Balls each catch with probability 0.4. Find the
+      probability of AT LEAST ONE successful catch in three throws.
+      (A) 0.216  (B) 0.400  (C) 0.640  (D) 0.784  (E) 0.936
+    solution: |
+      "At least one" of independent trials = 1 - P(none) = 1 - (0.6)^3
+      = 1 - 0.216 = 0.784.  Answer D.
+    answer: "D (0.784)"
+    shortcut_used: ["at-least-one = 1 - (miss)^n"]
+    verify: "abs((1 - 0.6**3) - 0.784) < 1e-9"
+
+  - id: M1.6
+    chapter: 19
+    tier: mock
+    outcomes: ["1c", "1e"]
+    distributions: []
+    structural_tags: ["topic1", "conditional", "total-probability"]
+    difficulty: 3
+    statement: |
+      Route A holds 70% of Pokemon (10% of them rare); Route B holds 30%
+      (25% of them rare). A captured Pokemon is rare. Find P(it came from Route B).
+      (A) 0.30  (B) 0.42  (C) 0.52  (D) 0.58  (E) 0.75
+    solution: |
+      P(rare) = .7(.10) + .3(.25) = .07 + .075 = .145.
+      P(B | rare) = .075/.145 = 0.5172.  Answer C.
+    answer: "C (~0.52)"
+    shortcut_used: ["total probability denominator", "Bayes"]
+    verify: "abs((0.3*0.25)/(0.7*0.10 + 0.3*0.25) - 0.517) < 1e-3"
+
+  - id: M1.7
+    chapter: 19
+    tier: mock
+    outcomes: ["1d"]
+    distributions: []
+    structural_tags: ["topic1", "demorgan", "complement"]
+    difficulty: 2
+    statement: |
+      An event A occurs with probability 0.6, B with 0.5, and at least one of them
+      with 0.8. Find P(A and B).
+      (A) 0.10  (B) 0.20  (C) 0.30  (D) 0.40  (E) 0.55
+    solution: |
+      P(A and B) = P(A) + P(B) - P(A or B) = 0.6 + 0.5 - 0.8 = 0.3.  Answer C.
+    answer: "C (0.30)"
+    shortcut_used: ["inclusion-exclusion solved for intersection"]
+    verify: "abs((0.6 + 0.5 - 0.8) - 0.30) < 1e-9"
+
+  - id: M1.8
+    chapter: 19
+    tier: mock
+    outcomes: ["1b"]
+    distributions: ["hypergeometric"]
+    structural_tags: ["topic1", "combinatorics", "without-replacement"]
+    difficulty: 3
+    statement: |
+      Misty's tank holds 10 Magikarp and 5 Goldeen. She nets 4 fish at once
+      (no replacement). Find P(exactly 2 Goldeen).
+      (A) 0.165  (B) 0.220  (C) 0.330  (D) 0.412  (E) 0.500
+    solution: |
+      Hypergeometric: C(5,2)C(10,2)/C(15,4) = (10)(45)/1365 = 450/1365 = 0.3297.
+      Answer C.
+    answer: "C (~0.330)"
+    shortcut_used: ["hypergeometric = without-replacement count"]
+    verify: "abs((math.comb(5,2)*math.comb(10,2))/math.comb(15,4) - 0.330) < 1e-3"
+
+  # ---- Topic 2 — Univariate RVs (14) ----
+
+  - id: M1.9
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    structural_tags: ["topic2", "poisson", "complement"]
+    difficulty: 2
+    statement: |
+      On Route 1, Spearow swoop in at an average rate of 3 per minute (Poisson,
+      independent). In one minute, find P(at least 2).
+      (A) 0.199  (B) 0.423  (C) 0.577  (D) 0.801  (E) 0.950
+    solution: |
+      "Average rate per interval" => Poisson(3). "At least 2" => complement of
+      {0,1}: 1 - e^-3 - 3e^-3 = 1 - 4e^-3 = 0.8009.  Answer D.
+    answer: "D (~0.801)"
+    shortcut_used: ["Poisson tell", "at-least via complement of low values"]
+    verify: "abs((1 - 4*math.exp(-3)) - 0.801) < 1e-3"
+
+  - id: M1.10
+    chapter: 19
+    tier: mock
+    outcomes: ["2d", "2c"]
+    distributions: ["gamma"]
+    structural_tags: ["topic2", "gamma-kernel", "expectation"]
+    difficulty: 3
+    statement: |
+      A Charizard's flame lasts X minutes with density f(x) = (1/16) x e^{-x/4},
+      x > 0. Find E[X].
+      (A) 2  (B) 4  (C) 6  (D) 8  (E) 16
+    solution: |
+      Density is proportional to x^{2-1} e^{-x/4} = Gamma(alpha=2, theta=4) kernel,
+      so E[X] = alpha*theta = 2*4 = 8.  Answer D.
+    answer: "D (8)"
+    shortcut_used: ["gamma kernel recognition", "E = alpha*theta (no parts)"]
+    verify: "abs(2*4 - 8) < 1e-9 and abs((1/(math.gamma(2)*4**2)) - 1/16) < 1e-9"
+
+  - id: M1.11
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["geometric"]
+    structural_tags: ["topic2", "geometric"]
+    difficulty: 2
+    statement: |
+      At the Celadon Game Corner each pull wins independently with probability 0.2.
+      Find P(first win on the 4th pull).
+      (A) 0.0819  (B) 0.1024  (C) 0.1280  (D) 0.1600  (E) 0.2000
+    solution: |
+      Geometric: (0.8)^3 (0.2) = 0.512*0.2 = 0.1024.  Answer B.
+    answer: "B (0.1024)"
+    shortcut_used: ["geometric pmf (1-p)^{k-1} p"]
+    verify: "abs((0.8**3)*0.2 - 0.1024) < 1e-9"
+
+  - id: M1.12
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    structural_tags: ["topic2", "normal", "standardize"]
+    difficulty: 2
+    statement: |
+      A psychic-power reading X is Normal(mu = 50, sigma^2 = 64). Using the Z-table,
+      find P(X > 62).
+      (A) 0.0668  (B) 0.0934  (C) 0.1056  (D) 0.1587  (E) 0.3085
+    solution: |
+      sigma = 8, z = (62-50)/8 = 1.5; P(X>62) = 1 - Phi(1.5) = 1 - 0.9332 = 0.0668.
+      Answer A.
+    answer: "A (0.0668)"
+    shortcut_used: ["standardize by sigma (not sigma^2)", "upper tail = 1 - Phi"]
+    verify: "abs((1 - 0.9332) - 0.0668) < 1e-9 and abs((62-50)/8 - 1.5) < 1e-9"
+
+  - id: M1.13
+    chapter: 19
+    tier: mock
+    outcomes: ["2d", "2c"]
+    distributions: ["normal"]
+    structural_tags: ["topic2", "mgf-kernel", "variance"]
+    difficulty: 3
+    statement: |
+      A random reward has MGF M(t) = e^{3t + 2t^2}. Find Var of the reward.
+      (A) 2  (B) 3  (C) 4  (D) 6  (E) 9
+    solution: |
+      Normal MGF is e^{mu t + sigma^2 t^2 / 2}, so mu=3 and sigma^2/2 = 2 =>
+      sigma^2 = 4.  Var = 4.  Answer C.
+    answer: "C (4)"
+    shortcut_used: ["MGF kernel recognition => Normal", "match sigma^2/2 coeff"]
+    verify: "abs(2*2 - 4) < 1e-9"
+
+  - id: M1.14
+    chapter: 19
+    tier: mock
+    outcomes: ["2e", "2f"]
+    distributions: ["exponential"]
+    structural_tags: ["topic2", "deductible", "memoryless"]
+    difficulty: 3
+    statement: |
+      A fled Pokemon's gear cost X ~ Exponential(theta = 4) (thousands). With an
+      ordinary deductible d = 2, find the expected payment PER LOSS.
+      (A) 1.21  (B) 2.00  (C) 2.43  (D) 3.30  (E) 4.00
+    solution: |
+      Per-loss exponential deductible: E[(X-d)_+] = theta e^{-d/theta}
+      = 4 e^{-0.5} = 2.426.  Answer C.
+    answer: "C (~2.43)"
+    shortcut_used: ["E[(X-d)_+] = theta e^{-d/theta} (memoryless)"]
+    verify: "abs(4*math.exp(-0.5) - 2.426) < 1e-3"
+
+  - id: M1.15
+    chapter: 19
+    tier: mock
+    outcomes: ["2d", "2c"]
+    distributions: ["uniform"]
+    structural_tags: ["topic2", "uniform", "variance"]
+    difficulty: 1
+    statement: |
+      A Pokemon's roaming distance X is Uniform(0, 10) km. Find Var(X).
+      (A) 2.89  (B) 5.00  (C) 8.33  (D) 10.0  (E) 25.0
+    solution: |
+      Var = (b-a)^2 / 12 = 100/12 = 8.333.  Answer C.
+    answer: "C (~8.33)"
+    shortcut_used: ["uniform Var = (b-a)^2/12"]
+    verify: "abs((10-0)**2/12 - 8.333) < 1e-3"
+
+  - id: M1.16
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["exponential"]
+    structural_tags: ["topic2", "exponential", "memoryless"]
+    difficulty: 2
+    statement: |
+      A fainted Pokemon's recovery time is Exponential(theta = 10) minutes. Given it
+      has already rested 4 minutes, find P(at least 6 MORE minutes needed).
+      (A) 0.301  (B) 0.449  (C) 0.549  (D) 0.607  (E) 0.670
+    solution: |
+      Memorylessness: P(X > 4+6 | X > 4) = P(X > 6) = e^{-6/10} = e^{-0.6} = 0.5488.
+      Answer C.
+    answer: "C (~0.549)"
+    shortcut_used: ["exponential memorylessness: condition drops away"]
+    verify: "abs(math.exp(-0.6) - 0.549) < 1e-3"
+
+  - id: M1.17
+    chapter: 19
+    tier: mock
+    outcomes: ["2d", "3i"]
+    distributions: ["binomial", "normal"]
+    structural_tags: ["topic2", "clt", "continuity-correction"]
+    difficulty: 3
+    statement: |
+      The League runs 100 independent exhibition matches, each an upset with
+      probability 0.3. Using the normal approximation WITH continuity correction,
+      find P(at most 25 upsets). Use Phi(0.98) = 0.8365.
+      (A) 0.115  (B) 0.137  (C) 0.163  (D) 0.211  (E) 0.250
+    solution: |
+      S~Bin(100,0.3): mu=30, sigma=sqrt(21)=4.583. Discrete => correct at 25.5:
+      P(S<=25) ~ Phi((25.5-30)/4.583) = Phi(-0.98) = 1 - 0.8365 = 0.1635. Answer C.
+    answer: "C (~0.163)"
+    shortcut_used: ["CLT normal approx to binomial", "continuity correction +0.5"]
+    verify: "abs((1 - 0.8365) - 0.1635) < 1e-9 and abs((25.5-30)/(21**0.5) + 0.98) < 1e-2"
+
+  - id: M1.18
+    chapter: 19
+    tier: mock
+    outcomes: ["2e", "2f"]
+    distributions: ["exponential"]
+    structural_tags: ["topic2", "deductible", "limit", "coinsurance"]
+    difficulty: 4
+    statement: |
+      Loss X ~ Exponential(theta = 8) (thousands), ordinary deductible d = 2,
+      maximum covered loss u = 10, coinsurance alpha = 0.8. Find the expected payment
+      PER LOSS.  (Use e^{-0.25}=0.7788, e^{-1.25}=0.2865.)
+      (A) 2.52  (B) 3.15  (C) 3.94  (D) 4.57  (E) 5.71
+    solution: |
+      E[X^u] uses E[X ^ m] = theta(1 - e^{-m/theta}).
+      E[X^10] = 8(1 - e^{-1.25}) = 8(0.7135) = 5.708;
+      E[X^2]  = 8(1 - e^{-0.25}) = 8(0.2212) = 1.770.
+      Per-loss payment = alpha(E[X^10] - E[X^2]) = 0.8(3.938) = 3.151.  Answer B.
+    answer: "B (~3.15)"
+    shortcut_used: ["E[X ^ m] = theta(1-e^{-m/theta})", "payment = alpha(cap-deduct)"]
+    verify: "abs(0.8*(8*(1-math.exp(-1.25)) - 8*(1-math.exp(-0.25))) - 3.15) < 1e-2"
+
+  - id: M1.19
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    structural_tags: ["topic2", "poisson", "identity"]
+    difficulty: 2
+    statement: |
+      Daily Pokemon Center visits are Poisson with mean 9. State the standard
+      deviation of the daily visit count.
+      (A) 1.5  (B) 3.0  (C) 4.5  (D) 9.0  (E) 81.0
+    solution: |
+      Poisson identity mu = sigma^2 = lambda = 9, so sigma = sqrt(9) = 3.  Answer B.
+    answer: "B (3.0)"
+    shortcut_used: ["Poisson mu = sigma^2 = lambda"]
+    verify: "abs(9**0.5 - 3.0) < 1e-9"
+
+  - id: M1.20
+    chapter: 19
+    tier: mock
+    outcomes: ["2a", "2b"]
+    distributions: []
+    structural_tags: ["topic2", "density", "normalizing-constant"]
+    difficulty: 2
+    statement: |
+      A density f(x) = c x^2 on 0 < x < 3 (and 0 elsewhere). Find the constant c.
+      (A) 1/27  (B) 1/9  (C) 1/3  (D) 2/9  (E) 1
+    solution: |
+      Integral of x^2 on (0,3) = 27/3 = 9, so c = 1/9.  Answer B.
+    answer: "B (1/9)"
+    shortcut_used: ["normalize: total area = 1"]
+    verify: "abs(1/(3**3/3) - 1/9) < 1e-9"
+
+  - id: M1.21
+    chapter: 19
+    tier: mock
+    outcomes: ["2c", "2d"]
+    distributions: ["discrete_uniform"]
+    structural_tags: ["topic2", "discrete-uniform", "variance"]
+    difficulty: 2
+    statement: |
+      Ditto copies one of the forms numbered 1..6, each equally likely (discrete
+      uniform). Find Var of the chosen number.
+      (A) 2.50  (B) 2.92  (C) 3.50  (D) 5.83  (E) 17.5
+    solution: |
+      Discrete uniform on 1..n: Var = (n^2 - 1)/12 = (36-1)/12 = 35/12 = 2.9167.
+      Answer B.
+    answer: "B (~2.92)"
+    shortcut_used: ["discrete uniform Var = (n^2-1)/12"]
+    verify: "abs((6**2 - 1)/12 - 2.9167) < 1e-3"
+
+  - id: M1.22
+    chapter: 19
+    tier: mock
+    outcomes: ["2c"]
+    distributions: []
+    structural_tags: ["topic2", "survival-method", "darth-vader"]
+    difficulty: 3
+    statement: |
+      A non-negative integer count X has survival values S(0)=1, S(1)=0.6,
+      S(2)=0.3, S(3)=0.1, S(k>=4)=0. Find E[X] by the survival method.
+      (A) 1.0  (B) 1.5  (C) 2.0  (D) 2.4  (E) 3.0
+    solution: |
+      E[X] = sum_{k>=0} S(k) ... but P(X>k): use S(k)=P(X>k). Here S(0)=P(X>0)=1?
+      Take S(k)=P(X>k): E[X] = S(0)+S(1)+S(2)+S(3) treating these as P(X>k):
+      = 1 + 0.6 + 0.3 + 0.1 = 2.0.  Answer C.
+    answer: "C (2.0)"
+    shortcut_used: ["E[X] = sum_{k>=0} P(X>k) for non-neg integer X"]
+    verify: "abs((1 + 0.6 + 0.3 + 0.1) - 2.0) < 1e-9"
+
+  # ---- Topic 3 — Multivariate RVs (8) ----
+
+  - id: M1.23
+    chapter: 19
+    tier: mock
+    outcomes: ["3a", "3b"]
+    distributions: []
+    structural_tags: ["topic3", "joint", "region-integral"]
+    difficulty: 4
+    statement: |
+      (X,Y) has joint density f(x,y) = 2 on the triangle 0 < x < y < 1. Find
+      P(Y < 2X).
+      (A) 0.25  (B) 0.33  (C) 0.50  (D) 0.67  (E) 0.75
+    solution: |
+      Within 0<x<y<1, the sub-region y<2x. Split at x=1/2:
+      int_0^{1/2} int_x^{2x} 2 dy dx + int_{1/2}^1 int_x^1 2 dy dx
+      = int_0^{1/2} 2x dx + int_{1/2}^1 2(1-x) dx = 1/4 + 1/4 = 0.5.  Answer C.
+    answer: "C (0.5)"
+    shortcut_used: ["double integral over a region", "split limits at the corner"]
+    verify: "abs((0.5**2) + ((2*1 - 1**2) - (2*0.5 - 0.5**2)) - 0.5) < 1e-9"
+
+  - id: M1.24
+    chapter: 19
+    tier: mock
+    outcomes: ["3f"]
+    distributions: ["uniform"]
+    structural_tags: ["topic3", "order-statistics", "maximum"]
+    difficulty: 3
+    statement: |
+      Five independent challengers each have strength X_i ~ Uniform(0,1). Find the
+      expected strength of the STRONGEST.
+      (A) 0.50  (B) 0.625  (C) 0.75  (D) 0.833  (E) 0.90
+    solution: |
+      For Unif(0,1), F_max(x)=x^5, density 5x^4, E[max] = int_0^1 5x^5 dx
+      = 5/6 = 0.8333. (Or n/(n+1) = 5/6.)  Answer D.
+    answer: "D (~0.833)"
+    shortcut_used: ["F_max = F^n", "E[max] of Unif(0,1) = n/(n+1)"]
+    verify: "abs(5/6 - 0.8333) < 1e-3"
+
+  - id: M1.25
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3e", "3g"]
+    distributions: []
+    structural_tags: ["topic3", "covariance", "linear-combination"]
+    difficulty: 3
+    statement: |
+      For X, Y with Var(X)=4, Var(Y)=9, Corr(X,Y)=0.5, find Var(2X - Y).
+      (A) 7  (B) 13  (C) 19  (D) 25  (E) 37
+    solution: |
+      Cov(X,Y) = 0.5*sqrt(4*9) = 3. Var(2X - Y) = 4Var(X) + Var(Y) - 2*2*Cov
+      = 16 + 9 - 12 = 13.  Answer B.
+    answer: "B (13)"
+    shortcut_used: ["Cov = rho*sd*sd", "Var(aX+bY) = a^2Vx + b^2Vy + 2ab Cov"]
+    verify: "abs(4*4 + 9 - 2*2*1*(0.5*math.sqrt(4*9)) - 13) < 1e-9"
+
+  - id: M1.26
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3d"]
+    distributions: []
+    structural_tags: ["topic3", "conditional-expectation"]
+    difficulty: 3
+    statement: |
+      X has density f(x) = x/8 on 0 < x < 4. Find E[X | X > 2].
+      (A) 2.67  (B) 3.00  (C) 3.11  (D) 3.33  (E) 3.50
+    solution: |
+      P(X>2) = int_2^4 x/8 dx = (16-4)/16 = 0.75.
+      int_2^4 x*(x/8) dx = (64-8)/24 = 56/24 = 2.3333.
+      E[X|X>2] = 2.3333/0.75 = 3.111.  Answer C.
+    answer: "C (~3.11)"
+    shortcut_used: ["E[X|A] = E[X;A]/P(A)"]
+    verify: "abs(((4**3-2**3)/24)/((4**2-2**2)/16) - 3.111) < 1e-3"
+
+  - id: M1.27
+    chapter: 19
+    tier: mock
+    outcomes: ["3e", "3g", "3i"]
+    distributions: ["normal"]
+    structural_tags: ["topic3", "sum-of-normals", "clt"]
+    difficulty: 3
+    statement: |
+      Two teammates' contributions are independent: A ~ Normal(20, 16) and
+      B ~ Normal(30, 9). Find P(A + B > 60). Use Phi(2.0) = 0.9772.
+      (A) 0.0062  (B) 0.0228  (C) 0.0668  (D) 0.1587  (E) 0.3085
+    solution: |
+      A+B ~ Normal(50, 25), sigma = 5. z = (60-50)/5 = 2.
+      P = 1 - Phi(2) = 1 - 0.9772 = 0.0228.  Answer B.
+    answer: "B (0.0228)"
+    shortcut_used: ["sum of independent normals is normal (add means, add vars)"]
+    verify: "abs((1 - 0.9772) - 0.0228) < 1e-9 and abs((60-50)/((16+9)**0.5) - 2.0) < 1e-9"
+
+  - id: M1.28
+    chapter: 19
+    tier: mock
+    outcomes: ["3f"]
+    distributions: ["exponential"]
+    structural_tags: ["topic3", "min-of-exponentials", "reliability"]
+    difficulty: 4
+    statement: |
+      A trainer's three independent gadgets have exponential lifetimes with means
+      4, 6, and 12 hours. The system fails when the FIRST gadget fails (series).
+      Find the expected time to first failure.
+      (A) 2.0  (B) 4.0  (C) 6.0  (D) 7.3  (E) 22.0
+    solution: |
+      Min of independent exponentials is exponential with the SUM of rates:
+      r = 1/4 + 1/6 + 1/12 = (3+2+1)/12 = 1/2. E[min] = 1/r = 2 hours.  Answer A.
+    answer: "A (2.0)"
+    shortcut_used: ["min of exponentials => rates add => E = 1/(sum rates)"]
+    verify: "abs(1/(1/4 + 1/6 + 1/12) - 2.0) < 1e-9"
+
+  - id: M1.29
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3d"]
+    distributions: ["poisson", "exponential"]
+    structural_tags: ["topic3", "compound", "total-variance", "clt"]
+    difficulty: 5
+    statement: |
+      Daily injuries N ~ Poisson(lambda = 4); each recovery cost X_i ~ Exponential(
+      theta = 5) (thousands), independent. For aggregate T = sum_{i=1}^N X_i, find
+      Var(T).
+      (A) 100  (B) 140  (C) 200  (D) 250  (E) 400
+    solution: |
+      Compound Poisson: Var(T) = lambda * E[X^2]. For Exp(5), E[X^2] = 2 theta^2 = 50.
+      Var(T) = 4*50 = 200.  Answer C.
+    answer: "C (200)"
+    shortcut_used: ["compound Poisson Var = lambda*E[X^2]", "E[X^2]=2theta^2 (exp)"]
+    verify: "abs(4*(2*5**2) - 200) < 1e-9"
+
+  - id: M1.30
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3d", "3i"]
+    distributions: ["poisson", "normal"]
+    structural_tags: ["topic3", "iid-sum", "clt", "continuity-correction"]
+    difficulty: 5
+    statement: |
+      Claim counts per policy are Poisson(lambda = 0.5). A portfolio holds 400
+      independent policies; M is the TOTAL number of claims. Using the normal
+      approximation WITH continuity correction, find P(M >= 210). Use Phi(0.67)=0.7486.
+      (A) 0.159  (B) 0.211  (C) 0.251  (D) 0.309  (E) 0.401
+    solution: |
+      Sum of iid Poissons: M ~ Poisson(400*0.5 = 200), mu=200, sigma=sqrt(200)=14.142.
+      Discrete => correct at 209.5: P(M>=210) ~ 1 - Phi((209.5-200)/14.142)
+      = 1 - Phi(0.67) = 1 - 0.7486 = 0.2514.  Answer C.
+    answer: "C (~0.251)"
+    shortcut_used: ["sum of iid Poissons is Poisson", "CLT + continuity correction"]
+    verify: "abs((1 - 0.7486) - 0.2514) < 1e-9 and abs((209.5-200)/(200**0.5) - 0.67) < 1e-2"
+
+  # =====================================================================
+  # ============================ MOCK B (M2) ============================
+  # =====================================================================
+
+  # ---- Topic 1 — General Probability (8) ----
+
+  - id: M2.1
+    chapter: 19
+    tier: mock
+    outcomes: ["1a", "1d"]
+    distributions: []
+    structural_tags: ["topic1", "complement", "at-least-one"]
+    difficulty: 2
+    statement: |
+      Each of 5 independent wild encounters is a shiny with probability 0.1. Find
+      P(at least one shiny in the 5 encounters).
+      (A) 0.10  (B) 0.41  (C) 0.50  (D) 0.59  (E) 0.90
+    solution: |
+      1 - P(none) = 1 - (0.9)^5 = 1 - 0.59049 = 0.40951.  Answer B.
+    answer: "B (~0.41)"
+    shortcut_used: ["at-least-one = 1 - (miss)^n"]
+    verify: "abs((1 - 0.9**5) - 0.41) < 1e-2"
+
+  - id: M2.2
+    chapter: 19
+    tier: mock
+    outcomes: ["1c", "1g"]
+    distributions: []
+    structural_tags: ["topic1", "conditional", "independence"]
+    difficulty: 2
+    statement: |
+      P(A) = 0.4, P(B) = 0.5, and A, B are independent. Find P(A | B).
+      (A) 0.20  (B) 0.40  (C) 0.50  (D) 0.80  (E) 0.90
+    solution: |
+      Independence => P(A|B) = P(A) = 0.4.  Answer B.
+    answer: "B (0.40)"
+    shortcut_used: ["independence: conditioning changes nothing"]
+    verify: "abs(0.4 - 0.40) < 1e-9"
+
+  - id: M2.3
+    chapter: 19
+    tier: mock
+    outcomes: ["1b"]
+    distributions: []
+    structural_tags: ["topic1", "combinatorics", "combination"]
+    difficulty: 2
+    statement: |
+      How many unordered teams of 6 can be chosen from 12 caught Pokemon?
+      (A) 720  (B) 924  (C) 1320  (D) 5040  (E) 665280
+    solution: |
+      C(12,6) = 924.  Answer B.
+    answer: "B (924)"
+    shortcut_used: ["nCr = unordered count"]
+    verify: "math.comb(12,6) == 924"
+
+  - id: M2.4
+    chapter: 19
+    tier: mock
+    outcomes: ["1c", "1e"]
+    distributions: []
+    structural_tags: ["topic1", "total-probability"]
+    difficulty: 3
+    statement: |
+      A box has 2 Great Balls (catch prob 0.6) and 3 Poke Balls (catch prob 0.3).
+      One ball is drawn at random and thrown. Find P(catch).
+      (A) 0.30  (B) 0.42  (C) 0.45  (D) 0.50  (E) 0.60
+    solution: |
+      Total probability: (2/5)(0.6) + (3/5)(0.3) = 0.24 + 0.18 = 0.42.  Answer B.
+    answer: "B (0.42)"
+    shortcut_used: ["law of total probability (weighted average)"]
+    verify: "abs((2/5)*0.6 + (3/5)*0.3 - 0.42) < 1e-9"
+
+  - id: M2.5
+    chapter: 19
+    tier: mock
+    outcomes: ["1f"]
+    distributions: []
+    structural_tags: ["topic1", "bayes", "sequential"]
+    difficulty: 4
+    statement: |
+      A coin is fair (H prob 0.5) with prior 0.7 or two-headed (H prob 1.0) with
+      prior 0.3. It flips heads. Find P(two-headed | heads).
+      (A) 0.30  (B) 0.46  (C) 0.50  (D) 0.65  (E) 0.70
+    solution: |
+      P(2H|H) = (0.3*1.0)/(0.3*1.0 + 0.7*0.5) = 0.30/0.65 = 0.4615.  Answer B.
+    answer: "B (~0.46)"
+    shortcut_used: ["Bayes update from one observation"]
+    verify: "abs((0.3*1.0)/(0.3*1.0 + 0.7*0.5) - 0.46) < 1e-2"
+
+  - id: M2.6
+    chapter: 19
+    tier: mock
+    outcomes: ["1d", "1e"]
+    distributions: []
+    structural_tags: ["topic1", "inclusion-exclusion", "three-event"]
+    difficulty: 3
+    statement: |
+      Of trainers, 60% own a Fire-type, 50% a Water-type, 40% a Grass-type;
+      30% own Fire and Water, 20% Fire and Grass, 20% Water and Grass, 10% all three.
+      Find the fraction owning at least one of the three.
+      (A) 0.70  (B) 0.80  (C) 0.90  (D) 0.95  (E) 1.00
+    solution: |
+      Incl-excl (3 events): 0.6+0.5+0.4 - 0.3-0.2-0.2 + 0.1 = 1.5 - 0.7 + 0.1 = 0.9.
+      Answer C.
+    answer: "C (0.90)"
+    shortcut_used: ["3-event inclusion-exclusion"]
+    verify: "abs((0.6+0.5+0.4 - 0.3-0.2-0.2 + 0.1) - 0.90) < 1e-9"
+
+  - id: M2.7
+    chapter: 19
+    tier: mock
+    outcomes: ["1a"]
+    distributions: []
+    structural_tags: ["topic1", "equally-likely", "counting"]
+    difficulty: 2
+    statement: |
+      A 4-digit Game Corner code uses digits 0-9 with repetition allowed. Find the
+      probability a random code has all four digits distinct.
+      (A) 0.360  (B) 0.504  (C) 0.600  (D) 0.720  (E) 0.840
+    solution: |
+      Favorable / total = (10*9*8*7)/10^4 = 5040/10000 = 0.504.  Answer B.
+    answer: "B (0.504)"
+    shortcut_used: ["count distinct arrangements / total"]
+    verify: "abs((10*9*8*7)/10**4 - 0.504) < 1e-9"
+
+  - id: M2.8
+    chapter: 19
+    tier: mock
+    outcomes: ["1b"]
+    distributions: ["binomial"]
+    structural_tags: ["topic1", "binomial", "counting"]
+    difficulty: 2
+    statement: |
+      A trainer makes 6 independent throws, each a success with probability 0.5.
+      Find P(exactly 4 successes).
+      (A) 0.094  (B) 0.234  (C) 0.312  (D) 0.375  (E) 0.500
+    solution: |
+      Binomial: C(6,4)(0.5)^4(0.5)^2 = 15/64 = 0.2344.  Answer B.
+    answer: "B (~0.234)"
+    shortcut_used: ["binomial pmf C(n,k)p^k q^{n-k}"]
+    verify: "abs(math.comb(6,4)*0.5**6 - 0.234) < 1e-3"
+
+  # ---- Topic 2 — Univariate RVs (14) ----
+
+  - id: M2.9
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["negative_binomial"]
+    structural_tags: ["topic2", "negative-binomial"]
+    difficulty: 3
+    statement: |
+      Each Dugtrio dig succeeds with probability 0.4, independently. Find the
+      probability the 3rd success occurs on the 5th dig.
+      (A) 0.138  (B) 0.166  (C) 0.230  (D) 0.346  (E) 0.400
+    solution: |
+      Negative binomial: C(4,2) p^3 q^2 = 6*(0.4)^3*(0.6)^2 = 6*0.064*0.36 = 0.13824.
+      Answer A.
+    answer: "A (~0.138)"
+    shortcut_used: ["neg-binom: C(k-1,r-1) p^r q^{k-r}"]
+    verify: "abs(math.comb(4,2)*0.4**3*0.6**2 - 0.138) < 1e-3"
+
+  - id: M2.10
+    chapter: 19
+    tier: mock
+    outcomes: ["2c", "2d"]
+    distributions: []
+    structural_tags: ["topic2", "expectation", "variance", "pmf"]
+    difficulty: 2
+    statement: |
+      A badge count B in {0,1,2,3} has pmf 0.4, 0.3, 0.2, 0.1. Find Var(B).
+      (A) 0.50  (B) 0.80  (C) 1.00  (D) 1.05  (E) 1.20
+    solution: |
+      E[B] = 0(.4)+1(.3)+2(.2)+3(.1) = 1.0.
+      E[B^2] = 0+0.3+0.8+0.9 = 2.0. Var = 2.0 - 1.0 = 1.0.  Answer C.
+    answer: "C (1.0)"
+    shortcut_used: ["Var = E[X^2] - (E[X])^2"]
+    verify: "abs((0+1*0.3+4*0.2+9*0.1) - (0+0.3+0.4+0.3)**2 - 1.0) < 1e-9"
+
+  - id: M2.11
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    structural_tags: ["topic2", "normal", "interval"]
+    difficulty: 3
+    statement: |
+      Scores X ~ Normal(70, 10^2). Find P(60 <= X <= 85). Use Phi(1.5)=0.9332,
+      Phi(1.0)=0.8413.
+      (A) 0.6247  (B) 0.7745  (C) 0.8351  (D) 0.9332  (E) 0.9772
+    solution: |
+      z1 = (60-70)/10 = -1, z2 = (85-70)/10 = 1.5.
+      P = Phi(1.5) - Phi(-1) = 0.9332 - (1 - 0.8413) = 0.9332 - 0.1587 = 0.7745.
+      Answer B.
+    answer: "B (0.7745)"
+    shortcut_used: ["standardize both ends", "Phi(-z) = 1 - Phi(z)"]
+    verify: "abs(0.9332 - (1 - 0.8413) - 0.7745) < 1e-9"
+
+  - id: M2.12
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["poisson", "binomial"]
+    structural_tags: ["topic2", "binomial-to-poisson"]
+    difficulty: 3
+    statement: |
+      A rare defect strikes each of 200 Poke Balls independently with probability
+      0.01. Using the Poisson approximation, find P(at most 1 defect).
+      (A) 0.135  (B) 0.271  (C) 0.406  (D) 0.500  (E) 0.677
+    solution: |
+      n large, p small => Poisson(np = 2). P(<=1) = e^-2 + 2e^-2 = 3e^-2 = 0.406.
+      Answer C.
+    answer: "C (~0.406)"
+    shortcut_used: ["binomial -> Poisson(np)"]
+    verify: "abs(3*math.exp(-2) - 0.406) < 1e-3"
+
+  - id: M2.13
+    chapter: 19
+    tier: mock
+    outcomes: ["2c", "2d"]
+    distributions: ["exponential"]
+    structural_tags: ["topic2", "exponential", "second-moment", "gamma-integral"]
+    difficulty: 3
+    statement: |
+      A wait time X ~ Exponential(theta = 3). Find E[X^2].
+      (A) 3  (B) 6  (C) 9  (D) 12  (E) 18
+    solution: |
+      For exponential, E[X^2] = 2 theta^2 (gamma integral) = 2*9 = 18.  Answer E.
+    answer: "E (18)"
+    shortcut_used: ["E[X^2] = 2 theta^2 via gamma integral (no parts)"]
+    verify: "abs(2*3**2 - 18) < 1e-9"
+
+  - id: M2.14
+    chapter: 19
+    tier: mock
+    outcomes: ["2e", "2f"]
+    distributions: ["exponential"]
+    structural_tags: ["topic2", "deductible", "variance"]
+    difficulty: 4
+    statement: |
+      Loss X ~ Exponential(theta = 4), ordinary deductible d = 2, no limit,
+      alpha = 1. For the per-loss payment Y = (X - 2)_+, find Var(Y).
+      (A) 5.89  (B) 9.70  (C) 13.52  (D) 16.00  (E) 19.41
+    solution: |
+      Y = 0 w.p. 1 - e^{-0.5}; given Y>0, Y ~ Exp(4) (memoryless).
+      E[Y] = 4 e^{-0.5} = 2.4261; E[Y^2] = e^{-0.5} * 2*16 = 32 e^{-0.5} = 19.410.
+      Var = 19.410 - 2.4261^2 = 19.410 - 5.886 = 13.52.  Answer C.
+    answer: "C (~13.52)"
+    shortcut_used: ["memoryless: conditional payment is fresh Exp", "Var = E[Y^2]-E[Y]^2"]
+    verify: "abs((32*math.exp(-0.5)) - (4*math.exp(-0.5))**2 - 13.52) < 1e-2"
+
+  - id: M2.15
+    chapter: 19
+    tier: mock
+    outcomes: ["2a", "2b"]
+    distributions: []
+    structural_tags: ["topic2", "cdf", "probability"]
+    difficulty: 2
+    statement: |
+      A continuous X has CDF F(x) = 1 - e^{-x/5} for x >= 0. Find P(X > 10).
+      Use e^{-2} = 0.1353.
+      (A) 0.0498  (B) 0.1353  (C) 0.3679  (D) 0.6321  (E) 0.8647
+    solution: |
+      P(X>10) = 1 - F(10) = e^{-10/5} = e^{-2} = 0.1353.  Answer B.
+    answer: "B (~0.1353)"
+    shortcut_used: ["S(x) = 1 - F(x) = e^{-x/theta} for exponential"]
+    verify: "abs(math.exp(-2) - 0.1353) < 1e-3"
+
+  - id: M2.16
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    structural_tags: ["topic2", "normal", "inverse", "percentile"]
+    difficulty: 3
+    statement: |
+      Scores X ~ Normal(70, 10^2). The League advances the top 10%. Find the cutoff.
+      Use Phi(1.28) = 0.90.
+      (A) 72.8  (B) 80.0  (C) 82.8  (D) 84.5  (E) 90.0
+    solution: |
+      Top 10% => Phi(z) = 0.90 => z = 1.28. c = 70 + 1.28*10 = 82.8.  Answer C.
+    answer: "C (82.8)"
+    shortcut_used: ["inverse normal: c = mu + z*sigma", "z(0.90) = 1.28"]
+    verify: "abs(70 + 1.28*10 - 82.8) < 1e-9"
+
+  - id: M2.17
+    chapter: 19
+    tier: mock
+    outcomes: ["2d", "3i"]
+    distributions: ["normal"]
+    structural_tags: ["topic2", "clt", "mean"]
+    difficulty: 3
+    statement: |
+      Trainers wait mu = 8 min, sd sigma = 6 min for a healing slot, independent.
+      Over 100 trainers, find P(average wait < 7). Use Phi(1.67) = 0.9525.
+      (A) 0.0475  (B) 0.0668  (C) 0.1587  (D) 0.4338  (E) 0.5000
+    solution: |
+      CLT mean: sd(Xbar) = 6/sqrt(100) = 0.6, z = (7-8)/0.6 = -1.67.
+      P = Phi(-1.67) = 1 - 0.9525 = 0.0475.  Answer A.
+    answer: "A (~0.0475)"
+    shortcut_used: ["CLT mean sd = sigma/sqrt(n)"]
+    verify: "abs((1 - 0.9525) - 0.0475) < 1e-9 and abs((7-8)/(6/100**0.5) + 1.67) < 1e-2"
+
+  - id: M2.18
+    chapter: 19
+    tier: mock
+    outcomes: ["2c", "2d"]
+    distributions: ["beta"]
+    structural_tags: ["topic2", "beta", "moments"]
+    difficulty: 3
+    statement: |
+      The fraction X of a potion that is active ingredient is Beta(alpha=2, beta=3).
+      Find E[X].
+      (A) 0.20  (B) 0.33  (C) 0.40  (D) 0.50  (E) 0.60
+    solution: |
+      E[X] = alpha/(alpha+beta) = 2/5 = 0.4.  Answer C.
+    answer: "C (0.40)"
+    shortcut_used: ["beta mean = alpha/(alpha+beta)"]
+    verify: "abs(2/(2+3) - 0.40) < 1e-9"
+
+  - id: M2.19
+    chapter: 19
+    tier: mock
+    outcomes: ["2d", "2c"]
+    distributions: ["gamma"]
+    structural_tags: ["topic2", "gamma-tail", "poisson-sum"]
+    difficulty: 4
+    statement: |
+      X ~ Gamma(alpha = 2, theta = 3). Find P(X > 6). Use e^{-2} = 0.1353.
+      (A) 0.135  (B) 0.271  (C) 0.406  (D) 0.500  (E) 0.677
+    solution: |
+      Integer-shape gamma tail via the Poisson-sum identity:
+      P(X>6) = e^{-6/3}(1 + 6/3) = e^{-2}(3) = 3*0.1353 = 0.406.  Answer C.
+    answer: "C (~0.406)"
+    shortcut_used: ["gamma tail = e^{-x/theta} sum (x/theta)^j/j!"]
+    verify: "abs(3*math.exp(-2) - 0.406) < 1e-3"
+
+  - id: M2.20
+    chapter: 19
+    tier: mock
+    outcomes: ["2c", "2d"]
+    distributions: []
+    structural_tags: ["topic2", "mgf", "moments"]
+    difficulty: 3
+    statement: |
+      A claim count N has MGF M(t) = exp(3(e^t - 1)). Find E[N].
+      (A) 1  (B) 3  (C) 6  (D) 9  (E) 12
+    solution: |
+      This is the Poisson(3) MGF; E[N] = lambda = 3 (or M'(0)=3).  Answer B.
+    answer: "B (3)"
+    shortcut_used: ["MGF kernel => Poisson(3)", "M'(0) = E[N]"]
+    verify: "abs(3 - 3) < 1e-9"
+
+  - id: M2.21
+    chapter: 19
+    tier: mock
+    outcomes: ["2e", "2f"]
+    distributions: []
+    structural_tags: ["topic2", "limit", "master-identity"]
+    difficulty: 3
+    statement: |
+      The warden tells you E[X] = 10 and the limited loss X ^ 8 has mean 6.2
+      (thousands). Find E[(X - 8)_+].
+      (A) 1.8  (B) 2.0  (C) 3.0  (D) 3.8  (E) 6.2
+    solution: |
+      Master identity E[(X-d)_+] = E[X] - E[X ^ d] = 10 - 6.2 = 3.8.  Answer D.
+    answer: "D (3.8)"
+    shortcut_used: ["E[(X-d)_+] = E[X] - E[X ^ d]"]
+    verify: "abs((10 - 6.2) - 3.8) < 1e-9"
+
+  - id: M2.22
+    chapter: 19
+    tier: mock
+    outcomes: ["2c", "2d"]
+    distributions: ["uniform"]
+    structural_tags: ["topic2", "transformation", "expectation"]
+    difficulty: 3
+    statement: |
+      X ~ Uniform(0, 2). Find E[X^2].
+      (A) 1/3  (B) 1/2  (C) 2/3  (D) 4/3  (E) 2
+    solution: |
+      E[X^2] = int_0^2 x^2 * (1/2) dx = (1/2)(8/3) = 4/3.  Answer D.
+    answer: "D (4/3)"
+    shortcut_used: ["E[g(X)] = int g(x) f(x) dx"]
+    verify: "abs(0.5*(2**3/3) - 4/3) < 1e-9"
+
+  # ---- Topic 3 — Multivariate RVs (8) ----
+
+  - id: M2.23
+    chapter: 19
+    tier: mock
+    outcomes: ["3a", "3b"]
+    distributions: []
+    structural_tags: ["topic3", "joint", "marginal"]
+    difficulty: 3
+    statement: |
+      (X,Y) has joint density f(x,y) = x + y on 0 < x < 1, 0 < y < 1. Find the
+      marginal density f_X(x) at a point, i.e. f_X(x) for 0 < x < 1.
+      (A) x  (B) x + 1/2  (C) 2x  (D) 1/2  (E) x + 1
+    solution: |
+      f_X(x) = int_0^1 (x + y) dy = x + 1/2.  Answer B.
+    answer: "B (x + 1/2)"
+    shortcut_used: ["marginal = integrate out the other variable"]
+    verify: "abs((0.3 + 0.5) - (0.3 + 0.5)) < 1e-9 and abs((lambda x: x + 0.5)(0.3) - 0.8) < 1e-9"
+
+  - id: M2.24
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3e"]
+    distributions: []
+    structural_tags: ["topic3", "covariance", "from-joint"]
+    difficulty: 4
+    statement: |
+      For (X,Y), E[X]=1, E[Y]=2, E[XY]=3. Find Cov(X,Y).
+      (A) -1  (B) 0  (C) 1  (D) 2  (E) 3
+    solution: |
+      Cov(X,Y) = E[XY] - E[X]E[Y] = 3 - 1*2 = 1.  Answer C.
+    answer: "C (1)"
+    shortcut_used: ["Cov = E[XY] - E[X]E[Y]"]
+    verify: "abs((3 - 1*2) - 1) < 1e-9"
+
+  - id: M2.25
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3d"]
+    distributions: ["uniform"]
+    structural_tags: ["topic3", "bayes-continuous", "posterior-mean"]
+    difficulty: 4
+    statement: |
+      A coin's bias P ~ Uniform(0,1). Given P = p, a flip is heads with probability
+      p. A single flip is heads. Find E[P | heads].
+      (A) 0.50  (B) 0.60  (C) 0.667  (D) 0.75  (E) 0.80
+    solution: |
+      Posterior ∝ p * 1 on (0,1), i.e. Beta(2,1) with density 2p.
+      E[P|H] = int_0^1 p * 2p dp = 2/3 = 0.667.  Answer C.
+    answer: "C (~0.667)"
+    shortcut_used: ["continuous Bayes: posterior ∝ likelihood*prior", "Beta(2,1) mean = 2/3"]
+    verify: "abs(2/3 - 0.667) < 1e-3"
+
+  - id: M2.26
+    chapter: 19
+    tier: mock
+    outcomes: ["3g", "3h"]
+    distributions: []
+    structural_tags: ["topic3", "linear-combination", "variance"]
+    difficulty: 3
+    statement: |
+      Independent X, Y have Var(X) = 5, Var(Y) = 3. Find Var(X + 2Y).
+      (A) 8  (B) 11  (C) 13  (D) 17  (E) 23
+    solution: |
+      Independent => Var(X + 2Y) = Var(X) + 4Var(Y) = 5 + 12 = 17.  Answer D.
+    answer: "D (17)"
+    shortcut_used: ["Var(aX+bY) = a^2Vx + b^2Vy (independent => no cross term)"]
+    verify: "abs(5 + 4*3 - 17) < 1e-9"
+
+  - id: M2.27
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3d"]
+    distributions: ["poisson"]
+    structural_tags: ["topic3", "double-expectation", "total-variance", "compound"]
+    difficulty: 5
+    statement: |
+      The number of grunts N ~ Poisson(lambda = 3). Given N = n, each grunt's
+      strength is i.i.d. with mean 2 and variance 5; let S be total strength.
+      Find Var(S).
+      (A) 12  (B) 15  (C) 27  (D) 33  (E) 45
+    solution: |
+      Total variance: Var(S) = E[N]Var(str) + Var(N)E[str]^2.
+      Poisson => E[N]=Var(N)=3: 3*5 + 3*2^2 = 15 + 12 = 27. (= lambda*E[str^2] = 3*9.)
+      Answer C.
+    answer: "C (27)"
+    shortcut_used: ["law of total variance", "compound Poisson Var = lambda E[str^2]"]
+    verify: "abs(3*5 + 3*2**2 - 27) < 1e-9"
+
+  - id: M2.28
+    chapter: 19
+    tier: mock
+    outcomes: ["3f"]
+    distributions: []
+    structural_tags: ["topic3", "order-statistics", "minimum"]
+    difficulty: 3
+    statement: |
+      Three independent scores are each Uniform(0,1). Find P(min > 0.5).
+      (A) 0.0625  (B) 0.1250  (C) 0.2500  (D) 0.5000  (E) 0.8750
+    solution: |
+      P(min > 0.5) = P(all > 0.5) = (0.5)^3 = 0.125.  Answer B.
+    answer: "B (0.125)"
+    shortcut_used: ["P(min > t) = [S(t)]^n = product of survivals"]
+    verify: "abs(0.5**3 - 0.125) < 1e-9"
+
+  - id: M2.29
+    chapter: 19
+    tier: mock
+    outcomes: ["3a", "3b"]
+    distributions: []
+    structural_tags: ["topic3", "independence", "factoring"]
+    difficulty: 3
+    statement: |
+      (X,Y) has joint density f(x,y) = 4xy on 0<x<1, 0<y<1. Are X and Y independent,
+      and what is f_X(x)?
+      (A) dependent; f_X = 2x   (B) independent; f_X = 2x
+      (C) independent; f_X = x  (D) dependent; f_X = 4x
+      (E) independent; f_X = 1
+    solution: |
+      f factors as (2x)(2y) over a rectangle => independent; f_X(x) = 2x.  Answer B.
+    answer: "B (independent; f_X = 2x)"
+    shortcut_used: ["independence: density factors over a rectangular support"]
+    verify: "abs((2*0.4)*(2*0.6) - 4*0.4*0.6) < 1e-9"
+
+  - id: M2.30
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3d", "3i"]
+    distributions: ["normal"]
+    structural_tags: ["topic3", "clt", "sum", "decision"]
+    difficulty: 4
+    statement: |
+      Each of 36 independent matches uses potions with mean 4, sd 3. A court is
+      stocked with 162 potions. Treating the aggregate total as continuous, find
+      P(total > 162). Use Phi(1.0) = 0.8413.
+      (A) 0.0228  (B) 0.0668  (C) 0.1587  (D) 0.3085  (E) 0.5000
+    solution: |
+      Sum of 36: mean = 144, sd = 3*sqrt(36) = 18. z = (162-144)/18 = 1.
+      P = 1 - Phi(1) = 1 - 0.8413 = 0.1587.  Answer C.
+    answer: "C (~0.1587)"
+    shortcut_used: ["CLT sum: mean n*mu, sd sigma*sqrt(n)"]
+    verify: "abs((1 - 0.8413) - 0.1587) < 1e-9 and abs((162-144)/(3*36**0.5) - 1.0) < 1e-9"
+
+  # =====================================================================
+  # ============================ MOCK C (M3) ============================
+  # =====================================================================
+
+  # ---- Topic 1 — General Probability (8) ----
+
+  - id: M3.1
+    chapter: 19
+    tier: mock
+    outcomes: ["1a", "1d"]
+    distributions: []
+    structural_tags: ["topic1", "complement", "axioms"]
+    difficulty: 1
+    statement: |
+      A spinner lands in region A with probability 0.35 and region B (disjoint from
+      A) with probability 0.25. Find P(neither A nor B).
+      (A) 0.10  (B) 0.25  (C) 0.40  (D) 0.50  (E) 0.60
+    solution: |
+      Disjoint: P(A or B) = 0.6, so P(neither) = 1 - 0.6 = 0.4.  Answer C.
+    answer: "C (0.40)"
+    shortcut_used: ["disjoint events add", "complement"]
+    verify: "abs((1 - (0.35 + 0.25)) - 0.40) < 1e-9"
+
+  - id: M3.2
+    chapter: 19
+    tier: mock
+    outcomes: ["1c", "1f"]
+    distributions: []
+    structural_tags: ["topic1", "bayes", "two-cause"]
+    difficulty: 3
+    statement: |
+      Machine X makes 60% of Poke Balls (2% defective); machine Y makes 40%
+      (5% defective). A defective ball is found. Find P(it came from machine Y).
+      (A) 0.375  (B) 0.500  (C) 0.625  (D) 0.700  (E) 0.800
+    solution: |
+      P(Y|def) = .4(.05)/[.6(.02)+.4(.05)] = .020/.032 = 0.625.  Answer C.
+    answer: "C (0.625)"
+    shortcut_used: ["Bayes with total-probability denominator"]
+    verify: "abs((0.4*0.05)/(0.6*0.02 + 0.4*0.05) - 0.625) < 1e-9"
+
+  - id: M3.3
+    chapter: 19
+    tier: mock
+    outcomes: ["1b"]
+    distributions: []
+    structural_tags: ["topic1", "combinatorics", "multinomial"]
+    difficulty: 3
+    statement: |
+      A team of 9 is split into 3 squads of 3 (labeled Red, Blue, Green). In how
+      many ways (multinomial) can the 9 be assigned?
+      (A) 84  (B) 280  (C) 504  (D) 1680  (E) 362880
+    solution: |
+      9! / (3! 3! 3!) = 362880 / 216 = 1680.  Answer D.
+    answer: "D (1680)"
+    shortcut_used: ["multinomial coefficient n!/(n1! n2! n3!)"]
+    verify: "math.factorial(9)//(math.factorial(3)**3) == 1680"
+
+  - id: M3.4
+    chapter: 19
+    tier: mock
+    outcomes: ["1c", "1e"]
+    distributions: []
+    structural_tags: ["topic1", "sequential", "multiplication"]
+    difficulty: 2
+    statement: |
+      An urn has 4 red and 6 blue balls. Two are drawn without replacement. Find
+      P(both red).
+      (A) 0.067  (B) 0.133  (C) 0.160  (D) 0.200  (E) 0.400
+    solution: |
+      (4/10)(3/9) = 12/90 = 0.1333.  Answer B.
+    answer: "B (~0.133)"
+    shortcut_used: ["multiplication rule for a sequence (without replacement)"]
+    verify: "abs((4/10)*(3/9) - 0.1333) < 1e-3"
+
+  - id: M3.5
+    chapter: 19
+    tier: mock
+    outcomes: ["1d", "1e"]
+    distributions: []
+    structural_tags: ["topic1", "complement", "at-least-one"]
+    difficulty: 2
+    statement: |
+      A trainer enters 4 independent contests, each won with probability 0.25. Find
+      P(wins at least one).
+      (A) 0.316  (B) 0.500  (C) 0.684  (D) 0.750  (E) 0.938
+    solution: |
+      1 - (0.75)^4 = 1 - 0.3164 = 0.6836.  Answer C.
+    answer: "C (~0.684)"
+    shortcut_used: ["at-least-one = 1 - (loss)^n"]
+    verify: "abs((1 - 0.75**4) - 0.684) < 1e-3"
+
+  - id: M3.6
+    chapter: 19
+    tier: mock
+    outcomes: ["1g"]
+    distributions: []
+    structural_tags: ["topic1", "independence", "vs-disjoint"]
+    difficulty: 2
+    statement: |
+      Events A and B satisfy P(A) = 0.3, P(B) = 0.4, P(A and B) = 0.12. Are they
+      independent, disjoint, or neither?
+      (A) disjoint   (B) independent   (C) neither
+      (D) both       (E) cannot tell
+    solution: |
+      P(A)P(B) = 0.12 = P(A and B) => independent (and not disjoint, since
+      intersection > 0).  Answer B.
+    answer: "B (independent)"
+    shortcut_used: ["independence test: P(AB) = P(A)P(B)"]
+    verify: "abs(0.3*0.4 - 0.12) < 1e-9"
+
+  - id: M3.7
+    chapter: 19
+    tier: mock
+    outcomes: ["1a", "1b"]
+    distributions: []
+    structural_tags: ["topic1", "counting", "equally-likely"]
+    difficulty: 2
+    statement: |
+      Five distinct badges are arranged in a row at random. Find the probability the
+      Boulder and Cascade badges are adjacent.
+      (A) 0.20  (B) 0.30  (C) 0.40  (D) 0.50  (E) 0.60
+    solution: |
+      Treat the pair as one block: 4! * 2! arrangements out of 5!.
+      (24*2)/120 = 48/120 = 0.4.  Answer C.
+    answer: "C (0.40)"
+    shortcut_used: ["glue adjacent items into a block"]
+    verify: "abs((math.factorial(4)*2)/math.factorial(5) - 0.40) < 1e-9"
+
+  - id: M3.8
+    chapter: 19
+    tier: mock
+    outcomes: ["1b"]
+    distributions: ["binomial"]
+    structural_tags: ["topic1", "binomial", "tail"]
+    difficulty: 3
+    statement: |
+      A trainer makes 5 independent throws, each succeeding with probability 0.4.
+      Find P(at least 4 successes).
+      (A) 0.077  (B) 0.087  (C) 0.231  (D) 0.317  (E) 0.663
+    solution: |
+      P(4) + P(5) = C(5,4)(0.4)^4(0.6) + (0.4)^5
+      = 5*0.0256*0.6 + 0.01024 = 0.0768 + 0.01024 = 0.0870.  Answer B.
+    answer: "B (~0.087)"
+    shortcut_used: ["binomial upper-tail = P(4)+P(5)"]
+    verify: "abs(math.comb(5,4)*0.4**4*0.6 + 0.4**5 - 0.087) < 1e-3"
+
+  # ---- Topic 2 — Univariate RVs (14) ----
+
+  - id: M3.9
+    chapter: 19
+    tier: mock
+    outcomes: ["2d", "2c"]
+    distributions: ["exponential"]
+    structural_tags: ["topic2", "mixture", "total-expectation"]
+    difficulty: 3
+    statement: |
+      With probability 0.6 a battle is "short," damage ~ Exponential(mean 3); with
+      probability 0.4 it is "long," damage ~ Exponential(mean 8). Find the overall
+      expected damage.
+      (A) 3.0  (B) 4.4  (C) 5.0  (D) 5.5  (E) 8.0
+    solution: |
+      Law of total expectation: E[D] = 0.6(3) + 0.4(8) = 1.8 + 3.2 = 5.0.  Answer C.
+    answer: "C (5.0)"
+    shortcut_used: ["mixture mean = weighted average of conditional means"]
+    verify: "abs(0.6*3 + 0.4*8 - 5.0) < 1e-9"
+
+  - id: M3.10
+    chapter: 19
+    tier: mock
+    outcomes: ["2c", "2d"]
+    distributions: ["beta"]
+    structural_tags: ["topic2", "beta", "variance"]
+    difficulty: 3
+    statement: |
+      X ~ Beta(alpha = 2, beta = 3). Find Var(X).
+      (A) 0.01  (B) 0.04  (C) 0.06  (D) 0.10  (E) 0.24
+    solution: |
+      Var = ab/[(a+b)^2 (a+b+1)] = 6/[25*6] = 1/25 = 0.04.  Answer B.
+    answer: "B (0.04)"
+    shortcut_used: ["beta variance formula"]
+    verify: "abs((2*3)/((2+3)**2*(2+3+1)) - 0.04) < 1e-9"
+
+  - id: M3.11
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    structural_tags: ["topic2", "poisson-superposition", "sum"]
+    difficulty: 3
+    statement: |
+      Pidgey arrive at rate 2/hr and Spearow at rate 3/hr, independent Poisson
+      processes. Find P(exactly 4 birds total in one hour). Use e^{-5}=0.006738.
+      (A) 0.140  (B) 0.156  (C) 0.175  (D) 0.195  (E) 0.210
+    solution: |
+      Superposition: total ~ Poisson(5). P(4) = e^{-5} 5^4 / 4! = 0.006738*625/24
+      = 0.1755.  Answer C.
+    answer: "C (~0.175)"
+    shortcut_used: ["sum of independent Poissons is Poisson(sum of rates)"]
+    verify: "abs(math.exp(-5)*5**4/math.factorial(4) - 0.175) < 1e-3"
+
+  - id: M3.12
+    chapter: 19
+    tier: mock
+    outcomes: ["2c"]
+    distributions: []
+    structural_tags: ["topic2", "survival-method", "continuous"]
+    difficulty: 3
+    statement: |
+      A non-negative X has survival S(x) = e^{-x/4} for x >= 0. Find E[X] by the
+      survival-function (Darth Vader) method.
+      (A) 2  (B) 4  (C) 8  (D) 12  (E) 16
+    solution: |
+      E[X] = int_0^inf S(x) dx = int_0^inf e^{-x/4} dx = 4.  Answer B.
+    answer: "B (4)"
+    shortcut_used: ["E[X] = int_0^inf S(x) dx"]
+    verify: "abs(4 - 4) < 1e-9"
+
+  - id: M3.13
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["normal"]
+    structural_tags: ["topic2", "normal", "empirical-rule"]
+    difficulty: 2
+    statement: |
+      Scores X ~ Normal(70, 10^2). By the 68-95-99.7 rule, what fraction of trainers
+      score between 50 and 90?
+      (A) 0.68  (B) 0.95  (C) 0.997  (D) 0.50  (E) 0.997
+    solution: |
+      [50,90] = [mu - 2sigma, mu + 2sigma] => about 95%.  Answer B.
+    answer: "B (~0.95)"
+    shortcut_used: ["68-95-99.7 rule for +/- 2 sigma"]
+    verify: "abs(0.95 - 0.95) < 1e-9 and abs((90-70)/10 - 2.0) < 1e-9"
+
+  - id: M3.14
+    chapter: 19
+    tier: mock
+    outcomes: ["2e", "2f"]
+    distributions: ["exponential"]
+    structural_tags: ["topic2", "deductible", "per-payment"]
+    difficulty: 4
+    statement: |
+      Loss X ~ Exponential(theta = 5), ordinary deductible d = 3. Find the expected
+      payment PER PAYMENT (i.e. given a payment is made).
+      (A) 2.0  (B) 3.0  (C) 5.0  (D) 5.5  (E) 8.0
+    solution: |
+      Memorylessness: given X > d, the excess X - d is again Exp(5), so the
+      per-payment mean is theta = 5.  Answer C.
+    answer: "C (5.0)"
+    shortcut_used: ["memoryless: per-payment mean = theta"]
+    verify: "abs(5 - 5) < 1e-9"
+
+  - id: M3.15
+    chapter: 19
+    tier: mock
+    outcomes: ["2c", "2d"]
+    distributions: ["normal"]
+    structural_tags: ["topic2", "mgf", "moments-differentiate"]
+    difficulty: 3
+    statement: |
+      A reward has MGF M(t) = (1 - 2t)^{-3} for t < 1/2. Find E[X]. (This is a
+      Gamma with alpha=3, theta=2; mean alpha*theta.)
+      (A) 2  (B) 3  (C) 5  (D) 6  (E) 9
+    solution: |
+      M(t) = (1 - theta t)^{-alpha} is Gamma(alpha=3, theta=2); E[X] = alpha*theta
+      = 6.  Answer D.
+    answer: "D (6)"
+    shortcut_used: ["MGF kernel => Gamma; E = alpha theta"]
+    verify: "abs(3*2 - 6) < 1e-9"
+
+  - id: M3.16
+    chapter: 19
+    tier: mock
+    outcomes: ["2a", "2b"]
+    distributions: []
+    structural_tags: ["topic2", "mixed-distribution"]
+    difficulty: 4
+    statement: |
+      A loss is 0 with probability 0.3, and otherwise (probability 0.7) uniform on
+      (0, 10). Find E[loss].
+      (A) 2.5  (B) 3.5  (C) 5.0  (D) 7.0  (E) 10.0
+    solution: |
+      Mixed: E = 0.3*0 + 0.7*E[Unif(0,10)] = 0.7*5 = 3.5.  Answer B.
+    answer: "B (3.5)"
+    shortcut_used: ["mixed dist: weight the point mass and the continuous part"]
+    verify: "abs(0.3*0 + 0.7*5 - 3.5) < 1e-9"
+
+  - id: M3.17
+    chapter: 19
+    tier: mock
+    outcomes: ["2d", "3i"]
+    distributions: ["normal"]
+    structural_tags: ["topic2", "clt", "sum", "continuity-correction"]
+    difficulty: 3
+    statement: |
+      X ~ Binomial(144, 0.5), so mu = 72, sigma = 6. Using the normal approximation
+      WITH continuity correction, find P(X >= 80). Use Phi(1.25) = 0.8944.
+      (A) 0.0668  (B) 0.0918  (C) 0.1056  (D) 0.1587  (E) 0.2266
+    solution: |
+      "X >= 80" => left edge 79.5: P ~ 1 - Phi((79.5-72)/6) = 1 - Phi(1.25)
+      = 1 - 0.8944 = 0.1056.  Answer C.
+    answer: "C (~0.1056)"
+    shortcut_used: ["continuity correction to the bar's left edge"]
+    verify: "abs((1 - 0.8944) - 0.1056) < 1e-9 and abs((79.5-72)/6 - 1.25) < 1e-9"
+
+  - id: M3.18
+    chapter: 19
+    tier: mock
+    outcomes: ["2c", "2d"]
+    distributions: ["gamma"]
+    structural_tags: ["topic2", "gamma", "variance"]
+    difficulty: 3
+    statement: |
+      X ~ Gamma(alpha = 4, theta = 2). Find Var(X).
+      (A) 4  (B) 8  (C) 16  (D) 32  (E) 64
+    solution: |
+      Gamma variance = alpha theta^2 = 4*4 = 16.  Answer C.
+    answer: "C (16)"
+    shortcut_used: ["gamma Var = alpha theta^2"]
+    verify: "abs(4*2**2 - 16) < 1e-9"
+
+  - id: M3.19
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["geometric"]
+    structural_tags: ["topic2", "geometric", "expectation"]
+    difficulty: 2
+    statement: |
+      Each slot pull wins independently with probability 0.25. Let X be the number
+      of pulls up to and including the first win. Find E[X].
+      (A) 0.25  (B) 1.33  (C) 3.0  (D) 4.0  (E) 5.0
+    solution: |
+      Geometric (counting trials): E[X] = 1/p = 1/0.25 = 4.  Answer D.
+    answer: "D (4)"
+    shortcut_used: ["geometric mean = 1/p"]
+    verify: "abs(1/0.25 - 4) < 1e-9"
+
+  - id: M3.20
+    chapter: 19
+    tier: mock
+    outcomes: ["2c"]
+    distributions: []
+    structural_tags: ["topic2", "variance", "linear-transform"]
+    difficulty: 2
+    statement: |
+      A random reward R has E[R] = 5 and Var(R) = 4. Find Var(3R - 2).
+      (A) 4  (B) 10  (C) 12  (D) 34  (E) 36
+    solution: |
+      Var(aR + b) = a^2 Var(R) = 9*4 = 36.  Answer E.
+    answer: "E (36)"
+    shortcut_used: ["Var(aX+b) = a^2 Var(X)"]
+    verify: "abs(9*4 - 36) < 1e-9"
+
+  - id: M3.21
+    chapter: 19
+    tier: mock
+    outcomes: ["2d", "2c"]
+    distributions: ["exponential"]
+    structural_tags: ["topic2", "exponential", "median"]
+    difficulty: 3
+    statement: |
+      A wait X ~ Exponential(theta = 10). Find the median wait. Use ln 2 = 0.6931.
+      (A) 5.0  (B) 6.93  (C) 7.0  (D) 10.0  (E) 13.86
+    solution: |
+      Median m solves e^{-m/theta} = 0.5 => m = theta ln 2 = 10*0.6931 = 6.931.
+      Answer B.
+    answer: "B (~6.93)"
+    shortcut_used: ["exponential median = theta ln 2"]
+    verify: "abs(10*math.log(2) - 6.931) < 1e-3"
+
+  - id: M3.22
+    chapter: 19
+    tier: mock
+    outcomes: ["2d"]
+    distributions: ["uniform"]
+    structural_tags: ["topic2", "uniform", "probability"]
+    difficulty: 1
+    statement: |
+      A roaming distance X ~ Uniform(2, 10). Find P(X > 7).
+      (A) 0.250  (B) 0.300  (C) 0.375  (D) 0.500  (E) 0.700
+    solution: |
+      P(X>7) = (10-7)/(10-2) = 3/8 = 0.375.  Answer C.
+    answer: "C (0.375)"
+    shortcut_used: ["uniform probability = length ratio"]
+    verify: "abs((10-7)/(10-2) - 0.375) < 1e-9"
+
+  # ---- Topic 3 — Multivariate RVs (8) ----
+
+  - id: M3.23
+    chapter: 19
+    tier: mock
+    outcomes: ["3a", "3b"]
+    distributions: []
+    structural_tags: ["topic3", "joint", "probability-region"]
+    difficulty: 3
+    statement: |
+      (X,Y) has joint density f(x,y) = 1 on the unit square 0<x<1, 0<y<1. Find
+      P(X + Y < 1).
+      (A) 0.25  (B) 0.50  (C) 0.667  (D) 0.75  (E) 1.00
+    solution: |
+      Region x+y<1 in the unit square is a triangle of area 1/2; with f=1,
+      probability = 0.5.  Answer B.
+    answer: "B (0.5)"
+    shortcut_used: ["uniform on square: probability = area of region"]
+    verify: "abs(0.5 - 0.5) < 1e-9"
+
+  - id: M3.24
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3d"]
+    distributions: ["poisson"]
+    structural_tags: ["topic3", "double-expectation", "compound"]
+    difficulty: 4
+    statement: |
+      N ~ Poisson(lambda = 3); given N = n, total strength S has conditional mean 2n.
+      Find E[S].
+      (A) 2  (B) 3  (C) 5  (D) 6  (E) 9
+    solution: |
+      Law of total expectation: E[S] = E[2N] = 2*E[N] = 2*3 = 6.  Answer D.
+    answer: "D (6)"
+    shortcut_used: ["E[S] = E[E[S|N]] = E[2N]"]
+    verify: "abs(2*3 - 6) < 1e-9"
+
+  - id: M3.25
+    chapter: 19
+    tier: mock
+    outcomes: ["3f"]
+    distributions: ["exponential"]
+    structural_tags: ["topic3", "min-exponentials", "reliability"]
+    difficulty: 4
+    statement: |
+      Two independent components have exponential lifetimes with rates 1/5 and 1/10
+      per hour. In a SERIES system (fails at first failure), find the expected time
+      to failure.
+      (A) 2.5  (B) 3.33  (C) 5.0  (D) 7.5  (E) 15.0
+    solution: |
+      Min of exponentials: total rate = 1/5 + 1/10 = 3/10; E[min] = 10/3 = 3.33.
+      Answer B.
+    answer: "B (~3.33)"
+    shortcut_used: ["series = min; rates add; E = 1/(sum rates)"]
+    verify: "abs(1/(1/5 + 1/10) - 3.333) < 1e-3"
+
+  - id: M3.26
+    chapter: 19
+    tier: mock
+    outcomes: ["3g", "3h"]
+    distributions: []
+    structural_tags: ["topic3", "linear-combination", "covariance"]
+    difficulty: 4
+    statement: |
+      X, Y have Var(X) = 9, Var(Y) = 16, Cov(X,Y) = -6. Find Var(X + Y).
+      (A) 7  (B) 13  (C) 19  (D) 25  (E) 37
+    solution: |
+      Var(X+Y) = Var(X) + Var(Y) + 2Cov = 9 + 16 + 2(-6) = 25 - 12 = 13.  Answer B.
+    answer: "B (13)"
+    shortcut_used: ["Var(X+Y) = Vx + Vy + 2Cov"]
+    verify: "abs(9 + 16 + 2*(-6) - 13) < 1e-9"
+
+  - id: M3.27
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3d"]
+    distributions: ["poisson", "exponential"]
+    structural_tags: ["topic3", "compound", "total-expectation", "total-variance"]
+    difficulty: 5
+    statement: |
+      Daily injuries N ~ Poisson(lambda = 4); each cost X_i ~ Exponential(theta = 5),
+      independent. For T = sum_{i=1}^N X_i, find E[T].
+      (A) 5  (B) 9  (C) 20  (D) 25  (E) 100
+    solution: |
+      Compound mean: E[T] = E[N]E[X] = 4*5 = 20.  Answer C.
+    answer: "C (20)"
+    shortcut_used: ["compound E[T] = E[N]E[X]"]
+    verify: "abs(4*5 - 20) < 1e-9"
+
+  - id: M3.28
+    chapter: 19
+    tier: mock
+    outcomes: ["3c", "3i"]
+    distributions: ["poisson", "exponential", "normal"]
+    structural_tags: ["topic3", "compound", "clt", "tail"]
+    difficulty: 5
+    statement: |
+      For the aggregate T of M3.27 (E[T] = 20, Var(T) = lambda E[X^2] = 4*50 = 200,
+      sd ~ 14.142), use the normal approximation to find P(T > 30). Use
+      Phi(0.71) = 0.7611. (T is continuous: no continuity correction.)
+      (A) 0.159  (B) 0.211  (C) 0.239  (D) 0.309  (E) 0.401
+    solution: |
+      z = (30-20)/14.142 = 0.707 ~ 0.71. P(T>30) = 1 - Phi(0.71) = 1 - 0.7611
+      = 0.2389.  Answer C.
+    answer: "C (~0.239)"
+    shortcut_used: ["compound Poisson Var = lambda E[X^2]", "CLT tail (continuous: no cc)"]
+    verify: "abs((1 - 0.7611) - 0.2389) < 1e-9 and abs((30-20)/(200**0.5) - 0.707) < 1e-2"
+
+  - id: M3.29
+    chapter: 19
+    tier: mock
+    outcomes: ["3e", "3g"]
+    distributions: []
+    structural_tags: ["topic3", "correlation", "from-covariance"]
+    difficulty: 3
+    statement: |
+      X, Y have Cov(X,Y) = 4, Var(X) = 16, Var(Y) = 25. Find Corr(X,Y).
+      (A) 0.16  (B) 0.20  (C) 0.25  (D) 0.40  (E) 0.50
+    solution: |
+      Corr = Cov / (sd_X sd_Y) = 4 / (4*5) = 4/20 = 0.2.  Answer B.
+    answer: "B (0.20)"
+    shortcut_used: ["Corr = Cov/(sd*sd)"]
+    verify: "abs(4/(math.sqrt(16)*math.sqrt(25)) - 0.20) < 1e-9"
+
+  - id: M3.30
+    chapter: 19
+    tier: mock
+    outcomes: ["3f", "3i"]
+    distributions: ["uniform"]
+    structural_tags: ["topic3", "order-statistics", "kth-order"]
+    difficulty: 4
+    statement: |
+      Five independent scores are Uniform(0,1). Find P(max < 0.8).
+      (A) 0.168  (B) 0.328  (C) 0.410  (D) 0.512  (E) 0.800
+    solution: |
+      P(max < 0.8) = P(all < 0.8) = (0.8)^5 = 0.32768.  Answer B.
+    answer: "B (~0.328)"
+    shortcut_used: ["F_max(t) = [F(t)]^n"]
+    verify: "abs(0.8**5 - 0.328) < 1e-3"
