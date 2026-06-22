@@ -565,7 +565,7 @@ $$E[X] = \int_0^\infty \tfrac14 x^2 e^{-x/2}\,dx = \tfrac14\,\Gamma(3)\,2^3 = \t
 | C8.11 | $-x^2 e^{-x}-2x e^{-x}-2e^{-x}+C$ | tabular IBP |
 | C8.12 | $0$ | limit |
 | C8.13 | $E[X^2]=8$, $\mathrm{Var}=4$ | rival-trap |
-| C8.14 | $c=\tfrac14$ (Gary wrong) | rival-trap / decision |
+| C8.14 | $c=\tfrac{1}{16}$ (Gary wrong) | rival-trap / decision |
 | C8.15 | $3\theta,\ 12\theta^2,\ 3\theta^2$ | integrative |
 | C8.16 | $\sqrt\pi$ | half-integer gamma |
 | C8.17 | $1536$; use the gamma identity | decision |
