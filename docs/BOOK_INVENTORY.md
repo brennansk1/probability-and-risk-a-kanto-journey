@@ -17,9 +17,9 @@ Live status of the V3 build (*Probability & Risk: A Kanto Journey*). One row per
 | 01 | Fundamentals of Probability | C/B | ☐ |
 | 02 | Conditional Probability & Bayes | A | ✅ gold-standard exemplar — L1 harness 26/26 · L2 lint pass · L3 blind re-derivation (all correct) · **L4 tutor letter grade = A** (all 10 dims 9–10; NO concept compression — every concept fully derived) · A+ polish applied · clean build |
 | 03 | Discrete RVs & Moments | A | ✅ **grade A** — harness clean · blind re-derivation (1 prose-drift caught & fixed) · 1-Var-Stats flagship · build clean |
-| 04 | Combinatorics | B | ☐ |
-| 05 | Key Discrete Distributions | B | ☐ |
-| 06 | Deductibles & Limits (Discrete) | B | ☐ |
+| 04 | Combinatorics | B | ✅ **grade A** — blind re-derivation 40/40 clean · nCr/nPr keystrokes · build clean |
+| 05 | Key Discrete Distributions | B | ✅ **grade A** — blind re-derivation 33/33 · series interlude fully taught · build clean |
+| 06 | Deductibles & Limits (Discrete) | B | ✅ **grade A** — blind re-derivation clean · 3rd audit drill added to meet quota · build clean |
 | 07 | Checkpoint A | — | ☐ |
 | 08 | The Calculus Toolkit | C | ☐ |
 | 09 | Densities & CDFs | B | ☐ |

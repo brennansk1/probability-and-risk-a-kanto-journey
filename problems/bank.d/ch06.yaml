@@ -22,9 +22,8 @@
 # another problem's answer.
 #
 # Immersion quotas met: audit >= 3 (C6.8 Meowth's cap-then-deduct order error,
-# C6.16 the mean-minus-d apprentice error, plus the recycled cap-then-deduct audit
-# carried in C6.8 against the Team-Rocket Trap -- exactly as ch03's header counted
-# C3.8 twice); rival_trap >= 2 (C6.13, C6.18, both Gary); decision >= 1 (C6.15).
+# C6.16 the mean-minus-d apprentice error, C6.19 the wrong-divisor per-payment
+# error); rival_trap >= 2 (C6.13, C6.18, both Gary); decision >= 1 (C6.15).
 
 problems:
 
@@ -524,3 +523,35 @@ problems:
     answer: "0.70; Gary's d*P(X>d) shortcut wrong"
     shortcut_used: ["layer = E[X^u] - E[X^d], NOT E[X^u] - d*P(X>d)"]
     verify: "abs((1.40 - 0.70) - 0.70) < 1e-9 and abs((1.40 - 1*0.45) - 0.95) < 1e-9"
+
+  - id: C6.19
+    chapter: 6
+    tier: elite_challenge
+    archetype: audit
+    outcomes: ["2f"]
+    distributions: []
+    structural_tags: ["discrete", "per_payment"]
+    provenance: original
+    difficulty: 3
+    actor: "a Team Rocket apprentice (a predecessor on the scam desk)"
+    stakes: "The apprentice quotes a per-payment cheque size and 'declares it safe' for the knock-off policy's brochure."
+    consequence: "Dividing the per-loss expectation by the wrong probability misstates the typical cheque and underprices the cover."
+    quest_step: 19
+    tia_section: "A.6.3"
+    narrative_hook: "Catching the apprentice divide the per-payment by F(2) instead of P(X>2)."
+    statement: |
+      A Team Rocket apprentice prices the deductible-2 policy's per-payment cheque.
+      He has the per-loss figure E[(X-2)+]=0.41 (survival S = 0.70,0.45,0.25,0.12,
+      0.04,0). To get the per-payment average he divides by F(2)=P(X<=2)=0.75,
+      writing E[X-2 | X>2] = 0.41/0.75 = 0.547, and "declares it safe." Find the
+      TRUE expected payment per payment and name the apprentice's error.
+    solution: |
+      A payment occurs iff the loss STRICTLY exceeds the deductible, X>2, so the
+      divisor is P(X>2)=S(2)=0.25, NOT F(2)=P(X<=2)=0.75. The true per-payment
+      cheque is E[X-2 | X>2] = E[(X-2)+]/P(X>2) = 0.41/0.25 = 1.64. The apprentice's
+      error: he divided by the WRONG probability -- F(2)=0.75 (the chance a loss does
+      NOT clear the deductible) instead of P(X>2)=0.25 (the chance it does). His 0.547
+      badly understates the typical cheque; the true value is 1.64.
+    answer: "1.64 (not 0.547); divided by F(2)=0.75 instead of P(X>2)=0.25"
+    shortcut_used: ["per payment = per loss / P(X>d), divisor is S(d), NOT F(d)"]
+    verify: "abs(0.41/0.25 - 1.64) < 1e-6"

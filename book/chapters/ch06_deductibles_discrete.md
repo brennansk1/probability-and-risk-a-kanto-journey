@@ -533,6 +533,8 @@ Several problems share the Safari loss $X\in\{0,1,2,3,4,5\}$, pmf $p=0.30,0.25,0
 **C6.17.** 🔵 *(Full policy from scratch — both averages and the identity.)* For the Safari loss, a policy has $d=1$, maximum covered loss $u=4$, coinsurance $\alpha=0.9$. (a) Find $E[X\wedge4]$ and $E[X\wedge1]$ from the survival row. (b) Find the per-loss payment. (c) Find the per-payment payment. (d) Confirm $E[X\wedge4]+E[(X-4)_+]=E[X]$.
 
 **C6.18.** 🔵 *(RIVAL TRAP — Gary reverses the order.)* Gary prices a policy with deductible $d=1$ and maximum covered loss $u=3$ by capping the loss at $3$, then computing $E[X\wedge3]-d\cdot P(X>d)$ "to remove the deductible." Find the **correct** per-loss payment $E[X\wedge3]-E[X\wedge1]$ and explain why Gary's shortcut is wrong.
+
+**C6.19.** 🔵 *(AUDIT — the wrong-divisor per-payment error.)* A Team Rocket apprentice on the scam desk prices the deductible-$2$ policy's cheque. He has the per-loss figure $E[(X-2)_+]=0.41$ and, to get the per-payment average, divides by $F(2)=P(X\le2)=0.75$: "$E[X-2\mid X>2]=0.41/0.75=0.547$ — **declared safe** for the brochure." Find the **true** expected payment **per payment** and name the apprentice's error.
 :::
 
 ## Answers
@@ -553,6 +555,7 @@ Several problems share the Safari loss $X\in\{0,1,2,3,4,5\}$, pmf $p=0.30,0.25,0
 | C6.7 | $0.04$ | standard | | C6.16 | $0.41$ (not $-0.44$) | audit |
 | C6.8 | $0.37$ (not $0$) | audit | | C6.17 | see below | standard |
 | C6.9 | $0.296$ | standard | | C6.18 | $0.70$; Gary's shortcut wrong | rival_trap |
+| | | | | C6.19 | $1.64$ (not $0.547$) | audit |
 
 **C6.1** — *(standard) Ordinary deductible, per loss (Entry №27).* $E[(X-1)_+]=\sum_{k\ge1}S(k)=S(1)+S(2)+S(3)+S(4)=0.45+0.25+0.12+0.04=0.86.$ (Direct check: $(k-1)_+=0,0,1,2,3,4$, so $1(0.20)+2(0.13)+3(0.08)+4(0.04)=0.20+0.26+0.24+0.16=0.86$ ✓.)
 
@@ -589,6 +592,8 @@ Several problems share the Safari loss $X\in\{0,1,2,3,4,5\}$, pmf $p=0.30,0.25,0
 **C6.17** — *(standard) Full policy from scratch (Entries №27, №28, №29).* (a) $E[X\wedge4]=S(0)+S(1)+S(2)+S(3)=0.70+0.45+0.25+0.12=1.52$; $E[X\wedge1]=S(0)=0.70.$ (b) Per loss: $E[Y_L]=0.9(1.52-0.70)=0.9(0.82)=0.738.$ (c) Per payment: a cheque is written iff $X>1$, so divide by $P(X>1)=S(1)=0.45$: $E[Y_P]=\dfrac{0.738}{0.45}=1.64.$ (d) $E[(X-4)_+]=(5-4)(0.04)=0.04$, and $E[X\wedge4]+E[(X-4)_+]=1.52+0.04=1.56=E[X]$ ✓.
 
 **C6.18** — *(rival_trap) Order/short-cut error (Entries №27, №28).* **Correct** per-loss payment for the layer between $d=1$ and $u=3$: $E[X\wedge3]-E[X\wedge1]=1.40-0.70=0.70.$ **Gary's shortcut** $E[X\wedge3]-d\cdot P(X>d)=1.40-1(0.45)=0.95$ is wrong: subtracting $d\cdot P(X>d)$ is *not* how a deductible removes the bottom of a capped loss. The deductible removes the limited value $E[X\wedge d]=E[X\wedge1]=0.70$, not $d\cdot P(X>d)=0.45$. The correct covered layer is the difference of two limited expected values, $0.70$.
+
+**C6.19** — *(audit) Wrong-divisor per-payment error (Entry №29).* True per-payment cheque: a payment occurs iff the loss **strictly exceeds** the deductible, $X>2$, so the divisor is $P(X>2)=S(2)=0.25$. $E[X-2\mid X>2]=\dfrac{E[(X-2)_+]}{P(X>2)}=\dfrac{0.41}{0.25}=1.64.$ **The apprentice's error:** he divided by $F(2)=P(X\le2)=0.75$ — the chance a loss does **not** clear the deductible — instead of $P(X>2)=0.25$, the chance it does. His $0.41/0.75=0.547$ badly understates the typical cheque (it even falls below the per-loss $0.41$, an immediate red flag, since a per-payment average must *exceed* the per-loss one). The true per-payment cheque is $1.64$, not $0.547$.
 :::
 
 > Next stop: **Checkpoint A (ch07)** — a campfire on the route where you'll spaced-retrieve everything from the discrete act (Act I) before crossing into the continuous world. Pack your deductible-and-limit tools; the budget identity returns at Cinnabar (ch13) in calculus form.
