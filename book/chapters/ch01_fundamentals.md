@@ -38,6 +38,8 @@ Far to the north, through the storm clouds gathering over the river, a band of c
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP001 "Pokémon! I Choose You!" + EP002 "Pokémon Emergency!"**
 
+<figure><img src="../../assets/stills/ch01_now_playing.jpg" alt="Route 1 under a darkening, rain-streaked sky — the storm setting where the Spearow flock attacks in Indigo League EP001." style="width:60%; max-width:440px; display:block; margin:0.4em auto; image-rendering:auto;"><figcaption style="font-size:0.8em; color:#555;">Route 1, EP001 — watch the Spearow-swarm storm alongside this chapter.</figcaption></figure>
+
 Ash gets an unruly Pikachu, and on Route 1 a whole flock of Spearow descends — he can't track every bird, only reason about "will *any* of them reach Pikachu?" That "at least one of a swarm" question is exactly this chapter. EP002 brings the first Pokémon Center and Team Rocket's debut. Watch these before reading. *(The catalogue-the-route framing is our in-world extension.)*
 :::
 
