@@ -20,7 +20,7 @@
 # A Payment Is a Reshaped Loss — Now with Integrals {.type-fire}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with Cinnabar Island highlighted off the southern coast: a volcanic island holding Blaine's fire gym, the Pokemon Lab, and the burned-out Pokemon Mansion, reached by sea after the Grand Gathering." style="width:70%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/maps/kanto_ch13.png" alt="Kanto town map with Cinnabar Island highlighted off the southern coast: a volcanic island holding Blaine's fire gym, the Pokemon Lab, and the burned-out Pokemon Mansion, reached by sea after the Grand Gathering." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Across the water to <strong>Cinnabar Island</strong> — a live volcano holding the <strong>Pokémon Lab</strong>, the burned-out Mansion, and Blaine's fire gym. Oak has a coverage job for you here before the gym; no badge is pinned in this chapter, but the math is the most directly actuarial you have met.</figcaption>
 </figure>
 

@@ -14,7 +14,7 @@
 # The Calculus Toolkit — the HM You Need for the Continuous Wilds {.type-steel}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the coastline near Cerulean highlighted, a lone lighthouse tower marked on a spit of land north of the city, its beam sweeping out over dark water. No city is circled — this is a way-station between the discrete road behind you and the continuous wilds ahead." style="width:70%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/maps/kanto_ch08.png" alt="Kanto town map with the coastline near Cerulean highlighted, a lone lighthouse tower marked on a spit of land north of the city, its beam sweeping out over dark water. No city is circled — this is a way-station between the discrete road behind you and the continuous wilds ahead." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Not a gym — a <em>way-station</em>. Bill's lighthouse stands between the discrete road you have walked and the continuous wilds ahead. There is no badge here. There is an <strong>HM</strong>: the calculus you must own to cross.</figcaption>
 </figure>
 

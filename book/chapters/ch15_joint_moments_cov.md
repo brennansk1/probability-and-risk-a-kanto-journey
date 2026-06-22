@@ -12,7 +12,7 @@
 # Combining Forces {.type-ground}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the route to Victory Road highlighted; every gym badge so far is collected and the path now climbs from Viridian toward the Indigo Plateau, with Victory Road marked as the current leg." style="width:70%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/maps/kanto_ch15.png" alt="Kanto town map with the route to Victory Road highlighted; every gym badge so far is collected and the path now climbs from Viridian toward the Indigo Plateau, with Victory Road marked as the current leg." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Route to a 10 — every badge earned, you reach <strong>Victory Road</strong>, the gauntlet where the team stops being six separate Pokémon and becomes one <em>total</em>.</figcaption>
 </figure>
 

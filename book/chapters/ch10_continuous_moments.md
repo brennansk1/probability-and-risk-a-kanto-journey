@@ -13,7 +13,7 @@
 # The Center of a Smooth Crowd — Continuous Moments {.type-psychic}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with Saffron City circled at the center of the region; the towering Silph Co. headquarters sits at its heart. No gym leg is marked -- the journey lingers in Saffron after the Marsh Badge." style="width:70%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/maps/kanto_ch10.png" alt="Kanto town map with Saffron City circled at the center of the region; the towering Silph Co. headquarters sits at its heart. No gym leg is marked -- the journey lingers in Saffron after the Marsh Badge." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Still in <strong>Saffron City</strong> — no new badge this leg. You have your Marsh Badge from Sabrina, and now you climb the <em>Silph Co.</em> tower, where every loss the company books is a <em>smooth</em> random number and the actuaries upstairs need its center and spread.</figcaption>
 </figure>
 

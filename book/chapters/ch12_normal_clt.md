@@ -10,7 +10,7 @@
 # The Bell of Thousands {.type-normal}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the long route from the continuous wilds converging on the Indigo Plateau, where the Grand Gathering — the League qualifier — is staged." style="width:70%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/maps/kanto_ch12.png" alt="Kanto town map with the long route from the continuous wilds converging on the Indigo Plateau, where the Grand Gathering — the League qualifier — is staged." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>The road has converged: you have crossed the smooth continuous wilds and arrived at the <em>Grand Gathering</em> — the League qualifier, where thousands of trainers pool into one predictable crowd.</figcaption>
 </figure>
 

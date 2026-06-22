@@ -11,7 +11,7 @@
 # Counting Machines — From Arrangements to the Hypergeometric {.type-rock}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with Pewter City highlighted; the trail runs out of Viridian Forest to Brock's Gym at the edge of town, the next destination after Vermilion." style="width:70%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/maps/kanto_ch04.png" alt="Kanto town map with Pewter City highlighted; the trail runs out of Viridian Forest to Brock's Gym at the edge of town, the next destination after Vermilion." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Route to a 10 — with the Cascade and Thunder Badges already won, you double back through Viridian Forest to Pewter City, home of the Boulder Badge and the gym where you learn to <em>count</em>.</figcaption>
 </figure>
 

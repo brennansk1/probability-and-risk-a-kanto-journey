@@ -11,7 +11,7 @@
 # Fundamentals of Probability {.type-flying}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with Pallet Town and Route 1 highlighted at the southern edge; the road north toward Viridian City stretches ahead, still unwalked." style="width:70%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/maps/kanto_ch01.png" alt="Kanto town map with Pallet Town and Route 1 highlighted at the southern edge; the road north toward Viridian City stretches ahead, still unwalked." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>The journey to a 10 starts here — Pallet Town and Route 1, where every probability you will ever compute first needs a <em>place to live</em>.</figcaption>
 </figure>
 

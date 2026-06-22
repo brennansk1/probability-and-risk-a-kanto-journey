@@ -12,7 +12,7 @@
 # Checkpoint B — The Night Before the Championship {.type-normal}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the route traced all the way to the Indigo Plateau in the far corner; all eight badges earned, the journey complete, only the championship ahead." style="width:70%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/maps/kanto_ch18.png" alt="Kanto town map with the route traced all the way to the Indigo Plateau in the far corner; all eight badges earned, the journey complete, only the championship ahead." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>The whole road, behind you. Eight badges, Victory Road cleared — and at the very edge of the map, the Indigo Plateau. This is the last camp before the championship. No new road tonight; just everything you already know, laid out one more time.</figcaption>
 </figure>
 

@@ -11,7 +11,7 @@
 # Describing a Whole Population by Its Distribution {.type-electric}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with the sea route to Vermilion City highlighted; Vermilion, home of the Thunder Badge, is marked as the current destination after Cerulean." style="width:70%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/maps/kanto_ch03.png" alt="Kanto town map with the sea route to Vermilion City highlighted; Vermilion, home of the Thunder Badge, is marked as the current destination after Cerulean." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Route to a 10 — you have left Cerulean with the Cascade Badge, boarded the luxury liner <em>S.S. Anne</em>, and are sailing for Vermilion City: home of Lt. Surge and the Thunder Badge.</figcaption>
 </figure>
 

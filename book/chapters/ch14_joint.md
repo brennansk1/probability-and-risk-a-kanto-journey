@@ -11,7 +11,7 @@
 # Two Fates Entwined {.type-fire}
 
 <figure>
-<img src="../../assets/maps/kanto_town_map.png" alt="Kanto town map with Cinnabar Island highlighted at the far south; the sea route from Pallet is complete and the island volcano glows orange. The earned badges are lit and the marker rests on Cinnabar — home of the Volcano Badge." style="width:70%; max-width:520px; display:block; margin:1em auto;">
+<img src="../../assets/maps/kanto_ch14.png" alt="Kanto town map with Cinnabar Island highlighted at the far south; the sea route from Pallet is complete and the island volcano glows orange. The earned badges are lit and the marker rests on Cinnabar — home of the Volcano Badge." style="width:70%; max-width:520px; display:block; margin:1em auto;">
 <figcaption>Route to a 10 — you have crossed the southern sea to Cinnabar Island, where the multivariate act opens and two random variables first move <em>together</em>.</figcaption>
 </figure>
 
