@@ -1,0 +1,489 @@
+# Problem bank — Chapter 8 (Bill's lighthouse / the HM "Calculus"): the calculus
+# prerequisites the SOA silently assumes. Differentiation (rules, modes,
+# L'Hopital), integration (u-sub, improper over [0, inf)), integration by parts
+# (tabular), and the gamma integral (the "Master Ball of integrals"). Outcome:
+# prereq. Tier-C chapter. Locale: Bill's lighthouse / a training montage (no gym,
+# no badge — the HM you acquire to enter the continuous wilds).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   provenance, difficulty (1-5), actor, stakes, consequence, quest_step,
+#   tia_section, narrative_hook, statement, solution, answer, shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes
+# math, st (scipy.stats), __import__). Chained problems RESTATE the prior value as a
+# given so verify never depends on another problem's answer.
+#
+# This is a calculus prerequisite chapter with NO probability distribution, so the
+# structural `distributions` tag is `none` / `other` throughout (per the ch08
+# blueprint row: "tag structural none/other (calculus, no distribution)"). All
+# outcomes are ["prereq"].
+#
+# Immersion quotas met: audit >=3 (C8.8, C8.10, C8.18); rival_trap >=2 (C8.13,
+# C8.14); decision >=1 (C8.14, C8.17). The canonical Team-Rocket error (gamma
+# off-by-one on alpha) is recycled into the audit drill C8.8.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C8.1
+    chapter: 8
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 1
+    actor: "a foraging Caterpie"
+    stakes: "Bill wants the Caterpie's lifetime-foraging integral before the door will budge."
+    consequence: "A wrong integral leaves the lighthouse model uncalibrated and the door shut."
+    quest_step: 1
+    tia_section: "B.0.2 (gamma integral)"
+    narrative_hook: "Evaluating a power-times-exponential integral the Master-Ball way."
+    statement: |
+      Evaluate integral_0^inf x^2 e^{-x} dx.
+    solution: |
+      Gamma shape: power on x is 2, so alpha = 2 + 1 = 3; scale theta = 1.
+      integral = Gamma(3) * 1^3 = 2! = 2.
+    answer: "2"
+    shortcut_used: ["gamma integral Gamma(alpha) theta^alpha", "alpha = power + 1", "Gamma(3) = 2! = 2"]
+    verify: "abs(math.gamma(3)*1**3 - 2) < 1e-9"
+
+  - id: C8.2
+    chapter: 8
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 2
+    actor: "Bill's encounter monitor"
+    stakes: "The monitor's hunger model needs its raw kernel integral evaluated, scale and all."
+    consequence: "Drop the scale power and every downstream encounter rate is wrong."
+    quest_step: 2
+    tia_section: "B.0.2 (gamma integral)"
+    narrative_hook: "A scaled gamma integral with both the alpha and the theta power to track."
+    statement: |
+      Evaluate integral_0^inf x^4 e^{-x/3} dx.
+    solution: |
+      Power on x is 4, so alpha = 5; scale theta = 3.
+      integral = Gamma(5) * 3^5 = 4! * 243 = 24 * 243 = 5832.
+    answer: "5832"
+    shortcut_used: ["gamma integral", "alpha = 5, theta = 3", "Gamma(5) = 4! = 24"]
+    verify: "abs(math.gamma(5)*3**5 - 5832) < 1e-6"
+
+  - id: C8.3
+    chapter: 8
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 1
+    actor: "Bill's intensity calibrator"
+    stakes: "The encounter density must integrate to 1 before it can be used at all."
+    consequence: "An un-normalized density makes every probability it reports meaningless."
+    quest_step: 3
+    tia_section: "B.0.2 (improper integral, normalize, survival)"
+    narrative_hook: "Forcing total area to 1 to find a normalizing constant, then its survival tail."
+    statement: |
+      Find the constant c making f(x) = c e^{-x/7} (x > 0) a valid density, and
+      write the survival S(t) = P(X > t).
+    solution: |
+      integral_0^inf e^{-x/7} dx = 7, so 7c = 1 and c = 1/7. Survival:
+      S(t) = integral_t^inf (1/7) e^{-u/7} du = e^{-t/7} (note S(0) = 1).
+    answer: "c = 1/7; S(t) = e^{-t/7}"
+    shortcut_used: ["integral_0^inf e^{-x/theta} dx = theta", "normalize: int f = 1", "survival e^{-t/theta}"]
+    verify: "abs(1/7 - 1/7) < 1e-12 and abs(math.exp(-0/7) - 1) < 1e-12 and abs(7*(1/7) - 1) < 1e-12"
+
+  - id: C8.4
+    chapter: 8
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 2
+    actor: "a wild encounter curve"
+    stakes: "You need the single most likely value of the encounter density to set the catch trap."
+    consequence: "Set the trap off the peak and the most-common encounter slips past."
+    quest_step: 4
+    tia_section: "B.0.1 (differentiation, modes)"
+    narrative_hook: "Finding a density's mode by setting the derivative to zero."
+    statement: |
+      A wild encounter density is f(x) = (1/4) x e^{-x/2} for x > 0. Find the mode
+      (the most likely value) by optimization.
+    solution: |
+      Product + chain rule: f'(x) = (1/4) e^{-x/2} (1 - x/2). Since e^{-x/2} > 0,
+      f' = 0 requires 1 - x/2 = 0, so x = 2. Sign of f' goes + to -, a maximum.
+      Mode = 2.
+    answer: "mode = 2"
+    shortcut_used: ["mode: solve f'(x) = 0", "product rule + chain rule", "e^{-x/2} > 0 never zero"]
+    verify: "abs(2 - 2) < 1e-12 and (1 - 2/2) == 0"
+
+  - id: C8.5
+    chapter: 8
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 1
+    actor: "a recovery clock"
+    stakes: "Bill wants the chance a recovery wait runs past time t, as a clean formula."
+    consequence: "Confuse survival with the cdf and every long-wait estimate is inverted."
+    quest_step: 5
+    tia_section: "B.0.2 (improper integral, survival vs cdf)"
+    narrative_hook: "Integrating an exponential tail to a survival function and checking the endpoints."
+    statement: |
+      Compute the survival probability S(t) = integral_t^inf (1/4) e^{-u/4} du as a
+      formula in t, and state S(0).
+    solution: |
+      S(t) = [-e^{-u/4}]_t^inf = 0 - (-e^{-t/4}) = e^{-t/4}. S(0) = e^0 = 1
+      (a survival function starts at 1; this is NOT the cdf 1 - e^{-t/4}).
+    answer: "S(t) = e^{-t/4}; S(0) = 1"
+    shortcut_used: ["survival tail integral", "endpoint test S(0)=1, S(inf)=0", "survival vs cdf"]
+    verify: "abs(math.exp(-0/4) - 1) < 1e-12 and abs(math.exp(-4/4) - math.exp(-1)) < 1e-12"
+
+  - id: C8.6
+    chapter: 8
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 2
+    actor: "a tangled integrand"
+    stakes: "An integral looks ugly until you spot the inside function hiding in it."
+    consequence: "Miss the substitution and you waste minutes on a non-elementary-looking integral."
+    quest_step: 6
+    tia_section: "B.0.2 (u-substitution)"
+    narrative_hook: "Collapsing an integral by spotting g'(x) sitting beside g(x)."
+    statement: |
+      Evaluate integral_0^1 y^2 e^{y^3} dy by u-substitution.
+    solution: |
+      Inside function g = y^3 has derivative 3y^2, which is (up to 1/3) in the
+      integrand. Let u = y^3, du = 3y^2 dy. Then integral = (1/3) integral_0^1 e^u du
+      = (1/3)(e - 1) = 0.5728.
+    answer: "(1/3)(e - 1) = 0.5728"
+    shortcut_used: ["u-substitution reverses the chain rule", "u = y^3, du = 3y^2 dy"]
+    verify: "abs((1/3)*(math.e - 1) - 0.5728) < 1e-3"
+
+  # ===================== GYM BATTLES (true exam difficulty) =====================
+
+  - id: C8.7
+    chapter: 8
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 2
+    actor: "Bill's locked monitor"
+    stakes: "Bill's headline integral is the price of admission to the continuous wilds."
+    consequence: "Botch alpha here and the door stays shut."
+    quest_step: 7
+    tia_section: "B.0.2 (gamma integral)"
+    narrative_hook: "Evaluating Bill's cold-open lighthouse integral in one line."
+    statement: |
+      For integral_0^inf x^3 e^{-x/theta} dx with scale theta = 2, evaluate the
+      integral.
+    solution: |
+      Power on x is 3, so alpha = 4; theta = 2. integral = Gamma(4) * 2^4
+      = 3! * 16 = 6 * 16 = 96.
+    answer: "96"
+    shortcut_used: ["gamma integral", "alpha = power + 1 = 4", "Gamma(4) = 3! = 6"]
+    verify: "abs(math.gamma(4)*2**4 - 96) < 1e-9"
+
+  - id: C8.8
+    chapter: 8
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 2
+    actor: "Team Rocket (Meowth)"
+    stakes: "Meowth powers a twerp-detector off Bill's integral but sets alpha to the bare power."
+    consequence: "The off-by-one underpowers the gadget by a factor of six and it sputters out."
+    quest_step: 8
+    tia_section: "B.0.2 (gamma integral, off-by-one alpha)"
+    narrative_hook: "Catching the canonical gamma off-by-one: alpha = power, not power + 1."
+    statement: |
+      Team Rocket evaluates integral_0^inf x^3 e^{-x/2} dx as
+      "Gamma(3) * 2^3 = 16." Give the correct value and name the error.
+    solution: |
+      The exponent on x is alpha - 1, so a power of 3 means alpha = 4, NOT 3.
+      Correct: Gamma(4) * 2^4 = 6 * 16 = 96. Team Rocket set alpha equal to the
+      power (off-by-one), getting Gamma(3) * 2^3 = 16 -- low by a factor of six.
+    answer: "96 (off-by-one: alpha = power + 1 = 4, not 3)"
+    shortcut_used: ["alpha = (power on x) + 1", "Gamma(4) = 6 not Gamma(3) = 2"]
+    verify: "abs(math.gamma(4)*2**4 - 96) < 1e-9 and abs(math.gamma(3)*2**3 - 16) < 1e-9 and 96 == 6*16"
+
+  - id: C8.9
+    chapter: 8
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 2
+    actor: "Bill's encounter model"
+    stakes: "The expected encounter value drives the whole catch-rate forecast."
+    consequence: "A wrong mean throws off how many balls Bill stocks the lighthouse with."
+    quest_step: 9
+    tia_section: "B.0.2 (gamma integral, expectation)"
+    narrative_hook: "Computing an expected value as a gamma integral with the power bumped by one."
+    statement: |
+      For f(x) = (1/9) x e^{-x/3} (x > 0), compute E[X] = integral_0^inf x f(x) dx.
+    solution: |
+      E[X] = (1/9) integral_0^inf x^2 e^{-x/3} dx. Power 2 => alpha = 3, theta = 3:
+      = (1/9) Gamma(3) 3^3 = (1/9)(2)(27) = 6. (Cross-check: this is Gamma(2,3),
+      mean alpha*theta = 2*3 = 6.)
+    answer: "6"
+    shortcut_used: ["E[X] raises the power by one", "gamma integral Gamma(3) 3^3 = 54", "gamma mean alpha*theta"]
+    verify: "abs((1/9)*math.gamma(3)*3**3 - 6) < 1e-9"
+
+  - id: C8.10
+    chapter: 8
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 3
+    actor: "a sloppy field log"
+    stakes: "The log raises the scale to the power on x instead of to alpha, mis-sizing the integral."
+    consequence: "An understated integral corrupts the normalizing constant that depends on it."
+    quest_step: 10
+    tia_section: "B.0.2 (gamma integral, scale exponent)"
+    narrative_hook: "Catching a scale-exponent slip: theta is raised to alpha, not to the bare power."
+    statement: |
+      A field log claims integral_0^inf x^2 e^{-x/5} dx = Gamma(3) * 5^2 = 50.
+      Find the true value and name the slip.
+    solution: |
+      Power 2 => alpha = 3, scale theta = 5. The identity is Gamma(alpha) theta^alpha
+      = Gamma(3) * 5^3 = 2 * 125 = 250. The log raised theta to the POWER on x (5^2)
+      instead of to alpha (5^3) -- the scale exponent is alpha, not power.
+    answer: "250 (log used 5^2 instead of 5^alpha = 5^3)"
+    shortcut_used: ["gamma integral Gamma(alpha) theta^alpha", "scale exponent is alpha = power + 1"]
+    verify: "abs(math.gamma(3)*5**3 - 250) < 1e-9 and abs(math.gamma(3)*5**2 - 50) < 1e-9"
+
+  - id: C8.11
+    chapter: 8
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 3
+    actor: "the by-parts ladder"
+    stakes: "An indefinite power-times-exponential integral must be done without the gamma shortcut."
+    consequence: "Sign drift or row mis-pairing in the table corrupts the antiderivative."
+    quest_step: 11
+    tia_section: "B.0.3 (integration by parts, tabular)"
+    narrative_hook: "Laddering derivatives against antiderivatives with alternating signs."
+    statement: |
+      Use tabular integration by parts to find integral x^2 e^{-x} dx (indefinite).
+    solution: |
+      D-column (differentiate x^2): x^2, 2x, 2, 0.
+      I-column (integrate e^{-x}): e^{-x}, -e^{-x}, e^{-x}, -e^{-x}.
+      Diagonal products with signs +, -, +:
+      +(x^2)(-e^{-x}) - (2x)(e^{-x}) + (2)(-e^{-x})
+      = -x^2 e^{-x} - 2x e^{-x} - 2 e^{-x} + C.
+    answer: "-x^2 e^{-x} - 2x e^{-x} - 2 e^{-x} + C"
+    shortcut_used: ["tabular IBP", "differentiate power to 0, integrate exponential", "alternating diagonal signs"]
+    verify: "(lambda d: abs(d(1.3) - 1.3**2*math.exp(-1.3)) < 1e-4)(lambda x, h=1e-5: ((-(x+h)**2*math.exp(-(x+h)) - 2*(x+h)*math.exp(-(x+h)) - 2*math.exp(-(x+h))) - (-(x-h)**2*math.exp(-(x-h)) - 2*(x-h)*math.exp(-(x-h)) - 2*math.exp(-(x-h))))/(2*h))"
+
+  - id: C8.12
+    chapter: 8
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 2
+    actor: "a runaway tail"
+    stakes: "You must show a density's tail truly dies so its area (and the expectation) is finite."
+    consequence: "If the tail did not vanish, no moment of the distribution would exist."
+    quest_step: 12
+    tia_section: "B.0.1 (limits, exponential beats polynomial)"
+    narrative_hook: "Resolving an infinity-over-infinity limit with exponential-beats-polynomial."
+    statement: |
+      Evaluate lim_{x -> inf} x^2 e^{-x/3}, and explain in one line why a tail of
+      this shape integrates to a finite value.
+    solution: |
+      Write x^2 / e^{x/3} (form inf/inf). Two L'Hopital passes: -> 2x / ((1/3)e^{x/3})
+      -> 2 / ((1/9)e^{x/3}) -> 0. Exponential beats polynomial. Because the
+      integrand decays faster than any polynomial grows, its tail area integral_b^inf
+      vanishes as b -> inf, so the total integral is finite. Limit = 0.
+    answer: "0 (exponential beats polynomial)"
+    shortcut_used: ["L'Hopital on inf/inf", "lim x^n e^{-x/theta} = 0", "exp beats poly => finite tail area"]
+    verify: "100**2 * math.exp(-100/3) < 1e-6 and 150**2 * math.exp(-150/3) < 100**2 * math.exp(-100/3)"
+
+  - id: C8.13
+    chapter: 8
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary equates the second moment with the squared mean, which would zero out the variance."
+    consequence: "A zero-variance claim mis-states the spread and the trap snaps on Gary."
+    quest_step: 13
+    tia_section: "B.0.2 (gamma integral, second moment)"
+    narrative_hook: "Catching Gary set E[X^2] = (E[X])^2 and lose the variance term."
+    statement: |
+      For the exponential f(x) = (1/2) e^{-x/2} (x > 0, mean 2), Gary claims
+      "E[X^2] = (E[X])^2 = 4." Compute the true E[X^2] = integral_0^inf x^2 f(x) dx
+      via the gamma identity, then Var(X), and name Gary's error.
+    solution: |
+      E[X^2] = integral_0^inf x^2 (1/2) e^{-x/2} dx = (1/2) Gamma(3) 2^3
+      = (1/2)(2)(8) = 8. Var(X) = E[X^2] - (E[X])^2 = 8 - 4 = 4 (matching theta^2 = 4
+      for an exponential). Gary used E[X^2] = (E[X])^2, dropping the +Var term in
+      E[X^2] = Var + (E[X])^2.
+    answer: "E[X^2] = 8, Var(X) = 4 (Gary forgot E[X^2] = Var + (E[X])^2)"
+    shortcut_used: ["gamma integral for the second moment", "E[X^2] = Var + (E[X])^2", "exponential Var = theta^2"]
+    verify: "abs((1/2)*math.gamma(3)*2**3 - 8) < 1e-9 and abs(8 - 2**2 - 4) < 1e-9"
+
+  - id: C8.14
+    chapter: 8
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary 'remembers' a normalizing constant instead of evaluating the kernel integral."
+    consequence: "A guessed constant makes the density integrate to the wrong total, not 1."
+    quest_step: 14
+    tia_section: "B.0.2 (gamma integral, normalizing constant)"
+    narrative_hook: "Deciding whether a remembered normalizer is right by actually evaluating the kernel."
+    statement: |
+      Gary insists the density f(x) = c x^2 e^{-x/2} (x > 0) "must have c = 1/2
+      because that's the exponential constant." Decide whether he is right: find the
+      true c, and state which identity settles it.
+    solution: |
+      The normalizer depends on the kernel, not on a remembered number. Master-Ball
+      integral: integral_0^inf x^2 e^{-x/2} dx = Gamma(3) 2^3 = 2*8 = 16, so c = 1/16,
+      NOT 1/2. (This is the Gamma(3,2) density.) Decision: never trust a remembered
+      constant; evaluate the kernel integral.
+    answer: "c = 1/16 (Gary wrong; the gamma integral settles it)"
+    shortcut_used: ["normalize via the gamma integral", "Gamma(3) 2^3 = 16", "c depends on the kernel"]
+    verify: "abs(1/(math.gamma(3)*2**3) - 1/16) < 1e-12 and 1/16 != 1/2"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =====================
+
+  - id: C8.15
+    chapter: 8
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 4
+    actor: "Bill's dawn capstone"
+    stakes: "A symbolic gamma density must yield its constant, mean, and variance with theta left free."
+    consequence: "A single algebra slip propagates through all three symbolic results."
+    quest_step: 15
+    tia_section: "B.0.2 (gamma integral, symbolic moments)"
+    narrative_hook: "Driving the Master-Ball identity symbolically to recover the Gamma(3, theta) moments."
+    statement: |
+      For f(x) = (1/(2 theta^3)) x^2 e^{-x/theta} (x > 0, a Gamma(3, theta)):
+      (a) verify it integrates to 1; (b) show E[X] = 3 theta; (c) show
+      E[X^2] = 12 theta^2 and hence Var(X) = 3 theta^2. Keep theta symbolic.
+    solution: |
+      (a) (1/(2 theta^3)) Gamma(3) theta^3 = (1/(2 theta^3)) (2)(theta^3) = 1.
+      (b) E[X] = (1/(2 theta^3)) integral x^3 e^{-x/theta} dx
+             = (1/(2 theta^3)) Gamma(4) theta^4 = (1/(2 theta^3))(6)(theta^4) = 3 theta.
+      (c) E[X^2] = (1/(2 theta^3)) Gamma(5) theta^5 = (1/(2 theta^3))(24)(theta^5)
+             = 12 theta^2, so Var = 12 theta^2 - (3 theta)^2 = 3 theta^2.
+      (These are the Gamma(3, theta) mean alpha*theta and variance alpha*theta^2.)
+    answer: "(a) integrates to 1; (b) E[X] = 3 theta; (c) E[X^2] = 12 theta^2, Var = 3 theta^2"
+    shortcut_used: ["gamma integral symbolically", "alpha bumps with each extra x", "Gamma(3,theta): mean 3theta, var 3theta^2"]
+    verify: "(lambda t: abs((1/(2*t**3))*math.gamma(3)*t**3 - 1) < 1e-9 and abs((1/(2*t**3))*math.gamma(4)*t**4 - 3*t) < 1e-9 and abs((1/(2*t**3))*math.gamma(5)*t**5 - 12*t**2) < 1e-9)(2.7)"
+
+  - id: C8.16
+    chapter: 8
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 4
+    actor: "the half-integer Master Ball"
+    stakes: "The normal distribution's hidden normalizer hinges on Gamma(1/2) = sqrt(pi)."
+    consequence: "Without this half-integer value, the normal density cannot be normalized later."
+    quest_step: 16
+    tia_section: "B.0.2 (gamma function, half-integer)"
+    narrative_hook: "Deriving Gamma(1/2) = sqrt(pi) by a substitution into the Gaussian integral."
+    statement: |
+      Using x = u^2 (dx = 2u du) and the known fact integral_0^inf e^{-u^2} du
+      = sqrt(pi)/2, show that Gamma(1/2) = integral_0^inf x^{-1/2} e^{-x} dx
+      = sqrt(pi).
+    solution: |
+      By definition Gamma(1/2) = integral_0^inf x^{-1/2} e^{-x} dx. Substitute
+      x = u^2, dx = 2u du, x^{-1/2} = u^{-1} (limits stay 0 to inf):
+      Gamma(1/2) = integral_0^inf u^{-1} e^{-u^2} (2u du) = 2 integral_0^inf e^{-u^2} du
+      = 2 * sqrt(pi)/2 = sqrt(pi).
+    answer: "Gamma(1/2) = sqrt(pi)"
+    shortcut_used: ["substitution x = u^2", "Gaussian integral sqrt(pi)/2", "Gamma(1/2) = sqrt(pi)"]
+    verify: "abs(math.gamma(0.5) - math.sqrt(math.pi)) < 1e-9"
+
+  - id: C8.17
+    chapter: 8
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 4
+    actor: "Ash (you)"
+    stakes: "Under exam time you must DECIDE whether to grind by parts or fire the Master Ball."
+    consequence: "Choosing the slow path on a definite power-times-exp integral burns minutes you do not have."
+    quest_step: 17
+    tia_section: "B.0.2-B.0.3 (gamma integral vs integration by parts)"
+    narrative_hook: "Picking the one-line gamma identity over four rounds of integration by parts."
+    statement: |
+      You must evaluate integral_0^inf x^3 e^{-x/4} dx on the clock. Decide between
+      tabular integration by parts and the gamma identity, then give the value and
+      justify the choice.
+    solution: |
+      The integrand is power-times-decaying-exponential over [0, inf): fire the
+      Master Ball. alpha = 3 + 1 = 4, theta = 4: integral = Gamma(4) 4^4
+      = 6 * 256 = 1536. Tabular IBP would need four rows then a limit evaluation --
+      same answer, far more time and more slip risk. Decision: use the gamma identity.
+    answer: "1536; use the gamma identity (one line beats four by-parts rounds)"
+    shortcut_used: ["recognize the gamma shape on sight", "Gamma(4) 4^4 = 1536", "shortcut over grind"]
+    verify: "abs(math.gamma(4)*4**4 - 1536) < 1e-6"
+
+  - id: C8.18
+    chapter: 8
+    tier: elite_challenge
+    archetype: audit
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 4
+    actor: "a careless solver"
+    stakes: "A submitted tail integral is labelled the cdf when it is really the survival, inverting it."
+    consequence: "Reporting survival as the cdf flips every probability the model produces."
+    quest_step: 18
+    tia_section: "B.0.2 (survival vs cdf endpoint test)"
+    narrative_hook: "Catching a survival-vs-cdf swap with the endpoint test."
+    statement: |
+      A solver integrates a density's tail and writes "F(t) = e^{-t/5}" for the cdf
+      of an Exponential(5). Use the endpoint test to decide whether that is the cdf,
+      and give the correct cdf.
+    solution: |
+      Endpoint test: a cdf must satisfy F(0) = 0 and F(inf) = 1. But e^{-0/5} = 1,
+      not 0 -- so e^{-t/5} is the SURVIVAL S(t), not the cdf. The true cdf is
+      F(t) = 1 - S(t) = 1 - e^{-t/5} (which gives F(0) = 0, F(inf) = 1).
+    answer: "e^{-t/5} is the survival, not the cdf; true cdf F(t) = 1 - e^{-t/5}"
+    shortcut_used: ["endpoint test F(0)=0, F(inf)=1", "S(0)=1, S(inf)=0", "F = 1 - S"]
+    verify: "abs(math.exp(-0/5) - 1) < 1e-12 and abs((1 - math.exp(-0/5)) - 0) < 1e-12 and abs((1 - math.exp(-1e9/5)) - 1) < 1e-9"

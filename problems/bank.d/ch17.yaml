@@ -1,0 +1,475 @@
+# Problem bank — Chapter 17 (Indigo Plateau / the Elite Four): order statistics.
+# The maximum (F_max = [F]^n), the minimum (S_min = [S]^n), the minimum of
+# independent exponentials (rates add -> Exp(sum lambda)), the general k-th order
+# statistic (E[X_(k)] = k/(n+1) for uniforms), and system reliability
+# (series = min, parallel = max). Outcome 3f. Tier-B chapter. Locale: Indigo
+# Plateau / the Elite Four (the League; no gym, no badge).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   provenance, difficulty (1-5), actor, stakes, consequence, quest_step,
+#   tia_section, narrative_hook, statement, solution, answer, shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes
+# math, st (scipy.stats), __import__). Chained problems RESTATE the prior value as a
+# given so verify never depends on another problem's answer.
+#
+# distributions/tags counted toward the syllabus: order_statistic / exponential.
+#
+# Immersion quotas met: audit >=3 (C17.3, C17.5, C17.14); rival_trap >=2
+#   (C17.11, C17.16); decision >=1 (C17.17). The canonical Team-Rocket error
+#   (treating F_max as n*F instead of F^n) is recycled into the audit drill C17.5
+#   (and again into the rival_trap C17.11). A sibling slip (raising x rather than
+#   the given cdf F(x) to the n) is the audit C17.3.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (mechanics) =====================
+
+  - id: C17.1
+    chapter: 17
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 1
+    actor: "a League scout"
+    stakes: "The scout must price how high the strongest of five rookies will score before seeding the bracket."
+    consequence: "A wrong max-cdf mis-seeds the opening round."
+    quest_step: 1
+    tia_section: "C.3.1"
+    narrative_hook: "The strongest of five independent rookie scores."
+    statement: |
+      Five rookies each post an independent score X_i ~ Uniform(0,1). The scout
+      flags the highest. Find P(highest <= 0.8).
+    solution: |
+      The max is <= 0.8 iff ALL five draws are <= 0.8. Independence multiplies:
+      F_max(0.8) = [F(0.8)]^5 = 0.8^5 = 0.32768.
+    answer: "P(max<=0.8) = 0.8^5 = 0.32768 ~ 0.328"
+    shortcut_used: ["max cdf = [F(x)]^n", "independent events multiply"]
+    verify: "abs(0.8**5 - 0.32768) < 1e-9"
+
+  - id: C17.2
+    chapter: 17
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic", "exponential"]
+    provenance: original
+    difficulty: 1
+    actor: "a defensive line of three Pokemon"
+    stakes: "The line collapses when the first Pokemon breaks; you need the expected time to collapse."
+    consequence: "Misjudging the collapse time strands the team mid-bracket."
+    quest_step: 2
+    tia_section: "C.3.1"
+    narrative_hook: "The first of three exponential break-times."
+    statement: |
+      Three Pokemon hold a line; their independent break-times are exponential,
+      each with mean 10 seconds. The line collapses when the FIRST breaks. Find
+      the expected time to collapse.
+    solution: |
+      The collapse time is the minimum of three i.i.d. Exponential(mean 10).
+      Rates add: lambda_min = 3*(1/10) = 3/10, so the minimum is Exponential with
+      mean 1/(3/10) = 10/3 ~ 3.33 s.
+    answer: "min ~ Exponential(rate 3/10); mean = 10/3 ~ 3.33 s"
+    shortcut_used: ["min of i.i.d. exponentials: add rates", "mean = theta/n"]
+    verify: "abs(1/(3*(1/10)) - 10/3) < 1e-9"
+
+  - id: C17.3
+    chapter: 17
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 2
+    actor: "a four-pod sensor panel log"
+    stakes: "The panel log raises x to the n instead of the GIVEN cdf F(x), and reports the wrong max probability."
+    consequence: "A wrong max-cdf with a non-trivial F mis-calibrates the panel."
+    quest_step: 3
+    tia_section: "C.3.1"
+    narrative_hook: "Catching a log raise x, not the cdf F(x)=x^2, to the n-th power."
+    statement: |
+      Four sensor pods each report X_i with cdf F(x) = x^2 on [0,1], independently.
+      The panel shows the MAXIMUM. A log writes "P(max <= 0.5) = 0.5^4 = 0.0625."
+      Find the true P(max <= 0.5) and name the error.
+    solution: |
+      The max cdf raises the GIVEN single-draw cdf to the n, F_max(x) = [F(x)]^4
+      = (x^2)^4 = x^8, NOT x^4. So P(max <= 0.5) = 0.5^8 = 1/256 = 0.00390625. The
+      log raised x to the n instead of F(x)=x^2; it forgot to apply the cdf first.
+    answer: "true 0.5^8 = 1/256 ~ 0.0039 (log used 0.5^4; raise F(x)=x^2, not x)"
+    shortcut_used: ["max cdf = [F(x)]^n", "raise the GIVEN cdf, not x, to the n"]
+    verify: "abs(0.5**8 - 1/256) < 1e-12 and abs(0.5**4 - 0.0625) < 1e-12"
+
+  - id: C17.4
+    chapter: 17
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 1
+    actor: "the seeding committee"
+    stakes: "The committee needs the expected strength of the strongest of nine qualifiers."
+    consequence: "Under-estimating the top entrant sets the bracket bar too low."
+    quest_step: 4
+    tia_section: "C.3.1"
+    narrative_hook: "Expected strongest of nine uniform qualifiers."
+    statement: |
+      Nine independent qualifiers each have strength X_i ~ Uniform(0,20). Find the
+      expected strength of the STRONGEST using the uniform shortcut.
+    solution: |
+      E[max] = n/(n+1) * b = 9/10 * 20 = 18.
+    answer: "E[max] = (9/10)*20 = 18"
+    shortcut_used: ["uniform max mean n/(n+1)*b"]
+    verify: "abs((9/10)*20 - 18) < 1e-9"
+
+  - id: C17.5
+    chapter: 17
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 2
+    actor: "a sloppy field recorder"
+    stakes: "The recorder's bracket log multiplies the cdf by n and reports a 'probability' above 1."
+    consequence: "An impossible probability corrupts the seeding spreadsheet."
+    quest_step: 5
+    tia_section: "C.3.1"
+    narrative_hook: "Catching the canonical F_max = n*F error instead of F^n."
+    statement: |
+      A field log states "for 5 i.i.d. Uniform(0,1) rookies,
+      P(max <= 0.8) = 5 * 0.8 = 4." Find the true probability and name the error.
+    solution: |
+      The maximum's cdf RAISES the single-draw cdf to the n-th power; it does not
+      MULTIPLY by n. True P(max<=0.8) = [F(0.8)]^5 = 0.8^5 = 0.32768. The value 4
+      exceeds 1, the instant tell that n*F is nonsense: cdfs of independent draws
+      multiply (a power), never scale by n.
+    answer: "true 0.8^5 = 0.328 (log used n*F=4, an impossible 'probability'; it is [F]^n)"
+    shortcut_used: ["max cdf = [F(x)]^n, NEVER n*F", "a probability cannot exceed 1"]
+    verify: "abs(0.8**5 - 0.32768) < 1e-9 and (5*0.8) > 1"
+
+  - id: C17.6
+    chapter: 17
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 2
+    actor: "a relay of three components"
+    stakes: "You must rate the relay's reliability both ways before it goes into the defense."
+    consequence: "Mis-mapping series vs parallel inverts the reliability estimate."
+    quest_step: 6
+    tia_section: "C.3.2"
+    narrative_hook: "Series vs parallel reliability of three 0.9 components."
+    statement: |
+      A relay has three independent components, each working w.p. 0.9. Find the
+      reliability (i) IN SERIES and (ii) IN PARALLEL.
+    solution: |
+      Series = lifetime is the minimum = product of survivals = 0.9^3 = 0.729.
+      Parallel = lifetime is the maximum = 1 - product of failures
+      = 1 - 0.1^3 = 0.999.
+    answer: "series = 0.729; parallel = 0.999"
+    shortcut_used: ["series = min = prod S_i", "parallel = max = 1 - prod F_i"]
+    verify: "abs(0.9**3 - 0.729) < 1e-9 and abs(1 - 0.1**3 - 0.999) < 1e-9"
+
+  - id: C17.7
+    chapter: 17
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 2
+    actor: "the consolation bracket clerk"
+    stakes: "The clerk needs the expected strength of the weaker of two challengers and the min density."
+    consequence: "A wrong min mean mis-seeds the consolation round."
+    quest_step: 7
+    tia_section: "C.3.1"
+    narrative_hook: "The weaker of two uniform challengers."
+    statement: |
+      Two challengers each have strength X_i ~ Uniform(0,1). The WEAKER goes to
+      consolation. Find the expected strength of the weaker challenger and the
+      density of that minimum.
+    solution: |
+      Minimum of n=2 i.i.d. Uniform(0,1): E[min] = 1/(n+1) = 1/3.
+      Density f_min(x) = n[S(x)]^{n-1} f(x) = 2(1-x)^1 * 1 = 2(1-x) on [0,1].
+    answer: "E[min] = 1/3 ~ 0.333; f_min(x) = 2(1-x)"
+    shortcut_used: ["uniform min mean 1/(n+1)", "min density n[S]^{n-1}f"]
+    verify: "abs(1/(2+1) - 1/3) < 1e-9 and abs(2*(1-0.25) - 1.5) < 1e-12"
+
+  # ===================== GYM BATTLES (true SOA difficulty) =====================
+
+  - id: C17.8
+    chapter: 17
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 2
+    actor: "Agatha"
+    stakes: "Agatha's best-of-three trial needs the expected best score and the chance it tops 0.9."
+    consequence: "A wrong max mean or tail mis-grades her exhibition."
+    quest_step: 8
+    tia_section: "C.3.1"
+    narrative_hook: "Best of three independent ghostly trial scores."
+    statement: |
+      Agatha sets three independent ghostly trials, each scored X_i ~ Uniform(0,1).
+      Find (i) the expected BEST score and (ii) P(best > 0.9).
+    solution: |
+      Max of n=3 i.i.d. Uniform(0,1). (i) E[max] = n/(n+1) = 3/4 = 0.75.
+      (ii) P(max > 0.9) = 1 - [F(0.9)]^3 = 1 - 0.9^3 = 1 - 0.729 = 0.271.
+    answer: "(i) E[max] = 0.75; (ii) P(max>0.9) = 0.271"
+    shortcut_used: ["uniform max mean n/(n+1)", "P(max>x) = 1 - [F(x)]^n"]
+    verify: "abs(3/(3+1) - 0.75) < 1e-9 and abs(1 - 0.9**3 - 0.271) < 1e-9"
+
+  - id: C17.9
+    chapter: 17
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic", "exponential"]
+    provenance: original
+    difficulty: 3
+    actor: "Lorelei"
+    stakes: "Lorelei's combo fires when the first of two Pokemon thaws; you must model the first-thaw time."
+    consequence: "A wrong first-thaw law mis-times the combo."
+    quest_step: 9
+    tia_section: "C.3.1"
+    narrative_hook: "The first of two unequal-mean exponential thaw-times."
+    statement: |
+      Two of Lorelei's Pokemon thaw at independent exponential times with means 5
+      and 8 minutes. The combo fires when the FIRST thaws. Find (i) the
+      distribution of the first-thaw time, (ii) its mean, and (iii) P(first > 3).
+    solution: |
+      Minimum of independent exponentials -> rates add. Rates 1/5 and 1/8;
+      sum = 1/5 + 1/8 = 13/40 = 0.325. (i) first-thaw ~ Exponential(rate 0.325).
+      (ii) mean = 1/0.325 = 40/13 ~ 3.08 min. (iii) P(min>3) = e^{-0.325*3}
+      = e^{-0.975} = 0.3772.
+    answer: "(i) Exponential(0.325); (ii) mean 40/13 ~ 3.08; (iii) 0.377"
+    shortcut_used: ["min of exponentials: add rates", "S_min(t) = e^{-(sum lambda)t}"]
+    verify: "abs((1/5 + 1/8) - 0.325) < 1e-9 and abs(1/0.325 - 40/13) < 1e-9 and abs(math.exp(-0.325*3) - 0.3772) < 1e-3"
+
+  - id: C17.10
+    chapter: 17
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 3
+    actor: "a four-judge panel"
+    stakes: "The final uses the second-lowest of four scores; you need its mean and density."
+    consequence: "Dropping the multinomial coefficient breaks the scoring density."
+    quest_step: 10
+    tia_section: "C.3.2"
+    narrative_hook: "The k=2 order statistic of four uniform judge scores."
+    statement: |
+      Four judges independently score X_i ~ Uniform(0,1); the final drops the
+      lowest and uses the SECOND-LOWEST (k=2). Find its expected value and its
+      density.
+    solution: |
+      k-th order statistic of n=4 uniforms. E[X_(2)] = k/(n+1) = 2/5 = 0.4.
+      Density = n!/((k-1)!(n-k)!) [F]^{k-1}[1-F]^{n-k} f
+      = 4!/(1! 2!) x^1 (1-x)^2 = 12 x (1-x)^2 on (0,1) (a Beta(2,3)).
+    answer: "E[X_(2)] = 2/5 = 0.4; f(x) = 12 x (1-x)^2"
+    shortcut_used: ["uniform k-th mean k/(n+1)", "k-th order density with multinomial coefficient"]
+    verify: "abs(2/(4+1) - 0.4) < 1e-9 and abs(math.factorial(4)/(math.factorial(1)*math.factorial(2)) - 12) < 1e-12"
+
+  - id: C17.11
+    chapter: 17
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 2
+    actor: "Gary Oak"
+    stakes: "Gary multiplies the cdf by n for a six-entrant max and quotes a 'probability' of 3."
+    consequence: "Gary's impossible 3 blows his own bracket prediction."
+    quest_step: 11
+    tia_section: "C.3.1"
+    narrative_hook: "Catching Gary use n*F instead of F^n for the maximum."
+    statement: |
+      Gary boasts about a 6-entrant bracket of i.i.d. Uniform(0,1) strengths: "the
+      strongest is below 0.5 with chance 6 * 0.5 = 3." Find the true P(max < 0.5)
+      and name Gary's error.
+    solution: |
+      The maximum's cdf raises the single-draw cdf to the n; it does not multiply
+      by n. P(max < 0.5) = [F(0.5)]^6 = 0.5^6 = 1/64 = 0.015625. Gary's 3 exceeds
+      1, the instant tell. Cdfs of independent draws multiply (a power), never
+      scale by n.
+    answer: "true 0.5^6 = 1/64 ~ 0.0156 (Gary used n*F = 3, impossible; it is [F]^n)"
+    shortcut_used: ["max cdf = [F(x)]^n, NEVER n*F", "a probability cannot exceed 1"]
+    verify: "abs(0.5**6 - 1/64) < 1e-12 and (6*0.5) > 1"
+
+  - id: C17.12
+    chapter: 17
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic", "exponential"]
+    provenance: original
+    difficulty: 3
+    actor: "Bruno"
+    stakes: "Bruno's chamber gate opens at the first of four lock-trips; you must time it."
+    consequence: "A wrong opening law mis-times the dash through the gate."
+    quest_step: 12
+    tia_section: "C.3.1"
+    narrative_hook: "The first of four i.i.d. exponential lock-trips."
+    statement: |
+      Bruno's chamber has four independent locks, each Exponential(mean 8 min). The
+      gate opens at the FIRST trip. Find the distribution and mean of the opening
+      time, and P(open > 4).
+    solution: |
+      Minimum of four i.i.d. Exponential(mean 8): rates add, lambda = 4*(1/8)
+      = 1/2. So opening ~ Exponential(rate 1/2), mean = 1/(1/2) = 2 min.
+      P(open > 4) = e^{-(1/2)*4} = e^{-2} = 0.1353.
+    answer: "Exponential(1/2), mean 2 min; P(open>4) = e^{-2} ~ 0.135"
+    shortcut_used: ["min of i.i.d. exponentials mean = theta/n", "tail e^{-(sum lambda)t}"]
+    verify: "abs(1/(4*(1/8)) - 2) < 1e-9 and abs(math.exp(-(1/2)*4) - 0.1353) < 1e-4"
+
+  - id: C17.13
+    chapter: 17
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic", "exponential"]
+    provenance: original
+    difficulty: 4
+    actor: "a bunker of three backup generators"
+    stakes: "The bunker keeps power until the LAST generator dies; you need the expected time to blackout."
+    consequence: "Underestimating the blackout time leaves the bunker unguarded."
+    quest_step: 13
+    tia_section: "C.3.2"
+    narrative_hook: "The maximum (parallel) of three exponential lifetimes via a harmonic sum."
+    statement: |
+      Three backup generators have independent exponential lifetimes, each mean 10
+      years. The bunker keeps power until the LAST dies (parallel). Find the
+      expected time to blackout. (Hint: E[max] of n i.i.d. exponentials with mean
+      theta is theta * sum_{j=1..n} 1/j.)
+    solution: |
+      Parallel = lifetime is the maximum. For n i.i.d. exponentials mean theta,
+      E[max] = theta (1 + 1/2 + 1/3) = 10 * (11/6) = 110/6 ~ 18.33 years.
+    answer: "E[max] = 10*(1+1/2+1/3) = 110/6 ~ 18.33 yr"
+    shortcut_used: ["parallel = max", "E[max] of i.i.d. exponentials = theta*harmonic(n)"]
+    verify: "abs(10*(1 + 1/2 + 1/3) - 110/6) < 1e-9"
+
+  - id: C17.14
+    chapter: 17
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 2
+    actor: "a reliability log with unequal components"
+    stakes: "The log must rate a three-shield system both ways with unequal reliabilities."
+    consequence: "Swapping series and parallel inverts which design is safer."
+    quest_step: 14
+    tia_section: "C.3.2"
+    narrative_hook: "Auditing series vs parallel reliability for unequal shields."
+    statement: |
+      Lance wires three shields with reliabilities 0.95, 0.90, and 0.80. Find the
+      system reliability (i) IN SERIES and (ii) IN PARALLEL. (Check: redundancy
+      must RAISE reliability above the best single shield.)
+    solution: |
+      Series = product of survivals = 0.95*0.90*0.80 = 0.684 (below every single
+      shield -- a chain is only as strong as its weakest link).
+      Parallel = 1 - product of failures = 1 - (0.05)(0.10)(0.20) = 1 - 0.001
+      = 0.999 (above the best single shield -- redundancy raises reliability).
+    answer: "series = 0.684; parallel = 0.999"
+    shortcut_used: ["series = prod S_i", "parallel = 1 - prod F_i", "sanity: redundancy raises reliability"]
+    verify: "abs(0.95*0.90*0.80 - 0.684) < 1e-9 and abs(1 - (0.05*0.10*0.20) - 0.999) < 1e-9 and (1 - 0.05*0.10*0.20) > 0.95"
+
+  # ===================== ELITE CHALLENGE (integrative / stretch) =====================
+
+  - id: C17.15
+    chapter: 17
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: ["order_statistic"]
+    provenance: original
+    difficulty: 4
+    actor: "the League statistician"
+    stakes: "The League reports the strength RANGE of ten finalists; you need its expected gap."
+    consequence: "A wrong range mis-states the spread of the final field."
+    quest_step: 15
+    tia_section: "C.3.2"
+    narrative_hook: "Expected range = expected max minus expected min of ten uniforms."
+    statement: |
+      Ten finalists each post an independent X_i ~ Uniform(0,1). The League reports
+      the RANGE -- the gap between strongest and weakest. Find E[X_(10) - X_(1)].
+    solution: |
+      For n i.i.d. Uniform(0,1): E[X_(n)] = n/(n+1) and E[X_(1)] = 1/(n+1).
+      By linearity, E[range] = n/(n+1) - 1/(n+1) = (n-1)/(n+1) = 9/11 ~ 0.818.
+    answer: "E[range] = (n-1)/(n+1) = 9/11 ~ 0.818"
+    shortcut_used: ["uniform max mean n/(n+1)", "uniform min mean 1/(n+1)", "linearity of expectation"]
+    verify: "abs((10/11 - 1/11) - 9/11) < 1e-9 and abs(9/11 - 0.8182) < 1e-3"
+
+  - id: C17.16
+    chapter: 17
+    tier: elite_challenge
+    archetype: rival_trap
+    outcomes: ["3f"]
+    distributions: ["order_statistic", "exponential"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary averages the MEANS for the first of three exponential faints instead of adding rates."
+    consequence: "Gary's slow estimate sends him in too late and into the trap."
+    quest_step: 16
+    tia_section: "C.3.1"
+    narrative_hook: "Catching Gary average means instead of adding rates for a minimum."
+    statement: |
+      Gary declares "of my 3 Pokemon (independent exponential faint-times, means
+      4, 6, 12 min), the FIRST to faint averages the mean of the means,
+      (4+6+12)/3 = 7.33 minutes." Find the true expected first-faint time and name
+      his error.
+    solution: |
+      The first to faint is the MINIMUM of independent exponentials, so RATES add,
+      not means. Rates 1/4, 1/6, 1/12; sum = 1/2; the minimum is Exponential(1/2),
+      mean = 2 minutes -- BELOW the smallest individual mean (4), as a race must
+      be. Gary averaged the means; you add the rates.
+    answer: "true mean = 2 min (Gary averaged means; add the rates)"
+    shortcut_used: ["min of exponentials: add rates not means", "min mean < smallest individual mean"]
+    verify: "abs(1/(1/4 + 1/6 + 1/12) - 2) < 1e-9 and (1/(1/4 + 1/6 + 1/12)) < 4"
+
+  - id: C17.17
+    chapter: 17
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["3f"]
+    distributions: ["order_statistic", "exponential"]
+    provenance: original
+    difficulty: 4
+    actor: "Ash (you)"
+    stakes: "You must rate a nested series/parallel defense and decide whether an all-series wiring is worse."
+    consequence: "Mis-collapsing the blocks picks the weaker defense for the Champion's fight."
+    quest_step: 17
+    tia_section: "C.3.2"
+    narrative_hook: "Collapsing a parallel block inside a series chain, then comparing to all-series."
+    statement: |
+      The Champion's defense is a series chain of two blocks. Block A is a PARALLEL
+      bank of two shields, each holding w.p. 0.9. Block B is a single shield
+      holding w.p. 0.95. The defense holds only if BOTH blocks hold. Find (i) Block
+      A's reliability, (ii) the whole defense's reliability, and (iii) the expected
+      time to the first failure if instead the two Block-A shields and the Block-B
+      shield were three independent Exponential(mean 10 yr) components all wired IN
+      SERIES.
+    solution: |
+      (i) Block A parallel of two at 0.9: R_A = 1 - 0.1^2 = 0.99.
+      (ii) Series of A and B: R = R_A * R_B = 0.99 * 0.95 = 0.9405.
+      (iii) Three independent Exponential(mean 10) IN SERIES -> lifetime is the
+      MINIMUM -> rates add: 1/10 + 1/10 + 1/10 = 3/10, so Exponential(3/10),
+      mean = 1/(3/10) = 10/3 ~ 3.33 yr. (All-series is far less reliable: the
+      redundant block A is what saves the original design.)
+    answer: "(i) 0.99; (ii) 0.9405; (iii) Exponential(3/10), mean 10/3 ~ 3.33 yr"
+    shortcut_used: ["parallel block = 1 - prod F_i", "series combine = product", "series of exponentials = min = add rates"]
+    verify: "abs(1 - 0.1**2 - 0.99) < 1e-9 and abs((1 - 0.1**2)*0.95 - 0.9405) < 1e-9 and abs(1/(3*(1/10)) - 10/3) < 1e-9"

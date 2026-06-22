@@ -1,0 +1,559 @@
+# Problem bank — Chapter 13 (Cinnabar Lab): Continuous deductibles & review.
+# Ordinary deductible (X-d)+, policy limit / limited expected value X^u = min(X,u),
+# coinsurance alpha, inflation (1+r), the master identity E[X^u]+E[(X-u)+]=E[X],
+# per-loss vs per-payment (divide by S(d)=P(X>d)), the exponential memoryless
+# shortcut, and the TWO roads (calculus survival-integral vs cases density-split).
+# Outcomes 2e, 2f. Tier-B chapter. Locale: Cinnabar Lab (Oak's coverage commission;
+# Blaine's Volcano Badge waits for ch14). This is the CONTINUOUS twin of ch06.
+#
+# The headline loss runs through the set: X ~ Exp(theta=10), S(x)=e^{-x/10},
+# E[X]=10. A second loss W has density f(w)=w/50 on [0,10], S(w)=1-w^2/100,
+# E[W]=20/3, to exercise the cases approach on a non-exponential density. A third,
+# V ~ Unif(0,20), exercises the calculus road on a clean non-exponential survival.
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   structural_tags, provenance, difficulty (1-5), actor, stakes, consequence,
+#   quest_step, tia_section, narrative_hook, statement, solution, answer,
+#   shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes
+# math, st=scipy.stats, and builtins incl. next/enumerate/zip/sum/max/range/abs).
+# Continuous expectations are encoded as closed-form survival integrals (e.g.
+# theta*e^{-d/theta}, theta*(1-e^{-u/theta})) or exact polynomial antiderivatives.
+# Chained problems RESTATE the prior value as a given so verify never depends on
+# another problem's answer.
+#
+# Immersion quotas met: audit >= 3 (C13.8 Meowth's cap-then-deduct order error,
+# C13.16 the mean-minus-d apprentice error, C13.19 the wrong-divisor per-payment
+# error); rival_trap >= 2 (C13.13, C13.18, both Gary); decision >= 1 (C13.15).
+# Tags used: exponential, uniform, continuous.
+
+problems:
+
+  # ===================== ROUTE TRAINERS (the early legs) =====================
+
+  - id: C13.1
+    chapter: 13
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "ordinary_deductible", "calculus_approach"]
+    provenance: original
+    difficulty: 2
+    actor: "Professor Oak"
+    stakes: "The Lab's first quote sets a flat deductible on the volcano loss; Oak needs the average payout per event."
+    consequence: "Misprice the per-loss payment and the whole Cinnabar coverage scheme runs at a loss."
+    quest_step: 1
+    tia_section: "B.5.1"
+    narrative_hook: "Averaging the per-loss payment via the survival integral under a flat deductible d=3."
+    statement: |
+      The Cinnabar volcano loss is X ~ Exp(theta=10), so S(x)=e^{-x/10}. An ordinary
+      deductible d=3 applies (no limit, no coinsurance). Find the expected payment
+      per loss, E[(X-3)+] = integral_3^inf S(x) dx.
+    solution: |
+      Calculus road: E[(X-3)+] = int_3^inf e^{-x/10} dx = [-10 e^{-x/10}]_3^inf
+      = 10 e^{-0.3} ~= 7.408. (Memoryless check: theta e^{-d/theta} = 10 e^{-0.3}.)
+    answer: 7.408
+    shortcut_used: ["E[(X-d)+] = int_d^inf S(x) dx", "exponential: theta e^{-d/theta}"]
+    verify: "abs(10*math.exp(-0.3) - 7.408) < 1e-3"
+
+  - id: C13.2
+    chapter: 13
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2f"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "per_payment", "memoryless"]
+    provenance: original
+    difficulty: 2
+    actor: "a Lab claimant"
+    stakes: "A researcher who files wants the size of an actual cheque, not the average over every event."
+    consequence: "Quoting the per-loss figure as the cheque size badly understates what a payer receives."
+    quest_step: 2
+    tia_section: "B.5.2"
+    narrative_hook: "Converting a per-loss expectation into the size of an actual cheque via memorylessness."
+    statement: |
+      For the d=3 policy on X ~ Exp(theta=10), find the expected payment per
+      payment. (The conditional excess (X-3 | X>3) is a fresh Exp(10).)
+    solution: |
+      By memorylessness, (X-3 | X>3) ~ Exp(10), so E[X-3 | X>3] = theta = 10.
+      Equivalently E[(X-3)+]/S(3) = (10 e^{-0.3})/e^{-0.3} = 10.
+    answer: 10.0
+    shortcut_used: ["memoryless exponential per payment = theta", "per payment = per loss / S(d)"]
+    verify: "abs((10*math.exp(-0.3))/math.exp(-0.3) - 10.0) < 1e-9"
+
+  - id: C13.3
+    chapter: 13
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "policy_limit", "calculus_approach"]
+    provenance: original
+    difficulty: 2
+    actor: "Professor Oak"
+    stakes: "The Lab's reserve can't absorb a freak eruption, so it caps recorded losses at 8 and needs the limited mean."
+    consequence: "The limited expected value sets how much the capped layer costs the reserve."
+    quest_step: 3
+    tia_section: "B.5.1"
+    narrative_hook: "Limited expected value of the exponential loss capped at 8, via the survival integral."
+    statement: |
+      For X ~ Exp(theta=10), find the limited expected value
+      E[X ^ 8] = E[min(X,8)] = integral_0^8 S(x) dx with S(x)=e^{-x/10}.
+    solution: |
+      E[X^8] = int_0^8 e^{-x/10} dx = [-10 e^{-x/10}]_0^8 = 10(1 - e^{-0.8})
+      ~= 5.507.
+    answer: 5.507
+    shortcut_used: ["E[X^u] = int_0^u S(x) dx", "exponential: theta(1-e^{-u/theta})"]
+    verify: "abs(10*(1-math.exp(-0.8)) - 5.507) < 1e-3"
+
+  - id: C13.4
+    chapter: 13
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: ["uniform"]
+    structural_tags: ["continuous", "uniform", "ordinary_deductible", "calculus_approach"]
+    provenance: original
+    difficulty: 2
+    actor: "Professor Oak"
+    stakes: "A different instrument's damage is uniform; Oak needs the deductible payout on it too."
+    consequence: "A uniform loss must run through the same survival-area machinery as the exponential loss."
+    quest_step: 4
+    tia_section: "B.5.1"
+    narrative_hook: "Applying an ordinary deductible to a continuous-uniform loss via the survival integral."
+    statement: |
+      A loss V ~ Uniform(0,20), so S(v) = 1 - v/20 on [0,20]. With deductible d=4,
+      find the expected payment per loss E[(V-4)+] = integral_4^20 S(v) dv.
+    solution: |
+      E[(V-4)+] = int_4^20 (1 - v/20) dv = [v - v^2/40]_4^20
+      = (20 - 10) - (4 - 0.4) = 10 - 3.6 = 6.4. (Density check:
+      int_4^20 (v-4)/20 dv = 16^2/(2*20) = 6.4.)
+    answer: 6.4
+    shortcut_used: ["E[(V-d)+] = int_d^b S(v) dv"]
+    verify: "abs(((20 - 20**2/40) - (4 - 4**2/40)) - 6.4) < 1e-9"
+
+  - id: C13.5
+    chapter: 13
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["continuous", "ordinary_deductible", "cases_approach"]
+    provenance: original
+    difficulty: 3
+    actor: "Professor Oak"
+    stakes: "The fragile core-sample drill follows an odd density with no shortcut; Oak needs its deductible payout."
+    consequence: "A non-exponential density must be handled by splitting into cases and integrating directly."
+    quest_step: 5
+    tia_section: "B.5.2"
+    narrative_hook: "Cases approach on a rising density: integrate (w-d) f(w) over the paying region."
+    statement: |
+      The core-sample loss W has density f(w) = w/50 on [0,10] (0 elsewhere). With
+      deductible d=2, find E[(W-2)+] by splitting into cases and integrating the
+      density: only w>2 pays, so E[(W-2)+] = integral_2^10 (w-2)(w/50) dw.
+    solution: |
+      E[(W-2)+] = (1/50) int_2^10 (w^2 - 2w) dw = (1/50)[w^3/3 - w^2]_2^10
+      = (1/50)(233.333... - (-1.333...)) = 234.666.../50 = 4.693.
+    answer: 4.693
+    shortcut_used: ["cases: E[(W-d)+] = int_d^b (w-d) f(w) dw"]
+    verify: "(lambda a,b:abs((1/50)*((b**3/3 - b**2) - (a**3/3 - a**2)) - 4.693) < 1e-3)(2.0,10.0)"
+
+  - id: C13.6
+    chapter: 13
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "coinsurance"]
+    provenance: original
+    difficulty: 2
+    actor: "Professor Oak"
+    stakes: "A bare-bones co-pay plan scales every loss; Oak needs its per-loss cost."
+    consequence: "Coinsurance with no deductible or cap is just a clean scale of the mean."
+    quest_step: 6
+    tia_section: "B.5.2"
+    narrative_hook: "Coinsurance only -- scaling the whole mean by alpha."
+    statement: |
+      A co-pay plan covers alpha=0.7 of every loss with no deductible and no cap, on
+      X ~ Exp(theta=10) (so E[X]=10). Find the expected payment per loss.
+    solution: |
+      No deductible, no cap, so the payment is alpha*X and E[alpha X] = alpha E[X]
+      = 0.7(10) = 7.0.
+    answer: 7.0
+    shortcut_used: ["E[alpha X] = alpha E[X]"]
+    verify: "abs(0.7*10 - 7.0) < 1e-9"
+
+  - id: C13.7
+    chapter: 13
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "master_identity"]
+    provenance: original
+    difficulty: 2
+    actor: "Professor Oak"
+    stakes: "Oak already has E[X] and a limited value and wants the excess without grinding a new integral."
+    consequence: "The master identity hands over the third value for free -- a one-line short-circuit."
+    quest_step: 7
+    tia_section: "B.5.1"
+    narrative_hook: "Getting the expected excess for free via the master identity."
+    statement: |
+      Given E[X]=10 and E[X^8]=10(1-e^{-0.8})~=5.507 for X ~ Exp(10), find the
+      expected excess E[(X-8)+] using the master identity.
+    solution: |
+      Master identity: E[X^u] + E[(X-u)+] = E[X], so E[(X-8)+] = E[X] - E[X^8]
+      = 10 - 5.507 = 4.493. (Direct check: 10 e^{-0.8} ~= 4.493.)
+    answer: 4.493
+    shortcut_used: ["E[(X-u)+] = E[X] - E[X^u]"]
+    verify: "abs((10 - 10*(1-math.exp(-0.8))) - 10*math.exp(-0.8)) < 1e-9"
+
+  # ===================== GYM BATTLES (the boss fight) =====================
+
+  - id: C13.8
+    chapter: 13
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "ordinary_deductible", "payment_limit", "order_of_operations"]
+    provenance: original
+    difficulty: 4
+    actor: "Team Rocket (Meowth)"
+    stakes: "Meowth's knock-off policy claims it pays 0 per event, so the team collects fees free."
+    consequence: "Capping the loss before the deductible wrongly zeros the payout and misprices the scam cover."
+    quest_step: 8
+    tia_section: "B.5.1-B.5.2"
+    narrative_hook: "Catching Meowth apply the deductible after a payment cap instead of before."
+    statement: |
+      Team Rocket's policy on X ~ Exp(theta=10) has deductible d=4 and a maximum
+      PAYMENT of u=4. Meowth caps the loss at 4 first, then subtracts the deductible,
+      and declares "the policy pays 0." Find the CORRECT expected payment per loss,
+      E[min((X-4)+, 4)] (deductible first, then cap the payment), and name the error.
+    solution: |
+      Correct order is deductible first, then cap the PAYMENT at 4:
+      E[min((X-4)+, 4)] = int_4^8 (x-4)(1/10)e^{-x/10} dx + 4 int_8^inf (1/10)e^{-x/10} dx
+      = theta(e^{-d/theta} - e^{-(d+c)/theta}) with d=4, c=4
+      = 10(e^{-0.4} - e^{-0.8}) ~= 2.210. Meowth's error: he capped the LOSS at 4
+      first (min(X,4)), then subtracted the deductible and floored, getting 0 for
+      every loss. Deductible must come BEFORE the payment cap; the true per-loss
+      payment is ~2.21, not 0.
+    answer: "2.21 (not 0)"
+    shortcut_used: ["E[min((X-d)+, c)] = theta(e^{-d/theta} - e^{-(d+c)/theta}) for Exp", "deductible BEFORE the payment cap"]
+    verify: "abs(10*(math.exp(-0.4) - math.exp(-0.8)) - 2.210) < 1e-3"
+
+  - id: C13.9
+    chapter: 13
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "ordinary_deductible", "policy_limit", "coinsurance"]
+    provenance: original
+    difficulty: 3
+    actor: "Professor Oak"
+    stakes: "The sign-off policy stacks all three modifications; Oak wants the per-loss payment in one pass."
+    consequence: "Falter on the deductible->limit->coinsurance order and the Lab stays uninsured."
+    quest_step: 9
+    tia_section: "B.5.1"
+    narrative_hook: "The full Cinnabar policy: per-loss payment from two limited values (calculus road)."
+    statement: |
+      The sign-off policy on X ~ Exp(theta=10) has d=4, maximum covered loss u=12,
+      coinsurance alpha=0.8. Given E[X^12]=6.988 and E[X^4]=3.297, find the expected
+      payment per loss.
+    solution: |
+      E[Y_L] = alpha (E[X^12] - E[X^4]) = 0.8(6.988 - 3.297) = 0.8(3.691) = 2.953.
+    answer: 2.953
+    shortcut_used: ["E[Y_L] = alpha (E[X^u] - E[X^d])"]
+    verify: "abs(0.8*(6.988 - 3.297) - 2.953) < 1e-3"
+
+  - id: C13.10
+    chapter: 13
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2f"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "per_payment"]
+    provenance: original
+    difficulty: 3
+    actor: "Professor Oak"
+    stakes: "A claimant needs the typical cheque under the full policy; the divisor must be the deductible's probability."
+    consequence: "Dividing by the limit's probability instead of the deductible's misstates the cheque."
+    quest_step: 10
+    tia_section: "B.5.2"
+    narrative_hook: "Per-payment under a full policy -- dividing by S(d), not S(u)."
+    statement: |
+      For the policy in C13.9 (d=4, E[Y_L]=2.953 given), find the expected payment
+      per payment. Use the deductible's probability S(4)=e^{-0.4}=0.6703.
+    solution: |
+      A cheque is written iff X>d=4, so divide by S(4)=e^{-0.4}=0.6703 (the
+      deductible, NOT the limit): E[Y_P] = 2.953 / 0.6703 = 4.405.
+    answer: 4.405
+    shortcut_used: ["per payment = E[Y_L] / S(d)"]
+    verify: "abs(2.953 / math.exp(-0.4) - 4.405) < 1e-2"
+
+  - id: C13.11
+    chapter: 13
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: []
+    structural_tags: ["continuous", "ordinary_deductible", "cases_approach", "calculus_approach"]
+    provenance: original
+    difficulty: 4
+    actor: "the Pokedex Actuary Mode"
+    stakes: "You must show the cases road equals the calculus road on a non-exponential density, both agreeing."
+    consequence: "A mismatch between the two roads would flag a bookkeeping slip in the integral."
+    quest_step: 11
+    tia_section: "B.5.1-B.5.2"
+    narrative_hook: "One payment, two roads: density integral vs survival integral, made to agree."
+    statement: |
+      For W with density f(w)=w/50 on [0,10] (deductible d=2), compute E[(W-2)+] by
+      the CASES road, int_2^10 (w-2)(w/50) dw, AND verify it equals the CALCULUS
+      road, int_2^10 S(w) dw with S(w)=1-w^2/100.
+    solution: |
+      Cases: (1/50)[w^3/3 - w^2]_2^10 = 234.666.../50 = 4.693.
+      Calculus: int_2^10 (1 - w^2/100) dw = [w - w^3/300]_2^10
+      = (10 - 1000/300) - (2 - 8/300) = 6.667 - 1.973 = 4.693. Both roads agree.
+    answer: "4.693 (both roads)"
+    shortcut_used: ["cases int (w-d)f(w) dw = calculus int_d^b S(w) dw"]
+    verify: "abs(((1/50)*((10**3/3 - 10**2) - (2**3/3 - 2**2))) - ((10 - 10**3/300) - (2 - 2**3/300))) < 1e-6"
+
+  - id: C13.12
+    chapter: 13
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2e", "2f"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "ordinary_deductible", "per_payment", "memoryless"]
+    provenance: original
+    difficulty: 2
+    actor: "Professor Oak"
+    stakes: "Oak wants the exponential deductible answers written on sight, no integral, under exam pressure."
+    consequence: "Memorylessness turns the whole exponential deductible into a one-liner."
+    quest_step: 12
+    tia_section: "B.5.1-B.5.2"
+    narrative_hook: "Exponential memoryless: per-loss and per-payment on sight for d=5."
+    statement: |
+      For X ~ Exp(theta=10) with deductible d=5, write the per-loss and per-payment
+      expected payments using the memoryless shortcut (no integral).
+    solution: |
+      Per loss: theta e^{-d/theta} = 10 e^{-0.5} ~= 6.065.
+      Per payment: theta = 10 (the conditional excess is a fresh Exp(10)).
+    answer: "per loss 6.065; per payment 10"
+    shortcut_used: ["Exp per loss = theta e^{-d/theta}", "Exp per payment = theta"]
+    verify: "abs(10*math.exp(-0.5) - 6.065) < 1e-3 and abs((10*math.exp(-0.5))/math.exp(-0.5) - 10.0) < 1e-9"
+
+  - id: C13.13
+    chapter: 13
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2f"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "per_payment", "memoryless"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary reads his per-loss figure as the size of an actual cheque and calls the policy barely worth it."
+    consequence: "Confusing per-loss with per-payment understates the typical cheque."
+    quest_step: 13
+    tia_section: "B.5.2"
+    narrative_hook: "Catching Gary quote the per-loss average as the size of an actual cheque."
+    statement: |
+      Gary buys the d=4 deductible policy on X ~ Exp(theta=10) and crows: "My
+      expected payment per loss is 6.703, so when I file a claim I'll average a
+      6.703-thousand cheque." Find the true expected payment per payment and explain
+      Gary's error. (Memoryless: per payment = theta; or 6.703/S(4), S(4)=e^{-0.4}.)
+    solution: |
+      The 6.703 is the PER-LOSS average -- it already includes the events that pay 0.
+      The actual cheque is the PER-PAYMENT average: by memorylessness
+      E[X-4 | X>4] = theta = 10 (equivalently 6.703/e^{-0.4} = 10). Gary's error: he
+      read the per-loss figure (which averages over the zeros) as the typical cheque.
+      The typical cheque is 10 thousand.
+    answer: "10 (per payment); Gary confused per-loss with per-payment"
+    shortcut_used: ["Exp per payment = theta", "per payment = per loss / S(d)"]
+    verify: "abs(6.703/math.exp(-0.4) - 10.0) < 1e-2"
+
+  - id: C13.14
+    chapter: 13
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "ordinary_deductible", "policy_limit", "calculus_approach"]
+    provenance: original
+    difficulty: 3
+    actor: "Professor Oak"
+    stakes: "Oak wants the cost of insuring only the layer between a deductible of 4 and a cap of 12."
+    consequence: "The layer cost is the difference of two limited expected values."
+    quest_step: 14
+    tia_section: "B.5.1"
+    narrative_hook: "The full covered layer between d=4 and u=12 at full coinsurance, calculus road."
+    statement: |
+      For X ~ Exp(theta=10), a policy pays the layer between d=4 and u=12 at full
+      coinsurance (alpha=1). Given E[X^12]=6.988 and E[X^4]=3.297, find the expected
+      payment per loss, E[X^12]-E[X^4].
+    solution: |
+      E[X^12]-E[X^4] = 6.988 - 3.297 = 3.691. (Closed form:
+      10(1-e^{-1.2}) - 10(1-e^{-0.4}) = 10(e^{-0.4} - e^{-1.2}) ~= 3.691.)
+    answer: 3.691
+    shortcut_used: ["layer = E[X^u] - E[X^d]"]
+    verify: "abs(10*(math.exp(-0.4) - math.exp(-1.2)) - 3.691) < 1e-3"
+
+  - id: C13.15
+    chapter: 13
+    tier: gym_battle
+    archetype: decision
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "ordinary_deductible", "policy_limit", "master_identity"]
+    provenance: original
+    difficulty: 4
+    actor: "Professor Oak"
+    stakes: "The Lab must pick the cheaper of a deductible plan and a low-cap plan for the same exponential loss."
+    consequence: "Choosing the costlier plan over-charges the reserve for the same coverage promise."
+    quest_step: 15
+    tia_section: "B.5.1"
+    narrative_hook: "Comparing a deductible plan against a low-cap plan for insurer cost on an exponential loss."
+    statement: |
+      For X ~ Exp(theta=10) the Lab picks one plan. Plan A: deductible d=4, no limit,
+      alpha=1. Plan B: no deductible, maximum covered loss u=4, alpha=1. Using
+      S(4)=e^{-0.4}=0.6703, compute the expected payment per loss for each and
+      recommend the cheaper plan.
+    solution: |
+      Plan A: E[(X-4)+] = 10 e^{-0.4} = 6.703.
+      Plan B: E[X^4] = 10(1 - e^{-0.4}) = 3.297.
+      Plan A costs 6.703 per event, Plan B costs 3.297. Recommend Plan B: the heavy
+      exponential tail makes the uncapped excess above the deductible expensive, while
+      capping at 4 throws away that whole tail. (A and B are the two halves of the
+      master identity: 6.703 + 3.297 = 10 = E[X].)
+    answer: "A 6.703, B 3.297; choose B"
+    shortcut_used: ["E[(X-d)+]=theta e^{-d/theta}", "E[X^u]=theta(1-e^{-u/theta})", "master identity"]
+    verify: "(lambda a,b:abs(a - 6.703) < 1e-2 and abs(b - 3.297) < 1e-2 and b < a and abs(a + b - 10) < 1e-2)(10*math.exp(-0.4), 10*(1-math.exp(-0.4)))"
+
+  - id: C13.16
+    chapter: 13
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "ordinary_deductible", "calculus_approach"]
+    provenance: original
+    difficulty: 2
+    actor: "a Lab apprentice"
+    stakes: "The apprentice records the per-loss payment as E[X]-d on the exponential loss."
+    consequence: "Subtracting the deductible from the mean over-counts it and underprices the cover."
+    quest_step: 16
+    tia_section: "B.5.1"
+    narrative_hook: "Catching the mean-minus-deductible error on a continuous loss."
+    statement: |
+      An apprentice records "deductible d=4 on X ~ Exp(theta=10), so expected
+      per-loss payment = E[X] - d = 10 - 4 = 6." Find the true per-loss payment,
+      int_4^inf e^{-x/10} dx, and name the error.
+    solution: |
+      True payment: E[(X-4)+] = int_4^inf e^{-x/10} dx = 10 e^{-0.4} ~= 6.703. The
+      error: E[X]-d = 6 assumes every loss clears the deductible; losses below 4 pay
+      0, not a negative amount, so the floor at zero pushes the true payment ABOVE 6.
+      True payment 6.703.
+    answer: "6.703 (not 6)"
+    shortcut_used: ["E[(X-d)+] = int_d^inf S dx, NOT E[X]-d"]
+    verify: "abs(10*math.exp(-0.4) - 6.703) < 1e-3 and 10*math.exp(-0.4) > 6"
+
+  # ===================== ELITE CHALLENGE (post-game) =====================
+
+  - id: C13.17
+    chapter: 13
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "ordinary_deductible", "inflation"]
+    provenance: original
+    difficulty: 5
+    actor: "Professor Oak"
+    stakes: "Next year's losses inflate but the deductible stays fixed; Oak needs the new per-loss payment."
+    consequence: "A fixed deductible erodes, so payments rise faster than losses -- the rate must outpace loss trend."
+    quest_step: 17
+    tia_section: "B.5.2"
+    narrative_hook: "Deductible erosion: a fixed deductible makes the payment inflate faster than the loss."
+    statement: |
+      This year X ~ Exp(theta=10) with a fixed deductible d=4, so per-loss payment
+      = 10 e^{-0.4} ~= 6.703. Next year losses inflate 25% (so (1+r)X ~ Exp(12.5))
+      but the deductible stays 4. Find next year's per-loss payment and the percentage
+      rise, and explain why it exceeds 25%.
+    solution: |
+      Next year (1+r)X ~ Exp(12.5), fixed d=4: per loss = 12.5 e^{-4/12.5}
+      = 12.5 e^{-0.32} ~= 9.077. Rise = 9.077/6.703 - 1 ~= 0.354, a +35.4% jump. It
+      exceeds the 25% loss inflation because the deductible does NOT inflate: a fixed
+      4 is a smaller fraction of the (larger) losses, so it removes proportionally
+      less and the payment grows faster than the loss (deductible erosion).
+    answer: "9.077; +35.4%"
+    shortcut_used: ["inflate the loss not the deductible: (1+r)X ~ Exp((1+r)theta)", "Exp per loss = theta e^{-d/theta}"]
+    verify: "abs(12.5*math.exp(-0.32) - 9.077) < 1e-3 and abs((12.5*math.exp(-0.32))/(10*math.exp(-0.4)) - 1 - 0.354) < 1e-2"
+
+  - id: C13.18
+    chapter: 13
+    tier: elite_challenge
+    archetype: rival_trap
+    outcomes: ["2e"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "ordinary_deductible", "policy_limit"]
+    provenance: original
+    difficulty: 5
+    actor: "Gary Oak"
+    stakes: "Gary 'removes' a deductible from a capped loss with a bogus d*S(d) shortcut."
+    consequence: "Subtracting d*S(d) instead of the limited value E[X^d] mis-states the covered layer."
+    quest_step: 18
+    tia_section: "B.5.1"
+    narrative_hook: "Catching Gary remove a deductible with d*S(d) instead of the limited value."
+    statement: |
+      Gary prices an Exp(10) policy with deductible d=4 and maximum covered loss u=12
+      by capping the loss at 12, then subtracting "d*S(d)" to remove the deductible:
+      E[X^12] - 4*S(4). Given E[X^12]=6.988, E[X^4]=3.297, and S(4)=e^{-0.4}=0.6703,
+      find the CORRECT per-loss layer E[X^12]-E[X^4] and explain why Gary is wrong.
+    solution: |
+      Correct layer between d=4 and u=12: E[X^12]-E[X^4] = 6.988-3.297 = 3.691.
+      Gary's shortcut E[X^12] - d*S(d) = 6.988 - 4(0.6703) = 6.988 - 2.681 = 4.307 is
+      wrong: subtracting d*S(d) is not how a deductible removes the bottom of a capped
+      loss. The deductible removes the limited value E[X^d]=E[X^4]=3.297, not
+      d*S(d)=2.681. The correct covered layer is the difference of two limited
+      expected values, 3.691.
+    answer: "3.691; Gary's d*S(d) shortcut wrong"
+    shortcut_used: ["layer = E[X^u] - E[X^d], NOT E[X^u] - d*S(d)"]
+    verify: "abs((6.988 - 3.297) - 3.691) < 1e-3 and abs((6.988 - 4*math.exp(-0.4)) - 4.307) < 1e-2"
+
+  - id: C13.19
+    chapter: 13
+    tier: elite_challenge
+    archetype: audit
+    outcomes: ["2f"]
+    distributions: ["exponential"]
+    structural_tags: ["continuous", "exponential", "per_payment"]
+    provenance: original
+    difficulty: 3
+    actor: "a Team Rocket apprentice (a predecessor on the scam desk)"
+    stakes: "The apprentice quotes a per-payment cheque size and 'declares it safe' for the knock-off brochure."
+    consequence: "Dividing the per-loss expectation by the wrong probability misstates the typical cheque."
+    quest_step: 19
+    tia_section: "B.5.2"
+    narrative_hook: "Catching the apprentice divide the per-payment by F(4) instead of S(4)."
+    statement: |
+      A Team Rocket apprentice prices the d=4 policy's per-payment cheque on
+      X ~ Exp(theta=10). He has the per-loss figure E[(X-4)+]=6.703 and, to get the
+      per-payment average, divides by F(4)=P(X<=4)=1-e^{-0.4}=0.3297, writing
+      6.703/0.3297 = 20.33, and "declares it safe." Find the TRUE expected payment
+      per payment and name the apprentice's error.
+    solution: |
+      A payment occurs iff the loss STRICTLY exceeds the deductible, X>4, so the
+      divisor is S(4)=e^{-0.4}=0.6703, NOT F(4)=0.3297. The true per-payment cheque is
+      E[X-4 | X>4] = E[(X-4)+]/S(4) = 6.703/0.6703 = 10 (the memoryless mean theta).
+      The apprentice's error: he divided by F(4) (the chance a loss does NOT clear the
+      deductible) instead of S(4) (the chance it does). His 20.33 is absurd; the true
+      cheque is 10.
+    answer: "10 (not 20.33); divided by F(4) instead of S(4)"
+    shortcut_used: ["per payment = per loss / S(d), divisor is S(d), NOT F(d)"]
+    verify: "abs(6.703/math.exp(-0.4) - 10.0) < 1e-2"
