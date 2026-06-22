@@ -63,6 +63,8 @@ All three instant? Every formula below is one of these multiplications dressed u
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP077–EP080 (the League rounds: *"Round One — Begin!"* through the Elite-bracket matches)**
 
+<figure><img src="../../assets/stills/ch17_now_playing.jpg" alt="Ash facing a rival across the battlefield in a League round (Indigo League EP078, Fire and Ice)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">A League round, EP078 — the bracket sorts a giant field and all that matters is its extreme: order statistics.</figcaption></figure>
+
 These four episodes run the Indigo League conference — the packed stadium, the qualifying rounds, and the bracket narrowing a thousand entrants down to the few who face the toughest opponents. *Watch them alongside this chapter.* On screen the throughline is honest: a giant field is sorted, and all anyone cares about is the **extreme** end of it — who is left standing, who falls first. That is precisely our subject. (The seeding officer's "thousand draws," the sealed-gate locks, and the defensive-wall components are **in-world extensions** built to carry the order-statistics math — they dramatize the bracket, not specific on-screen scenes.)
 :::
 

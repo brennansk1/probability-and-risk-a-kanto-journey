@@ -41,6 +41,8 @@ You look up the dark slope. Six Pokémon, six variances, and a tangle of who-mov
 ::: now-playing
 **📺 NOW PLAYING — Indigo League: the road to the Indigo Plateau (~EP075–076)**
 
+<figure><img src="../../assets/stills/ch15_now_playing.jpg" alt="Ash, Misty, and Brock celebrating together with Pikachu and Squirtle as they reach the Indigo Plateau (Indigo League EP076)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Reaching the Plateau, EP076 — a team as a sum of correlated members: covariance and the variance of a linear combination.</figcaption></figure>
+
 With all badges in hand, Ash crosses the last stretch toward the League — his team finally working as one unit. A team's strength as a *sum of correlated members* — where pieces move together — is exactly covariance and the variance of a linear combination. *(There is no single gym here; watch the travel episodes approaching the Plateau. The Victory-Road framing is our in-world extension.)*
 :::
 

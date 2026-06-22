@@ -53,6 +53,8 @@ All three instant? You're ready for the Plateau. Any hesitation? The retrieval *
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP081 "Friend and Foe Alike" + EP082 "Friends to the End"**
 
+<figure><img src="../../assets/stills/ch19_now_playing.jpg" alt="Aerial view of the Indigo League stadium during a tournament round (Indigo League EP079)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">The Indigo Plateau arena — the whole journey tested at once: three full mock exams, the clock running.</figcaption></figure>
+
 These two episodes are the Indigo League's climax. In **EP081 "Friend and Foe Alike,"** Ash advances into the Victory Tournament's later rounds at the Indigo Plateau, the stadium battles intensifying as the field narrows. In **EP082 "Friends to the End,"** Ash faces his rival **Ritchie** in the decisive match — the friend-and-foe theme made literal, a battle against someone who mirrors him. *Watch these alongside the chapter.* On screen the League is the whole journey tested at once, against a rival who is your equal — exactly our subject: thirty mixed problems, no topic labels, the clock running, an opponent who knows everything you know. (We cast that rival as **Gary** rather than Ritchie — the book's benchmark since Pallet Town — and the "thirty-problem mixed gauntlet" is an *in-world extension* framing the exam, not a scene from the episodes.)
 :::
 

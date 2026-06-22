@@ -51,6 +51,8 @@ All three instant? The bell is just a new $f$. Any hesitation? Reclaim the area 
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP077 "Round One — Begin!"**
 
+<figure><img src="../../assets/stills/ch12_now_playing.jpg" alt="Pikachu on the floodlit Indigo League battlefield as the conference opens (Indigo League EP077)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Indigo Plateau, EP077 — pool thousands of independent results and the crowd becomes a predictable bell.</figcaption></figure>
+
 Ash reaches the Indigo Plateau and the Pokémon League conference opens: thousands of qualifiers, a packed stadium, and the first preliminary round of four-on-four matches begins. *Watch this before the chapter.* On screen, no one tracks competitors individually — the conference is a sea of trainers whose **aggregate** is orderly and scheduled. That sea is exactly our subject: pool enough independent results and the crowd becomes a predictable **bell**. (The quartermaster's potion-and-slot planning is an *in-world extension* of the conference's logistics, not a scene from the episode.)
 :::
 

@@ -53,6 +53,8 @@ All three instant? Every shape below is a new $f$ poured into the same machine. 
 ::: now-playing
 **📺 NOW PLAYING — Indigo League: the cross-Kanto travel episodes**
 
+<figure><img src="../../assets/stills/ch11_now_playing.jpg" alt="Ash and friends on a cross-Kanto road in one of the travel episodes (Indigo League EP036, The Bridge Bike Gang)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">The road between towns, EP036 — distance and waiting time as smooth quantities: the uniform and the exponential.</figcaption></figure>
+
 There is no single tied gym episode for this leg — it maps to the *travel* stretches of Season 1, the journeys **between** the badge cities (ferry crossings, forest roads, the long walks the show uses to move Ash from one town to the next). *Watch any one of those travel-heavy episodes alongside this chapter.* On screen, the throughline is honest: progress here is the **road itself**, not a boss. (The Porygon spawn, the sonar pings, and the barnacle fraction are **in-world extensions** built to carry the four shapes — they dramatize the math, not specific on-screen scenes.)
 :::
 

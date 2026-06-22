@@ -37,6 +37,8 @@ You've computed expectations before. You've never computed an expectation *insid
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP063 "The Battle of the Badge"**
 
+<figure><img src="../../assets/stills/ch16_now_playing.jpg" alt="Gary Oak at the Viridian Gym during the Earth Badge episode (Indigo League EP063)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Viridian Gym, EP063 — the answer hidden inside an unseen role: conditional expectation E[X|Y] and total variance.</figcaption></figure>
+
 At the Viridian Gym, the leader's true identity is revealed — Giovanni, the boss of Team Rocket — and the Earth Badge is on the line. A value hidden *inside* another role, where the answer depends on a realized-but-unseen quantity, is exactly conditional expectation E[X|Y] and the law of total variance. Watch before reading.
 :::
 

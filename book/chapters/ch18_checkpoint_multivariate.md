@@ -35,6 +35,8 @@ There is no gym here. No badge to win. Just one question, the only one that matt
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP077 "Round One – Begin!"**
 
+<figure><img src="../../assets/stills/ch18_now_playing.jpg" alt="Ash arriving at the Indigo Plateau stadium as the League opens (Indigo League EP077)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">The League opens, EP077 — the four Act-III ideas come at you unlabeled, one after another.</figcaption></figure>
+
 The Pokémon League opens at the Indigo Plateau: the torch is lit, the field of trainers is huge, and the first mixed rounds begin — exactly the spirit of this checkpoint, where the four Act-III ideas come at you unlabeled, one after another. Watch the opening rounds, then run the gauntlet below. *(The "mixed, no-warning" framing is our in-world extension of the tournament, not an on-screen line.)*
 :::
 
