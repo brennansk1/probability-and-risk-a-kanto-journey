@@ -1,0 +1,133 @@
+# Problem bank — Chapter 0 (Pallet Town / Orientation): the Trainer's-Calculator
+# setup drills. These are NOT probability problems — they train the TI-30XS
+# MultiView setup skills Oak issues in the orientation: store-don't-retype with
+# [STO>], order-of-operations grouping with parentheses, the [F<>D] fraction/
+# decimal toggle, and clearing/grouping a standardization. Outcome: prereq.
+# Front-matter chapter (no SOA outcome, no gym, no badge — the Trainer's License).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28):
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   provenance, difficulty (1-5), actor, stakes, consequence, quest_step,
+#   calc_skill, tia_section, narrative_hook, statement, solution, answer,
+#   shortcut_used, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes
+# math, st (scipy.stats), __import__). No chaining — each stands alone.
+#
+# This is the orientation calculator primer (§16 row: "4 — calc setup"), so all
+# `outcomes` are ["prereq"] and `distributions` is ["none"] throughout. These are
+# Route-Trainer warm-ups only; there is no gym battle or elite challenge in ch00.
+
+problems:
+
+  - id: C0.1
+    chapter: 0
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 1
+    actor: "Ash (at Oak's lab bench)"
+    stakes: "Oak wants the law-of-total-probability warm-up banked at full precision before Ash leaves."
+    consequence: "Storing the full value teaches the store-don't-retype habit that kills rounding drift on the road."
+    quest_step: 1
+    calc_skill: "[STO>] store don't retype"
+    tia_section: "front matter (calculator setup)"
+    narrative_hook: "Computing (0.2)(0.5)+(0.7)(0.05) and banking it with [STO>][a]."
+    statement: |
+      Practice store-don't-retype. Compute (0.2)(0.5) + (0.7)(0.05) on the
+      TI-30XS, then press [STO>] [a] to bank the full-precision result. What
+      value is now stored in memory a?
+    solution: |
+      (0.2)(0.5) = 0.10 ; (0.7)(0.05) = 0.035 ; sum = 0.135.
+      [STO>][a] stores the FULL value 0.135 (not a rounded copy) so later
+      keystrokes reuse it without re-typing or rounding drift.
+    answer: "0.135"
+    shortcut_used: ["store-don't-retype", "[STO>] banks full precision"]
+    verify: "abs(((0.2*0.5)+(0.7*0.05)) - 0.135) < 1e-9"
+
+  - id: C0.2
+    chapter: 0
+    tier: route_trainer
+    archetype: audit
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 2
+    actor: "Team Rocket (eavesdropping on the keystrokes)"
+    stakes: "Meowth keys 2 + 3 x 4 expecting 20 and brags he has 'cracked the trainer's calculator.'"
+    consequence: "Naming the order-of-operations error fixes the habit of parenthesizing before it costs exam points."
+    quest_step: 2
+    calc_skill: "order of operations / parenthesize"
+    tia_section: "front matter (calculator setup)"
+    narrative_hook: "Auditing Meowth's claim that 2 + 3 x 4 = 20."
+    statement: |
+      Team Rocket types 2 + 3 x 4 into the TI-30XS and Meowth declares the
+      answer is 20 ("left to right!"). The machine returns something else.
+      What does the TI-30XS actually display, and what is Meowth's error?
+    solution: |
+      The TI-30XS uses standard order of operations: multiplication before
+      addition. So 3 x 4 = 12 first, then 2 + 12 = 14. Meowth's error is
+      evaluating strictly left-to-right; to FORCE his order he would need
+      parentheses: (2 + 3) x 4 = 20. Lesson: parenthesize anything you mean
+      to group (numerators, denominators).
+    answer: "14"
+    shortcut_used: ["standard order of operations", "parenthesize to group"]
+    verify: "(2 + 3*4 == 14) and ((2+3)*4 == 20)"
+
+  - id: C0.3
+    chapter: 0
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 1
+    actor: "Nurse Joy (tallying healed Pokemon)"
+    stakes: "Joy reports '3 of 8 healed so far' and wants the figure as a decimal for the daily log."
+    consequence: "The [F<>D] toggle turns an entered fraction into the decimal a report wants in one keystroke."
+    quest_step: 3
+    calc_skill: "[F<>D] fraction/decimal toggle"
+    tia_section: "front matter (calculator setup)"
+    narrative_hook: "Toggling 3/8 to its decimal with [F<>D]."
+    statement: |
+      You enter the fraction 3/8 on the TI-30XS and press [F<>D] to read it as
+      a decimal for Nurse Joy's log. What decimal does the toggle show?
+    solution: |
+      [F<>D] flips the displayed answer between its fraction and decimal forms.
+      3/8 = 0.375 exactly. Probabilities are often cleaner to ENTER as a
+      fraction and cleaner to REPORT as a decimal; [F<>D] moves between them.
+    answer: "0.375"
+    shortcut_used: ["[F<>D] toggles fraction <-> decimal"]
+    verify: "abs(3/8 - 0.375) < 1e-12"
+
+  - id: C0.4
+    chapter: 0
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["prereq"]
+    distributions: ["none"]
+    provenance: original
+    difficulty: 2
+    actor: "Professor Oak (previewing a later skill)"
+    stakes: "Oak previews the standardize keystroke (x - mu)/sigma so the grouping habit is in place before ch12."
+    consequence: "Wrapping the numerator in parentheses is the difference between (x-mu)/sigma and the wrong x - mu/sigma."
+    quest_step: 4
+    calc_skill: "parenthesize a numerator before dividing"
+    tia_section: "front matter (calculator setup)"
+    narrative_hook: "Keying ( x - mu ) / sigma correctly: x=12, mu=10, sigma=4."
+    statement: |
+      Oak previews a standardization you'll meet at the Grand Gathering:
+      z = (x - mu)/sigma with x = 12, mu = 10, sigma = 4. Keyed correctly as
+      ( 12 - 10 ) / 4 on the TI-30XS, what is z? (And note what the machine
+      returns if you forget the parentheses and type 12 - 10 / 4.)
+    solution: |
+      Correct, grouped: (12 - 10)/4 = 2/4 = 0.5.
+      Forgotten parentheses: order of operations divides FIRST, giving
+      12 - (10/4) = 12 - 2.5 = 9.5 -- a wrong answer. Always parenthesize the
+      numerator (and denominator) of a fraction you key in.
+    answer: "0.5"
+    shortcut_used: ["parenthesize the numerator", "standardize (x-mu)/sigma"]
+    verify: "abs(((12 - 10)/4) - 0.5) < 1e-9 and abs((12 - 10/4) - 9.5) < 1e-9"

@@ -1,0 +1,376 @@
+# Problem bank — Chapter 18 (Checkpoint B — the Indigo Plateau, the night before
+# the championship): a SPACED-RETRIEVAL checkpoint interleaving all of Act III.
+# NO new theory. Twelve MIXED problems drawn across ch14 (joint), ch15 (joint
+# moments & covariance), ch16 (conditional/double expectation), ch17 (order stats).
+# Outcomes 3a, 3b, 3c, 3d, 3e, 3f, 3g (the multivariate band).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28), mirroring problems/bank.d/ch16.yaml:
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes,
+#   distributions, structural_tags, provenance, difficulty (1-5),
+#   actor, stakes, consequence, quest_step, narrative_hook, statement, solution,
+#   answer, shortcut_used, source_chapter, verify.
+#
+# CHECKPOINT NOTE: this is a mixed-review chapter, so the per-chapter archetype
+# quota is RELAXED — but we still include >=2 audit (C18.8, C18.10) and >=1
+# rival_trap (C18.9) so the spaced-retrieval set still recycles the act's
+# canonical errors. Each problem is tagged with its SOURCE chapter + outcome and a
+# STRUCTURAL tag (joint_continuous|joint_discrete|compound|order_statistic).
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval. It exposes
+# math, st (scipy.stats), and __import__; every problem restates all its givens, so
+# verify never depends on another problem's answer.
+
+problems:
+
+  # ============== LEAGUE-QUALIFIER, ROUND 1 (warm the four landmarks) ==========
+
+  - id: C18.1
+    chapter: 18
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3a", "3b"]
+    distributions: [joint_continuous]
+    structural_tags: ["joint_continuous", "marginal", "continuous_moment"]
+    provenance: original
+    difficulty: 2
+    source_chapter: "ch14 (joint distributions)"
+    actor: "The Plateau registrar"
+    stakes: "The qualifier opens with a joint-density warm-up: recover a marginal mean."
+    consequence: "Clear it and you advance to the covariance round."
+    quest_step: 1
+    narrative_hook: "Recover E[X] from a joint density over the unit square."
+    statement: |
+      Two paired battle readings (X, Y) have joint density f(x,y) = x + y on the
+      unit square 0 < x < 1, 0 < y < 1 (and 0 elsewhere). Find the marginal
+      density f_X(x), then E[X].
+    solution: |
+      Marginalize out Y: f_X(x) = integral_0^1 (x+y) dy = x + 1/2, for 0<x<1.
+      E[X] = integral_0^1 x(x + 1/2) dx = integral_0^1 (x^2 + x/2) dx
+      = 1/3 + 1/4 = 7/12 ≈ 0.5833.
+    answer: "f_X(x)=x+1/2; E[X]=7/12≈0.5833"
+    shortcut_used: ["marginal = integrate out the other variable", "E[X]=∫ x f_X(x) dx"]
+    verify: "abs((1/3 + 1/4) - 7/12) < 1e-9"
+
+  - id: C18.2
+    chapter: 18
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3c", "3e"]
+    distributions: [joint_discrete]
+    structural_tags: ["joint_discrete", "covariance"]
+    provenance: original
+    difficulty: 2
+    source_chapter: "ch15 (joint moments & covariance)"
+    actor: "A pair of scouted contenders"
+    stakes: "Two contenders' point tallies move together; the bracket-seeder needs Cov(X,Y)."
+    consequence: "A positive covariance means seeding them apart, not together."
+    quest_step: 2
+    narrative_hook: "Compute a covariance from a 3x2 joint table."
+    statement: |
+      Contenders X in {0,1,2} and Y in {0,1} have joint pmf
+        P(0,0)=0.30, P(0,1)=0.10, P(1,0)=0.10, P(1,1)=0.20,
+        P(2,0)=0.05, P(2,1)=0.25.
+      Find Cov(X,Y) and state the sign of the association.
+    solution: |
+      Marginals: P(X=0,1,2)=0.4,0.3,0.3 -> E[X]=0(0.4)+1(0.3)+2(0.3)=0.9.
+      P(Y=0,1)=0.45,0.55 -> E[Y]=0.55.
+      E[XY] = sum xy P(x,y) = 1*1*0.20 + 2*1*0.25 = 0.20 + 0.50 = 0.70.
+      Cov(X,Y) = E[XY] - E[X]E[Y] = 0.70 - 0.9(0.55) = 0.70 - 0.495 = 0.205.
+      Positive: the tallies move together.
+    answer: "Cov(X,Y)=0.205 (positive)"
+    shortcut_used: ["Cov(X,Y)=E[XY]-E[X]E[Y]"]
+    verify: "abs((0.7 - 0.9*0.55) - 0.205) < 1e-9 and (0.7 - 0.9*0.55) > 0"
+
+  - id: C18.3
+    chapter: 18
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3g"]
+    distributions: [discrete]
+    structural_tags: ["compound", "linear_combination", "variance_of_sum"]
+    provenance: original
+    difficulty: 2
+    source_chapter: "ch15 (variance of a linear combination)"
+    actor: "Your two-Pokemon vanguard"
+    stakes: "Your vanguard's net effect is 2X - Y; you must size its spread before round one."
+    consequence: "Treating the pair as independent (cross term dropped) badly misstates the risk."
+    quest_step: 3
+    narrative_hook: "Variance of a linear combination with a nonzero cross term."
+    statement: |
+      A vanguard's net effect is 2X - Y, where Var(X)=4, Var(Y)=9, and
+      Cov(X,Y)=-2. Find Var(2X - Y).
+    solution: |
+      Var(aX + bY) = a^2 Var(X) + b^2 Var(Y) + 2ab Cov(X,Y), with a=2, b=-1:
+      Var(2X - Y) = 4(4) + 1(9) + 2(2)(-1)(-2) = 16 + 9 + 8 = 33.
+    answer: 33
+    shortcut_used: ["Var(aX+bY)=a^2 Var(X)+b^2 Var(Y)+2ab Cov(X,Y)"]
+    verify: "abs((2**2*4 + (-1)**2*9 + 2*2*(-1)*(-2)) - 33) < 1e-9"
+
+  - id: C18.4
+    chapter: 18
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3c", "3d"]
+    distributions: [poisson]
+    structural_tags: ["compound", "compound_poisson"]
+    provenance: original
+    difficulty: 2
+    source_chapter: "ch16 (compound distributions)"
+    actor: "An Elite-Four lead-off attacker"
+    stakes: "A random Poisson number of strikes lands, each a random size — total damage is compound."
+    consequence: "The variance feeds your CLT reserve estimate later in the qualifier."
+    quest_step: 4
+    narrative_hook: "Mean and variance of a compound-Poisson total."
+    statement: |
+      An opponent lands N ~ Poisson(lambda=4) strikes; each does i.i.d. damage with
+      mu=10, sigma^2=25. Let S = sum_{i=1}^N X_i. Find E[S] and Var(S).
+    solution: |
+      E[S] = lambda mu = 4(10) = 40.
+      Compound Poisson: Var(S) = lambda E[X^2] = lambda(sigma^2 + mu^2)
+      = 4(25 + 100) = 4(125) = 500.
+    answer: "E[S]=40, Var(S)=500"
+    shortcut_used: ["E[S]=lambda mu", "compound Poisson Var(S)=lambda(sigma^2+mu^2)"]
+    verify: "abs((4*10) - 40) < 1e-9 and abs((4*(25+100)) - 500) < 1e-9"
+
+  - id: C18.5
+    chapter: 18
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3d"]
+    distributions: [discrete]
+    structural_tags: ["compound", "total_variance", "mixture", "process_vs_parameter"]
+    provenance: original
+    difficulty: 3
+    source_chapter: "ch16 (law of total variance)"
+    actor: "A two-arena draw"
+    stakes: "Your next match is in one of two arenas, each with its own mean and spread of difficulty."
+    consequence: "You must split your nerves into 'which arena' versus 'the arena's own noise.'"
+    quest_step: 5
+    narrative_hook: "Total variance over a two-group mixture."
+    statement: |
+      Match difficulty X depends on the arena Y: arena 1 (P=0.6) has E[X|1]=30,
+      Var(X|1)=16; arena 2 (P=0.4) has E[X|2]=50, Var(X|2)=36. Find E[X] and
+      Var(X), and state which source dominates.
+    solution: |
+      E[X] = 30(0.6) + 50(0.4) = 18 + 20 = 38.
+      Term 1 (process) = E[Var(X|Y)] = 16(0.6) + 36(0.4) = 9.6 + 14.4 = 24.
+      Term 2 (parameter): means 30,50 -> E[g^2] = 900(0.6)+2500(0.4) = 540+1000 = 1540;
+      Var(g) = 1540 - 38^2 = 1540 - 1444 = 96.
+      Var(X) = 24 + 96 = 120. The between-arena spread (96) dominates within-arena noise (24).
+    answer: "E[X]=38, Var(X)=120 (arena choice dominates)"
+    shortcut_used: ["total variance = E[Var(X|Y)] + Var(E[X|Y])"]
+    verify: "abs(((16*0.6+36*0.4) + ((900*0.6+2500*0.4) - (30*0.6+50*0.4)**2)) - 120) < 1e-9 and (((900*0.6+2500*0.4) - (30*0.6+50*0.4)**2) > (16*0.6+36*0.4))"
+
+  - id: C18.6
+    chapter: 18
+    tier: route_trainer
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: [uniform]
+    structural_tags: ["order_statistic", "maximum", "continuous"]
+    provenance: original
+    difficulty: 2
+    source_chapter: "ch17 (order statistics)"
+    actor: "A four-trainer heat"
+    stakes: "Only the strongest of four advances; you need the expected winning score."
+    consequence: "The max's mean sizes up the bar you must clear to top the heat."
+    quest_step: 6
+    narrative_hook: "Distribution and mean of the maximum of n i.i.d. uniforms."
+    statement: |
+      Four trainers post i.i.d. scores X_i ~ Unif(0,1). Let M = max of the four.
+      Find the CDF of M and E[M].
+    solution: |
+      F_M(x) = [F(x)]^n = x^4 for 0<x<1 (independent maxima multiply CDFs).
+      Density f_M(x) = 4x^3, so E[M] = integral_0^1 x(4x^3) dx = 4/5 = 0.8.
+      (General: for n i.i.d. Unif(0,1), E[max] = n/(n+1).)
+    answer: "F_M(x)=x^4; E[M]=4/5=0.8"
+    shortcut_used: ["F_max=[F]^n", "E[max of n Unif(0,1)] = n/(n+1)"]
+    verify: "abs((4/(4+1)) - 0.8) < 1e-9"
+
+  # ============== LEAGUE-QUALIFIER, ROUND 2 (true exam difficulty) ============
+
+  - id: C18.7
+    chapter: 18
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: [exponential]
+    structural_tags: ["order_statistic", "minimum", "exponential"]
+    provenance: original
+    difficulty: 3
+    source_chapter: "ch17 (min of independent exponentials)"
+    actor: "Two parallel timers"
+    stakes: "Two attacks charge in parallel; whichever fires FIRST decides the round."
+    consequence: "The first-to-fire time sets how long your shield must hold."
+    quest_step: 7
+    narrative_hook: "Mean of the minimum of two independent exponentials (rates add)."
+    statement: |
+      Two independent attacks have charge times T1 ~ Expo(mean=10) and
+      T2 ~ Expo(mean=15) seconds. The first to fire is W = min(T1, T2). Find the
+      distribution of W and E[W].
+    solution: |
+      For independent exponentials the minimum is exponential with rate equal to the
+      SUM of the rates: rate = 1/10 + 1/15 = 3/30 + 2/30 = 5/30 = 1/6.
+      So W ~ Expo(rate=1/6), i.e. mean = 6 seconds. E[W] = 6.
+    answer: "W ~ Expo(mean=6); E[W]=6 s"
+    shortcut_used: ["min of indep exponentials: rates add, so 1/E[W]=sum 1/theta_i"]
+    verify: "abs((1/(1/10 + 1/15)) - 6) < 1e-9"
+
+  - id: C18.8
+    chapter: 18
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["3e"]
+    distributions: [discrete]
+    structural_tags: ["joint_discrete", "covariance", "independence_vs_uncorrelated"]
+    provenance: original
+    difficulty: 3
+    source_chapter: "ch15 (independence vs zero correlation)"
+    actor: "A Rocket analyst"
+    stakes: "A leftover Rocket analyst declares two readings 'independent' because their covariance is zero."
+    consequence: "Believing the false claim lets a hidden dependence ambush your strategy."
+    quest_step: 8
+    narrative_hook: "Audit the 'zero covariance implies independent' error with a quadratic link."
+    statement: |
+      A reading X is uniform on {-1, 0, 1} (each probability 1/3), and Y = X^2. A
+      Rocket analyst writes: "Cov(X,Y)=0, therefore X and Y are independent." Compute
+      Cov(X,Y), then decide whether X and Y are independent, and name the error.
+    solution: |
+      E[X] = (-1+0+1)/3 = 0; E[X^2] = (1+0+1)/3 = 2/3; E[XY] = E[X*X^2] = E[X^3]
+      = (-1+0+1)/3 = 0. So Cov(X,Y) = E[XY] - E[X]E[Y] = 0 - 0 = 0.
+      But Y = X^2 is a deterministic function of X: knowing X fixes Y exactly, so they
+      are FAR from independent. The error: zero covariance only rules out a LINEAR
+      relationship; it never implies independence. Independence => Cov=0, but not the
+      reverse (the one-way street).
+    answer: "Cov(X,Y)=0 yet X,Y are dependent (Y=X^2); zero cov ≠ independence"
+    shortcut_used: ["Cov=0 does NOT imply independence; covariance sees only linear association"]
+    verify: "abs((( -1+0+1)/3) - 0) < 1e-9 and abs(((-1)**3 + 0 + 1**3)/3 - 0) < 1e-9"
+
+  - id: C18.9
+    chapter: 18
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["3g", "3e"]
+    distributions: [discrete]
+    structural_tags: ["compound", "linear_combination", "dropped_cross_term"]
+    provenance: original
+    difficulty: 3
+    source_chapter: "ch15 (variance of a sum with correlation)"
+    actor: "Gary (rival)"
+    stakes: "Gary sizes his combined-team variance by just adding the two variances."
+    consequence: "His correlated team is riskier than he thinks — the cross term he skipped is large."
+    quest_step: 9
+    narrative_hook: "Catch Gary dropping the covariance cross term in Var(X+Y)."
+    statement: |
+      Gary's two lead Pokemon have scores X and Y with Var(X)=Var(Y)=25 and
+      correlation rho=0.6. Gary brags: "Combined variance? Just 25+25 = 50." Find the
+      true Var(X+Y) and say where he erred.
+    solution: |
+      Cov(X,Y) = rho * sigma_X * sigma_Y = 0.6 * 5 * 5 = 15.
+      Var(X+Y) = Var(X) + Var(Y) + 2 Cov(X,Y) = 25 + 25 + 2(15) = 50 + 30 = 80.
+      Gary dropped the cross term 2 Cov(X,Y) = 30, which is only valid when the
+      variables are uncorrelated. With rho=0.6 his team is positively correlated, so
+      the true variance 80 exceeds his 50 by 60%.
+    answer: "Var(X+Y)=80 (Gary dropped 2Cov=30)"
+    shortcut_used: ["Var(X+Y)=Var(X)+Var(Y)+2Cov; Cov=rho sigma_X sigma_Y"]
+    verify: "abs((25 + 25 + 2*(0.6*5*5)) - 80) < 1e-9 and ((25+25+2*(0.6*5*5)) != 50)"
+
+  - id: C18.10
+    chapter: 18
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["3c", "3d"]
+    distributions: [poisson]
+    structural_tags: ["compound", "compound_poisson", "dropped_count_term"]
+    provenance: original
+    difficulty: 4
+    source_chapter: "ch16 (compound variance)"
+    actor: "A Rocket actuary's memo"
+    stakes: "A Rocket memo prices aggregate strike damage using only the severity-noise term."
+    consequence: "The dropped count-noise term leaves the reserve five times too thin."
+    quest_step: 10
+    narrative_hook: "Audit a compound-variance memo that forgot the count varies."
+    statement: |
+      Total strike damage is S = sum_{i=1}^N X_i with N ~ Poisson(lambda=6) and
+      i.i.d. severities mu=20, sigma^2=100. A Rocket memo reports
+      "Var(S) = E[N] sigma^2 = 6(100) = 600." Find the true E[S] and Var(S) and name
+      the dropped term.
+    solution: |
+      E[S] = E[N] mu = 6(20) = 120.
+      Var(S) = E[N]sigma^2 + Var(N)mu^2 = 6(100) + 6(400) = 600 + 2400 = 3000.
+      (Compound-Poisson shortcut: lambda E[X^2] = 6(100+400) = 6(500) = 3000.)
+      Dropped term: the count-noise term Var(N)mu^2 = 2400 — the memo kept only the
+      size-noise term and ignored that the NUMBER of strikes is random. True variance
+      is 3000, five times the claimed 600.
+    answer: "E[S]=120, Var(S)=3000 (dropped Var(N)mu^2=2400)"
+    shortcut_used: ["compound Var(S)=E[N]sigma^2+Var(N)mu^2 = lambda E[X^2] (Poisson)"]
+    verify: "abs((6*20) - 120) < 1e-9 and abs((6*100 + 6*400) - 3000) < 1e-9 and ((6*100 + 6*400) != 600)"
+
+  - id: C18.11
+    chapter: 18
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["3f"]
+    distributions: [exponential]
+    structural_tags: ["order_statistic", "minimum", "exponential", "reliability"]
+    provenance: original
+    difficulty: 4
+    source_chapter: "ch17 (min of exponentials / series reliability)"
+    actor: "A three-component relay"
+    stakes: "Three relay parts run in series; the whole relay fails the instant the FIRST part fails."
+    consequence: "The expected time-to-first-failure decides whether the relay survives the round."
+    quest_step: 11
+    narrative_hook: "Series reliability = minimum of three independent exponential lifetimes."
+    statement: |
+      A relay has three independent components in SERIES with exponential lifetimes of
+      means 4, 6, and 12 minutes. The relay fails when the first component fails, i.e.
+      L = min of the three. Find the distribution of L and E[L].
+    solution: |
+      Series system => lifetime is the MINIMUM. For independent exponentials the rates
+      add: rate = 1/4 + 1/6 + 1/12 = 3/12 + 2/12 + 1/12 = 6/12 = 1/2.
+      So L ~ Expo(rate=1/2), mean = 2 minutes. E[L] = 2.
+    answer: "L ~ Expo(mean=2); E[L]=2 min"
+    shortcut_used: ["series = min; min of indep exponentials has rate = sum of rates"]
+    verify: "abs((1/(1/4 + 1/6 + 1/12)) - 2) < 1e-9"
+
+  # ============== LEAGUE-QUALIFIER, FINAL (integrative / Plateau-grade) =======
+
+  - id: C18.12
+    chapter: 18
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["3c", "3d"]
+    distributions: [poisson, discrete]
+    structural_tags: ["compound", "mixture", "two_layer", "process_vs_parameter"]
+    provenance: original
+    difficulty: 5
+    source_chapter: "ch16 + ch15 (two-layer compound mixture; the act's synthesis)"
+    actor: "The Elite-Four anchor"
+    stakes: "The qualifier's final threat nests compound damage inside a hidden-tier draw — every Act-III idea at once."
+    consequence: "Reading both layers correctly is the last gate before the championship."
+    quest_step: 12
+    narrative_hook: "Two-layer synthesis: compound-Poisson damage inside a random-tier mixture."
+    statement: |
+      The anchor's tier Y is drawn with P(Y=1)=0.5, P(Y=2)=0.3, P(Y=3)=0.2. Given
+      tier y, damage X is compound-Poisson with attack-count mean lambda_y and
+      per-attack severity mean mu_y, variance sigma_y^2:
+        y=1: lambda=2, mu=10, sigma^2=25
+        y=2: lambda=3, mu=15, sigma^2=49
+        y=3: lambda=5, mu=20, sigma^2=100
+      Find E[X], Var(X), and the fraction of total variance attributable to which tier
+      fights.
+    solution: |
+      Conditional means lambda_y mu_y: 2(10)=20, 3(15)=45, 5(20)=100.
+      E[X] = 20(0.5) + 45(0.3) + 100(0.2) = 10 + 13.5 + 20 = 43.5.
+      Conditional variances lambda_y(sigma_y^2 + mu_y^2) (compound-Poisson):
+        2(25+100)=250, 3(49+225)=822, 5(100+400)=2500.
+      Term 1 = 250(0.5) + 822(0.3) + 2500(0.2) = 125 + 246.6 + 500 = 871.6.
+      Term 2: E[g^2] = 20^2(0.5) + 45^2(0.3) + 100^2(0.2) = 200 + 607.5 + 2000 = 2807.5;
+      Var(g) = 2807.5 - 43.5^2 = 2807.5 - 1892.25 = 915.25.
+      Var(X) = 871.6 + 915.25 = 1786.85.
+      Tier fraction = 915.25 / 1786.85 ≈ 0.512 (≈ 51%) — the two layers are nearly
+      balanced, just over half the variance from WHICH tier fights.
+    answer: "E[X]=43.5, Var(X)=1786.85, ≈51% from tier"
+    shortcut_used: ["compound-Poisson conditional moments lambda mu and lambda(sigma^2+mu^2)", "total variance across the tier layer"]
+    verify: "abs((20*0.5+45*0.3+100*0.2)-43.5)<1e-6 and abs(((250*0.5+822*0.3+2500*0.2)+((20**2*0.5+45**2*0.3+100**2*0.2)-(20*0.5+45*0.3+100*0.2)**2))-1786.85)<1e-2 and abs((((20**2*0.5+45**2*0.3+100**2*0.2)-(20*0.5+45*0.3+100*0.2)**2)/((250*0.5+822*0.3+2500*0.2)+((20**2*0.5+45**2*0.3+100**2*0.2)-(20*0.5+45*0.3+100*0.2)**2)))-0.512)<1e-3"

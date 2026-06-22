@@ -1,0 +1,344 @@
+# Problem bank — Chapter 7 (Checkpoint A — the route campfire / League-qualifier).
+# A MIXED spaced-retrieval checkpoint over Act I (ch01-ch06): no new theory. The 12
+# problems INTERLEAVE the six chapters' archetypes at exam difficulty, each tagged with
+# the source outcome (1a-1g, 2a-2f) + the distribution it exercises.  Locale: a route
+# campfire before the wilds change (Rank: Ace Trainer · Badges: 5).
+#
+# Schema per problem (MASTER_PLAN_V3 §22, §28) mirrors ch03:
+#   id, chapter, tier (route_trainer|gym_battle|elite_challenge),
+#   archetype (audit|rival_trap|decision|standard), outcomes, distributions,
+#   provenance, difficulty (1-5), actor, stakes, consequence, quest_step,
+#   tia_section, narrative_hook, statement, solution, answer, shortcut_used,
+#   calc_skill (opt), source_chapter, verify.
+#
+# verify: a SELF-CONTAINED Python boolean the seed-151 harness can eval (exposes math,
+# st (scipy.stats), __import__). Every problem restates whatever it needs, so verify
+# never depends on another problem's answer.
+#
+# Mixed-checkpoint quota (relaxed; §19): >=2 audit (Q03 Team Rocket, Q08 sloppy clerk),
+# >=1 rival_trap (Q06 Gary). All six Act-I chapters represented across the 12 items.
+
+problems:
+
+  - id: Q7.1
+    chapter: 7
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1a", "1e"]
+    distributions: []
+    provenance: original
+    difficulty: 2
+    actor: "the campfire quizmaster"
+    stakes: "First retrieval card of the night: complement and inclusion-exclusion, the ch01 reflexes."
+    consequence: "Miss the set-algebra warm-up and the whole act is shaky underneath."
+    quest_step: 1
+    tia_section: "A.1.2, A.1.5"
+    source_chapter: "ch01 — Fundamentals"
+    narrative_hook: "Reviving the complement and inclusion-exclusion tricks at the campfire."
+    statement: |
+      Among the campers, P(carries a Potion) = 0.6, P(carries a Repel) = 0.5, and
+      P(carries both) = 0.3. Find (a) P(carries at least one of the two) and (b)
+      P(carries neither).
+    solution: |
+      (a) Inclusion-exclusion: P(P u R) = 0.6 + 0.5 - 0.3 = 0.8.
+      (b) Complement of "at least one": P(neither) = 1 - 0.8 = 0.2.
+    answer: "(a) 0.8, (b) 0.2"
+    shortcut_used: ["P(AuB)=P(A)+P(B)-P(AnB)", "P(neither)=1-P(at least one)"]
+    verify: "abs((0.6+0.5-0.3) - 0.8) < 1e-9 and abs((1-(0.6+0.5-0.3)) - 0.2) < 1e-9"
+
+  - id: Q7.2
+    chapter: 7
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1f", "1g"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Nurse Joy (field medic)"
+    stakes: "A roadside scanner flags poisoned Pokemon; Joy must read the flip-side probability before treating."
+    consequence: "Treating on the forward rate instead of the Bayes posterior wastes scarce antidotes."
+    quest_step: 2
+    tia_section: "A.2.3, A.2.4"
+    source_chapter: "ch02 — Conditional & Bayes"
+    narrative_hook: "Inverting a scanner's flag with total probability and Bayes."
+    statement: |
+      10% of route Pokemon are poisoned. The scanner flags a poisoned Pokemon 90% of
+      the time (sensitivity) and false-flags a healthy one 20% of the time. A Pokemon is
+      flagged. Find P(actually poisoned | flagged).
+    solution: |
+      Total probability of a flag:
+      P(flag) = (0.10)(0.90) + (0.90)(0.20) = 0.09 + 0.18 = 0.27.
+      Bayes: P(poisoned | flag) = 0.09 / 0.27 = 1/3 ~ 0.3333.
+    answer: "1/3 ~ 0.333"
+    shortcut_used: ["total probability denominator", "Bayes = joint / total"]
+    calc_skill: bayes_grid
+    verify: "abs((0.10*0.90)/((0.10*0.90)+(0.90*0.20)) - 1/3) < 1e-9"
+
+  - id: Q7.3
+    chapter: 7
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2a", "2c"]
+    distributions: []
+    provenance: original
+    difficulty: 3
+    actor: "Team Rocket (Meowth)"
+    stakes: "Meowth bets the loot that a prize machine's average payout equals its most common payout."
+    consequence: "Reporting the mode as the mean over-states the average and busts the haul."
+    quest_step: 3
+    tia_section: "A.3.1, A.3.3"
+    source_chapter: "ch03 — Discrete Moments"
+    narrative_hook: "Catching Meowth report a payout RV's mode as its mean (the recycled Act-I trap)."
+    statement: |
+      A prize machine's payout W in {0,1,2,3,4} tokens has pmf 0.30, 0.25, 0.20, 0.15,
+      0.10. Meowth's note says "the average payout is 0 tokens -- that's the most common
+      result, so it's the average." Find the true E[W] and name Meowth's error.
+    solution: |
+      E[W] = 0(0.30)+1(0.25)+2(0.20)+3(0.15)+4(0.10) = 0+0.25+0.40+0.45+0.40 = 1.5.
+      Meowth reported the MODE (0, the largest mass) as the MEAN. The mean is the
+      probability-weighted average 1.5, pulled above 0 by the upper payouts.
+    answer: "E[W] = 1.5 (Meowth confused mode with mean)"
+    shortcut_used: ["mean = sum k p(k), NOT the mode"]
+    calc_skill: 1var_stats
+    verify: "abs((0*0.30+1*0.25+2*0.20+3*0.15+4*0.10) - 1.5) < 1e-9 and ([0.30,0.25,0.20,0.15,0.10].index(max([0.30,0.25,0.20,0.15,0.10]))==0)"
+
+  - id: Q7.4
+    chapter: 7
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1b", "2d"]
+    distributions: ["binomial"]
+    provenance: original
+    difficulty: 3
+    actor: "the campsite scout"
+    stakes: "Six Pidgey are flushed from the grass; the scout needs the odds exactly two are shiny."
+    consequence: "Mis-counting the with-replacement successes mis-states the shiny-encounter rate."
+    quest_step: 4
+    tia_section: "A.4.3"
+    source_chapter: "ch04 — Combinatorics"
+    narrative_hook: "A binomial count of shiny Pidgey among six independent flush-outs."
+    statement: |
+      Each flushed Pidgey is independently shiny w.p. 0.2. Among n=6 Pidgey, let X be the
+      number shiny. Find P(X = 2).
+    solution: |
+      Binomial(n=6, p=0.2): P(X=2) = C(6,2) (0.2)^2 (0.8)^4
+      = 15 (0.04)(0.4096) = 15 (0.016384) = 0.24576.
+    answer: "0.24576"
+    shortcut_used: ["binomial pmf C(n,k) p^k (1-p)^(n-k)"]
+    verify: "abs((__import__('math').comb(6,2) * 0.2**2 * 0.8**4) - 0.24576) < 1e-9"
+
+  - id: Q7.5
+    chapter: 7
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["1b", "2d"]
+    distributions: ["hypergeometric"]
+    provenance: original
+    difficulty: 3
+    actor: "the Safari ranger"
+    stakes: "A bag holds 4 rare and 8 common balls; the ranger grabs 3 without looking and wants two rares."
+    consequence: "Treating a without-replacement draw as binomial mis-prices the rare-ball odds."
+    quest_step: 5
+    tia_section: "A.4.5"
+    source_chapter: "ch04 — Combinatorics"
+    narrative_hook: "A without-replacement (hypergeometric) draw of rare balls from the Safari bag."
+    statement: |
+      A bag holds 4 rare balls and 8 common balls (12 total). You draw 3 at random
+      without replacement. Find P(exactly 2 are rare).
+    solution: |
+      Hypergeometric: P = [C(4,2) C(8,1)] / C(12,3) = (6 * 8) / 220 = 48/220 = 12/55
+      ~ 0.21818.
+    answer: "12/55 ~ 0.2182"
+    shortcut_used: ["hypergeometric C(K,k)C(N-K,n-k)/C(N,n)"]
+    verify: "(lambda c:abs((c(4,2)*c(8,1))/c(12,3) - 12/55) < 1e-9)(__import__('math').comb)"
+
+  - id: Q7.6
+    chapter: 7
+    tier: gym_battle
+    archetype: rival_trap
+    outcomes: ["2d"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 3
+    actor: "Gary Oak"
+    stakes: "Gary brags he'll catch the legendary on exactly his third throw, citing a wait-time average."
+    consequence: "Confusing the mean wait with the per-throw success rate mis-reads the catch math."
+    quest_step: 6
+    tia_section: "A.5.1"
+    source_chapter: "ch05 — Discrete Distributions"
+    narrative_hook: "Testing Gary's geometric-wait boast (mean of the trial-count geometric)."
+    statement: |
+      Each throw catches the roaming Pokemon independently w.p. p = 0.25. Let X be the
+      number of throws up to AND INCLUDING the first catch. Gary says "the average catch
+      takes 3 throws." Find E[X] and say whether Gary is right.
+    solution: |
+      X ~ Geometric on {1,2,...} (trials to first success), so E[X] = 1/p = 1/0.25 = 4.
+      Gary is WRONG: the average is 4 throws, not 3. (He likely used the failures-before-
+      success form E = (1-p)/p = 3, which counts only the misses, not the catching throw.)
+    answer: "E[X] = 4 (Gary's 3 omits the catching throw)"
+    shortcut_used: ["geometric (trials form) mean = 1/p"]
+    verify: "abs((1/0.25) - 4) < 1e-9"
+
+  - id: Q7.7
+    chapter: 7
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 3
+    actor: "the night-watch trainer"
+    stakes: "Wild Pokemon wander into camp at a Poisson rate; the watch needs the chance of a quiet hour."
+    consequence: "The arrival-count model sets how many guards the camp posts overnight."
+    quest_step: 7
+    tia_section: "A.5.4"
+    source_chapter: "ch05 — Discrete Distributions"
+    narrative_hook: "A Poisson count of overnight wild-Pokemon arrivals into camp."
+    statement: |
+      Wild Pokemon wander into camp as a Poisson process at lambda = 2 per hour. Let N be
+      the number in one hour. Find P(N = 0) and E[N].
+    solution: |
+      Poisson(lambda=2): P(N=0) = e^{-2} ~ 0.13534. E[N] = lambda = 2.
+    answer: "P(N=0) = e^{-2} ~ 0.1353, E[N] = 2"
+    shortcut_used: ["Poisson P(0)=e^{-lambda}", "Poisson mean = lambda"]
+    verify: "abs(__import__('math').exp(-2) - 0.135335) < 1e-5"
+
+  - id: Q7.8
+    chapter: 7
+    tier: gym_battle
+    archetype: audit
+    outcomes: ["2d"]
+    distributions: ["poisson"]
+    provenance: original
+    difficulty: 3
+    actor: "a sloppy logbook clerk"
+    stakes: "The clerk merges two camps' independent Poisson arrival logs but quotes the wrong combined rate."
+    consequence: "A wrong superposed rate mis-sizes the joint night patrol."
+    quest_step: 8
+    tia_section: "A.5.5"
+    source_chapter: "ch05 — Discrete Distributions"
+    narrative_hook: "Auditing a Poisson superposition: two independent rates ADD."
+    statement: |
+      Camp A logs arrivals at Poisson rate lambda_A = 1.5/hr and camp B independently at
+      lambda_B = 2.5/hr. The clerk writes "the combined hourly arrivals are Poisson with
+      rate 1.5 * 2.5 = 3.75." Give the true combined distribution and rate, and find the
+      probability of exactly 0 combined arrivals in an hour.
+    solution: |
+      Independent Poissons ADD (superposition): A+B ~ Poisson(lambda_A + lambda_B) =
+      Poisson(4.0), NOT the product. The clerk multiplied instead of adding.
+      P(0) = e^{-4.0} ~ 0.018316.
+    answer: "Poisson(4.0); P(0) = e^{-4} ~ 0.0183 (clerk multiplied instead of adding)"
+    shortcut_used: ["Poisson superposition: rates ADD"]
+    verify: "abs((1.5+2.5) - 4.0) < 1e-9 and abs(__import__('math').exp(-4.0) - 0.018316) < 1e-5"
+
+  - id: Q7.9
+    chapter: 7
+    tier: gym_battle
+    archetype: standard
+    outcomes: ["2c", "2d"]
+    distributions: ["binomial"]
+    provenance: original
+    difficulty: 3
+    actor: "the gear-check trainer"
+    stakes: "Each of 10 stored Poke Balls is independently faulty; the trainer needs the expected number that fail."
+    consequence: "Expected failures decide how many spare balls to pack before the wilds change."
+    quest_step: 9
+    tia_section: "A.4.3, A.3.3"
+    source_chapter: "ch03+ch04 — Moments of a binomial"
+    narrative_hook: "Mean and variance of a binomial fault count (ch03 moments on a ch04 count)."
+    statement: |
+      Each of n=10 Poke Balls is independently faulty w.p. p=0.1. Let X be the number
+      faulty. Find E[X] and Var(X).
+    solution: |
+      Binomial(n=10, p=0.1): E[X] = np = 10(0.1) = 1.0;
+      Var(X) = np(1-p) = 10(0.1)(0.9) = 0.9.
+    answer: "E[X] = 1.0, Var(X) = 0.9"
+    shortcut_used: ["binomial mean np, variance np(1-p)"]
+    verify: "abs(10*0.1 - 1.0) < 1e-9 and abs(10*0.1*0.9 - 0.9) < 1e-9"
+
+  - id: Q7.10
+    chapter: 7
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2e", "2f"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "the route insurance broker"
+    stakes: "A repair policy on a discrete loss carries a deductible; the broker needs the expected payment."
+    consequence: "Mis-applying the deductible transform mis-prices the camp's repair premium."
+    quest_step: 10
+    tia_section: "A.6.1"
+    source_chapter: "ch06 — Deductibles & Limits"
+    narrative_hook: "Expected per-loss payment under an ordinary deductible on a discrete loss."
+    statement: |
+      Repair loss X in {0,1,2,3,4} ($100s) has pmf 0.3, 0.3, 0.2, 0.1, 0.1. A policy
+      carries an ordinary deductible d = 1, paying (X - 1)_+ per loss. Find the expected
+      payment per loss, E[(X-1)_+].
+    solution: |
+      (X-1)_+ values on 0..4: 0, 0, 1, 2, 3.
+      E[(X-1)_+] = 0(0.3)+0(0.3)+1(0.2)+2(0.1)+3(0.1) = 0.2 + 0.2 + 0.3 = 0.7 ($100s).
+    answer: "0.7 ($100s)"
+    shortcut_used: ["(X-d)_+ truncates below d, then weight by pmf"]
+    verify: "(lambda k,p:abs(sum(max(x-1,0)*pr for x,pr in zip(k,p)) - 0.7) < 1e-9)([0,1,2,3,4],[0.3,0.3,0.2,0.1,0.1])"
+
+  - id: Q7.11
+    chapter: 7
+    tier: elite_challenge
+    archetype: standard
+    outcomes: ["2e", "2f"]
+    distributions: []
+    provenance: original
+    difficulty: 4
+    actor: "the route insurance broker"
+    stakes: "Same loss, now capped by a policy limit; the broker checks the budget identity holds."
+    consequence: "If the limit-plus-excess split misses E[X], the reserve is internally inconsistent."
+    quest_step: 11
+    tia_section: "A.6.2"
+    source_chapter: "ch06 — Deductibles & Limits"
+    narrative_hook: "Limited expected value and the budget identity E[X^u]+E[(X-d)+]=E[X]."
+    statement: |
+      For the same loss X in {0,1,2,3,4} with pmf 0.3, 0.3, 0.2, 0.1, 0.1: (a) find E[X];
+      (b) find the limited expected value E[X ^ 2] (X capped at u=2); (c) verify the budget
+      identity E[X ^ 2] + E[(X - 2)_+] = E[X].
+    solution: |
+      (a) E[X] = 0(0.3)+1(0.3)+2(0.2)+3(0.1)+4(0.1) = 0.3+0.4+0.3+0.4 = 1.4.
+      (b) min(X,2) values: 0,1,2,2,2 -> E[X^2] = 0(0.3)+1(0.3)+2(0.2)+2(0.1)+2(0.1)
+          = 0.3 + 0.4 + 0.2 + 0.2 = 1.1.
+      (c) (X-2)_+ values: 0,0,0,1,2 -> E[(X-2)_+] = 1(0.1)+2(0.1) = 0.3.
+          Budget: 1.1 + 0.3 = 1.4 = E[X]. Identity holds.
+    answer: "E[X]=1.4, E[X^2]=1.1, E[(X-2)+]=0.3; 1.1+0.3=1.4"
+    shortcut_used: ["E[X^u]+E[(X-u)+]=E[X] budget identity"]
+    verify: "(lambda k,p:(abs(sum(x*pr for x,pr in zip(k,p))-1.4)<1e-9) and (abs(sum(min(x,2)*pr for x,pr in zip(k,p))-1.1)<1e-9) and (abs(sum(max(x-2,0)*pr for x,pr in zip(k,p))-0.3)<1e-9) and (abs((sum(min(x,2)*pr for x,pr in zip(k,p))+sum(max(x-2,0)*pr for x,pr in zip(k,p)))-sum(x*pr for x,pr in zip(k,p)))<1e-9))([0,1,2,3,4],[0.3,0.3,0.2,0.1,0.1])"
+
+  - id: Q7.12
+    chapter: 7
+    tier: elite_challenge
+    archetype: decision
+    outcomes: ["1c", "2d"]
+    distributions: ["geometric"]
+    provenance: original
+    difficulty: 4
+    actor: "Ash (you)"
+    stakes: "Two encounter strategies have the same per-attempt catch odds; you must pick by what the format rewards."
+    consequence: "Choosing 'first success' vs 'count in a batch' wrong wastes the last evening before the wilds change."
+    quest_step: 12
+    tia_section: "A.5.1, A.4.3"
+    source_chapter: "ch04+ch05 — geometric vs binomial framing"
+    narrative_hook: "Deciding between a wait-for-first-catch (geometric) and a fixed-batch (binomial) framing."
+    statement: |
+      Each encounter is an independent catch w.p. p = 0.3. (a) If you keep throwing until
+      your first catch, find the expected number of throws (geometric). (b) If you instead
+      make exactly 4 throws, find the expected number of catches (binomial) and P(at least
+      one catch). Which framing should you use if you only want ONE catch as fast as
+      possible?
+    solution: |
+      (a) Geometric (trials to first success): E = 1/p = 1/0.3 ~ 3.333 throws.
+      (b) Binomial(4, 0.3): E[catches] = np = 4(0.3) = 1.2;
+          P(at least one) = 1 - (0.7)^4 = 1 - 0.2401 = 0.7599.
+      For ONE catch as fast as possible, use the geometric "throw until first catch"
+      framing -- you stop the instant you succeed (~3.33 throws on average) rather than
+      committing to a fixed batch of 4.
+    answer: "(a) 1/0.3 ~ 3.333; (b) E=1.2, P(>=1)=0.7599; use geometric"
+    shortcut_used: ["geometric mean 1/p", "binomial mean np", "P(>=1)=1-(1-p)^n"]
+    verify: "abs((1/0.3) - 3.333333) < 1e-5 and abs(4*0.3 - 1.2) < 1e-9 and abs((1-0.7**4) - 0.7599) < 1e-9"
