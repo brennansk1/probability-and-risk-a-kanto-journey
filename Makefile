@@ -27,7 +27,7 @@ PREAMBLE    := $(BOOK_DIR)/mathjax-preamble.md
 TITLE_HTML  := $(FRONT_DIR)/title.html
 
 # Inputs in reading order: math macros first, then front matter, chapters, appendices.
-FRONT    := $(FRONT_DIR)/episode-guide.md $(FRONT_DIR)/how-to-use.md $(FRONT_DIR)/diagnostic.md
+FRONT    := $(FRONT_DIR)/episode-guide.md
 CHAPTERS := $(sort $(wildcard $(CH_DIR)/ch*.md))
 APPENDIX := $(sort $(wildcard $(APX_DIR)/appendix_*.md))
 CONTENT  := $(PREAMBLE) $(FRONT) $(CHAPTERS) $(APPENDIX)
