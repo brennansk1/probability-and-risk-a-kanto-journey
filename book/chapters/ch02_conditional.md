@@ -41,6 +41,8 @@ And you don't yet know how. *How do you turn a clue into a probability of guilt?
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP007 "The Water Flowers of Cerulean City"**
 
+<figure><img src="../../assets/stills/ch02_now_playing.jpg" alt="The Sensational Sisters at the Cerulean City Water Gym (Indigo League EP007)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Cerulean City Gym, EP007 — Misty's city, where a mystery teaches you to reason from clues.</figcaption></figure>
+
 Ash reaches Cerulean City and Misty's Water gym (the Sensational Sisters); Team Rocket schemes to make off with the gym's Pokémon. Reasoning from clues to *who did it* — updating a suspicion as evidence comes in — is exactly the conditional-probability and Bayes work of this chapter. Watch before reading. *(The phantom-thief case is our in-world extension of the episode's Team Rocket plot.)*
 :::
 

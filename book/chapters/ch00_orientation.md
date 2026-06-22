@@ -37,6 +37,8 @@ You don't recognize a single piece of it. But Oak only smiles. "You will read th
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP001 "Pokémon! I Choose You!"**
 
+<figure><img src="../../assets/stills/ch00_now_playing.jpg" alt="Pikachu — the partner Ash receives in Indigo League EP001." style="width:58%; max-width:420px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">EP001 — meet your partner; the journey begins.</figcaption></figure>
+
 The very first episode. Ash oversleeps on the morning of his journey, races to Professor Oak's lab, and — the starters already taken — receives an unruly **Pikachu** who wants nothing to do with him or its Poké Ball. By the episode's end, attacked by a flock of Spearow, Ash shields Pikachu with his own body, and Pikachu chooses to fight for him: the bond that carries the whole series is forged. *Our cold-open borrows that same lab-doorstep moment* — Oak handing over the Pokédex — and extends it: in this telling the Pokédex carries "Actuary Mode" and Oak issues a calculator too (an in-world extension for the book's dual quest, not an on-screen line). **Watch EP001 before you start** — it is the launch of the journey you are about to read.
 :::
 

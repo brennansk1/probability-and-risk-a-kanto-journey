@@ -48,6 +48,8 @@ All three instant? You're ready — the "weighted average" reflex and the "proba
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP014 "Electric Shock Showdown" + EP015 "Battle Aboard the St. Anne"**
 
+<figure><img src="../../assets/stills/ch03_now_playing.jpg" alt="Lt. Surge with his Raichu in the Vermilion Gym (Indigo League EP014)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Vermilion Gym, EP014 — raw power (the mean) and reliability (the spread).</figcaption></figure>
+
 In **EP015** Ash and friends board the glamorous cruise liner *S.S. Anne*, a floating crowd of trainers swapping and battling Pokémon — until Team Rocket's scheme leaves the ship listing and the heroes scrambling to escape as she founders (our cold-open dramatizes this sinking; the "expected decks that hold" framing is an in-world extension for the math, not an on-screen line). In **EP014** Ash reaches **Vermilion City** and challenges **Lt. Surge** for the **Thunder Badge** — and famously *loses the first bout* before adapting his strategy and winning the rematch: a perfect picture of this chapter's twin themes, raw **magnitude** (mean power) versus **reliability** (low variance). *Watch EP015 then EP014 right before this chapter* — the crowd, the sinking, and the electric gym are the three scenes the math lives in.
 :::
 

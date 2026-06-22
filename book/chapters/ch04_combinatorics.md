@@ -54,6 +54,8 @@ All three instant? You're ready — "count favorable, count total, divide" and "
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP003 "Ash Catches a Pokémon" + EP004 "Challenge of the Samurai" + EP005 "Showdown in Pewter City"**
 
+<figure><img src="../../assets/stills/ch04_now_playing.jpg" alt="Brock and Ash at sunset as Ash leaves Pewter City (Indigo League EP005)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Pewter City, EP005 — Brock's rock-solid logic: counting by rule.</figcaption></figure>
+
 In **EP003–EP004** Ash crosses **Viridian Forest** — catching a Caterpie, weathering a swarm of Weedle, and dueling a bug-catcher *Samurai* — a forest literally full of clusters of look-alike bug Pokémon, the exact "draw-without-replacement" world this chapter counts. In **EP005** he reaches **Pewter City** and challenges **Brock** for the **Boulder Badge**, losing his first attempt against Brock's rock-solid **Onix** before adapting — a fitting picture of a chapter where the whole skill is *picking the right counting machine on sight*. *Watch EP003–EP005 right before this chapter* — the forest clusters and the Pewter gym are the two scenes the math lives in. (Our cold-open dramatizes Brock's forest-edge challenge; the "count exactly, or no badge" toll is an in-world framing for the math, not an on-screen line.)
 :::
 

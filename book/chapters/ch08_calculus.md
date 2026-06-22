@@ -59,6 +59,8 @@ All three instant? You're ready to install the tools. Any hesitation? Reclaim th
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP013 "Mystery at the Lighthouse"**
 
+<figure><img src="../../assets/stills/ch08_now_playing.jpg" alt="A lighthouse beam sweeping over the dark sea at night (Indigo League EP013)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Bill's lighthouse, EP013 — acquiring the tools for the continuous world.</figcaption></figure>
+
 Ash and friends shelter at the lighthouse of **Bill**, the Pokémon researcher and inventor of the PC storage system. Through the night a vast, mysterious silhouette approaches across the sea, drawn by the lighthouse beam — a giant Pokémon answering a recorded cry. *Watch it before or after this chapter.* The episode's throughline is ours exactly: Bill is the man who turns living Pokémon into **continuous data** and back, and the thing in the dark — too large to fully see, its edges running off past the frame — is the picture of a quantity whose **tail extends to infinity**. (Bill's monitor-puzzle, the integral he sets you, and the dragon-as-heavy-tail are **in-world extensions** built to carry the calculus; the silhouette-at-the-lighthouse is the genuine on-screen scene.)
 :::
 

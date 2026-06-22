@@ -55,6 +55,8 @@ All three instant? Good — every idea below is one of these, with the sum swapp
 ::: now-playing
 **📺 NOW PLAYING — Indigo League EP022 "Abra and the Psychic Showdown" + EP024 "Haunter Versus Kadabra"**
 
+<figure><img src="../../assets/stills/ch09_now_playing.jpg" alt="Saffron City under Sabrina's psychic distortion (Indigo League EP022)." style="width:60%; max-width:440px; display:block; margin:0.4em auto;"><figcaption style="font-size:0.8em; color:#555;">Saffron, EP022 — Sabrina warps reality into something smooth and continuous.</figcaption></figure>
+
 In **EP022** Ash reaches **Saffron City** and challenges **Sabrina**, the eerily powerful Psychic-type Gym Leader, whose mastery over a *continuous*, mind-bending reality (she even shrinks the heroes into a toy world) is the perfect skin for this chapter's smooth, gliding quantities — and whose **Kadabra** is our figure mascot, warping discrete bars into a flowing curve. Ash loses the first attempt and goes to find a Pokémon that can counter raw psychic power. In **EP024** he returns with a **Haunter**, and in the canonical beat that closes the arc, Haunter wins *not* by force but by making the unshakable Sabrina **laugh** — cracking her cold composure and earning the **Marsh Badge.** *Watch EP022 then EP024 right before this chapter* — the smooth psychic world and the Kadabra/Haunter showdown are the scenes the math lives in. (The wall-dial "density" and the doll-dimension wager are in-world extensions built to carry the math, not on-screen lines.)
 :::
 
