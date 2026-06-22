@@ -13,14 +13,14 @@ Live status of the V3 build (*Probability & Risk: A Kanto Journey*). One row per
 ## Chapters
 | Ch | Title | Tier | Status |
 |---|---|---|---|
-| 00 | Orientation | — | ☐ |
+| 00 | Orientation | — | ✅ **grade A** — exam facts accurate · calculator + symbols primers correct · 4 calc drills verify |
 | 01 | Fundamentals of Probability | C/B | ☐ |
 | 02 | Conditional Probability & Bayes | A | ✅ gold-standard exemplar — L1 harness 26/26 · L2 lint pass · L3 blind re-derivation (all correct) · **L4 tutor letter grade = A** (all 10 dims 9–10; NO concept compression — every concept fully derived) · A+ polish applied · clean build |
 | 03 | Discrete RVs & Moments | A | ✅ **grade A** — harness clean · blind re-derivation (1 prose-drift caught & fixed) · 1-Var-Stats flagship · build clean |
 | 04 | Combinatorics | B | ✅ **grade A** — blind re-derivation 40/40 clean · nCr/nPr keystrokes · build clean |
 | 05 | Key Discrete Distributions | B | ✅ **grade A** — blind re-derivation 33/33 · series interlude fully taught · build clean |
 | 06 | Deductibles & Limits (Discrete) | B | ✅ **grade A** — blind re-derivation clean · 3rd audit drill added to meet quota · build clean |
-| 07 | Checkpoint A | — | ☐ |
+| 07 | Checkpoint A | — | ✅ **grade A** — 12/12 mixed drills · full Act-I coverage · mind-map + pass gate |
 | 08 | The Calculus Toolkit | C | ✅ **grade A** — 18/18 re-derived · gamma integral derived · C8.14 table fixed · build clean |
 | 09 | Densities & CDFs | B | ✅ **grade A** — blind re-derivation 19/19 · mixed distributions fully built · C9.16 statement fixed · build clean |
 | 10 | Continuous Moments | B | ✅ **grade A** — blind re-derivation 30/30 · survival method derived via integral-swap · build clean |
@@ -31,7 +31,7 @@ Live status of the V3 build (*Probability & Risk: A Kanto Journey*). One row per
 | 15 | Joint Moments & Covariance | A | ✅ **grade A** — harness 22/22 · blind re-derivation 36/36 · build clean · no compression |
 | 16 | Conditional & Double Expectation | A | ✅ **grade A** — harness 18/18 · blind re-derivation 30/30 · build clean · no compression |
 | 17 | Order Statistics | B | ✅ **grade A** — all re-derived · max/min/k-th/reliability derived · Elite Four · build clean |
-| 18 | Checkpoint B | — | ☐ |
+| 18 | Checkpoint B | — | ✅ **grade A** — 12/12 mixed drills · full Act-III coverage · now-playing box added |
 | 19 | Champion's Challenge (3 mocks) | — | ☐ |
 
 ## Conventions locked (from the ch02 exemplar — fold into `_TEMPLATE.md` + dossiers)

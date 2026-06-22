@@ -32,6 +32,12 @@ There is no gym here. No badge to win. Just one question, the only one that matt
 *When the four ideas of Act III come at you mixed and unlabeled, can you still tell them apart — and finish each one?*
 :::
 
+::: now-playing
+**📺 NOW PLAYING — Indigo League EP077 "Round One – Begin!"**
+
+The Pokémon League opens at the Indigo Plateau: the torch is lit, the field of trainers is huge, and the first mixed rounds begin — exactly the spirit of this checkpoint, where the four Act-III ideas come at you unlabeled, one after another. Watch the opening rounds, then run the gauntlet below. *(The "mixed, no-warning" framing is our in-world extension of the tournament, not an on-screen line.)*
+:::
+
 ## Where You Are — 60-Second Retrieval
 
 **Rank: Champion-ready · Badges: 8 (all earned).** You have every badge Kanto offers. This is not a teaching chapter — it adds no new theory. It is a **spaced-retrieval checkpoint**: the single most reliable way to make Act III stick is to pull each idea out of memory cold, under mixed conditions, the way the exam will demand it. The mind-map below is the whole act on one page; the retrieval grid after it is the load-bearing idea from each of the four chapters. Reconstruct each from memory *before* you read the line that follows it.
