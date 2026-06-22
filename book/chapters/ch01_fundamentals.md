@@ -35,6 +35,12 @@ The Pokédex chirps to **Actuary Mode**. Oak's voice crackles through: "You'll n
 Far to the north, through the storm clouds gathering over the river, a band of color flickers for half a second — a rainbow that should not be there in the rain. You'll learn what it means much later. For now: *you have no idea what Oak meant.* You will by the end of this chapter.
 :::
 
+::: now-playing
+**📺 NOW PLAYING — Indigo League EP001 "Pokémon! I Choose You!" + EP002 "Pokémon Emergency!"**
+
+Ash gets an unruly Pikachu, and on Route 1 a whole flock of Spearow descends — he can't track every bird, only reason about "will *any* of them reach Pikachu?" That "at least one of a swarm" question is exactly this chapter. EP002 brings the first Pokémon Center and Team Rocket's debut. Watch these before reading. *(The catalogue-the-route framing is our in-world extension.)*
+:::
+
 ## Where You Are — 60-Second Retrieval
 
 **Rank: Rookie Trainer · Badges: 0.** This is the first real chapter of the journey — you have just left Pallet Town, and there is no prior *probability* chapter to retrieve. But everything here stands on the **Toolkit** you already built in orientation: a **set** is just a collection of things, and you can read a fraction. That is all you need. Take sixty seconds and prove you still own it before reading on.

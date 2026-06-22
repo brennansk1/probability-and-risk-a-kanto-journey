@@ -38,6 +38,12 @@ You look up the dark slope. Six Pokémon, six variances, and a tangle of who-mov
 *How do you measure the way two teammates move together, and fold it into the reliability of the whole team?*
 :::
 
+::: now-playing
+**📺 NOW PLAYING — Indigo League: the road to the Indigo Plateau (~EP075–076)**
+
+With all badges in hand, Ash crosses the last stretch toward the League — his team finally working as one unit. A team's strength as a *sum of correlated members* — where pieces move together — is exactly covariance and the variance of a linear combination. *(There is no single gym here; watch the travel episodes approaching the Plateau. The Victory-Road framing is our in-world extension.)*
+:::
+
 ## Where You Are — 60-Second Retrieval
 
 **Rank: Veteran Trainer · Badges: 7.** Seven badges earned; only Giovanni's Earth Badge remains. The road from Viridian now climbs into Victory Road, the last leg before the Indigo Plateau. You arrive carrying everything from the joint-distribution chapters and the chapter on expectation. Two ideas from back there are the ground this chapter stands on.

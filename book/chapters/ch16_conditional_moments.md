@@ -34,6 +34,12 @@ You've computed expectations before. You've never computed an expectation *insid
 *How do you find the strength of an opponent whose very identity is left to chance?*
 :::
 
+::: now-playing
+**📺 NOW PLAYING — Indigo League EP063 "The Battle of the Badge"**
+
+At the Viridian Gym, the leader's true identity is revealed — Giovanni, the boss of Team Rocket — and the Earth Badge is on the line. A value hidden *inside* another role, where the answer depends on a realized-but-unseen quantity, is exactly conditional expectation E[X|Y] and the law of total variance. Watch before reading.
+:::
+
 ## Where You Are — 60-Second Retrieval
 
 **Rank: Veteran Trainer · Badges: 7.** On Victory Road, last chapter, you learned to handle several random variables moving **together**: you built **covariance** $\Cov(X,Y) = \E[XY] - \E[X]\E[Y]$, read its **sign** as the direction of co-movement, and — the load-bearing skill — found the variance of a **linear combination**, $\Var(aX+bY) = a^2\Var(X) + b^2\Var(Y) + 2ab\,\Cov(X,Y)$. Crucially, you saw that when two pieces are **independent**, the cross term vanishes and *variances simply add*.

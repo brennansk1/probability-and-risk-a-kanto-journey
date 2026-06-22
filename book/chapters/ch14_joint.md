@@ -31,6 +31,12 @@ Pikachu's ears twitch — it senses the trap before you do. You **cannot** just 
 So how do you pull *one* variable's behavior out of a *two*-variable law — and how do you update it once the other variable is known?
 :::
 
+::: now-playing
+**📺 NOW PLAYING — Indigo League EP056 "Volcanic Panic"**
+
+Ash reaches Cinnabar Island for Blaine's Volcano-Badge gym beneath a live volcano. Two quantities measured *together* — read off paired research logs — moving as one is the heart of joint distributions. Watch before reading. *(The Pokémon-Mansion paired ledgers are our in-world extension; the Mansion's research diary is film/game lore, not in this episode.)*
+:::
+
 ## Where You Are — 60-Second Retrieval
 
 **Rank: Ace Trainer · Badges: 6 (Cascade, Thunder, Boulder, Rainbow, Soul, Marsh).** You crossed the sea carrying everything you built for a **single** random variable through Saffron and the smooth continuous wilds. Back there you learned that a continuous variable $X$ is described by a **density** $f(x)$, that probabilities are **areas under it**, and that the expectation is a weighted average:

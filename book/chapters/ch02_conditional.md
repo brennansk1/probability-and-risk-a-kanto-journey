@@ -38,6 +38,12 @@ You realize "guilt" is really three things stacked together: *how common* each s
 And you don't yet know how. *How do you turn a clue into a probability of guilt?*
 :::
 
+::: now-playing
+**📺 NOW PLAYING — Indigo League EP007 "The Water Flowers of Cerulean City"**
+
+Ash reaches Cerulean City and Misty's Water gym (the Sensational Sisters); Team Rocket schemes to make off with the gym's Pokémon. Reasoning from clues to *who did it* — updating a suspicion as evidence comes in — is exactly the conditional-probability and Bayes work of this chapter. Watch before reading. *(The phantom-thief case is our in-world extension of the episode's Team Rocket plot.)*
+:::
+
 ## Where You Are — 60-Second Retrieval
 
 **Rank: Rookie Trainer · Badges: 0.** You have your Trainer's License from Route 1, but no gym badge yet — Cerulean is your first. Back on Route 1, in the previous chapter, you built the **sample space** $S$ — the set of all outcomes — and learned the axioms: $0 \le P(A) \le 1$, $P(S)=1$, and that disjoint events add. You drew **Venn diagrams** to picture an event $A$ as a region inside the rectangle $S$, and you used the **complement rule** $P(A^c) = 1 - P(A)$ to turn "at least one" into "one minus none."
