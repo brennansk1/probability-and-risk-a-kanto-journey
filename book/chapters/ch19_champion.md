@@ -765,7 +765,7 @@ $$P(T>30)\approx 1-\Phi\!\left(\frac{30-20}{14.142}\right)=1-\Phi(0.71)\approx 1
 
 **M3.12.** 🟡 $S(x)=e^{-x/4}$, $x\ge 0$. Find $E[X]$ by the survival method.  (A) 2 (B) 4 (C) 8 (D) 12 (E) 16
 
-**M3.13.** 🔴 $X\sim N(70,100)$. By the empirical rule, $P(50\le X\le 90)$.  (A) 0.68 (B) 0.95 (C) 0.997 (D) 0.50 (E) 0.997
+**M3.13.** 🔴 $X\sim N(70,100)$. By the empirical rule, $P(50\le X\le 90)$.  (A) 0.68 (B) 0.95 (C) 0.997 (D) 0.50 (E) 0.475
 
 **M3.14.** 🔵 $X\sim\text{Exp}(5)$, $d=3$. Find expected payment **per payment**.  (A) 2.0 (B) 3.0 (C) 5.0 (D) 5.5 (E) 8.0
 

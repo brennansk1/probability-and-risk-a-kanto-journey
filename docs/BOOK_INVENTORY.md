@@ -32,7 +32,7 @@ Live status of the V3 build (*Probability & Risk: A Kanto Journey*). One row per
 | 16 | Conditional & Double Expectation | A | ✅ **grade A** — harness 18/18 · blind re-derivation 30/30 · build clean · no compression |
 | 17 | Order Statistics | B | ✅ **grade A** — all re-derived · max/min/k-th/reliability derived · Elite Four · build clean |
 | 18 | Checkpoint B | — | ✅ **grade A** — 12/12 mixed drills · full Act-III coverage · now-playing box added |
-| 19 | Champion's Challenge (3 mocks) | — | ☐ |
+| 19 | Champion's Challenge (3 mocks) | — | ✅ **grade A** — 90/90 harness · 18/18 blind sample · 3 mocks weight-matched 8/14/8 · M3.13 duplicate option fixed |
 
 ## Conventions locked (from the ch02 exemplar — fold into `_TEMPLATE.md` + dossiers)
 - **Calculator key-caps:** write `[2nd]{.kbd}` and sequences `[ ... ]{.keystroke}` as **bare markdown — never wrap them in backticks** (backticks make pandoc treat them as literal code). Pandoc `+bracketed_spans` renders `{.kbd}` as the semantic `<kbd>` element; CSS styles the `kbd` element (theme.css).
